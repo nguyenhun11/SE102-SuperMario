@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Assets">
+      <UniqueIdentifier>{3706caf5-5a41-4109-bc45-f10bc3be8820}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -73,6 +76,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Portal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Scence.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -146,5 +152,39 @@
     <ClInclude Include="Portal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="brick.txt">
+      <Filter>Assets</Filter>
+    </Text>
+    <Text Include="mario-sample.txt">
+      <Filter>Assets</Filter>
+    </Text>
+    <Text Include="cloud.txt">
+      <Filter>Assets</Filter>
+    </Text>
+    <Text Include="coin.txt">
+      <Filter>Assets</Filter>
+    </Text>
+    <Text Include="goomba.txt">
+      <Filter>Assets</Filter>
+    </Text>
+    <Text Include="mario.txt">
+      <Filter>Assets</Filter>
+    </Text>
+    <Text Include="scene01.txt">
+      <Filter>Assets</Filter>
+    </Text>
+    <Text Include="scene02.txt">
+      <Filter>Assets</Filter>
+    </Text>
+    <Text Include="scene0005.txt">
+      <Filter>Assets</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="mario.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
