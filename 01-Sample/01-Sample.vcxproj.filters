@@ -22,8 +22,11 @@
     <Filter Include="GameData">
       <UniqueIdentifier>{3706caf5-5a41-4109-bc45-f10bc3be8820}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Textures">
+    <Filter Include="Resources">
       <UniqueIdentifier>{f3ecf656-2cae-4ab8-8dae-22e912964ef2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Maps">
+      <UniqueIdentifier>{d24973f5-c708-465c-92f6-6b52f6e63fe9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -88,11 +91,17 @@
       <Filter>CoreGame</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="GameGlobal.cpp">
+      <Filter>CoreGame</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>CoreGame</Filter>
+    </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>CoreGame</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AssetIDs.h">
-      <Filter>CoreGame</Filter>
-    </ClInclude>
     <ClInclude Include="Utils.h">
       <Filter>CoreGame</Filter>
     </ClInclude>
@@ -162,12 +171,27 @@
     <ClInclude Include="SceneKeyHandler.h">
       <Filter>Input</Filter>
     </ClInclude>
+    <ClInclude Include="AssetIDs.h">
+      <Filter>GameData</Filter>
+    </ClInclude>
+    <ClInclude Include="GameGlobal.h">
+      <Filter>CoreGame</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>CoreGame</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>CoreGame</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>CoreGame</Filter>
+    </ClInclude>
+    <ClInclude Include="Singleton.h">
+      <Filter>CoreGame</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="brick.txt">
-      <Filter>GameData</Filter>
-    </Text>
-    <Text Include="mario-sample.txt">
       <Filter>GameData</Filter>
     </Text>
     <Text Include="cloud.txt">
@@ -183,30 +207,33 @@
       <Filter>GameData</Filter>
     </Text>
     <Text Include="scene01.txt">
-      <Filter>GameData</Filter>
+      <Filter>Maps</Filter>
     </Text>
     <Text Include="scene02.txt">
-      <Filter>GameData</Filter>
+      <Filter>Maps</Filter>
     </Text>
     <Text Include="scene0005.txt">
-      <Filter>GameData</Filter>
+      <Filter>Maps</Filter>
+    </Text>
+    <Text Include="mario-sample.txt">
+      <Filter>Scenes</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>
     <Image Include="textures\bbox.png">
-      <Filter>Textures</Filter>
+      <Filter>Resources</Filter>
     </Image>
     <Image Include="textures\enemies.png">
-      <Filter>Textures</Filter>
+      <Filter>Resources</Filter>
     </Image>
     <Image Include="textures\mario.png">
-      <Filter>Textures</Filter>
+      <Filter>Resources</Filter>
     </Image>
     <Image Include="mario.ico">
-      <Filter>Textures</Filter>
+      <Filter>Resources</Filter>
     </Image>
     <Image Include="textures\misc.png">
-      <Filter>Textures</Filter>
+      <Filter>Resources</Filter>
     </Image>
   </ItemGroup>
 </Project>

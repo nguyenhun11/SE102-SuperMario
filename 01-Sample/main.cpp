@@ -24,8 +24,6 @@
 #define MAIN_WINDOW_TITLE L"04 - Collision"
 #define WINDOW_ICON_PATH L"mario.ico"
 
-#define BACKGROUND_COLOR D3DXCOLOR(200.0f/255, 200.0f/255, 255.0f/255, 0.0f)
-
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 240
 
@@ -40,40 +38,6 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 
 	return 0;
-}
-
-/*
-	Update world status for this frame
-	dt: time period between beginning of last frame and beginning of this frame
-*/
-void Update(DWORD dt)
-{
-	CGame::GetInstance()->GetCurrentScene()->Update(dt);
-}
-
-/*
-	Render a frame 
-*/
-void Render()
-{
-	CGame* g = CGame::GetInstance();
-
-	ID3D10Device* pD3DDevice = g->GetDirect3DDevice();
-	IDXGISwapChain* pSwapChain = g->GetSwapChain();
-	ID3D10RenderTargetView* pRenderTargetView = g->GetRenderTargetView();
-	ID3DX10Sprite* spriteHandler = g->GetSpriteHandler();
-
-	pD3DDevice->ClearRenderTargetView(pRenderTargetView, BACKGROUND_COLOR);
-
-	spriteHandler->Begin(D3DX10_SPRITE_SORT_TEXTURE);
-
-	FLOAT NewBlendFactor[4] = { 0,0,0,0 };
-	pD3DDevice->OMSetBlendState(g->GetAlphaBlending(), NewBlendFactor, 0xffffffff);
-
-	CGame::GetInstance()->GetCurrentScene()->Render();
-
-	spriteHandler->End();
-	pSwapChain->Present(0, 0);
 }
 
 HWND CreateGameWindow(HINSTANCE hInstance, int nCmdShow, int ScreenWidth, int ScreenHeight)
@@ -150,11 +114,11 @@ int Run()
 		{
 			frameStart = now;
 
-			CGame::GetInstance()->ProcessKeyboard();			
-			Update(dt);
-			Render();
+			InputManager::GetInstance()->ProcessKeyboard();			
+			Game::GetInstance()->Update(dt);
+			Game::GetInstance()->Render();
 
-			CGame::GetInstance()->SwitchScene();
+			SceneManager::GetInstance()->SwitchScene();
 		}
 		else
 			Sleep(tickPerFrame - dt);	
@@ -173,13 +137,11 @@ int WINAPI WinMain(
 
 	SetDebugWindow(hWnd);
 
-	LPGAME game = CGame::GetInstance();
-	game->Init(hWnd, hInstance);
-	game->InitKeyboard();
-
+	Game::GetInstance()->Init(hWnd, hInstance);
+	InputManager::GetInstance()->InitKeyboard();
 
 	//IMPORTANT: this is the only place where a hardcoded file name is allowed ! 
-	game->Load(L"mario-sample.txt");  
+	Game::GetInstance()->Load(L"mario-sample.txt");
 
 	SetWindowPos(hWnd, 0, 0, 0, SCREEN_WIDTH*2, SCREEN_HEIGHT*2, SWP_NOMOVE | SWP_NOOWNERZORDER | SWP_NOZORDER);
 

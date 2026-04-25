@@ -254,13 +254,12 @@ void CPlayScene::Update(DWORD dt)
 	float cx, cy;
 	player->GetPosition(cx, cy);
 
-	CGame *game = CGame::GetInstance();
-	cx -= game->GetBackBufferWidth() / 2;
-	cy -= game->GetBackBufferHeight() / 2;
+	cx -= GameGlobal::GetWidth() / 2;
+	cy -= GameGlobal::GetHeight() / 2;
 
 	if (cx < 0) cx = 0;
 
-	CGame::GetInstance()->SetCamPos(cx, 0.0f /*cy*/);
+	Camera::GetInstance()->SetCamPos(cx, 0.0f /*cy*/);
 
 	PurgeDeletedObjects();
 }
