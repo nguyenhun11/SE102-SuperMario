@@ -145,6 +145,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+    <None Include="GameObjectDocument.md" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
