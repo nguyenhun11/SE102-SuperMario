@@ -162,7 +162,7 @@
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="PlayScene.cpp" />
     <ClCompile Include="Portal.cpp" />
-    <ClCompile Include="SampleKeyEventHandler.cpp" />
+    <ClCompile Include="PlaySceneKeyHandler.cpp" />
     <ClCompile Include="Scence.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Sprite.cpp" />
@@ -190,7 +190,7 @@
     <ClInclude Include="Platform.h" />
     <ClInclude Include="PlayScene.h" />
     <ClInclude Include="Portal.h" />
-    <ClInclude Include="SampleKeyEventHandler.h" />
+    <ClInclude Include="PlaySceneKeyHandler.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneKeyHandler.h" />
     <ClInclude Include="SceneManager.h" />

@@ -14,7 +14,7 @@ class InputManager : public Singleton<InputManager> {
 	friend class Singleton<InputManager>;
 
 private:
-	LPDIRECTINPUT8       di;
+	LPDIRECTINPUT8 di;
 	LPDIRECTINPUTDEVICE8 didv;
 	BYTE  keyStates[KEYBOARD_STATE_SIZE];
 	DIDEVICEOBJECTDATA keyEvents[KEYBOARD_BUFFER_SIZE];

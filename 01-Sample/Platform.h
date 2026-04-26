@@ -5,7 +5,7 @@
 // 
 // The most popular type of object in Mario! 
 // 
-class CPlatform : public CGameObject
+class Platform : public GameObject
 {
 protected:
 	int length;				// Unit: cell 
@@ -14,9 +14,9 @@ protected:
 	int spriteIdBegin, spriteIdMiddle, spriteIdEnd;
 
 public:
-	CPlatform(float x, float y,
+	Platform(float x, float y,
 		float cell_width, float cell_height, int length,
-		int sprite_id_begin, int sprite_id_middle, int sprite_id_end) :CGameObject(x, y)
+		int sprite_id_begin, int sprite_id_middle, int sprite_id_end) :GameObject(x, y)
 	{
 		this->length = length;
 		this->cellWidth = cell_width;
@@ -34,4 +34,4 @@ public:
 	int IsDirectionColliable(float nx, float ny);
 };
 
-typedef CPlatform* LPPLATFORM;
+typedef Platform* LPPLATFORM;

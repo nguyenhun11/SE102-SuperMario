@@ -6,8 +6,8 @@
 
 using namespace std;
 
-class CGameObject;
-typedef CGameObject* LPGAMEOBJECT;
+class GameObject;
+typedef GameObject* LPGAMEOBJECT;
 
 struct CCollisionEvent;
 typedef CCollisionEvent* LPCOLLISIONEVENT;
@@ -43,9 +43,9 @@ struct CCollisionEvent
 	}
 };
 
-class CCollision
+class Collision
 {
-	static CCollision* __instance;
+	static Collision* __instance;
 public: 
 	static void SweptAABB(
 		float ml,			// move left 
@@ -83,5 +83,5 @@ public:
 
 	void Process(LPGAMEOBJECT objSrc, DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 
-	static CCollision* GetInstance();
+	static Collision* GetInstance();
 };

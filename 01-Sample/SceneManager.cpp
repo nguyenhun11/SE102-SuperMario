@@ -19,8 +19,8 @@ void SceneManager::SwitchScene()
 	if (scenes[current_scene] != NULL)
 		scenes[current_scene]->Unload();
 
-	CSprites::GetInstance()->Clear();
-	CAnimations::GetInstance()->Clear();
+	Sprites::GetInstance()->Clear();
+	Animations::GetInstance()->Clear();
 
 	current_scene = next_scene;
 	LPSCENE s = scenes[next_scene];

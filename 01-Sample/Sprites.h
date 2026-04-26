@@ -6,23 +6,23 @@
 
 #include "Texture.h"
 #include "Sprite.h"
+#include "Singleton.h"
 
 using namespace std;
 
 /*
 	Manage sprite database
 */
-class CSprites
+class Sprites : public Singleton<Sprites>
 {
-	static CSprites* __instance;
+	friend class Singleton<Sprites>;
 
+private:
 	unordered_map<int, LPSPRITE> sprites;
 
 public:
 	void Add(int id, int left, int top, int right, int bottom, LPTEXTURE tex);
 	LPSPRITE Get(int id);
 	void Clear();
-
-	static CSprites* GetInstance();
 };
 

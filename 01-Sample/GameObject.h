@@ -14,7 +14,7 @@ using namespace std;
 #define ID_TEX_BBOX -100		// special texture to draw object bounding box
 #define BBOX_ALPHA 0.25f		// Bounding box transparency
 
-class CGameObject
+class GameObject
 {
 protected:
 
@@ -42,8 +42,8 @@ public:
 
 	void RenderBoundingBox();
 
-	CGameObject();
-	CGameObject(float x, float y) :CGameObject() { this->x = x; this->y = y; }
+	GameObject();
+	GameObject(float x, float y) :GameObject() { this->x = x; this->y = y; }
 
 
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom) = 0;
@@ -67,7 +67,7 @@ public:
 	// Does this object collide with other object at certain direction ( like ColorBox )
 	virtual int IsDirectionColliable(float nx, float ny) { return 1; }
 
-	~CGameObject();
+	~GameObject();
 
 	static bool IsDeleted(const LPGAMEOBJECT &o) { return o->isDeleted; }
 };

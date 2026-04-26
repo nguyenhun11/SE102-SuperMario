@@ -5,7 +5,7 @@
 /*
 *  Abstract class for a game scene
 */
-class CScene
+class Scene
 {
 protected:
 	LPKEYEVENTHANDLER key_handler;
@@ -13,7 +13,7 @@ protected:
 	LPCWSTR sceneFilePath;
 
 public: 
-	CScene(int id, LPCWSTR filePath)
+	Scene(int id, LPCWSTR filePath)
 	{
 		this->id = id;
 		this->sceneFilePath = filePath;
@@ -26,6 +26,6 @@ public:
 	virtual void Update(DWORD dt) = 0;
 	virtual void Render() = 0; 
 };
-typedef CScene * LPSCENE;
+typedef Scene * LPSCENE;
 
 

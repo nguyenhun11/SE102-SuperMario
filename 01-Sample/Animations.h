@@ -2,17 +2,17 @@
 
 #include "Animation.h"
 #include "Sprite.h"
+#include "Singleton.h"
 
-class CAnimations
+class Animations : public Singleton<Animations>
 {
-	static CAnimations* __instance;
+	friend class Singleton<Animations>;
 
+private:
 	unordered_map<int, LPANIMATION> animations;
 
 public:
 	void Add(int id, LPANIMATION ani);
 	LPANIMATION Get(int id);
 	void Clear();
-
-	static CAnimations* GetInstance();
 };

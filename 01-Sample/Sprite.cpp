@@ -1,7 +1,7 @@
 #include "Sprite.h"
 #include "Game.h"
 
-CSprite::CSprite(int id, int left, int top, int right, int bottom, LPTEXTURE tex)
+Sprite::Sprite(int id, int left, int top, int right, int bottom, LPTEXTURE tex)
 {
 	this->id = id;
 	this->left = left;
@@ -31,7 +31,7 @@ CSprite::CSprite(int id, int left, int top, int right, int bottom, LPTEXTURE tex
 	D3DXMatrixScaling(&this->matScaling, (FLOAT)spriteWidth, (FLOAT)spriteHeight, 1.0f);
 }
 
-void CSprite::Draw(float x, float y)
+void Sprite::Draw(float x, float y)
 {
 	//Game* g = Game::GetInstance();
 	float cx, cy;

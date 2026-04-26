@@ -6,7 +6,7 @@
 #include "Textures.h"
 #include "Game.h"
 
-void CPlatform::RenderBoundingBox()
+void Platform::RenderBoundingBox()
 {
 	D3DXVECTOR3 p(x, y, 0);
 	RECT rect;
@@ -29,11 +29,11 @@ void CPlatform::RenderBoundingBox()
 	Game::GetInstance()->Draw(xx - cx, y - cy, bbox, nullptr, BBOX_ALPHA, rect.right - 1, rect.bottom - 1);
 }
 
-void CPlatform::Render()
+void Platform::Render()
 {
 	if (this->length <= 0) return; 
 	float xx = x; 
-	CSprites * s = CSprites::GetInstance();
+	Sprites * s = Sprites::GetInstance();
 
 	s->Get(this->spriteIdBegin)->Draw(xx, y);
 	xx += this->cellWidth;
@@ -48,7 +48,7 @@ void CPlatform::Render()
 	RenderBoundingBox();
 }
 
-void CPlatform::GetBoundingBox(float& l, float& t, float& r, float& b)
+void Platform::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
 	float cellWidth_div_2 = this->cellWidth / 2;
 	l = x - cellWidth_div_2;
@@ -57,7 +57,7 @@ void CPlatform::GetBoundingBox(float& l, float& t, float& r, float& b)
 	b = t + this->cellHeight;
 }
 
-int CPlatform::IsDirectionColliable(float nx, float ny)
+int Platform::IsDirectionColliable(float nx, float ny)
 {
 	if (nx == 0 && ny == -1) return 1;
 	else return 0;

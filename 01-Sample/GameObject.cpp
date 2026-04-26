@@ -8,7 +8,7 @@
 #include "GameObject.h"
 #include "Sprites.h"
 
-CGameObject::CGameObject()
+GameObject::GameObject()
 {
 	x = y = 0;
 	vx = vy = 0;
@@ -17,7 +17,7 @@ CGameObject::CGameObject()
 	isDeleted = false;
 }
 
-void CGameObject::RenderBoundingBox()
+void GameObject::RenderBoundingBox()
 {
 	D3DXVECTOR3 p(x, y, 0);
 	RECT rect;
@@ -38,7 +38,7 @@ void CGameObject::RenderBoundingBox()
 	Game::GetInstance()->Draw(x - cx, y - cy, bbox, &rect, BBOX_ALPHA);
 }
 
-CGameObject::~CGameObject()
+GameObject::~GameObject()
 {
 
 }

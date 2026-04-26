@@ -10,15 +10,15 @@
 #include "Coin.h"
 #include "Platform.h"
 
-#include "SampleKeyEventHandler.h"
+#include "PlaySceneKeyHandler.h"
 
 using namespace std;
 
-CPlayScene::CPlayScene(int id, LPCWSTR filePath):
-	CScene(id, filePath)
+PlayScene::PlayScene(int id, LPCWSTR filePath):
+	Scene(id, filePath)
 {
 	player = NULL;
-	key_handler = new CSampleKeyHandler(this);
+	key_handler = new PlaySceneKeyHandler(this);
 }
 
 
@@ -32,7 +32,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 
 #define MAX_SCENE_LINE 1024
 
-void CPlayScene::_ParseSection_SPRITES(string line)
+void PlayScene::_ParseSection_SPRITES(string line)
 {
 	vector<string> tokens = split(line);
 
@@ -52,10 +52,10 @@ void CPlayScene::_ParseSection_SPRITES(string line)
 		return; 
 	}
 
-	CSprites::GetInstance()->Add(ID, l, t, r, b, tex);
+	Sprites::GetInstance()->Add(ID, l, t, r, b, tex);
 }
 
-void CPlayScene::_ParseSection_ASSETS(string line)
+void PlayScene::_ParseSection_ASSETS(string line)
 {
 	vector<string> tokens = split(line);
 
@@ -66,7 +66,7 @@ void CPlayScene::_ParseSection_ASSETS(string line)
 	LoadAssets(path.c_str());
 }
 
-void CPlayScene::_ParseSection_ANIMATIONS(string line)
+void PlayScene::_ParseSection_ANIMATIONS(string line)
 {
 	vector<string> tokens = split(line);
 
@@ -74,7 +74,7 @@ void CPlayScene::_ParseSection_ANIMATIONS(string line)
 
 	//DebugOut(L"--> %s\n",ToWSTR(line).c_str());
 
-	LPANIMATION ani = new CAnimation();
+	LPANIMATION ani = new Animation();
 
 	int ani_id = atoi(tokens[0].c_str());
 	for (int i = 1; i < tokens.size(); i += 2)	// why i+=2 ?  sprite_id | frame_time  
@@ -84,13 +84,13 @@ void CPlayScene::_ParseSection_ANIMATIONS(string line)
 		ani->Add(sprite_id, frame_time);
 	}
 
-	CAnimations::GetInstance()->Add(ani_id, ani);
+	Animations::GetInstance()->Add(ani_id, ani);
 }
 
 /*
 	Parse a line in section [OBJECTS] 
 */
-void CPlayScene::_ParseSection_OBJECTS(string line)
+void PlayScene::_ParseSection_OBJECTS(string line)
 {
 	vector<string> tokens = split(line);
 
@@ -101,7 +101,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	float x = (float)atof(tokens[1].c_str());
 	float y = (float)atof(tokens[2].c_str());
 
-	CGameObject *obj = NULL;
+	GameObject *obj = NULL;
 
 	switch (object_type)
 	{
@@ -111,14 +111,14 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 			DebugOut(L"[ERROR] MARIO object was created before!\n");
 			return;
 		}
-		obj = new CMario(x,y); 
-		player = (CMario*)obj;  
+		obj = new Mario(x,y); 
+		player = (Mario*)obj;  
 
 		DebugOut(L"[INFO] Player object has been created!\n");
 		break;
-	case OBJECT_TYPE_GOOMBA: obj = new CGoomba(x,y); break;
-	case OBJECT_TYPE_BRICK: obj = new CBrick(x,y); break;
-	case OBJECT_TYPE_COIN: obj = new CCoin(x, y); break;
+	case OBJECT_TYPE_GOOMBA: obj = new Goomba(x,y); break;
+	case OBJECT_TYPE_BRICK: obj = new Brick(x,y); break;
+	case OBJECT_TYPE_COIN: obj = new Coin(x, y); break;
 
 	case OBJECT_TYPE_PLATFORM:
 	{
@@ -130,7 +130,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		int sprite_middle = atoi(tokens[7].c_str());
 		int sprite_end = atoi(tokens[8].c_str());
 
-		obj = new CPlatform(
+		obj = new Platform(
 			x, y,
 			cell_width, cell_height, length,
 			sprite_begin, sprite_middle, sprite_end
@@ -144,7 +144,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		float r = (float)atof(tokens[3].c_str());
 		float b = (float)atof(tokens[4].c_str());
 		int scene_id = atoi(tokens[5].c_str());
-		obj = new CPortal(x, y, r, b, scene_id);
+		obj = new Portal(x, y, r, b, scene_id);
 	}
 	break;
 
@@ -161,7 +161,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	objects.push_back(obj);
 }
 
-void CPlayScene::LoadAssets(LPCWSTR assetFile)
+void PlayScene::LoadAssets(LPCWSTR assetFile)
 {
 	DebugOut(L"[INFO] Start loading assets from : %s \n", assetFile);
 
@@ -196,7 +196,7 @@ void CPlayScene::LoadAssets(LPCWSTR assetFile)
 	DebugOut(L"[INFO] Done loading assets from %s\n", assetFile);
 }
 
-void CPlayScene::Load()
+void PlayScene::Load()
 {
 	DebugOut(L"[INFO] Start loading scene from : %s \n", sceneFilePath);
 
@@ -231,7 +231,7 @@ void CPlayScene::Load()
 	DebugOut(L"[INFO] Done loading scene  %s\n", sceneFilePath);
 }
 
-void CPlayScene::Update(DWORD dt)
+void PlayScene::Update(DWORD dt)
 {
 	// We know that Mario is the first object in the list hence we won't add him into the colliable object list
 	// TO-DO: This is a "dirty" way, need a more organized way 
@@ -264,7 +264,7 @@ void CPlayScene::Update(DWORD dt)
 	PurgeDeletedObjects();
 }
 
-void CPlayScene::Render()
+void PlayScene::Render()
 {
 	for (int i = 0; i < objects.size(); i++)
 		objects[i]->Render();
@@ -273,7 +273,7 @@ void CPlayScene::Render()
 /*
 *	Clear all objects from this scene
 */
-void CPlayScene::Clear()
+void PlayScene::Clear()
 {
 	vector<LPGAMEOBJECT>::iterator it;
 	for (it = objects.begin(); it != objects.end(); it++)
@@ -289,7 +289,7 @@ void CPlayScene::Clear()
 	TODO: Beside objects, we need to clean up sprites, animations and textures as well 
 
 */
-void CPlayScene::Unload()
+void PlayScene::Unload()
 {
 	for (int i = 0; i < objects.size(); i++)
 		delete objects[i];
@@ -300,9 +300,9 @@ void CPlayScene::Unload()
 	DebugOut(L"[INFO] Scene %d unloaded! \n", id);
 }
 
-bool CPlayScene::IsGameObjectDeleted(const LPGAMEOBJECT& o) { return o == NULL; }
+bool PlayScene::IsGameObjectDeleted(const LPGAMEOBJECT& o) { return o == NULL; }
 
-void CPlayScene::PurgeDeletedObjects()
+void PlayScene::PurgeDeletedObjects()
 {
 	vector<LPGAMEOBJECT>::iterator it;
 	for (it = objects.begin(); it != objects.end(); it++)
@@ -318,6 +318,6 @@ void CPlayScene::PurgeDeletedObjects()
 	// NOTE: remove_if will swap all deleted items to the end of the vector
 	// then simply trim the vector, this is much more efficient than deleting individual items
 	objects.erase(
-		std::remove_if(objects.begin(), objects.end(), CPlayScene::IsGameObjectDeleted),
+		std::remove_if(objects.begin(), objects.end(), PlayScene::IsGameObjectDeleted),
 		objects.end());
 }

@@ -1,16 +1,16 @@
 #include "KeyEventHandler.h"
 #include "Scene.h"
 
-class CSceneKeyHandler : public CKeyEventHandler
+class SceneKeyHandler : public KeyEventHandler
 {
 protected:
-	CScene* scence;
+	Scene* scence;
 
 public:
 	virtual void KeyState(BYTE* states) = 0;
 	virtual void OnKeyDown(int KeyCode) = 0;
 	virtual void OnKeyUp(int KeyCode) = 0;
-	CSceneKeyHandler(LPSCENE s) :CKeyEventHandler() { scence = s; }
+	SceneKeyHandler(LPSCENE s) :KeyEventHandler() { scence = s; }
 };
 
-typedef CSceneKeyHandler* LPSCENEKEYHANDLER;
+typedef SceneKeyHandler* LPSCENEKEYHANDLER;

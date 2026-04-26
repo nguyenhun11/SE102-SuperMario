@@ -315,7 +315,7 @@ LPTEXTURE Game::LoadTexture(LPCWSTR texturePath)
 
 	DebugOut(L"[INFO] Texture loaded Ok from file: %s \n", texturePath);
 
-	return new CTexture(tex, gSpriteTextureRV);
+	return new Texture(tex, gSpriteTextureRV);
 }
 
 
@@ -393,7 +393,7 @@ void Game::_ParseSection_SCENES(string line)
 	int id = atoi(tokens[0].c_str());
 	LPCWSTR path = ToLPCWSTR(tokens[1]);   // file: ASCII format (single-byte char) => Wide Char
 
-	LPSCENE scene = new CPlayScene(id, path);
+	LPSCENE scene = new PlayScene(id, path);
 	SceneManager::GetInstance()->AddScene(id, scene);
 }
 

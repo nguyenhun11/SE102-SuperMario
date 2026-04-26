@@ -2,7 +2,7 @@
 #include "Game.h"
 #include "Textures.h"
 
-CPortal::CPortal(float l, float t, float r, float b, int scene_id )
+Portal::Portal(float l, float t, float r, float b, int scene_id )
 {
 	this->scene_id = scene_id;
 	x = l; 
@@ -11,7 +11,7 @@ CPortal::CPortal(float l, float t, float r, float b, int scene_id )
 	height = b - t;
 }
 
-void CPortal::RenderBoundingBox()
+void Portal::RenderBoundingBox()
 {
 	D3DXVECTOR3 p(x, y, 0);
 	RECT rect;
@@ -32,12 +32,12 @@ void CPortal::RenderBoundingBox()
 	Game::GetInstance()->Draw(x - cx, y - cy, bbox, nullptr, BBOX_ALPHA, rect.right - 1, rect.bottom - 1);
 }
 
-void CPortal::Render()
+void Portal::Render()
 {
 	RenderBoundingBox();
 }
 
-void CPortal::GetBoundingBox(float &l, float &t, float &r, float &b)
+void Portal::GetBoundingBox(float &l, float &t, float &r, float &b)
 {
 	l = x - width/2;
 	t = y - height/2;
