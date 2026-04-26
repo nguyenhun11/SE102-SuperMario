@@ -7,7 +7,7 @@
 
 Collision* Collision::__instance = NULL;
 
-int CCollisionEvent::WasCollided() {
+int CollisionEvent::WasCollided() {
 	return
 		t >= 0.0f && t <= 1.0f && obj->IsDirectionColliable(nx, ny) == 1;
 }
@@ -154,7 +154,7 @@ LPCOLLISIONEVENT Collision::SweptAABB(LPGAMEOBJECT objSrc, DWORD dt, LPGAMEOBJEC
 		t, nx, ny
 	);
 
-	CCollisionEvent* e = new CCollisionEvent(t, nx, ny, dx, dy, objDest, objSrc);
+	CollisionEvent* e = new CollisionEvent(t, nx, ny, dx, dy, objDest, objSrc);
 	return e;
 }
 

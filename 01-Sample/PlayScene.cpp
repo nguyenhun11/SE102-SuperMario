@@ -45,7 +45,7 @@ void PlayScene::_ParseSection_SPRITES(string line)
 	int b = atoi(tokens[4].c_str());
 	int texID = atoi(tokens[5].c_str());
 
-	LPTEXTURE tex = CTextures::GetInstance()->Get(texID);
+	LPTEXTURE tex = Textures::GetInstance()->Get(texID);
 	if (tex == NULL)
 	{
 		DebugOut(L"[ERROR] Texture ID %d not found!\n", texID);

@@ -406,7 +406,7 @@ void Game::_ParseSection_TEXTURES(string line)
 	int texID = atoi(tokens[0].c_str());
 	wstring path = ToWSTR(tokens[1]);
 
-	CTextures::GetInstance()->Add(texID, path.c_str());
+	Textures::GetInstance()->Add(texID, path.c_str());
 }
 
 

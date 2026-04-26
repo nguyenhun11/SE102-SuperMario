@@ -28,20 +28,21 @@
     <Filter Include="Maps">
       <UniqueIdentifier>{d24973f5-c708-465c-92f6-6b52f6e63fe9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="CoreGame\Cores">
+      <UniqueIdentifier>{7e16e561-9f91-4a20-8a77-3f4963294c24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CoreGame\Managers">
+      <UniqueIdentifier>{da2aa1ee-4030-4bdd-8635-55837ea643b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CoreGame\Utils">
+      <UniqueIdentifier>{6ad017b4-321f-4719-8ec7-efa56752d919}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Game.cpp">
-      <Filter>CoreGame</Filter>
-    </ClCompile>
-    <ClCompile Include="debug.cpp">
-      <Filter>CoreGame</Filter>
-    </ClCompile>
-    <ClCompile Include="Utils.cpp">
-      <Filter>CoreGame</Filter>
-    </ClCompile>
     <ClCompile Include="Animation.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
@@ -84,33 +85,33 @@
     <ClCompile Include="Collision.cpp">
       <Filter>Physics</Filter>
     </ClCompile>
-    <ClCompile Include="GameObject.cpp">
-      <Filter>CoreGame</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="GameGlobal.cpp">
-      <Filter>CoreGame</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneManager.cpp">
-      <Filter>CoreGame</Filter>
-    </ClCompile>
-    <ClCompile Include="InputManager.cpp">
-      <Filter>CoreGame</Filter>
-    </ClCompile>
     <ClCompile Include="PlaySceneKeyHandler.cpp">
       <Filter>Input</Filter>
     </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>CoreGame\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>CoreGame\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>CoreGame\Cores</Filter>
+    </ClCompile>
+    <ClCompile Include="GameGlobal.cpp">
+      <Filter>CoreGame\Cores</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>CoreGame\Cores</Filter>
+    </ClCompile>
+    <ClCompile Include="debug.cpp">
+      <Filter>CoreGame\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>CoreGame\Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Utils.h">
-      <Filter>CoreGame</Filter>
-    </ClInclude>
-    <ClInclude Include="debug.h">
-      <Filter>CoreGame</Filter>
-    </ClInclude>
-    <ClInclude Include="Game.h">
-      <Filter>CoreGame</Filter>
-    </ClInclude>
     <ClInclude Include="Animation.h">
       <Filter>Graphics</Filter>
     </ClInclude>
@@ -162,32 +163,41 @@
     <ClInclude Include="Collision.h">
       <Filter>Physics</Filter>
     </ClInclude>
-    <ClInclude Include="GameObject.h">
-      <Filter>CoreGame</Filter>
-    </ClInclude>
     <ClInclude Include="SceneKeyHandler.h">
       <Filter>Input</Filter>
     </ClInclude>
     <ClInclude Include="AssetIDs.h">
       <Filter>GameData</Filter>
     </ClInclude>
-    <ClInclude Include="GameGlobal.h">
-      <Filter>CoreGame</Filter>
-    </ClInclude>
-    <ClInclude Include="InputManager.h">
-      <Filter>CoreGame</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>CoreGame</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneManager.h">
-      <Filter>CoreGame</Filter>
-    </ClInclude>
-    <ClInclude Include="Singleton.h">
-      <Filter>CoreGame</Filter>
-    </ClInclude>
     <ClInclude Include="PlaySceneKeyHandler.h">
       <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>CoreGame\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>CoreGame\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>CoreGame\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>CoreGame\Cores</Filter>
+    </ClInclude>
+    <ClInclude Include="GameGlobal.h">
+      <Filter>CoreGame\Cores</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>CoreGame\Cores</Filter>
+    </ClInclude>
+    <ClInclude Include="debug.h">
+      <Filter>CoreGame\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Singleton.h">
+      <Filter>CoreGame\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>CoreGame\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -215,9 +225,7 @@
     <Text Include="scene0005.txt">
       <Filter>Maps</Filter>
     </Text>
-    <Text Include="mario-sample.txt">
-      <Filter>Scenes</Filter>
-    </Text>
+    <Text Include="mario-sample.txt" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="textures\bbox.png">
