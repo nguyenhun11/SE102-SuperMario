@@ -2,17 +2,18 @@
 
 #include "Utils.h"
 
-vector<string> split(string line, string delimeter)
+vector<string> split(string line, string delims)
 {
 	vector<string> tokens;
-	size_t last = 0; size_t next = 0;
-	while ((next = line.find(delimeter, last)) != string::npos)
+	size_t prev = 0, pos;
+	while ((pos = line.find_first_of(delims, prev)) != string::npos)
 	{
-		tokens.push_back(line.substr(last, next - last));
-		last = next + 1;
+		if (pos > prev)
+			tokens.push_back(line.substr(prev, pos - prev));
+		prev = pos + 1;
 	}
-	tokens.push_back(line.substr(last));
-
+	if (prev < line.length())
+		tokens.push_back(line.substr(prev, string::npos));
 	return tokens;
 }
 

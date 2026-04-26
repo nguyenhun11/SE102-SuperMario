@@ -2,6 +2,7 @@
 
 void SceneManager::InitiateSwitchScene(int scene_id)
 {
+	DebugOut(L"[SceneManager] Nhan duoc lenh InitiateSwitchScene voi ID = %d\n", scene_id);
 	next_scene = scene_id;
 }
 

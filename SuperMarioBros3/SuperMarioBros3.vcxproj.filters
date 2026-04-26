@@ -225,7 +225,10 @@
     <Text Include="scene0005.txt">
       <Filter>Maps</Filter>
     </Text>
-    <Text Include="mario-sample.txt" />
+    <Text Include="game-data.txt" />
+    <Text Include="scene_hun.txt">
+      <Filter>Maps</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Image Include="textures\bbox.png">

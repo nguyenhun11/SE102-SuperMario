@@ -95,7 +95,7 @@ void PlayScene::_ParseSection_OBJECTS(string line)
 	vector<string> tokens = split(line);
 
 	// skip invalid lines - an object set must have at least id, x, y
-	if (tokens.size() < 2) return;
+	if (tokens.size() < 3) return;
 
 	int object_type = atoi(tokens[0].c_str());
 	float x = (float)atof(tokens[1].c_str());

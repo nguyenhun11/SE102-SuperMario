@@ -1,4 +1,4 @@
-#include <fstream>
+﻿#include <fstream>
 
 #include "Game.h"
 #include "debug.h"
@@ -176,7 +176,7 @@ void Game::Draw(float x, float y, LPTEXTURE tex, RECT* rect, float alpha, int sp
 
 	D3DX10_SPRITE sprite;
 
-	// Set the sprite�s shader resource view
+	// Set the sprite’s shader resource view
 	sprite.pTexture = tex->getShaderResourceView();
 
 	if (rect == NULL)
@@ -226,7 +226,7 @@ void Game::Draw(float x, float y, LPTEXTURE tex, RECT* rect, float alpha, int sp
 	D3DXMATRIX matScaling;
 	D3DXMatrixScaling(&matScaling, (FLOAT)spriteWidth, (FLOAT)spriteHeight, 1.0f);
 
-	// Setting the sprite�s position and size
+	// Setting the sprite’s position and size
 	sprite.matWorld = (matScaling * matTranslation);
 
 	GameGlobal::spriteObject->DrawSpritesImmediate(&sprite, 1, 0, 0);
@@ -378,23 +378,45 @@ void Game::_ParseSection_SETTINGS(string line)
 {
 	vector<string> tokens = split(line);
 
-	if (tokens.size() < 2) return;
+	if (tokens.size() < 2)
+	{
+		return;
+	}
 	if (tokens[0] == "start")
-		SceneManager::GetInstance()->InitiateSwitchScene(atoi(tokens[1].c_str()));
+	{
+		int scene_id = atoi(tokens[1].c_str());
+		SceneManager::GetInstance()->InitiateSwitchScene(scene_id);
+	}
 	else
+	{
 		DebugOut(L"[ERROR] Unknown game setting: %s\n", ToWSTR(tokens[0]).c_str());
+	}
 }
 
 void Game::_ParseSection_SCENES(string line)
 {
 	vector<string> tokens = split(line);
+	DebugOut(L"[_ParseSection_SCENES] %s\n", ToWSTR(line).c_str());
 
-	if (tokens.size() < 2) return;
+	if (tokens.size() < 3) return;
 	int id = atoi(tokens[0].c_str());
-	LPCWSTR path = ToLPCWSTR(tokens[1]);   // file: ASCII format (single-byte char) => Wide Char
+	int type = atoi(tokens[1].c_str());
+	LPCWSTR path = ToLPCWSTR(tokens[2]);	// file: ASCII format (single-byte char) => Wide Char
 
-	LPSCENE scene = new PlayScene(id, path);
-	SceneManager::GetInstance()->AddScene(id, scene);
+	LPSCENE scene = NULL;
+	switch (type)
+	{
+	case 0: // Intro
+		// scene = new IntroScene(id, path); (Sau này thêm IntroScene thì mở comment ra)
+		break;
+	case 1: // Play Scene
+		scene = new PlayScene(id, path);
+		break;
+	}
+	if (scene != NULL)
+	{
+		SceneManager::GetInstance()->AddScene(id, scene);
+	}
 }
 
 void Game::_ParseSection_TEXTURES(string line)
@@ -427,7 +449,15 @@ Game::~Game()
 void Game::Update(DWORD dt)
 {
 	InputManager::GetInstance()->ProcessKeyboard();
-	SceneManager::GetInstance()->GetCurrentScene()->Update(dt);
+	LPSCENE currentScene = SceneManager::GetInstance()->GetCurrentScene();
+	if (currentScene != NULL)
+	{
+		currentScene->Update(dt);
+	}
+	else
+	{
+		DebugOut(L"[WARNING] Không tìm thấy Current Scene để Update!\n");
+	}
 }
 
 
@@ -450,7 +480,15 @@ void Game::Render()
 	FLOAT NewBlendFactor[4] = { 0,0,0,0 };
 	pD3DDevice->OMSetBlendState(pBlendStateAlpha, NewBlendFactor, 0xffffffff);
 
-	SceneManager::GetInstance()->GetCurrentScene()->Render();
+	LPSCENE currentScene = SceneManager::GetInstance()->GetCurrentScene();
+	if (currentScene != NULL)
+	{
+		currentScene->Render();
+	}
+	else
+	{
+		DebugOut(L"[WARNING] Không tìm thấy Current Scene để Render \n");
+	}
 
 	spriteHandler->End();
 	pSwapChain->Present(0, 0);

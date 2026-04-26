@@ -20,8 +20,8 @@
 
 #include "AssetIDs.h"
 
-#define WINDOW_CLASS_NAME L"SampleWindow"
-#define MAIN_WINDOW_TITLE L"04 - Collision"
+#define WINDOW_CLASS_NAME L"SuperMarioGame"
+#define MAIN_WINDOW_TITLE L"Super Mario Bros 3"
 #define WINDOW_ICON_PATH L"mario.ico"
 
 #define SCREEN_WIDTH 320
@@ -141,7 +141,7 @@ int WINAPI WinMain(
 	InputManager::GetInstance()->InitKeyboard();
 
 	//IMPORTANT: this is the only place where a hardcoded file name is allowed ! 
-	Game::GetInstance()->Load(L"mario-sample.txt");
+	Game::GetInstance()->Load(L"game-data.txt");
 
 	SetWindowPos(hWnd, 0, 0, 0, SCREEN_WIDTH*2, SCREEN_HEIGHT*2, SWP_NOMOVE | SWP_NOOWNERZORDER | SWP_NOZORDER);
 

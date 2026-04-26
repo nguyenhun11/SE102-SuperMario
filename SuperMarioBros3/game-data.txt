@@ -1,0 +1,23 @@
+[SETTINGS]
+# Start scene
+start	6
+
+# Screen size
+width	320
+height	240
+
+# id	type	file
+# type: 0: intro, 1: play scene 
+[SCENES]
+0	0	intro.txt
+1	1	scene01.txt
+2	1	scene02.txt
+5	1	scene0005.txt
+6	1	scene_hun.txt
+
+# id	file 
+[TEXTURES]
+-100	textures\bbox.png
+0		textures\mario.png
+10		textures\enemies.png
+20		textures\misc.png

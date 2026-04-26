@@ -88,6 +88,8 @@ void InputManager::ProcessKeyboard()
 		}
 	}
 
+	if (keyHandler == NULL) return;
+
 	keyHandler->KeyState((BYTE*)&keyStates);
 
 	// Collect all buffered events

@@ -24,7 +24,7 @@
     <ProjectGuid>{30b52332-21ee-43b1-91bf-b2494c04c34f}</ProjectGuid>
     <RootNamespace>My05SceneManager</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>SuperMario</ProjectName>
+    <ProjectName>SuperMarioBros3</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -207,12 +207,13 @@
     <Text Include="brick.txt" />
     <Text Include="cloud.txt" />
     <Text Include="coin.txt" />
+    <Text Include="game-data.txt" />
     <Text Include="goomba.txt" />
-    <Text Include="mario-sample.txt" />
     <Text Include="mario.txt" />
     <Text Include="scene0005.txt" />
     <Text Include="scene01.txt" />
     <Text Include="scene02.txt" />
+    <Text Include="scene_hun.txt" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="mario.ico" />

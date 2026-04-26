@@ -3,8 +3,8 @@
 // Khởi tạo giá trị ban đầu (NULL hoặc 0) cho tất cả các biến static
 HINSTANCE GameGlobal::hInstance = NULL;
 HWND GameGlobal::hWnd = NULL;
-int GameGlobal::backBufferWidth = 0;
-int GameGlobal::backBufferHeight = 0;
+int GameGlobal::backBufferWidth = 500;
+int GameGlobal::backBufferHeight = 600;
 
 ID3D10Device* GameGlobal::pD3DDevice = NULL;
 IDXGISwapChain* GameGlobal::pSwapChain = NULL;

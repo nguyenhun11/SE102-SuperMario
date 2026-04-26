@@ -1,6 +1,4 @@
 ﻿#pragma once
-#ifndef __GAME_GLOBAL__
-#define __GAME_GLOBAL__
 
 #include <Windows.h>
 #include <d3d10.h>
@@ -29,5 +27,3 @@ public:
     static int GetWidth() { return backBufferWidth; }
     static int GetHeight() { return backBufferHeight; }
 };
-
-#endif
