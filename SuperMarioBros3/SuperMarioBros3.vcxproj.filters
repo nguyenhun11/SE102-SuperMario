@@ -291,5 +291,17 @@
     <Image Include="textures\PlayableCharacters_Mario&amp;Luigi.png">
       <Filter>Resources</Filter>
     </Image>
+    <Image Include="textures\100_Mario.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="textures\200_Enemies.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="textures\300_Tilesets_StageTiles.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="textures\400_Items.png">
+      <Filter>Resources</Filter>
+    </Image>
   </ItemGroup>
 </Project>
