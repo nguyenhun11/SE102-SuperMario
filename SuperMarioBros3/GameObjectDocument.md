@@ -50,4 +50,56 @@ Và vì 3 thuộc tính này có quan hệ kế thừa lẫn nhau (Object chứa
 > Như đã giải thích thì các hệ thống ID là độc lập, nên không có vấn đề gì khi một nhân vật có ObjectID là `101`, AnimationID cũng là `101` và SpriteID cũng là `101`, chỉ là đặt sao cho dễ quản lý là được.
 
 ## 2. Về class GameObject.h
+`GameObject` là class cha của tất cả các thực thể có mặt trong game. Bất kể là Mario, Goomba, Đồng xu hay Đường ống, tất cả đều phải kế thừa từ class này.
+### a. Thuộc tính 
+Mỗi vật thể khi sinh ra đều mang trong mình các thông số cơ bản:
+- Tọa độ (x, y): Vị trí của vật thể trên thế giới (World Space).
+- Vận tốc (vx, vy): Tốc độ di chuyển theo trục X và Y. (Quy ước: vy > 0 là đang rớt xuống, vy < 0 là nhảy lên).
+- Hướng quay mặt (nx): 1 là hướng sang phải, -1 là hướng sang trái. Rất quan trọng để lật (flip) Sprite khi vẽ.
+- Trạng thái (state): Con số định nghĩa hành động hiện tại (ví dụ: đang đi, đang nhảy, đã chết). Hàm SetState() thường được ghi đè để reset lại vận tốc khi đổi trạng thái.
+- Cờ xóa (isDeleted): Khi bằng true, Scene sẽ tự động quét và thu hồi vùng nhớ (delete) vật thể này ở cuối vòng lặp Update. Tuyệt đối không tự gọi lệnh delete this trong code.
 
+### b. Phương thức nền tảng
+- Constructor: khởi tạo những giá trị cho lớp, bắt buộc phải có 2 biến x, y ban đầu cho tọa độ. Giống Start() trong unity
+- Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects): Cập nhật logic của vật thể theo thời gian trong game (dt).
+- Render(): Nếu Update() cập nhật logic thì Render là cập nhật hình ảnh sau mỗi khung hình.
+- GetBoundingBox(float &left, float &top, float &right, float &bottom): Trả về 4 cạnh của một hình chữ nhật bao quanh vật thể, là Collider của mọi vật để để nhận diện nhau.
+### c. Các phương thức khác
+- IsCollidable(): Có là đối tượng tham gia xét va chạm không, mặc định là 1, chỉ những vật như đám mây trang trí, quái vật đã chết thì 0
+- IsBlocking(): Chặn vật khác có bật Collidable
+- IsDirectionColliable(float nx, float ny): Vật thể platform check va chạm 1 chiều.
+- RenderBoundingBox(): Vẽ hình vuông đỏ để xem collider thực tế. Dùng trong hàm Render để vẽ.
+
+## 3. Quy trình tạo một Vật thể (Object) mới
+### Bước 1: Cắt ảnh và Định danh (Data/Assets)
+
+- Mở file Texture gốc. Lấy tọa độ left, top, right, bottom của các frame hình đồng xu.
+- Định nghĩa ObjectID, SpriteID và AnimationID vào file AssetIDs.h theo đúng chuẩn quy hoạch.
+- Viết tọa độ đã cắt vào file cấu hình của vật thể (Ví dụ: assets.txt).
+	- [SPRITES] có cấu trúc trên một dòng là
+		- SpriteID: định danh sprite
+		- Left Top Right Bottom: các đường cắt quanh hình chữ nhật
+		- TextureID: ảnh cần cắt
+	- [ANIMATIONS] có cấu trúc trên một dòng là
+		- AnimtionID: định danh animation
+		- SpriteID_1 Time_1: Ảnh 1 tại thời điểm 1
+		- SpriteID_n Time_n: Ảnh n tại thời điểm n
+
+### Bước 2: Viết Class Logic (C++)
+
+- Tạo class kế thừa từ GameObject.
+- Cài đặt kích thước GetBoundingBox.
+- Cài đặt logic trong Update()
+- Cài đặt Render() để vẽ Animation.
+
+### Bước 3: Khai báo vào Cấu trúc Map
+- Mở file Map .txt cần xem trước, xem hướng dẫn trong README.md
+- Thêm một dòng mới tương ứng với ObjectID của Đồng xu, kèm theo tọa độ X, Y muốn thả nó vào Map.
+
+### Bước 4: Nhúng vào Hệ thống (PlayScene.cpp)
+- Mở hàm _ParseSection_OBJECTS trong file `PlayScene.cpp`.
+- Thêm một case mới vào lệnh `switch (object_type)`
+	> ```
+	> case OBJECT_TYPE_...: obj = new ...(x, y); break;
+	>```
+- Compile và test thử trong game.
