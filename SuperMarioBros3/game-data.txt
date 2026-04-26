@@ -23,7 +23,7 @@ height	240
 10		textures\enemies.png
 20		textures\misc.png
 
-100		100_Mario.png
-200		200_Enemies.png
-300		300_Tilesets_StageTiles.png
-400		400_Items.png
+100		textures\100_Mario.png
+200		textures\200_Enemies.png
+300		textures\300_Tilesets_StageTiles.png
+400		textures\400_Items.png

@@ -17,7 +17,7 @@ class Sprite
 public:
 	Sprite(int id, int left, int top, int right, int bottom, LPTEXTURE tex);
 
-	void Draw(float x, float y);
+	void Draw(float x, float y, bool isFlip = false);
 };
 
 typedef Sprite* LPSPRITE;
