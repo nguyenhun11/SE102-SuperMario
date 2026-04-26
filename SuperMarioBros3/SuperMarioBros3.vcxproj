@@ -218,6 +218,10 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="mario.ico" />
+    <Image Include="textures\100_Mario.png" />
+    <Image Include="textures\200_Enemies.png" />
+    <Image Include="textures\300_Tilesets_StageTiles.png" />
+    <Image Include="textures\400_Items.png" />
     <Image Include="textures\bbox.png" />
     <Image Include="textures\enemies.png" />
     <Image Include="textures\EnemiesBosses_Bosses.png" />

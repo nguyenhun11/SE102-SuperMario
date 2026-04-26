@@ -4,18 +4,12 @@
 #include "Game.h"
 #include "textures.h"
 
-Textures* Textures::__instance = NULL;
 
 Textures::Textures()
 {
 
 }
 
-Textures* Textures::GetInstance()
-{
-	if (__instance == NULL) __instance = new Textures();
-	return __instance;
-}
 
 void Textures::Add(int id, LPCWSTR filePath)
 {
