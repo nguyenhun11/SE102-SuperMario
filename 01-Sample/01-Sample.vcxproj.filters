@@ -63,9 +63,6 @@
     <ClCompile Include="Scence.cpp">
       <Filter>Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="SampleKeyEventHandler.cpp">
-      <Filter>Input</Filter>
-    </ClCompile>
     <ClCompile Include="Brick.cpp">
       <Filter>Entities</Filter>
     </ClCompile>
@@ -99,6 +96,9 @@
     </ClCompile>
     <ClCompile Include="InputManager.cpp">
       <Filter>CoreGame</Filter>
+    </ClCompile>
+    <ClCompile Include="PlaySceneKeyHandler.cpp">
+      <Filter>Input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -137,9 +137,6 @@
     </ClInclude>
     <ClInclude Include="PlayScene.h">
       <Filter>Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="SampleKeyEventHandler.h">
-      <Filter>Input</Filter>
     </ClInclude>
     <ClInclude Include="Brick.h">
       <Filter>Entities</Filter>
@@ -189,6 +186,9 @@
     <ClInclude Include="Singleton.h">
       <Filter>CoreGame</Filter>
     </ClInclude>
+    <ClInclude Include="PlaySceneKeyHandler.h">
+      <Filter>Input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="brick.txt">
@@ -233,6 +233,51 @@
       <Filter>Resources</Filter>
     </Image>
     <Image Include="textures\misc.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="textures\Stage1_1.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="textures\Stage1_2.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="textures\Stage1_3.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="textures\Stage1_4.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="textures\Stage1_5.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="textures\Tilesets_MapTileset.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="textures\Tilesets_MiscellaneousScreenTiles.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="textures\Tilesets_StageTiles.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="textures\WorldMaps_MapPopups.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="textures\WorldMaps_World1_GrassLand.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="textures\EnemiesBosses_Bosses.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="textures\EnemiesBosses_Enemies.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="textures\MiscellaneousItems_and_Objects.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="textures\OtherBackgrounds_TitleScreen.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="textures\PlayableCharacters_Mario&amp;Luigi.png">
       <Filter>Resources</Filter>
     </Image>
   </ItemGroup>
