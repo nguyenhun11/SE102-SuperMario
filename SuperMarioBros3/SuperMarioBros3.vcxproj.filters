@@ -19,9 +19,6 @@
     <Filter Include="Physics">
       <UniqueIdentifier>{394c121d-a416-4cc1-8083-d4cbe3e7e38e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GameData">
-      <UniqueIdentifier>{3706caf5-5a41-4109-bc45-f10bc3be8820}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resources">
       <UniqueIdentifier>{f3ecf656-2cae-4ab8-8dae-22e912964ef2}</UniqueIdentifier>
     </Filter>
@@ -36,6 +33,9 @@
     </Filter>
     <Filter Include="CoreGame\Utils">
       <UniqueIdentifier>{6ad017b4-321f-4719-8ec7-efa56752d919}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets">
+      <UniqueIdentifier>{3706caf5-5a41-4109-bc45-f10bc3be8820}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -167,7 +167,7 @@
       <Filter>Input</Filter>
     </ClInclude>
     <ClInclude Include="AssetIDs.h">
-      <Filter>GameData</Filter>
+      <Filter>Assets</Filter>
     </ClInclude>
     <ClInclude Include="PlaySceneKeyHandler.h">
       <Filter>Input</Filter>
@@ -202,19 +202,19 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="brick.txt">
-      <Filter>GameData</Filter>
+      <Filter>Assets</Filter>
     </Text>
     <Text Include="cloud.txt">
-      <Filter>GameData</Filter>
+      <Filter>Assets</Filter>
     </Text>
     <Text Include="coin.txt">
-      <Filter>GameData</Filter>
+      <Filter>Assets</Filter>
     </Text>
     <Text Include="goomba.txt">
-      <Filter>GameData</Filter>
+      <Filter>Assets</Filter>
     </Text>
     <Text Include="mario.txt">
-      <Filter>GameData</Filter>
+      <Filter>Assets</Filter>
     </Text>
     <Text Include="scene01.txt">
       <Filter>Maps</Filter>
