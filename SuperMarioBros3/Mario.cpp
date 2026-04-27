@@ -175,14 +175,22 @@ int Mario::GetAniIdBig()
 	int aniId = -1;
 	if (!isOnPlatform)
 	{
-		if (abs(accelX) == MARIO_ACCEL_RUN_X)
+		if (vy > 0)
 		{
-			aniId = ID_ANI_MARIO_SUPER_JUMP_RUN;
+			aniId = ID_ANI_MARIO_SUPER_FALLING;
 		}
 		else
 		{
-			aniId = ID_ANI_MARIO_SUPER_JUMP_WALK;
+			if (abs(accelX) == MARIO_ACCEL_RUN_X)
+			{
+				aniId = ID_ANI_MARIO_SUPER_JUMP_RUN;
+			}
+			else
+			{
+				aniId = ID_ANI_MARIO_SUPER_JUMP_WALK;
+			}
 		}
+
 	}
 	else
 		if (isSitting)
@@ -235,10 +243,13 @@ void Mario::SetState(int state)
 	// DIE is the end state, cannot be changed! 
 	if (this->state == MARIO_STATE_DIE) return; 
 
-	switch (state)
+	currentState = state;
+
+	switch (currentState)
 	{
 	case MARIO_STATE_RUNNING_RIGHT:
 		if (isSitting) break;
+		if (!isOnPlatform) return;
 		maxVx = MARIO_RUNNING_SPEED;
 		accelX = MARIO_ACCEL_RUN_X;
 		nx = 1;

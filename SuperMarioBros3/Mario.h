@@ -7,23 +7,23 @@
 #include "debug.h"
 
 // Moving Speed
-#define MARIO_WALKING_SPEED		0.15f
-#define MARIO_RUNNING_SPEED		0.25f
+#define MARIO_WALKING_SPEED		0.12f
+#define MARIO_RUNNING_SPEED		0.2f
 
 // Accelaration
 #define MARIO_ACCEL_WALK_X	0.0004f
 #define MARIO_ACCEL_RUN_X	0.0008f
 
 // Deccelation
-#define MARIO_DECCEL_WALK_X	0.0003f
-#define MARIO_DECCEL_RUN_X	0.0006f
+#define MARIO_DECCEL_WALK_X	0.0002f
+#define MARIO_DECCEL_RUN_X	0.0005f
 
 // Jump speed
-#define MARIO_JUMP_SPEED_Y		0.5f
-#define MARIO_JUMP_RUN_SPEED_Y	0.6f
+#define MARIO_JUMP_SPEED_Y		0.35f
+#define MARIO_JUMP_RUN_SPEED_Y	0.35f
 
 // Gravity
-#define MARIO_GRAVITY			0.0015f
+#define MARIO_GRAVITY			0.0007f
 
 // Bounce force
 #define MARIO_JUMP_DEFLECT_SPEED  0.4f
@@ -47,30 +47,31 @@
 
 #pragma region ANIMATION_ID
 
-// BIG MARIO
-#define ID_ANI_MARIO_SUPER_IDLE 400
-#define ID_ANI_MARIO_SUPER_SKIDDING 1001
+// SUPER MARIO
+#define ID_ANI_MARIO_SUPER_IDLE 1100
+#define ID_ANI_MARIO_SUPER_SKIDDING 1103
 
-#define ID_ANI_MARIO_SUPER_WALKING 501
-#define ID_ANI_MARIO_SUPER_RUNNING 601
+#define ID_ANI_MARIO_SUPER_WALKING 1101
+#define ID_ANI_MARIO_SUPER_RUNNING 1102
 
-#define ID_ANI_MARIO_SUPER_JUMP_WALK 701
-#define ID_ANI_MARIO_SUPER_JUMP_RUN 801
+#define ID_ANI_MARIO_SUPER_JUMP_WALK 1104
+#define ID_ANI_MARIO_SUPER_JUMP_RUN 1105
+#define ID_ANI_MARIO_SUPER_FALLING	1106
 
-#define ID_ANI_MARIO_SUPER_SIT 900
+#define ID_ANI_MARIO_SUPER_SIT 1107
 
 #define ID_ANI_MARIO_DIE 999
 
 // SMALL MARIO
-#define ID_ANI_MARIO_SMALL_IDLE 1100
-#define ID_ANI_MARIO_SMALL_SKIDDING 1401
+#define ID_ANI_MARIO_SMALL_IDLE 1000
+#define ID_ANI_MARIO_SMALL_SKIDDING 1003
 
-#define ID_ANI_MARIO_SMALL_WALKING 1201
-#define ID_ANI_MARIO_SMALL_RUNNING 1301
+#define ID_ANI_MARIO_SMALL_WALKING 1001
+#define ID_ANI_MARIO_SMALL_RUNNING 1002
 
 
-#define ID_ANI_MARIO_SMALL_JUMP_WALK 1500
-#define ID_ANI_MARIO_SMALL_JUMP_RUN 1600
+#define ID_ANI_MARIO_SMALL_JUMP_WALK 1004
+#define ID_ANI_MARIO_SMALL_JUMP_RUN 1005
 
 #pragma endregion
 
@@ -108,6 +109,8 @@ class Mario : public GameObject
 	BOOLEAN isOnPlatform;
 	int coin; 
 
+	int currentState;
+
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithCoin(LPCOLLISIONEVENT e);
 	void OnCollisionWithPortal(LPCOLLISIONEVENT e);
@@ -129,6 +132,8 @@ public:
 		untouchable_start = -1;
 		isOnPlatform = false;
 		coin = 0;
+
+		currentState = MARIO_STATE_IDLE;
 	}
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();
