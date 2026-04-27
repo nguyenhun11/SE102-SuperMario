@@ -9,6 +9,7 @@
 #include "Portal.h"
 #include "Coin.h"
 #include "Platform.h"
+#include "Ground.h"
 
 #include "PlaySceneKeyHandler.h"
 
@@ -147,6 +148,25 @@ void PlayScene::_ParseSection_OBJECTS(string line)
 		obj = new Portal(x, y, r, b, scene_id);
 	}
 	break;
+
+	case OBJECT_TYPE_GROUND: {
+
+		float cell_width = (float)atof(tokens[3].c_str());
+		float cell_height = (float)atof(tokens[4].c_str());
+		int columns = atof(tokens[5].c_str());
+		int rows = atof(tokens[6].c_str());
+		int spriteID_tl = atof(tokens[7].c_str());
+		int spriteID_tm = atof(tokens[8].c_str());
+		int spriteID_tr = atof(tokens[9].c_str());
+		int spriteID_ml = atof(tokens[10].c_str());
+		int spriteID_mm = atof(tokens[11].c_str());
+		int spriteID_mr = atof(tokens[12].c_str());
+
+		obj = new Ground(x, y, cell_width, cell_height, columns, rows,
+			spriteID_tl, spriteID_tm, spriteID_tr, spriteID_ml, spriteID_mm, spriteID_mr);
+
+		break;
+	}
 
 
 	default:

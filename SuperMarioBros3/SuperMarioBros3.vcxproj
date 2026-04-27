@@ -159,6 +159,8 @@
     <ClCompile Include="GameGlobal.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Goomba.cpp" />
+    <ClCompile Include="NineSliceBox.cpp" />
+    <ClCompile Include="Ground.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mario.cpp" />
@@ -187,6 +189,8 @@
     <ClInclude Include="GameGlobal.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Goomba.h" />
+    <ClInclude Include="NineSliceBox.h" />
+    <ClInclude Include="Ground.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="KeyEventHandler.h" />
     <ClInclude Include="Mario.h" />
@@ -210,6 +214,7 @@
     <Text Include="coin.txt" />
     <Text Include="game-data.txt" />
     <Text Include="goomba.txt" />
+    <Text Include="map1.txt" />
     <Text Include="mario.txt" />
     <Text Include="scene0005.txt" />
     <Text Include="scene01.txt" />
