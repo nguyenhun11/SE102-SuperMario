@@ -6,7 +6,7 @@
 ##	MarioState:	00 - IDLE, 01 - WALKING, 02 - RUNNING, 03 - SKIDDING, 04 - JUMP WALK, 05 - JUMPP RUN, 
 ##					06 - FALLING, 07 - CROUCH, 08 - SLIDING, 09 - PIPING, 10 - HOLDING
 ##					11 - KICKING, 12 - GOAL
-##                  13 - FLYING, 14 - FLOATING, 15 - SPIN_TAIL, 16 - SHOOT_FIRE, 17 - DIE
+##                  13 - FLYING, 14 - FLOATING, 15 - SPIN_TAIL, 16 - SHOOT_FIRE, 99 - DIE
 ##	SpriteFrameNum: 0, 1, 2, 3... (Thứ tự frame của animation đó)
 [SPRITES]
 ############ --- SMALL FORM --- ################

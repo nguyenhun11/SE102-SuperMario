@@ -13,11 +13,11 @@
 // Accelaration
 #define MARIO_ACCEL_WALK_X	0.0004f
 #define MARIO_ACCEL_RUN_X	0.0008f
-#define MARIO_ACCEL_SKID	0.0002f;
+#define MARIO_ACCEL_SKID	0.0002f
 
 // Deccelation
 #define MARIO_DECCEL_WALK_X	0.0002f
-#define MARIO_DECCEL_RUN_X	0.0005f
+#define MARIO_DECCEL_RUN_X	0.0004f
 
 // Jump speed
 #define MARIO_JUMP_SPEED_Y		0.35f
@@ -28,25 +28,47 @@
 
 // Bounce force
 #define MARIO_JUMP_DEFLECT_SPEED  0.2f
-#define MARIO_HIGH_JUMP_DEFLECT_SPEED 0.4f;
-
-// Mario States
-
-#define MARIO_STATE_DIE				-10
-#define MARIO_STATE_IDLE			0
-#define MARIO_STATE_WALKING_RIGHT	1001
-#define MARIO_STATE_WALKING_LEFT	200
-
-#define MARIO_STATE_JUMP			300
-#define MARIO_STATE_RELEASE_JUMP    301
-
-#define MARIO_STATE_RUNNING_RIGHT	400
-#define MARIO_STATE_RUNNING_LEFT	500
-
-#define MARIO_STATE_SIT				600
-#define MARIO_STATE_SIT_RELEASE		601
+#define MARIO_HIGH_JUMP_DEFLECT_SPEED 0.4f
 
 
+// ------------------------- MARIO STATE -------------------------------- //
+#pragma	region	MARIO_STATES & MARIO_FORMS
+enum class MarioState 
+{
+	DIE = 99,
+	IDLE = 0,
+	WALKING = 1,
+	RUNNING = 2,
+	SKIDDING = 3,
+	JUMP = 4,
+	FALIING = 6,
+	SIT = 7,
+	SLIDING = 8,
+	PIPING = 9,
+	HOLDING = 10,
+	KICKING = 11,
+	GOAL = 12,
+	FLYING = 13,
+	FLOATING = 14,
+	SPIN_TAIL = 15,
+	SHOOT_FIRE = 16,
+
+	JUMP_RELEASE = 80,
+	SIT_RELEASE = 81
+};
+
+enum class MarioForm
+{
+	SMALL = 0,
+	SUPER = 1,
+	FIRE = 2,
+	RACOON = 3
+};
+
+#pragma	endregion
+
+
+// ------------------------- MARIO ANIMATION -------------------------------- //
 #pragma region ANIMATION_ID
 
 // SUPER MARIO
@@ -77,13 +99,8 @@
 
 #pragma endregion
 
+
 #define GROUND_Y 160.0f
-
-
-
-
-#define	MARIO_LEVEL_SMALL	1
-#define	MARIO_LEVEL_BIG		2
 
 #define MARIO_BIG_BBOX_WIDTH  14
 #define MARIO_BIG_BBOX_HEIGHT 24
@@ -105,13 +122,11 @@ class Mario : public GameObject
 	float accelX;				// acceleration on x 
 	float accelY;				// acceleration on y 
 
-	int level; 
+	MarioForm level; 
 	int untouchable; 
 	ULONGLONG untouchable_start;
 	BOOLEAN isOnPlatform;
 	int coin; 
-
-	int currentState;
 
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithCoin(LPCOLLISIONEVENT e);
@@ -119,6 +134,8 @@ class Mario : public GameObject
 
 	int GetAniIdBig();
 	int GetAniIdSmall();
+
+	MarioState currentState;
 
 
 public:
@@ -129,31 +146,36 @@ public:
 		accelX = 0.0f;
 		accelY = MARIO_GRAVITY; 
 
-		level = MARIO_LEVEL_BIG;
+		level = MarioForm::SUPER;
 		untouchable = 0;
 		untouchable_start = -1;
 		isOnPlatform = false;
 		coin = 0;
 
-		currentState = MARIO_STATE_IDLE;
+		currentState = MarioState::IDLE;
 	}
+
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();
-	void SetState(int state);
+	void SetState(MarioState state);
+	void SetDirection(int d) { nx = d; }
 
 	int IsCollidable()
 	{ 
-		return (state != MARIO_STATE_DIE); 
+		return (state != static_cast<int>(MarioState::DIE));
 	}
 
-	int IsBlocking() { return (state != MARIO_STATE_DIE && untouchable==0); }
+	int IsBlocking()
+	{
+		return (state != static_cast<int>(MarioState::DIE) && untouchable == 0);
+	}
 
 	bool IsHoldingJump = false;
 
 	void OnNoCollision(DWORD dt);
 	void OnCollisionWith(LPCOLLISIONEVENT e);
 
-	void SetLevel(int l);
+	void SetLevel(MarioForm form);
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }
 
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
