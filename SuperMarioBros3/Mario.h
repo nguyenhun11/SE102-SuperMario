@@ -13,6 +13,7 @@
 // Accelaration
 #define MARIO_ACCEL_WALK_X	0.0004f
 #define MARIO_ACCEL_RUN_X	0.0008f
+#define MARIO_ACCEL_SKID	0.0002f;
 
 // Deccelation
 #define MARIO_DECCEL_WALK_X	0.0002f
@@ -20,13 +21,14 @@
 
 // Jump speed
 #define MARIO_JUMP_SPEED_Y		0.35f
-#define MARIO_JUMP_RUN_SPEED_Y	0.35f
+#define MARIO_JUMP_RUN_SPEED_Y	0.4f
 
 // Gravity
 #define MARIO_GRAVITY			0.0007f
 
 // Bounce force
 #define MARIO_JUMP_DEFLECT_SPEED  0.2f
+#define MARIO_HIGH_JUMP_DEFLECT_SPEED 0.4f;
 
 // Mario States
 
@@ -145,6 +147,8 @@ public:
 	}
 
 	int IsBlocking() { return (state != MARIO_STATE_DIE && untouchable==0); }
+
+	bool IsHoldingJump = false;
 
 	void OnNoCollision(DWORD dt);
 	void OnCollisionWith(LPCOLLISIONEVENT e);
