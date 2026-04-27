@@ -15,6 +15,21 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	vy += accelY * dt;
 	vx += accelX * dt;
 
+	float effectiveAccel = accelX;
+	if (accelX * vx < 0)
+	{
+		if (accelX > 0)
+		{
+			effectiveAccel = MARIO_ACCEL_SKID;
+		}
+		else
+		{
+			effectiveAccel = -MARIO_ACCEL_SKID;
+		}
+	}
+
+	vx += effectiveAccel * dt;
+
 	if (accelX == 0 && vx != 0)
 	{
 		if (vx > 0)	// mario đang di chuyển về bên phải
@@ -30,10 +45,11 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 
 	// gioi han toc do di chuyen
-	if (vx > 0 && maxVx > 0 && vx > maxVx) vx = maxVx;
-	if (vx < 0 && maxVx < 0 && vx < maxVx) vx = maxVx;
-
-	if (abs(vx) > abs(maxVx)) vx = maxVx;
+	if (accelX * vx > 0)
+	{
+		if (vx > 0 && maxVx > 0 && vx > maxVx) vx = maxVx;
+		if (vx < 0 && maxVx < 0 && vx < maxVx) vx = maxVx;
+	}
 
 	// reset untouchable timer if untouchable time has passed
 	if ( GetTickCount64() - untouchable_start > MARIO_UNTOUCHABLE_TIME) 
@@ -83,7 +99,17 @@ void Mario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 		if (goomba->GetState() != GOOMBA_STATE_DIE)
 		{
 			goomba->SetState(GOOMBA_STATE_DIE);
-			vy = -MARIO_JUMP_DEFLECT_SPEED;
+
+			// NẾU NGƯỜI CHƠI ĐANG GIỮ PHÍM NHẢY -> NẢY CAO
+			if (IsHoldingJump)
+			{
+				vy = -MARIO_HIGH_JUMP_DEFLECT_SPEED;
+			}
+			// NẾU KHÔNG GIỮ PHÍM NHẢY -> NẢY THẤP (Mặc định)
+			else
+			{
+				vy = -MARIO_JUMP_DEFLECT_SPEED;
+			}
 		}
 	}
 	else // hit by Goomba
@@ -175,22 +201,21 @@ int Mario::GetAniIdBig()
 	int aniId = -1;
 	if (!isOnPlatform)
 	{
-		if (vy > 0)
+		if (abs(accelX) == MARIO_ACCEL_RUN_X)
 		{
-			aniId = ID_ANI_MARIO_SUPER_FALLING;
+			aniId = ID_ANI_MARIO_SUPER_JUMP_RUN;
 		}
 		else
 		{
-			if (abs(accelX) == MARIO_ACCEL_RUN_X)
+			if (vy > 0) // Lúc rớt xuống
 			{
-				aniId = ID_ANI_MARIO_SUPER_JUMP_RUN;
+				aniId = ID_ANI_MARIO_SUPER_FALLING;
 			}
-			else
+			else // Lúc bay lên
 			{
 				aniId = ID_ANI_MARIO_SUPER_JUMP_WALK;
 			}
 		}
-
 	}
 	else
 		if (isSitting)
@@ -292,7 +317,7 @@ void Mario::SetState(int state)
 		{
 			state = MARIO_STATE_IDLE;
 			isSitting = true;
-			vx = 0; vy = 0.0f;
+			vy = 0.0f;
 			accelX = 0.0f;
 			y +=MARIO_SIT_HEIGHT_ADJUST;
 		}
