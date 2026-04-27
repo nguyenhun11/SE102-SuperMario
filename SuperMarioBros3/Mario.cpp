@@ -175,22 +175,21 @@ int Mario::GetAniIdBig()
 	int aniId = -1;
 	if (!isOnPlatform)
 	{
-		if (vy > 0)
+		if (abs(accelX) == MARIO_ACCEL_RUN_X)
 		{
-			aniId = ID_ANI_MARIO_SUPER_FALLING;
+			aniId = ID_ANI_MARIO_SUPER_JUMP_RUN;
 		}
 		else
 		{
-			if (abs(accelX) == MARIO_ACCEL_RUN_X)
+			if (vy > 0) // Lúc rớt xuống
 			{
-				aniId = ID_ANI_MARIO_SUPER_JUMP_RUN;
+				aniId = ID_ANI_MARIO_SUPER_FALLING;
 			}
-			else
+			else // Lúc bay lên
 			{
 				aniId = ID_ANI_MARIO_SUPER_JUMP_WALK;
 			}
 		}
-
 	}
 	else
 		if (isSitting)
@@ -292,7 +291,7 @@ void Mario::SetState(int state)
 		{
 			state = MARIO_STATE_IDLE;
 			isSitting = true;
-			vx = 0; vy = 0.0f;
+			vy = 0.0f;
 			accelX = 0.0f;
 			y +=MARIO_SIT_HEIGHT_ADJUST;
 		}

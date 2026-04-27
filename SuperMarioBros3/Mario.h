@@ -26,7 +26,7 @@
 #define MARIO_GRAVITY			0.0007f
 
 // Bounce force
-#define MARIO_JUMP_DEFLECT_SPEED  0.4f
+#define MARIO_JUMP_DEFLECT_SPEED  0.2f
 
 // Mario States
 
