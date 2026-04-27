@@ -97,11 +97,17 @@ enum class MarioForm
 #define ID_ANI_MARIO_SMALL_JUMP_WALK 1004
 #define ID_ANI_MARIO_SMALL_JUMP_RUN 1005
 
+// Other Game feel Stuff
+#define	MARIO_DIE_TIMEOUT	800
+#define MARIO_DIE_BOUNCE_FORCE	0.25f
+#define	MARIO_DIE_GRAVITY	0.0005f
+
 #pragma endregion
 
 
 #define GROUND_Y 160.0f
 
+// ------------------------- BOUNDING SHAPES -------------------------------- //
 #define MARIO_BIG_BBOX_WIDTH  14
 #define MARIO_BIG_BBOX_HEIGHT 24
 #define MARIO_BIG_SITTING_BBOX_WIDTH  14
@@ -124,6 +130,7 @@ class Mario : public GameObject
 
 	MarioForm level; 
 	int untouchable; 
+	ULONGLONG die_start;
 	ULONGLONG untouchable_start;
 	BOOLEAN isOnPlatform;
 	int coin; 
@@ -149,6 +156,7 @@ public:
 		level = MarioForm::SUPER;
 		untouchable = 0;
 		untouchable_start = -1;
+		die_start = -1;
 		isOnPlatform = false;
 		coin = 0;
 

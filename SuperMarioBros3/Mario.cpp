@@ -12,6 +12,23 @@
 
 void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
+	if (state == static_cast<int>(MarioState::DIE))
+	{
+		// Kiểm tra xem đã hết thời gian timeout chưa
+		if (GetTickCount64() - die_start > MARIO_DIE_TIMEOUT && accelY == 0)
+		{
+			// nảy mario lên
+			vy = -MARIO_DIE_BOUNCE_FORCE;
+			accelY = MARIO_DIE_GRAVITY;
+		}
+
+		vy += accelY * dt;
+		y += vy * dt;
+		x += vx * dt;
+
+		return; 
+	}
+
 	vy += accelY * dt;
 	vx += accelX * dt;
 
@@ -322,9 +339,11 @@ void Mario::SetState(MarioState state)
 		break;
 
 	case MarioState::DIE:
-		vy = -MARIO_JUMP_DEFLECT_SPEED;
+		die_start = GetTickCount64(); 
 		vx = 0;
+		vy = 0;     
 		accelX = 0;
+		accelY = 0;  
 		break;
 	}
 
