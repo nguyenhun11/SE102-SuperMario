@@ -129,23 +129,17 @@ int Mario::GetAniIdSmall()
 	{
 		if (abs(accelX) == MARIO_ACCEL_RUN_X)
 		{
-			if (nx >= 0)
-				aniId = ID_ANI_MARIO_SMALL_JUMP_RUN_RIGHT;
-			else
-				aniId = ID_ANI_MARIO_SMALL_JUMP_RUN_LEFT;
+			aniId = ID_ANI_MARIO_SMALL_JUMP_RUN;
 		}
 		else
 		{
-			if (nx >= 0)
-				aniId = ID_ANI_MARIO_SMALL_JUMP_WALK_RIGHT;
-			else
-				aniId = ID_ANI_MARIO_SMALL_JUMP_WALK_LEFT;
+			aniId = ID_ANI_MARIO_SMALL_JUMP_WALK;
 		}
 	}
 	else		// mario dung tren mat đất
 		if (isSitting)
 		{
-			aniId = ID_ANI_MARIO_SIT;
+			aniId = ID_ANI_MARIO_SUPER_SIT;
 		}
 		else
 		{
@@ -156,10 +150,8 @@ int Mario::GetAniIdSmall()
 			else	// vx != 0 <=> Mario dang di chuyen
 			{
 				if (accelX == 0)
-				{
-					aniId = ID_ANI_MARIO_SMALL_IDLE;
-				}
-				if (vx * accelX < 0 && accelX != 0)	// Nguoi choi tha nut di chuyen --> Skidding
+					aniId = ID_ANI_MARIO_SMALL_WALKING;
+				else if (vx * accelX < 0 && accelX != 0)	// Nguoi choi tha nut di chuyen --> Skidding
 					aniId = ID_ANI_MARIO_SMALL_SKIDDING;
 				else if (abs(accelX) == MARIO_ACCEL_RUN_X)
 					aniId = ID_ANI_MARIO_SMALL_RUNNING;
@@ -185,53 +177,36 @@ int Mario::GetAniIdBig()
 	{
 		if (abs(accelX) == MARIO_ACCEL_RUN_X)
 		{
-			if (nx >= 0)
-				aniId = ID_ANI_MARIO_JUMP_RUN_RIGHT;
-			else
-				aniId = ID_ANI_MARIO_JUMP_RUN_LEFT;
+			aniId = ID_ANI_MARIO_SUPER_JUMP_RUN;
 		}
 		else
 		{
-			if (nx >= 0)
-				aniId = ID_ANI_MARIO_JUMP_WALK_RIGHT;
-			else
-				aniId = ID_ANI_MARIO_JUMP_WALK_LEFT;
+			aniId = ID_ANI_MARIO_SUPER_JUMP_WALK;
 		}
 	}
 	else
 		if (isSitting)
 		{
-			if (nx > 0)
-				aniId = ID_ANI_MARIO_SIT;
-			else
-				aniId = ID_ANI_MARIO_SIT;
+			aniId = ID_ANI_MARIO_SUPER_SIT;
 		}
 		else
 			if (vx == 0)
 			{
-				if (nx > 0) aniId = ID_ANI_MARIO_IDLE_RIGHT;
-				else aniId = ID_ANI_MARIO_IDLE_LEFT;
-			}
-			else if (vx > 0)
-			{
-				if (accelX < 0)
-					aniId = ID_ANI_MARIO_SKIDDING_RIGHT;
-				else if (accelX == MARIO_ACCEL_RUN_X)
-					aniId = ID_ANI_MARIO_RUNNING_RIGHT;
-				else if (accelX == MARIO_ACCEL_WALK_X)
-					aniId = ID_ANI_MARIO_WALKING_RIGHT;
+				aniId = ID_ANI_MARIO_SUPER_IDLE;
 			}
 			else // vx < 0
 			{
-				if (accelX > 0)
-					aniId = ID_ANI_MARIO_SKIDDING_LEFT;
-				else if (accelX == -MARIO_ACCEL_RUN_X)
-					aniId = ID_ANI_MARIO_RUNNING_LEFT;
-				else if (accelX == -MARIO_ACCEL_WALK_X)
-					aniId = ID_ANI_MARIO_WALKING_LEFT;
+				if (accelX == 0)
+					aniId = ID_ANI_MARIO_SUPER_WALKING;
+				if (accelX * vx < 0 && accelX != 0)
+					aniId = ID_ANI_MARIO_SUPER_SKIDDING;
+				else if (abs(accelX) == MARIO_ACCEL_RUN_X)
+					aniId = ID_ANI_MARIO_SUPER_RUNNING;
+				else if (abs(accelX) == MARIO_ACCEL_WALK_X)
+					aniId = ID_ANI_MARIO_SUPER_WALKING;
 			}
 
-	if (aniId == -1) aniId = ID_ANI_MARIO_IDLE_RIGHT;
+	if (aniId == -1) aniId = ID_ANI_MARIO_SUPER_IDLE;
 
 	return aniId;
 }
