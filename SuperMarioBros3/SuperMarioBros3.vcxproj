@@ -165,6 +165,7 @@
     <ClCompile Include="PlayScene.cpp" />
     <ClCompile Include="Portal.cpp" />
     <ClCompile Include="PlaySceneKeyHandler.cpp" />
+    <ClCompile Include="QuestionBlock.cpp" />
     <ClCompile Include="Scence.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Sprite.cpp" />
@@ -193,6 +194,7 @@
     <ClInclude Include="PlayScene.h" />
     <ClInclude Include="Portal.h" />
     <ClInclude Include="PlaySceneKeyHandler.h" />
+    <ClInclude Include="QuestionBlock.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneKeyHandler.h" />
     <ClInclude Include="SceneManager.h" />
@@ -210,6 +212,7 @@
     <Text Include="game-data.txt" />
     <Text Include="goomba.txt" />
     <Text Include="mario.txt" />
+    <Text Include="question_block.txt" />
     <Text Include="scene0005.txt" />
     <Text Include="scene01.txt" />
     <Text Include="scene02.txt" />

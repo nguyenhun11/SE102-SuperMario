@@ -7,6 +7,7 @@
 #include "Goomba.h"
 #include "Coin.h"
 #include "Portal.h"
+#include "QuestionBlock.h"
 
 #include "Collision.h"
 
@@ -160,6 +161,18 @@ void Mario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
 {
 	Portal* p = (Portal*)e->obj;
 	SceneManager::GetInstance()->InitiateSwitchScene(p->GetSceneId());
+}
+
+void Mario::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
+{
+	QuestionBlock* qb = dynamic_cast<QuestionBlock*>(e->obj);
+	if (e->ny > 0)
+	{
+		if (qb->GetCurrentState() == QuestionBlockState::ACTIVE)
+		{
+			qb->SetState(QuestionBlockState::BOUNCING);
+		}
+	}
 }
 
 //
