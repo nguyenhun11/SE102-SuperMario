@@ -12,8 +12,26 @@
 
 void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
-	vy += ay * dt;
-	vx += ax * dt;
+	vy += accelY * dt;
+	vx += accelX * dt;
+
+	if (accelX == 0 && vx != 0)
+	{
+		if (vx > 0)	// mario đang di chuyển về bên phải
+		{
+			vx -= MARIO_DECCEL_WALK_X * dt;
+			if (vx < 0) vx = 0;
+		}
+		else		// mario dang di chuyen ve ben trai
+		{
+			vx += MARIO_DECCEL_WALK_X * dt;
+			if (vx > 0) vx = 0;
+		}
+	}
+
+	// gioi han toc do di chuyen
+	if (vx > 0 && maxVx > 0 && vx > maxVx) vx = maxVx;
+	if (vx < 0 && maxVx < 0 && vx < maxVx) vx = maxVx;
 
 	if (abs(vx) > abs(maxVx)) vx = maxVx;
 
@@ -107,9 +125,9 @@ void Mario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
 int Mario::GetAniIdSmall()
 {
 	int aniId = -1;
-	if (!isOnPlatform)
+	if (!isOnPlatform)	// mario tren khong
 	{
-		if (abs(ax) == MARIO_ACCEL_RUN_X)
+		if (abs(accelX) == MARIO_ACCEL_RUN_X)
 		{
 			if (nx >= 0)
 				aniId = ID_ANI_MARIO_SMALL_JUMP_RUN_RIGHT;
@@ -124,40 +142,34 @@ int Mario::GetAniIdSmall()
 				aniId = ID_ANI_MARIO_SMALL_JUMP_WALK_LEFT;
 		}
 	}
-	else
+	else		// mario dung tren mat đất
 		if (isSitting)
 		{
-			if (nx > 0)
-				aniId = ID_ANI_MARIO_SIT_RIGHT;
-			else
-				aniId = ID_ANI_MARIO_SIT_LEFT;
+			aniId = ID_ANI_MARIO_SIT;
 		}
 		else
-			if (vx == 0)
+		{
+			if (vx == 0)	// mario đứng yên
 			{
-				if (nx > 0) aniId = ID_ANI_MARIO_SMALL_IDLE_RIGHT;
-				else aniId = ID_ANI_MARIO_SMALL_IDLE_LEFT;
+				aniId = ID_ANI_MARIO_SMALL_IDLE;
 			}
-			else if (vx > 0)
+			else	// vx != 0 <=> Mario dang di chuyen
 			{
-				if (ax < 0)
-					aniId = ID_ANI_MARIO_SMALL_BRACE_RIGHT;
-				else if (ax == MARIO_ACCEL_RUN_X)
-					aniId = ID_ANI_MARIO_SMALL_RUNNING_RIGHT;
-				else if (ax == MARIO_ACCEL_WALK_X)
-					aniId = ID_ANI_MARIO_SMALL_WALKING_RIGHT;
+				if (accelX == 0)
+				{
+					aniId = ID_ANI_MARIO_SMALL_IDLE;
+				}
+				if (vx * accelX < 0 && accelX != 0)	// Nguoi choi tha nut di chuyen --> Skidding
+					aniId = ID_ANI_MARIO_SMALL_SKIDDING;
+				else if (abs(accelX) == MARIO_ACCEL_RUN_X)
+					aniId = ID_ANI_MARIO_SMALL_RUNNING;
+				else if (abs(accelX) == MARIO_ACCEL_WALK_X)
+					aniId = ID_ANI_MARIO_SMALL_WALKING;
 			}
-			else // vx < 0
-			{
-				if (ax > 0)
-					aniId = ID_ANI_MARIO_SMALL_BRACE_LEFT;
-				else if (ax == -MARIO_ACCEL_RUN_X)
-					aniId = ID_ANI_MARIO_SMALL_RUNNING_LEFT;
-				else if (ax == -MARIO_ACCEL_WALK_X)
-					aniId = ID_ANI_MARIO_SMALL_WALKING_LEFT;
-			}
+		}
 
-	if (aniId == -1) aniId = ID_ANI_MARIO_SMALL_IDLE_RIGHT;
+
+	if (aniId == -1) aniId = ID_ANI_MARIO_SMALL_IDLE;
 
 	return aniId;
 }
@@ -171,7 +183,7 @@ int Mario::GetAniIdBig()
 	int aniId = -1;
 	if (!isOnPlatform)
 	{
-		if (abs(ax) == MARIO_ACCEL_RUN_X)
+		if (abs(accelX) == MARIO_ACCEL_RUN_X)
 		{
 			if (nx >= 0)
 				aniId = ID_ANI_MARIO_JUMP_RUN_RIGHT;
@@ -190,9 +202,9 @@ int Mario::GetAniIdBig()
 		if (isSitting)
 		{
 			if (nx > 0)
-				aniId = ID_ANI_MARIO_SIT_RIGHT;
+				aniId = ID_ANI_MARIO_SIT;
 			else
-				aniId = ID_ANI_MARIO_SIT_LEFT;
+				aniId = ID_ANI_MARIO_SIT;
 		}
 		else
 			if (vx == 0)
@@ -202,20 +214,20 @@ int Mario::GetAniIdBig()
 			}
 			else if (vx > 0)
 			{
-				if (ax < 0)
-					aniId = ID_ANI_MARIO_BRACE_RIGHT;
-				else if (ax == MARIO_ACCEL_RUN_X)
+				if (accelX < 0)
+					aniId = ID_ANI_MARIO_SKIDDING_RIGHT;
+				else if (accelX == MARIO_ACCEL_RUN_X)
 					aniId = ID_ANI_MARIO_RUNNING_RIGHT;
-				else if (ax == MARIO_ACCEL_WALK_X)
+				else if (accelX == MARIO_ACCEL_WALK_X)
 					aniId = ID_ANI_MARIO_WALKING_RIGHT;
 			}
 			else // vx < 0
 			{
-				if (ax > 0)
-					aniId = ID_ANI_MARIO_BRACE_LEFT;
-				else if (ax == -MARIO_ACCEL_RUN_X)
+				if (accelX > 0)
+					aniId = ID_ANI_MARIO_SKIDDING_LEFT;
+				else if (accelX == -MARIO_ACCEL_RUN_X)
 					aniId = ID_ANI_MARIO_RUNNING_LEFT;
-				else if (ax == -MARIO_ACCEL_WALK_X)
+				else if (accelX == -MARIO_ACCEL_WALK_X)
 					aniId = ID_ANI_MARIO_WALKING_LEFT;
 			}
 
@@ -235,8 +247,8 @@ void Mario::Render()
 		aniId = GetAniIdBig();
 	else if (level == MARIO_LEVEL_SMALL)
 		aniId = GetAniIdSmall();
-
-	animations->Get(aniId)->Render(x, y);
+	bool isFlip = (nx > 0);
+	animations->Get(aniId)->Render(x, y, isFlip);
 
 	//RenderBoundingBox();
 	
@@ -253,25 +265,25 @@ void Mario::SetState(int state)
 	case MARIO_STATE_RUNNING_RIGHT:
 		if (isSitting) break;
 		maxVx = MARIO_RUNNING_SPEED;
-		ax = MARIO_ACCEL_RUN_X;
+		accelX = MARIO_ACCEL_RUN_X;
 		nx = 1;
 		break;
 	case MARIO_STATE_RUNNING_LEFT:
 		if (isSitting) break;
 		maxVx = -MARIO_RUNNING_SPEED;
-		ax = -MARIO_ACCEL_RUN_X;
+		accelX = -MARIO_ACCEL_RUN_X;
 		nx = -1;
 		break;
 	case MARIO_STATE_WALKING_RIGHT:
 		if (isSitting) break;
 		maxVx = MARIO_WALKING_SPEED;
-		ax = MARIO_ACCEL_WALK_X;
+		accelX = MARIO_ACCEL_WALK_X;
 		nx = 1;
 		break;
 	case MARIO_STATE_WALKING_LEFT:
 		if (isSitting) break;
 		maxVx = -MARIO_WALKING_SPEED;
-		ax = -MARIO_ACCEL_WALK_X;
+		accelX = -MARIO_ACCEL_WALK_X;
 		nx = -1;
 		break;
 	case MARIO_STATE_JUMP:
@@ -295,6 +307,7 @@ void Mario::SetState(int state)
 			state = MARIO_STATE_IDLE;
 			isSitting = true;
 			vx = 0; vy = 0.0f;
+			accelX = 0.0f;
 			y +=MARIO_SIT_HEIGHT_ADJUST;
 		}
 		break;
@@ -309,14 +322,13 @@ void Mario::SetState(int state)
 		break;
 
 	case MARIO_STATE_IDLE:
-		ax = 0.0f;
-		vx = 0.0f;
+		accelX = 0.0f;
 		break;
 
 	case MARIO_STATE_DIE:
 		vy = -MARIO_JUMP_DEFLECT_SPEED;
 		vx = 0;
-		ax = 0;
+		accelX = 0;
 		break;
 	}
 

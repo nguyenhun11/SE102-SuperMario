@@ -62,22 +62,26 @@ void Sprite::Draw(float x, float y, bool isFlip)
 	x = (FLOAT)floor(x);
 	y = (FLOAT)floor(y);
 
-	// Tạo một ma trận scale cục bộ
-	D3DXMATRIX matFinalScaling = this->matScaling;
 	D3DXMATRIX matTranslation;
+	D3DXMatrixTranslation(&matTranslation, x - cx, GameGlobal::GetHeight() - y + cy, 0.1f);
 
-	// XỬ LÝ LẬT HÌNH
+	this->sprite.matWorld = (this->matScaling * matTranslation);
+
+	float texWidth = (float)this->texture->getWidth();
+	int spriteWidth = (this->right - this->left + 1);
+
 	if (isFlip)
 	{
-		int spriteWidth = (this->right - this->left + 1);
-		int spriteHeight = (this->bottom - this->top + 1);
-
-		D3DXMatrixScaling(&matFinalScaling, (FLOAT)-spriteWidth, (FLOAT)spriteHeight, 1.0f);
-		x += spriteWidth;
+		this->sprite.TexCoord.x = (this->right + 1.0f) / texWidth;
+		this->sprite.TexSize.x = -(float)spriteWidth / texWidth;
 	}
+	else
+	{
+		this->sprite.TexCoord.x = this->left / texWidth;
+		this->sprite.TexSize.x = (float)spriteWidth / texWidth;
+	}
+	// ==========================================
 
-	D3DXMatrixTranslation(&matTranslation, x - cx, GameGlobal::GetHeight() - y + cy, 0.1f);
-	this->sprite.matWorld = (matFinalScaling * matTranslation);
 	GameGlobal::spriteObject->DrawSpritesImmediate(&sprite, 1, 0, 0);
 }
 
