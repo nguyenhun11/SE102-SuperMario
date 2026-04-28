@@ -30,6 +30,14 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		return; 
 	}
 
+	if (state == static_cast<int>(MarioState::HIT))
+	{
+		if (GetTickCount64() - hit_start < MARIO_HIT_TIMEOUT)
+		{
+			return;
+		}
+	}
+
 	vy += accelY * dt;
 	vx += accelX * dt;
 
@@ -79,6 +87,8 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	Collision::GetInstance()->Process(this, dt, coObjects);
 }
 
+#pragma region COLLISION
+
 void Mario::OnNoCollision(DWORD dt)
 {
 	x += vx * dt;
@@ -105,6 +115,8 @@ void Mario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithCoin(e);
 	else if (dynamic_cast<Portal*>(e->obj))
 		OnCollisionWithPortal(e);
+	else if (dynamic_cast<QuestionBlock*>(e->obj))
+		OnCollisionWithQuestionBlock(e);
 }
 
 void Mario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -118,12 +130,12 @@ void Mario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 		{
 			goomba->SetState(GOOMBA_STATE_DIE);
 
-			// NẾU NGƯỜI CHƠI ĐANG GIỮ PHÍM NHẢY -> NẢY CAO
+			// nếu người chơi giữ phím nhảy thì nảy lên cao hơn
 			if (IsHoldingJump)
 			{
 				vy = -MARIO_HIGH_JUMP_DEFLECT_SPEED;
 			}
-			// NẾU KHÔNG GIỮ PHÍM NHẢY -> NẢY THẤP (Mặc định)
+			// nếu người chơi không giữ phím nhảy thì nảy thấp hơn
 			else
 			{
 				vy = -MARIO_JUMP_DEFLECT_SPEED;
@@ -136,8 +148,10 @@ void Mario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 		{
 			if (goomba->GetState() != GOOMBA_STATE_DIE)
 			{
+				hit_start = GetTickCount64();
 				if (level > MarioForm::SMALL)
 				{
+					//SetState(MarioState::HIT);
 					level = MarioForm::SMALL;
 					StartUntouchable();
 				}
@@ -174,6 +188,8 @@ void Mario::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 		}
 	}
 }
+
+#pragma endregion
 
 //
 // Get animation ID for small Mario
@@ -349,6 +365,13 @@ void Mario::SetState(MarioState state)
 
 	case MarioState::IDLE:
 		accelX = 0.0f;
+		break;
+
+	case MarioState::HIT:
+		vx = 0;
+		vy = 0;
+		accelX = 0;
+		accelY = 0;
 		break;
 
 	case MarioState::DIE:

@@ -33,7 +33,7 @@
 
 // ------------------------- MARIO STATE -------------------------------- //
 #pragma	region	MARIO_STATES & MARIO_FORMS
-enum class MarioState 
+enum class MarioState
 {
 	DIE = 99,
 	IDLE = 0,
@@ -54,7 +54,8 @@ enum class MarioState
 	SHOOT_FIRE = 16,
 
 	JUMP_RELEASE = 80,
-	SIT_RELEASE = 81
+	SIT_RELEASE = 81,
+	HIT = 98
 };
 
 enum class MarioForm
@@ -97,11 +98,14 @@ enum class MarioForm
 #define ID_ANI_MARIO_SMALL_JUMP_WALK 1004
 #define ID_ANI_MARIO_SMALL_JUMP_RUN 1005
 
-// Other Game feel Stuff
+// ---- Other Game feel Stuff ----
+// Die Animation
 #define	MARIO_DIE_TIMEOUT	800
 #define MARIO_DIE_BOUNCE_FORCE	0.25f
 #define	MARIO_DIE_GRAVITY	0.0005f
 
+// Hit Animation
+#define MARIO_HIT_TIMEOUT	300
 #pragma endregion
 
 
@@ -131,6 +135,7 @@ class Mario : public GameObject
 	MarioForm level; 
 	int untouchable; 
 	ULONGLONG die_start;
+	ULONGLONG hit_start;
 	ULONGLONG untouchable_start;
 	BOOLEAN isOnPlatform;
 	int coin; 
@@ -138,6 +143,7 @@ class Mario : public GameObject
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithCoin(LPCOLLISIONEVENT e);
 	void OnCollisionWithPortal(LPCOLLISIONEVENT e);
+	void OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e);
 
 	int GetAniIdBig();
 	int GetAniIdSmall();
@@ -157,6 +163,7 @@ public:
 		untouchable = 0;
 		untouchable_start = -1;
 		die_start = -1;
+		hit_start = -1;
 		isOnPlatform = false;
 		coin = 0;
 
@@ -182,7 +189,7 @@ public:
 
 	void OnNoCollision(DWORD dt);
 	void OnCollisionWith(LPCOLLISIONEVENT e);
-	void OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e);
+	
 
 	void SetLevel(MarioForm form);
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }

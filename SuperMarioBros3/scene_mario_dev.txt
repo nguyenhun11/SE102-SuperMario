@@ -69,6 +69,7 @@ question_block.txt
 
 # QUESTION BLOCK
 302	96	50
+302	112	50
 
 #COIN
 4	100	120

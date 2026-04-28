@@ -1,14 +1,16 @@
 #pragma once
 #include "GameObject.h"
 
+// animations
 #define ID_ANIM_QUESTION_BLOCK_ACTIVE	3020
 #define ID_ANIM_QUESTION_BLOCK_EMPTY	3021
 
-#define QUESTION_BLOCK_BBOX_WIDTH 16
-#define QUESTION_BLOCK_BBOX_HEIGHT 16
+// boundary box
+#define QUESTION_BLOCK_BBOX_WIDTH 15
+#define QUESTION_BLOCK_BBOX_HEIGHT 15
 
 // bounce
-#define QBLOCK_BOUNCE_SPEED 0.15f
+#define QBLOCK_BOUNCE_SPEED 0.2f
 #define QBLOCK_BOUNCE_HEIGHT 10.0f
 
 enum class CONTAINED_OBJECT {
@@ -40,6 +42,7 @@ public:
 
 	virtual void SetState(QuestionBlockState state);
 
+	int IsCollidable() { return 1; };
 	virtual int IsBlocking() { return 1; }
 
 	QuestionBlockState GetCurrentState() { return currentState; }

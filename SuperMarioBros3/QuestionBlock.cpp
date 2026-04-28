@@ -35,8 +35,8 @@ void QuestionBlock::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			vy = 0;
 			SetState(QuestionBlockState::EMPTY);
 
-			// sinh ra item khối này đang đựng
-			DebugOut(L"[INFO] Block đã nhả item ra!\n");
+			// sinh ra item khối này đang đựng ở đây
+			DebugOut(L"thả item!\n");
 		}
 	}
 }
