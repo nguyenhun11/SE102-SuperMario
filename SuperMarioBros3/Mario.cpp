@@ -33,23 +33,28 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		return; 
 	}
 
-	if (isSuperTransforming)
+
+	if (isTakingDamage)
 	{
-		if (GetTickCount64() - transform_start > MARIO_TRANSFORM_SUPER_TIME)
+		if (GetTickCount64() - damage_start > MARIO_HIT_TIMEOUT)
 		{
-			isSuperTransforming = false;
-			SetNewForm(MarioForm::SUPER);
+			isTakingDamage = false;
+			SetNewForm(MarioForm::SMALL);
 			accelY = MARIO_GRAVITY;
 		}
 		return;
 	}
 
-	if (state == static_cast<int>(MarioState::HIT))
+	if (isSuperTransforming)
 	{
-		if (GetTickCount64() - hit_start < MARIO_HIT_TIMEOUT)
+		if (GetTickCount64() - transform_start > MARIO_TRANSFORM_SUPER_TIME)
 		{
-			return;
+			untouchable = 0;
+			isSuperTransforming = false;
+			SetNewForm(MarioForm::SUPER);
+			accelY = MARIO_GRAVITY;
 		}
+		return;
 	}
 
 	vy += accelY * dt;
@@ -139,44 +144,23 @@ void Mario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 {
 	Goomba* goomba = dynamic_cast<Goomba*>(e->obj);
 
-	// jump on top >> kill Goomba and deflect a bit 
 	if (e->ny < 0)
 	{
 		if (goomba->GetState() != GOOMBA_STATE_DIE)
 		{
 			goomba->SetState(GOOMBA_STATE_DIE);
 
-			// nếu người chơi giữ phím nhảy thì nảy lên cao hơn
 			if (IsHoldingJump)
-			{
 				vy = -MARIO_HIGH_JUMP_DEFLECT_SPEED;
-			}
-			// nếu người chơi không giữ phím nhảy thì nảy thấp hơn
 			else
-			{
 				vy = -MARIO_JUMP_DEFLECT_SPEED;
-			}
 		}
 	}
-	else // hit by Goomba
+	else
 	{
-		if (untouchable == 0)
+		if (goomba->GetState() != GOOMBA_STATE_DIE)
 		{
-			if (goomba->GetState() != GOOMBA_STATE_DIE)
-			{
-				hit_start = GetTickCount64();
-				if (form > MarioForm::SMALL)
-				{
-					//SetState(MarioState::HIT);
-					form = MarioForm::SMALL;
-					StartUntouchable();
-				}
-				else
-				{
-					DebugOut(L">>> Mario DIE >>> \n");
-					SetState(MarioState::DIE);
-				}
-			}
+			TakeDamage();
 		}
 	}
 }
@@ -216,9 +200,6 @@ void Mario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 	if (form == MarioForm::SMALL)
 	{
 		StartTransform();
-
-		// goi thowif gian baats tuwr
-		StartUntouchable();
 	}
 
 	// cộng điểm ở đây nữa
@@ -337,9 +318,10 @@ void Mario::Render()
 	float renderX = x;
 	if (state == static_cast<int>(MarioState::DIE))
 		aniId = ID_ANI_MARIO_DIE;
+
 	else if (isSuperTransforming)
 	{
-		if ((GetTickCount64() / 50) % 2 == 0)
+		if ((GetTickCount64() / 60) % 2 == 0)
 		{
 			aniId = 1100;
 			renderY = y - (MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT) / 2;
@@ -347,6 +329,21 @@ void Mario::Render()
 		else
 		{
 			aniId = 1000;
+		}
+	}
+	else if (isTakingDamage)
+	{
+		float heightDiff = (MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT) / 2;
+
+		if ((GetTickCount64() / 50) % 2 == 0)
+		{
+			aniId = 1100; 
+			renderY = y;  
+		}
+		else
+		{
+			aniId = 1000; 
+			renderY = y + heightDiff; 
 		}
 	}
 	else
@@ -358,7 +355,18 @@ void Mario::Render()
 	}
 
 	bool isFlip = (nx > 0);
-	animations->Get(aniId)->Render(renderX, renderY, isFlip);
+	bool shouldRender = true;
+	if (untouchable == 1 && isSuperTransforming == false)
+	{
+		if ((GetTickCount64() / 50) % 2 == 0)
+		{
+			shouldRender = false;
+		}
+	}
+	if (shouldRender == true)
+	{
+		animations->Get(aniId)->Render(renderX, renderY, isFlip);
+	}
 
 	//RenderBoundingBox();
 	
@@ -370,6 +378,7 @@ void Mario::SetState(MarioState state)
 	// DIE is the end state, cannot be changed! 
 	if (this->state == static_cast<int>(MarioState::DIE)) return;
 
+	if (isTakingDamage || isSuperTransforming) return;
 
 	switch (state)
 	{
@@ -423,13 +432,6 @@ void Mario::SetState(MarioState state)
 		accelX = 0.0f;
 		break;
 
-	case MarioState::HIT:
-		vx = 0;
-		vy = 0;
-		accelX = 0;
-		accelY = 0;
-		break;
-
 	case MarioState::DIE:
 		die_start = GetTickCount64(); 
 		vx = 0;
@@ -472,11 +474,40 @@ void Mario::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 
 void Mario::SetNewForm(MarioForm newForm)
 {
-	// Adjust position to avoid falling off platform
-	if (this->form == MarioForm::SMALL)
+	float heightDiff = (MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT) / 2;
+
+
+	if (this->form == MarioForm::SMALL && newForm != MarioForm::SMALL)
 	{
-		y -= (MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT) / 2;
+		y -= heightDiff;
 	}
+	// THÊM: Nếu đang Lớn mà về Nhỏ: Phải đẩy y xuống dưới
+	else if (this->form != MarioForm::SMALL && newForm == MarioForm::SMALL)
+	{
+		y += heightDiff;
+	}
+
 	this->form = newForm;
 }
 
+void Mario::TakeDamage()
+{
+	if (untouchable != 0) return;
+
+	if (form > MarioForm::SMALL)
+	{
+		isTakingDamage = true;
+		damage_start = GetTickCount64();
+
+		vx = 0;
+		vy = 0;
+		accelX = 0;
+		accelY = 0;
+		StartUntouchable();
+	}
+	else
+	{
+		DebugOut(L">>> Mario DIE >>> \n");
+		SetState(MarioState::DIE);
+	}
+}

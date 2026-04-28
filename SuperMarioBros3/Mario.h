@@ -54,8 +54,7 @@ enum class MarioState
 	SHOOT_FIRE = 16,
 
 	JUMP_RELEASE = 80,
-	SIT_RELEASE = 81,
-	HIT = 98
+	SIT_RELEASE = 81
 };
 
 enum class MarioForm
@@ -105,11 +104,11 @@ enum class MarioForm
 #define	MARIO_DIE_GRAVITY	0.0005f
 
 // Hit Animation
-#define MARIO_HIT_TIMEOUT	300
+#define MARIO_HIT_TIMEOUT	500
 #pragma endregion
 
 // Transform Animation
-#define MARIO_TRANSFORM_SUPER_TIME 800
+#define MARIO_TRANSFORM_SUPER_TIME 500
 #define MARIO_TRANSFORM_TIME 500
 
 #define GROUND_Y 160.0f
@@ -136,10 +135,11 @@ class Mario : public GameObject
 	float accelY;				// acceleration on y 
 	
 	bool isSuperTransforming;
+	bool isTakingDamage;
 	MarioForm form; 
 	int untouchable; 
 	ULONGLONG die_start;
-	ULONGLONG hit_start;
+	ULONGLONG damage_start;
 	ULONGLONG untouchable_start;
 	ULONGLONG transform_start;
 	BOOLEAN isOnPlatform;
@@ -166,11 +166,12 @@ public:
 		accelY = MARIO_GRAVITY; 
 
 		isSuperTransforming = false;
+		isTakingDamage = false;
 		form = MarioForm::SMALL;
 		untouchable = 0;
 		untouchable_start = -1;
 		die_start = -1;
-		hit_start = -1;
+		damage_start = -1;
 		transform_start = -1;
 		isOnPlatform = false;
 		coin = 0;
@@ -218,6 +219,8 @@ public:
 		vx = vy = 0;
 		accelX = accelY = 0;
 	}
+
+	void TakeDamage();
 
 	// Getters & Setters
 	float GetX() { return x; }
