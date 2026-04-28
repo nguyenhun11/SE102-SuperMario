@@ -7,6 +7,7 @@
 #include "Goomba.h"
 
 #include "Mushroom.h"
+#include "Leaf.h"
 #include "Coin.h"
 
 #include "Portal.h"
@@ -141,7 +142,10 @@ void Mario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithPortal(e);
 	else if (dynamic_cast<QuestionBlock*>(e->obj))
 		OnCollisionWithQuestionBlock(e);
-
+	else if (dynamic_cast<Mushroom*>(e->obj))
+		OnCollisionWithMushroom(e);
+	else if (dynamic_cast<Leaf*>(e->obj))
+		OnCollisionWithLeaf(e);
 }
 
 void Mario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -206,7 +210,29 @@ void Mario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 		StartTransform();
 	}
 
-	// cộng điểm ở đây nữa
+	// note để nhớ cộng điểm ở đây nữa
+}
+
+/// <summary>
+/// / NHỚ CẬP NHẬT
+/// </summary>
+/// <param name="e"></param>
+void Mario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
+{
+	e->obj->Delete();
+
+	if (form == MarioForm::SMALL)
+	{
+		StartTransform();
+	}
+	else if (form != MarioForm::RACOON)
+	{
+		// NOTE để nhớ làm hiệu ứng boom
+		SetNewForm(MarioForm::RACOON);
+	}
+
+
+	// note để nhớ cộng điểm ở đây nữa
 }
 
 #pragma endregion
@@ -311,6 +337,51 @@ int Mario::GetAniIdBig()
 	return aniId;
 }
 
+int Mario::GetAniIdRacoon()
+{
+	int aniId = -1;
+	if (!isOnPlatform)
+	{
+		if (abs(accelX) == MARIO_ACCEL_RUN_X)
+		{
+			aniId = ID_ANI_MARIO_RACOON_JUMP_RUN;
+		}
+		else
+		{
+			if (vy > 0) // Lúc rớt xuống
+				aniId = ID_ANI_MARIO_RACOON_FALLING;
+			else // Lúc bay lên
+				aniId = ID_ANI_MARIO_RACOON_JUMP_WALK;
+		}
+	}
+	else
+		if (isSitting)
+		{
+			aniId = ID_ANI_MARIO_RACOON_SIT;
+		}
+		else
+			if (vx == 0)
+			{
+				aniId = ID_ANI_MARIO_RACOON_IDLE;
+			}
+			else // Đang di chuyển
+			{
+				if (accelX == 0)
+					aniId = ID_ANI_MARIO_RACOON_WALKING;
+				else if (accelX * vx < 0 && accelX != 0)
+					aniId = ID_ANI_MARIO_RACOON_SKIDDING;
+				else if (abs(accelX) == MARIO_ACCEL_RUN_X)
+					aniId = ID_ANI_MARIO_RACOON_RUNNING;
+				else if (abs(accelX) == MARIO_ACCEL_WALK_X)
+					aniId = ID_ANI_MARIO_RACOON_WALKING;
+			}
+
+	if (aniId == -1) aniId = ID_ANI_MARIO_RACOON_IDLE;
+
+	return aniId;
+}
+
+
 #pragma endregion 
 
 // ============================== RENDERING ===============================
@@ -341,8 +412,8 @@ void Mario::Render()
 
 		if ((GetTickCount64() / 50) % 2 == 0)
 		{
-			aniId = 1100; 
-			renderY = y;  
+			if (form == MarioForm::RACOON) aniId = ID_ANI_MARIO_RACOON_IDLE; // nhấp ngáy form chồn
+			else aniId = 1100; // nhấp nháy form to
 		}
 		else
 		{
@@ -356,6 +427,8 @@ void Mario::Render()
 			aniId = GetAniIdBig();
 		else if (form == MarioForm::SMALL)
 			aniId = GetAniIdSmall();
+		else if (form == MarioForm::RACOON)
+			aniId = GetAniIdRacoon();
 	}
 
 	bool isFlip = (nx > 0);
@@ -432,6 +505,10 @@ void Mario::SetState(MarioState state)
 		}
 		break;
 
+	case MarioState::FLOATING:
+		vy = -MARIO_FLOATING_SPEED_Y;
+		break;
+
 	case MarioState::IDLE:
 		accelX = 0.0f;
 		break;
@@ -450,7 +527,7 @@ void Mario::SetState(MarioState state)
 
 void Mario::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
-	if (form==MarioForm::SUPER)
+	if (form==MarioForm::SUPER || form == MarioForm::RACOON)
 	{
 		if (isSitting)
 		{

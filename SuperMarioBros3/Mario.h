@@ -30,6 +30,9 @@
 #define MARIO_JUMP_DEFLECT_SPEED  0.2f
 #define MARIO_HIGH_JUMP_DEFLECT_SPEED 0.4f
 
+// Floating speed
+#define MARIO_FLOATING_SPEED_Y	0.15f
+
 
 // ------------------------- MARIO STATE -------------------------------- //
 #pragma	region	MARIO_STATES & MARIO_FORMS
@@ -61,8 +64,8 @@ enum class MarioForm
 {
 	SMALL = 0,
 	SUPER = 1,
-	FIRE = 2,
-	RACOON = 3
+	RACOON = 2,
+	FIRE = 3
 };
 
 #pragma	endregion
@@ -97,6 +100,21 @@ enum class MarioForm
 #define ID_ANI_MARIO_SMALL_JUMP_WALK 1004
 #define ID_ANI_MARIO_SMALL_JUMP_RUN 1005
 
+// RACOON MARIO
+#define ID_ANI_MARIO_RACOON_IDLE 1200
+#define ID_ANI_MARIO_RACOON_SKIDDING 1203
+
+#define ID_ANI_MARIO_RACOON_WALKING 1201
+#define ID_ANI_MARIO_RACOON_RUNNING 1202
+
+#define ID_ANI_MARIO_RACOON_JUMP_WALK 1204
+#define ID_ANI_MARIO_RACOON_JUMP_RUN 1205
+#define ID_ANI_MARIO_RACOON_FALLING	1206
+
+#define ID_ANI_MARIO_RACOON_SIT 1207
+// NOTE NÈ: thiếu slow fall với flying
+
+
 // ---- Other Game feel Stuff ----
 // Die Animation
 #define	MARIO_DIE_TIMEOUT	800
@@ -104,11 +122,11 @@ enum class MarioForm
 #define	MARIO_DIE_GRAVITY	0.0005f
 
 // Hit Animation
-#define MARIO_HIT_TIMEOUT	500
+#define MARIO_HIT_TIMEOUT	1000
 #pragma endregion
 
 // Transform Animation
-#define MARIO_TRANSFORM_SUPER_TIME 500
+#define MARIO_TRANSFORM_SUPER_TIME 1000
 #define MARIO_TRANSFORM_TIME 500
 
 #define GROUND_Y 160.0f
@@ -150,9 +168,11 @@ class Mario : public GameObject
 	void OnCollisionWithPortal(LPCOLLISIONEVENT e);
 	void OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e);
 	void OnCollisionWithMushroom(LPCOLLISIONEVENT e);
+	void OnCollisionWithLeaf(LPCOLLISIONEVENT e);
 
 	int GetAniIdBig();
 	int GetAniIdSmall();
+	int GetAniIdRacoon();
 
 	MarioState currentState;
 

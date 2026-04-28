@@ -2,7 +2,7 @@
 #include "PlayScene.h"
 #include "Coin.h"
 #include "Mushroom.h"
-//#include "Leaf.h"
+#include "Leaf.h"
 //#include "OneUpMushroom.h"
 #include "debug.h"
 
@@ -87,6 +87,8 @@ void QuestionBlock::SpawnItem()
 		else if(mario->GetCurrentForm() == MarioForm::SUPER)
 		{
 			// sinh đồ xịn honw nếu con mario đang ở trạng thái TO
+			Leaf* leaf = new Leaf(x, y);
+			playScene->AddObject(leaf);
 		}
 	}
 
