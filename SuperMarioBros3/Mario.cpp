@@ -12,6 +12,23 @@
 
 void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
+	if (state == static_cast<int>(MarioState::DIE))
+	{
+		// Kiểm tra xem đã hết thời gian timeout chưa
+		if (GetTickCount64() - die_start > MARIO_DIE_TIMEOUT && accelY == 0)
+		{
+			// nảy mario lên
+			vy = -MARIO_DIE_BOUNCE_FORCE;
+			accelY = MARIO_DIE_GRAVITY;
+		}
+
+		vy += accelY * dt;
+		y += vy * dt;
+		x += vx * dt;
+
+		return; 
+	}
+
 	vy += accelY * dt;
 	vx += accelX * dt;
 
@@ -118,15 +135,15 @@ void Mario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 		{
 			if (goomba->GetState() != GOOMBA_STATE_DIE)
 			{
-				if (level > MARIO_LEVEL_SMALL)
+				if (level > MarioForm::SMALL)
 				{
-					level = MARIO_LEVEL_SMALL;
+					level = MarioForm::SMALL;
 					StartUntouchable();
 				}
 				else
 				{
 					DebugOut(L">>> Mario DIE >>> \n");
-					SetState(MARIO_STATE_DIE);
+					SetState(MarioState::DIE);
 				}
 			}
 		}
@@ -249,11 +266,11 @@ void Mario::Render()
 	Animations* animations = Animations::GetInstance();
 	int aniId = -1;
 
-	if (state == MARIO_STATE_DIE)
+	if (state == static_cast<int>(MarioState::DIE))
 		aniId = ID_ANI_MARIO_DIE;
-	else if (level == MARIO_LEVEL_BIG)
+	else if (level == MarioForm::SUPER)
 		aniId = GetAniIdBig();
-	else if (level == MARIO_LEVEL_SMALL)
+	else if (level == MarioForm::SMALL)
 		aniId = GetAniIdSmall();
 	bool isFlip = (nx > 0);
 	animations->Get(aniId)->Render(x, y, isFlip);
@@ -263,41 +280,26 @@ void Mario::Render()
 	DebugOutTitle(L"Coins: %d", coin);
 }
 
-void Mario::SetState(int state)
+void Mario::SetState(MarioState state)
 {
 	// DIE is the end state, cannot be changed! 
-	if (this->state == MARIO_STATE_DIE) return; 
+	if (this->state == static_cast<int>(MarioState::DIE)) return;
 
-	currentState = state;
 
-	switch (currentState)
+	switch (state)
 	{
-	case MARIO_STATE_RUNNING_RIGHT:
+	case MarioState::RUNNING:
 		if (isSitting) break;
 		if (!isOnPlatform) return;
-		maxVx = MARIO_RUNNING_SPEED;
-		accelX = MARIO_ACCEL_RUN_X;
-		nx = 1;
+		maxVx = MARIO_RUNNING_SPEED * nx;
+		accelX = MARIO_ACCEL_RUN_X * nx;
 		break;
-	case MARIO_STATE_RUNNING_LEFT:
+	case MarioState::WALKING:
 		if (isSitting) break;
-		maxVx = -MARIO_RUNNING_SPEED;
-		accelX = -MARIO_ACCEL_RUN_X;
-		nx = -1;
+		maxVx = MARIO_WALKING_SPEED * nx;
+		accelX = MARIO_ACCEL_WALK_X * nx;
 		break;
-	case MARIO_STATE_WALKING_RIGHT:
-		if (isSitting) break;
-		maxVx = MARIO_WALKING_SPEED;
-		accelX = MARIO_ACCEL_WALK_X;
-		nx = 1;
-		break;
-	case MARIO_STATE_WALKING_LEFT:
-		if (isSitting) break;
-		maxVx = -MARIO_WALKING_SPEED;
-		accelX = -MARIO_ACCEL_WALK_X;
-		nx = -1;
-		break;
-	case MARIO_STATE_JUMP:
+	case MarioState::JUMP:
 		if (isSitting) break;
 		if (isOnPlatform)
 		{
@@ -308,14 +310,14 @@ void Mario::SetState(int state)
 		}
 		break;
 
-	case MARIO_STATE_RELEASE_JUMP:
+	case MarioState::JUMP_RELEASE:
 		if (vy < 0) vy += MARIO_JUMP_SPEED_Y / 2;
 		break;
 
-	case MARIO_STATE_SIT:
-		if (isOnPlatform && level != MARIO_LEVEL_SMALL)
+	case MarioState::SIT:
+		if (isOnPlatform && level != MarioForm::SMALL)
 		{
-			state = MARIO_STATE_IDLE;
+			state = MarioState::IDLE;
 			isSitting = true;
 			vy = 0.0f;
 			accelX = 0.0f;
@@ -323,32 +325,34 @@ void Mario::SetState(int state)
 		}
 		break;
 
-	case MARIO_STATE_SIT_RELEASE:
+	case MarioState::SIT_RELEASE:
 		if (isSitting)
 		{
 			isSitting = false;
-			state = MARIO_STATE_IDLE;
+			state = MarioState::IDLE;
 			y -= MARIO_SIT_HEIGHT_ADJUST;
 		}
 		break;
 
-	case MARIO_STATE_IDLE:
+	case MarioState::IDLE:
 		accelX = 0.0f;
 		break;
 
-	case MARIO_STATE_DIE:
-		vy = -MARIO_JUMP_DEFLECT_SPEED;
+	case MarioState::DIE:
+		die_start = GetTickCount64(); 
 		vx = 0;
+		vy = 0;     
 		accelX = 0;
+		accelY = 0;  
 		break;
 	}
 
-	GameObject::SetState(state);
+	GameObject::SetState(static_cast<int>(state));
 }
 
 void Mario::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
-	if (level==MARIO_LEVEL_BIG)
+	if (level==MarioForm::SUPER)
 	{
 		if (isSitting)
 		{
@@ -374,13 +378,13 @@ void Mario::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 	}
 }
 
-void Mario::SetLevel(int l)
+void Mario::SetLevel(MarioForm form)
 {
 	// Adjust position to avoid falling off platform
-	if (this->level == MARIO_LEVEL_SMALL)
+	if (this->level == MarioForm::SMALL)
 	{
 		y -= (MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT) / 2;
 	}
-	level = l;
+	level = form;
 }
 
