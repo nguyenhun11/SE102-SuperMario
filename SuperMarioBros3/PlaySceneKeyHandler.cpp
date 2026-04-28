@@ -21,10 +21,10 @@ void PlaySceneKeyHandler::OnKeyDown(int KeyCode)
 		mario->IsHoldingJump = true; // 
 		break;
 	case DIK_1:
-		mario->SetLevel(MarioForm::SMALL);
+		mario->SetNewForm(MarioForm::SMALL);
 		break;
 	case DIK_2:
-		mario->SetLevel(MarioForm::SUPER);
+		mario->SetNewForm(MarioForm::SUPER);
 		break;
 	case DIK_0:
 		mario->SetState(MarioState::DIE);

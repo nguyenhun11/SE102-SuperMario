@@ -111,6 +111,9 @@
     <ClCompile Include="Utils.cpp">
       <Filter>CoreGame\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="QuestionBlock.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h">
@@ -200,6 +203,9 @@
     <ClInclude Include="Utils.h">
       <Filter>CoreGame\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="QuestionBlock.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="brick.txt">
@@ -232,6 +238,9 @@
     </Text>
     <Text Include="scene_mario_dev.txt">
       <Filter>Maps</Filter>
+    </Text>
+    <Text Include="question_block.txt">
+      <Filter>Assets</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>

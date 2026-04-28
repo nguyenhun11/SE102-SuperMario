@@ -9,6 +9,7 @@
 #include "Portal.h"
 #include "Coin.h"
 #include "Platform.h"
+#include "QuestionBlock.h"
 #include "Ground.h"
 
 #include "PlaySceneKeyHandler.h"
@@ -140,14 +141,22 @@ void PlayScene::_ParseSection_OBJECTS(string line)
 		break;
 	}
 
+	case OBJECT_TYPE_QUESTION_BLOCK:
+	{
+		int contained_item_id = atoi(tokens[3].c_str());
+		obj = new QuestionBlock(x, y, contained_item_id);
+		break;
+
+	}
+
 	case OBJECT_TYPE_PORTAL:
 	{
 		float r = (float)atof(tokens[3].c_str());
 		float b = (float)atof(tokens[4].c_str());
 		int scene_id = atoi(tokens[5].c_str());
 		obj = new Portal(x, y, r, b, scene_id);
+		break;
 	}
-	break;
 
 	case OBJECT_TYPE_GROUND: {
 
@@ -287,7 +296,13 @@ void PlayScene::Update(DWORD dt)
 void PlayScene::Render()
 {
 	for (int i = 0; i < objects.size(); i++)
-		objects[i]->Render();
+		if (objects[i]->GetZIndex() < 5) objects[i]->Render();
+
+	for (int i = 0; i < objects.size(); i++)
+		if (objects[i]->GetZIndex() >= 5 && objects[i]->GetZIndex() < 10)
+			objects[i]->Render();
+
+	player->Render();
 }
 
 /*

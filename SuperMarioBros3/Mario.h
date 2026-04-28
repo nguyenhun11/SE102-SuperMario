@@ -33,7 +33,7 @@
 
 // ------------------------- MARIO STATE -------------------------------- //
 #pragma	region	MARIO_STATES & MARIO_FORMS
-enum class MarioState 
+enum class MarioState
 {
 	DIE = 99,
 	IDLE = 0,
@@ -97,13 +97,19 @@ enum class MarioForm
 #define ID_ANI_MARIO_SMALL_JUMP_WALK 1004
 #define ID_ANI_MARIO_SMALL_JUMP_RUN 1005
 
-// Other Game feel Stuff
+// ---- Other Game feel Stuff ----
+// Die Animation
 #define	MARIO_DIE_TIMEOUT	800
 #define MARIO_DIE_BOUNCE_FORCE	0.25f
 #define	MARIO_DIE_GRAVITY	0.0005f
 
+// Hit Animation
+#define MARIO_HIT_TIMEOUT	500
 #pragma endregion
 
+// Transform Animation
+#define MARIO_TRANSFORM_SUPER_TIME 500
+#define MARIO_TRANSFORM_TIME 500
 
 #define GROUND_Y 160.0f
 
@@ -127,17 +133,23 @@ class Mario : public GameObject
 	float maxVx;
 	float accelX;				// acceleration on x 
 	float accelY;				// acceleration on y 
-
-	MarioForm level; 
+	
+	bool isSuperTransforming;
+	bool isTakingDamage;
+	MarioForm form; 
 	int untouchable; 
 	ULONGLONG die_start;
+	ULONGLONG damage_start;
 	ULONGLONG untouchable_start;
+	ULONGLONG transform_start;
 	BOOLEAN isOnPlatform;
 	int coin; 
 
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithCoin(LPCOLLISIONEVENT e);
 	void OnCollisionWithPortal(LPCOLLISIONEVENT e);
+	void OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e);
+	void OnCollisionWithMushroom(LPCOLLISIONEVENT e);
 
 	int GetAniIdBig();
 	int GetAniIdSmall();
@@ -153,14 +165,26 @@ public:
 		accelX = 0.0f;
 		accelY = MARIO_GRAVITY; 
 
-		level = MarioForm::SUPER;
+		isSuperTransforming = false;
+		isTakingDamage = false;
+		form = MarioForm::SMALL;
 		untouchable = 0;
 		untouchable_start = -1;
 		die_start = -1;
+		damage_start = -1;
+		transform_start = -1;
 		isOnPlatform = false;
 		coin = 0;
 
 		currentState = MarioState::IDLE;
+
+		zIndex = 10;
+	}
+
+	void AddCoin(int amount = 1)
+	{
+		coin += amount;
+		DebugOut(L">>> CurrentCoin: %d\n", coin);
 	}
 
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
@@ -182,9 +206,26 @@ public:
 
 	void OnNoCollision(DWORD dt);
 	void OnCollisionWith(LPCOLLISIONEVENT e);
+	
 
-	void SetLevel(MarioForm form);
+	void SetNewForm(MarioForm form);
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }
 
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
+
+	// Transformation
+	void StartTransform()
+	{
+		isSuperTransforming = true;
+		transform_start = GetTickCount64();
+		vx = vy = 0;
+		accelX = accelY = 0;
+	}
+
+	void TakeDamage();
+
+	// Getters & Setters
+	float GetX() { return x; }
+	float GetY() { return y; }
+	MarioForm GetCurrentForm() { return form; }
 };
