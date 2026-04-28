@@ -15,9 +15,8 @@
 
 enum class ContainedItem {
 	COIN = 0,
-	MUSHROOM = 1,
-	LEAF = 2,
-	UP_MUSHROOM = 3 
+	POWER_UP = 1,
+	UP_MUSHROOM = 2 
 };
 
 enum class QuestionBlockState {

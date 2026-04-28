@@ -1,7 +1,7 @@
 #include "QuestionBlock.h"
 #include "PlayScene.h"
 #include "Coin.h"
-//#include "Mushroom.h"
+#include "Mushroom.h"
 //#include "Leaf.h"
 //#include "OneUpMushroom.h"
 #include "debug.h"
@@ -15,9 +15,9 @@ QuestionBlock::QuestionBlock(float x, float y, int containedItem) : GameObject(x
 
 	switch (containedItem)
 	{
-		case static_cast<int>(ContainedItem::COIN):
+		case static_cast<int>(ContainedItem::POWER_UP):
 		{
-			this->item = ContainedItem::COIN;
+			this->item = ContainedItem::POWER_UP;
 			break;
 		}
 		default:
@@ -74,8 +74,21 @@ void QuestionBlock::SpawnItem()
 		playScene->AddObject(coin);
 		mario->AddCoin();
 	}
-
 	// logic để sinh ra các power up dựa treenn state hieennnj tại của thằng mairo
+	else if (this->item == ContainedItem::POWER_UP)
+	{
+		if (mario->GetCurrentForm() == MarioForm::SMALL)
+		{
+			// giữ nguyên tọa độ y
+			Mushroom* mushroom = new Mushroom(x, y);
+			playScene->AddObject(mushroom);
+		}
+		else if(mario->GetCurrentForm() == MarioForm::SUPER)
+		{
+			// sinh đồ xịn honw nếu con mario đang ở trạng thái TO
+		}
+	}
+
 }
 
 void QuestionBlock::Render()

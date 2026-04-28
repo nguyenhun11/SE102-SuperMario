@@ -108,6 +108,8 @@ enum class MarioForm
 #define MARIO_HIT_TIMEOUT	300
 #pragma endregion
 
+// Transform Animation
+
 
 #define GROUND_Y 160.0f
 
@@ -132,7 +134,7 @@ class Mario : public GameObject
 	float accelX;				// acceleration on x 
 	float accelY;				// acceleration on y 
 
-	MarioForm level; 
+	MarioForm form; 
 	int untouchable; 
 	ULONGLONG die_start;
 	ULONGLONG hit_start;
@@ -144,6 +146,7 @@ class Mario : public GameObject
 	void OnCollisionWithCoin(LPCOLLISIONEVENT e);
 	void OnCollisionWithPortal(LPCOLLISIONEVENT e);
 	void OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e);
+	void OnCollisionWithMushroom(LPCOLLISIONEVENT e);
 
 	int GetAniIdBig();
 	int GetAniIdSmall();
@@ -159,7 +162,7 @@ public:
 		accelX = 0.0f;
 		accelY = MARIO_GRAVITY; 
 
-		level = MarioForm::SUPER;
+		form = MarioForm::SMALL;
 		untouchable = 0;
 		untouchable_start = -1;
 		die_start = -1;
@@ -197,8 +200,13 @@ public:
 	void OnCollisionWith(LPCOLLISIONEVENT e);
 	
 
-	void SetLevel(MarioForm form);
+	void SetNewForm(MarioForm form);
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }
 
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
+
+	float GetX() { return x; }
+	float GetY() { return y; }
+
+	MarioForm GetCurrentForm() { return form; }
 };

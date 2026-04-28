@@ -6,6 +6,7 @@ coin.txt
 goomba.txt
 cloud.txt
 question_block.txt
+mushroom.txt
 
 #
 [OBJECTS]
@@ -69,9 +70,11 @@ question_block.txt
 
 # QUESTION BLOCK
 ### id_coin	x	y	contained_time_id
-### 0 - coin, 1 - mushroom, 2 - leaf, 3 - 1-up mushroom
+### 0 - coin, 1 - mushroom/leaf/fire, 2 - 1-up mushroom
 302	96	60	0
 302	112	60	0
+302	128	60	1
+302	144	60	1
 
 #COIN
 401	100	120

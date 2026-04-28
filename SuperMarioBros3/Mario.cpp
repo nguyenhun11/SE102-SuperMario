@@ -5,7 +5,10 @@
 #include "Game.h"
 
 #include "Goomba.h"
+
+#include "Mushroom.h"
 #include "Coin.h"
+
 #include "Portal.h"
 #include "QuestionBlock.h"
 
@@ -117,6 +120,8 @@ void Mario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithPortal(e);
 	else if (dynamic_cast<QuestionBlock*>(e->obj))
 		OnCollisionWithQuestionBlock(e);
+	else if (dynamic_cast<Mushroom*>(e->obj))
+		OnCollisionWithMushroom(e);
 }
 
 void Mario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -149,10 +154,10 @@ void Mario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 			if (goomba->GetState() != GOOMBA_STATE_DIE)
 			{
 				hit_start = GetTickCount64();
-				if (level > MarioForm::SMALL)
+				if (form > MarioForm::SMALL)
 				{
 					//SetState(MarioState::HIT);
-					level = MarioForm::SMALL;
+					form = MarioForm::SMALL;
 					StartUntouchable();
 				}
 				else
@@ -169,6 +174,8 @@ void Mario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 {
 	e->obj->Delete();
 	AddCoin();
+
+	// cộng điểm ở đây
 }
 
 void Mario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
@@ -187,6 +194,21 @@ void Mario::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 			qb->SetState(QuestionBlockState::BOUNCING);
 		}
 	}
+}
+
+void Mario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
+{
+	Mushroom* mushroom = dynamic_cast<Mushroom*>(e->obj);
+	mushroom->Delete();
+
+	// note để nhớ bổ sung hiệu ứng bất tử chớp chớp 2.5s
+	if (form == MarioForm::SMALL)
+	{
+		SetNewForm(MarioForm::SUPER);
+		StartUntouchable();
+	}
+
+	// cộng điểm ở đây nữa
 }
 
 #pragma endregion
@@ -297,9 +319,9 @@ void Mario::Render()
 
 	if (state == static_cast<int>(MarioState::DIE))
 		aniId = ID_ANI_MARIO_DIE;
-	else if (level == MarioForm::SUPER)
+	else if (form == MarioForm::SUPER)
 		aniId = GetAniIdBig();
-	else if (level == MarioForm::SMALL)
+	else if (form == MarioForm::SMALL)
 		aniId = GetAniIdSmall();
 	bool isFlip = (nx > 0);
 	animations->Get(aniId)->Render(x, y, isFlip);
@@ -344,7 +366,7 @@ void Mario::SetState(MarioState state)
 		break;
 
 	case MarioState::SIT:
-		if (isOnPlatform && level != MarioForm::SMALL)
+		if (isOnPlatform && form != MarioForm::SMALL)
 		{
 			state = MarioState::IDLE;
 			isSitting = true;
@@ -388,7 +410,7 @@ void Mario::SetState(MarioState state)
 
 void Mario::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
-	if (level==MarioForm::SUPER)
+	if (form==MarioForm::SUPER)
 	{
 		if (isSitting)
 		{
@@ -414,13 +436,13 @@ void Mario::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 	}
 }
 
-void Mario::SetLevel(MarioForm form)
+void Mario::SetNewForm(MarioForm newForm)
 {
 	// Adjust position to avoid falling off platform
-	if (this->level == MarioForm::SMALL)
+	if (this->form == MarioForm::SMALL)
 	{
 		y -= (MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT) / 2;
 	}
-	level = form;
+	this->form = newForm;
 }
 
