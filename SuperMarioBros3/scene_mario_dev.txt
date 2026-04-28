@@ -10,7 +10,7 @@ question_block.txt
 #
 [OBJECTS]
 # type	x	y	extra_settings per object type
-# type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopas, 302 = question block
+# type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopas, 302 = question block, 401 == coin
 # See OBJECT_TYPE constants in AssetIDs.h
 
 # MARIO
@@ -68,15 +68,17 @@ question_block.txt
 1	384	116
 
 # QUESTION BLOCK
-302	96	50
-302	112	50
+### id_coin	x	y	contained_time_id
+### 0 - coin, 1 - mushroom, 2 - leaf, 3 - 1-up mushroom
+302	96	60	0
+302	112	60	0
 
 #COIN
-4	100	120
-4	120	120
-4	140	120
-4	160	120
-4	180	120
+401	100	120
+401	120	120
+401	140	120
+401	160	120
+401	180	120
 
 #Goomba
 2	300	10
@@ -87,7 +89,7 @@ question_block.txt
 
 #Platform
 7	90	136	16	15	5	51000	52000	53000	# Platform trắng
-7	120	90	16	16	5	20001	20001	20001	# Platform đen
+#7	120	90	16	16	5	20001	20001	20001	# Platform đen
 
 #Portal 
 #50	300	110	316	140	2

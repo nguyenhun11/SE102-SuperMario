@@ -1,6 +1,6 @@
 [SETTINGS]
 # Start scene
-start	6
+start	7
 
 # Screen size
 width	320

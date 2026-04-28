@@ -1,13 +1,32 @@
 #include "QuestionBlock.h"
+#include "PlayScene.h"
+#include "Coin.h"
+//#include "Mushroom.h"
+//#include "Leaf.h"
+//#include "OneUpMushroom.h"
 #include "debug.h"
 
-QuestionBlock::QuestionBlock(float x, float y, CONTAINED_OBJECT containedItem) : GameObject(x, y)
+QuestionBlock::QuestionBlock(float x, float y, int containedItem) : GameObject(x, y)
 {
 	this->startY = y;
-	this->item = containedItem;
 	this->currentState = QuestionBlockState::ACTIVE;
 	this->state = static_cast<int>(QuestionBlockState::ACTIVE);
 	this->vy = 0;
+
+	switch (containedItem)
+	{
+		case static_cast<int>(ContainedItem::COIN):
+		{
+			this->item = ContainedItem::COIN;
+			break;
+		}
+		default:
+		{
+			this->item = ContainedItem::COIN;
+			break;
+		}
+	}
+
 }
 
 void QuestionBlock::GetBoundingBox(float& l, float& t, float& r, float& b)
@@ -35,10 +54,28 @@ void QuestionBlock::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			vy = 0;
 			SetState(QuestionBlockState::EMPTY);
 
-			// sinh ra item khối này đang đựng ở đây
-			DebugOut(L"thả item!\n");
+			// sinh ra item khối này đang đựng
+			SpawnItem();
+
 		}
 	}
+}
+
+void QuestionBlock::SpawnItem()
+{
+	PlayScene* playScene = (PlayScene*)SceneManager::GetInstance()->GetCurrentScene();
+	Mario* mario = (Mario*)playScene->GetPlayer();
+
+	if (this->item == ContainedItem::COIN)
+	{
+		// thêm object vào scene đang chơi
+		Coin* coin = new Coin(x, y - 16); // trừ 16 đơn vị độ cao
+		coin->SetState(CoinState::BOUNCING);
+		playScene->AddObject(coin);
+		mario->AddCoin();
+	}
+
+	// logic để sinh ra các power up dựa treenn state hieennnj tại của thằng mairo
 }
 
 void QuestionBlock::Render()
@@ -56,7 +93,6 @@ void QuestionBlock::Render()
 void QuestionBlock::SetState(QuestionBlockState state)
 {
 	this->currentState = state;
-	GameObject::SetState(static_cast<int>(state));
 
 	switch (state)
 	{
@@ -68,4 +104,6 @@ void QuestionBlock::SetState(QuestionBlockState state)
 		vy = 0;
 		break;
 	}
+
+	GameObject::SetState(static_cast<int>(state));
 }

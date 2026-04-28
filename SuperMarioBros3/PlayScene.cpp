@@ -10,6 +10,7 @@
 #include "Coin.h"
 #include "Platform.h"
 #include "QuestionBlock.h"
+#include "Ground.h"
 
 #include "PlaySceneKeyHandler.h"
 
@@ -141,8 +142,12 @@ void PlayScene::_ParseSection_OBJECTS(string line)
 	}
 
 	case OBJECT_TYPE_QUESTION_BLOCK:
-		obj = new QuestionBlock(x, y);
+	{
+		int contained_item_id = atoi(tokens[3].c_str());
+		obj = new QuestionBlock(x, y, contained_item_id);
 		break;
+
+	}
 
 	case OBJECT_TYPE_PORTAL:
 	{
@@ -150,8 +155,8 @@ void PlayScene::_ParseSection_OBJECTS(string line)
 		float b = (float)atof(tokens[4].c_str());
 		int scene_id = atoi(tokens[5].c_str());
 		obj = new Portal(x, y, r, b, scene_id);
+		break;
 	}
-	break;
 
 	case OBJECT_TYPE_GROUND: {
 

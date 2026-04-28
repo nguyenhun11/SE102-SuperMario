@@ -6,18 +6,18 @@
 #define ID_ANIM_QUESTION_BLOCK_EMPTY	3021
 
 // boundary box
-#define QUESTION_BLOCK_BBOX_WIDTH 15
-#define QUESTION_BLOCK_BBOX_HEIGHT 15
+#define QUESTION_BLOCK_BBOX_WIDTH 16
+#define QUESTION_BLOCK_BBOX_HEIGHT 16
 
 // bounce
 #define QBLOCK_BOUNCE_SPEED 0.2f
 #define QBLOCK_BOUNCE_HEIGHT 10.0f
 
-enum class CONTAINED_OBJECT {
-	COIN,
-	MUSHROOM,
-	LEAF,
-	UP_MUSHROOM 
+enum class ContainedItem {
+	COIN = 0,
+	MUSHROOM = 1,
+	LEAF = 2,
+	UP_MUSHROOM = 3 
 };
 
 enum class QuestionBlockState {
@@ -30,11 +30,11 @@ class QuestionBlock : public GameObject
 {
 protected:
 	float startY; 
-	CONTAINED_OBJECT item;
+	ContainedItem item;
 	QuestionBlockState currentState;
 
 public:
-	QuestionBlock(float x, float y, CONTAINED_OBJECT containedItem = CONTAINED_OBJECT::COIN);
+	QuestionBlock(float x, float y, int containedItem = 0);
 
 	virtual void Render();
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
@@ -44,6 +44,8 @@ public:
 
 	int IsCollidable() { return 1; };
 	virtual int IsBlocking() { return 1; }
+
+	void SpawnItem();
 
 	QuestionBlockState GetCurrentState() { return currentState; }
 };

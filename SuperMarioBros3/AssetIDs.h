@@ -31,13 +31,26 @@ Each ID for a type of object will BEGIN with:
 #define ID_TEXTURE_ITEMS			400
 
 
-
+// Characters
 #define OBJECT_TYPE_MARIO	0
 #define OBJECT_TYPE_BRICK	1
 #define OBJECT_TYPE_GOOMBA	2
 #define OBJECT_TYPE_KOOPAS	3
-#define OBJECT_TYPE_COIN 4
-#define OBJECT_TYPE_PLATFORM 7
-#define OBJECT_TYPE_QUESTION_BLOCK	302
 
+#define OBJECT_TYPE_PLATFORM 7
+
+// Object
+
+
+// Block
+#define OBJECT_TYPE_QUESTION_BLOCK	302
+#define OBJECT_TYPE_GROUND 601
+
+// Objects
+#define OBJECT_TYPE_COIN 401
+#define OBJECT_TYPE_MUSHROOM 402
+#define OBJECT_TYPE_LEAF	403
+#define OBJECT_TYPE_ONEUPMUSHROOM	404
+
+// Others
 #define OBJECT_TYPE_PORTAL	50

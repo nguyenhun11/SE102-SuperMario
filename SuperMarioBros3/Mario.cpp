@@ -168,7 +168,7 @@ void Mario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 void Mario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 {
 	e->obj->Delete();
-	coin++;
+	AddCoin();
 }
 
 void Mario::OnCollisionWithPortal(LPCOLLISIONEVENT e)

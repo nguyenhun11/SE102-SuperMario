@@ -170,6 +170,12 @@ public:
 		currentState = MarioState::IDLE;
 	}
 
+	void AddCoin(int amount = 1)
+	{
+		coin += amount;
+		DebugOut(L">>> CurrentCoin: %d\n", coin);
+	}
+
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();
 	void SetState(MarioState state);
