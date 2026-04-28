@@ -33,6 +33,17 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		return; 
 	}
 
+	if (isSuperTransforming)
+	{
+		if (GetTickCount64() - transform_start > MARIO_TRANSFORM_SUPER_TIME)
+		{
+			isSuperTransforming = false;
+			SetNewForm(MarioForm::SUPER);
+			accelY = MARIO_GRAVITY;
+		}
+		return;
+	}
+
 	if (state == static_cast<int>(MarioState::HIT))
 	{
 		if (GetTickCount64() - hit_start < MARIO_HIT_TIMEOUT)
@@ -204,7 +215,9 @@ void Mario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 	// note để nhớ bổ sung hiệu ứng bất tử chớp chớp 2.5s
 	if (form == MarioForm::SMALL)
 	{
-		SetNewForm(MarioForm::SUPER);
+		StartTransform();
+
+		// goi thowif gian baats tuwr
 		StartUntouchable();
 	}
 
@@ -213,6 +226,8 @@ void Mario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 
 #pragma endregion
 
+// ============================== GET ID ===============================
+#pragma region GET ID
 //
 // Get animation ID for small Mario
 //
@@ -259,7 +274,6 @@ int Mario::GetAniIdSmall()
 
 	return aniId;
 }
-
 
 //
 // Get animdation ID for big Mario
@@ -312,19 +326,39 @@ int Mario::GetAniIdBig()
 	return aniId;
 }
 
+#pragma endregion 
+
+// ============================== RENDERING ===============================
 void Mario::Render()
 {
 	Animations* animations = Animations::GetInstance();
 	int aniId = -1;
-
+	float renderY = y;
+	float renderX = x;
 	if (state == static_cast<int>(MarioState::DIE))
 		aniId = ID_ANI_MARIO_DIE;
-	else if (form == MarioForm::SUPER)
-		aniId = GetAniIdBig();
-	else if (form == MarioForm::SMALL)
-		aniId = GetAniIdSmall();
+	else if (isSuperTransforming)
+	{
+		if ((GetTickCount64() / 50) % 2 == 0)
+		{
+			aniId = 1100;
+			renderY = y - (MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT) / 2;
+		}
+		else
+		{
+			aniId = 1000;
+		}
+	}
+	else
+	{
+		if (form == MarioForm::SUPER)
+			aniId = GetAniIdBig();
+		else if (form == MarioForm::SMALL)
+			aniId = GetAniIdSmall();
+	}
+
 	bool isFlip = (nx > 0);
-	animations->Get(aniId)->Render(x, y, isFlip);
+	animations->Get(aniId)->Render(renderX, renderY, isFlip);
 
 	//RenderBoundingBox();
 	

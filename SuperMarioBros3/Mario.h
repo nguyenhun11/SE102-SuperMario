@@ -109,7 +109,8 @@ enum class MarioForm
 #pragma endregion
 
 // Transform Animation
-
+#define MARIO_TRANSFORM_SUPER_TIME 800
+#define MARIO_TRANSFORM_TIME 500
 
 #define GROUND_Y 160.0f
 
@@ -133,12 +134,14 @@ class Mario : public GameObject
 	float maxVx;
 	float accelX;				// acceleration on x 
 	float accelY;				// acceleration on y 
-
+	
+	bool isSuperTransforming;
 	MarioForm form; 
 	int untouchable; 
 	ULONGLONG die_start;
 	ULONGLONG hit_start;
 	ULONGLONG untouchable_start;
+	ULONGLONG transform_start;
 	BOOLEAN isOnPlatform;
 	int coin; 
 
@@ -162,11 +165,13 @@ public:
 		accelX = 0.0f;
 		accelY = MARIO_GRAVITY; 
 
+		isSuperTransforming = false;
 		form = MarioForm::SMALL;
 		untouchable = 0;
 		untouchable_start = -1;
 		die_start = -1;
 		hit_start = -1;
+		transform_start = -1;
 		isOnPlatform = false;
 		coin = 0;
 
@@ -205,8 +210,17 @@ public:
 
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 
+	// Transformation
+	void StartTransform()
+	{
+		isSuperTransforming = true;
+		transform_start = GetTickCount64();
+		vx = vy = 0;
+		accelX = accelY = 0;
+	}
+
+	// Getters & Setters
 	float GetX() { return x; }
 	float GetY() { return y; }
-
 	MarioForm GetCurrentForm() { return form; }
 };
