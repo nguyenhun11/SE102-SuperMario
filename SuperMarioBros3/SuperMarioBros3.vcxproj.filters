@@ -41,6 +41,7 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="ClassDiagram.cd" />
+    <None Include="GameObjectDocument.md" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp">

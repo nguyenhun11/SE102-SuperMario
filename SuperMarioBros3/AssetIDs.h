@@ -1,8 +1,18 @@
 ﻿#pragma once
 
-//
-// This file contains all IDs of game assets 
-//
+/*
+ID CONVENTION
+Each ID for a type of object will BEGIN with:
+	1. Player
+	2. Enemies
+	3. Blocks
+	4. Items
+	5. Weapons, effects
+	6. Play Scene (ground, background,...)
+	7. Platforms
+	8. Other scene (intro, select level,...)
+	9. UI, other
+*/
 
 #define ID_TEX_MARIO 0
 #define ID_TEX_ENEMY 10
