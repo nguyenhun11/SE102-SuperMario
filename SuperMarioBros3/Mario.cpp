@@ -117,6 +117,11 @@ void Mario::OnNoCollision(DWORD dt)
 
 void Mario::OnCollisionWith(LPCOLLISIONEVENT e)
 {
+	if (dynamic_cast<Mushroom*>(e->obj))
+	{
+		OnCollisionWithMushroom(e);
+		return;
+	}
 	if (e->ny != 0 && e->obj->IsBlocking())
 	{
 		vy = 0;
@@ -136,8 +141,7 @@ void Mario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithPortal(e);
 	else if (dynamic_cast<QuestionBlock*>(e->obj))
 		OnCollisionWithQuestionBlock(e);
-	else if (dynamic_cast<Mushroom*>(e->obj))
-		OnCollisionWithMushroom(e);
+
 }
 
 void Mario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)

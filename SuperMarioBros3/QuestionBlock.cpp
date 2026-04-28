@@ -27,6 +27,7 @@ QuestionBlock::QuestionBlock(float x, float y, int containedItem) : GameObject(x
 		}
 	}
 
+	zIndex = 5;
 }
 
 void QuestionBlock::GetBoundingBox(float& l, float& t, float& r, float& b)

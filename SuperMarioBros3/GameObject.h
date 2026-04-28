@@ -30,6 +30,8 @@ protected:
 
 	bool isDeleted; 
 
+	int zIndex;
+
 public: 
 	void SetPosition(float x, float y) { this->x = x, this->y = y; }
 	void SetSpeed(float vx, float vy) { this->vx = vx, this->vy = vy; }
@@ -43,7 +45,7 @@ public:
 	void RenderBoundingBox();
 
 	GameObject();
-	GameObject(float x, float y) :GameObject() { this->x = x; this->y = y; }
+	GameObject(float x, float y) :GameObject() { this->x = x; this->y = y; zIndex = 5; }
 
 
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom) = 0;
@@ -70,4 +72,6 @@ public:
 	~GameObject();
 
 	static bool IsDeleted(const LPGAMEOBJECT &o) { return o->isDeleted; }
+
+	int GetZIndex() { return zIndex; }
 };

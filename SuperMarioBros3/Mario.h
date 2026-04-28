@@ -177,6 +177,8 @@ public:
 		coin = 0;
 
 		currentState = MarioState::IDLE;
+
+		zIndex = 10;
 	}
 
 	void AddCoin(int amount = 1)

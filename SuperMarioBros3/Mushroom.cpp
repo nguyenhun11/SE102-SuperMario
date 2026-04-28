@@ -7,6 +7,7 @@ Mushroom::Mushroom(float x, float y) : GameObject(x, y)
 {
 	this->startY = y;
 	SetState(MushroomState::SPAWNING);
+	zIndex = 1;
 }
 
 void Mushroom::GetBoundingBox(float& l, float& t, float& r, float& b)
@@ -25,15 +26,17 @@ void Mushroom::OnNoCollision(DWORD dt)
 
 void Mushroom::OnCollisionWith(LPCOLLISIONEVENT e)
 {
+	if (dynamic_cast<Mario*>(e->obj)) return;
+
 	if (!e->obj->IsBlocking()) return;
 
-	if (e->ny != 0) // đụng trần hoặc đất thì ngừng rơi
+	if (e->ny != 0)
 	{
 		vy = 0;
 	}
-	else if (e->nx != 0) // đụng tường thì quay đầu là bờ
+	else if (e->nx != 0)
 	{
-		vx = -vx; 
+		vx = -vx; // Đụng tường thật thì mới quay đầu
 	}
 }
 
