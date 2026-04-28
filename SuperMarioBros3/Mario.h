@@ -142,7 +142,7 @@ enum class MarioForm
 
 // Poof Transform
 #define MARIO_POOF_TIME 500  
-#define ID_ANI_POOF 5000
+#define ID_ANI_MARIO_POOF 1980
 
 #define GROUND_Y 160.0f
 
@@ -172,6 +172,7 @@ class Mario : public GameObject
 	bool canFly;
 	bool isFlying;
 	bool isFloating;
+	bool isPoofTransforming;
 	
 
 	MarioForm form; 
@@ -183,7 +184,9 @@ class Mario : public GameObject
 	ULONGLONG transform_start;
 	ULONGLONG fly_start;
 	ULONGLONG flap_start;
+	ULONGLONG poof_start;
 
+	MarioForm nextPoofForm;
 	BOOLEAN isOnPlatform;
 	int coin; 
 
@@ -214,6 +217,7 @@ public:
 		canFly = false;
 		isFlying = false;
 		isFloating = false;
+		isPoofTransforming = false;
 
 		form = MarioForm::SMALL;
 		untouchable = 0;
@@ -223,6 +227,8 @@ public:
 		transform_start = -1;
 		fly_start = -1;
 		flap_start = -1;
+		poof_start = -1;
+
 		isOnPlatform = false;
 		coin = 0;
 
@@ -264,13 +270,8 @@ public:
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 
 	// Transformation
-	void StartTransform()
-	{
-		isSuperTransforming = true;
-		transform_start = GetTickCount64();
-		vx = vy = 0;
-		accelX = accelY = 0;
-	}
+	void StartTransform();
+	void StartPoofTransform(MarioForm targetForm);
 
 	void TakeDamage();
 

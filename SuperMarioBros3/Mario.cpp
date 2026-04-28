@@ -61,6 +61,17 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		return;
 	}
 
+	if (isPoofTransforming)
+	{
+		if (GetTickCount64() - poof_start > MARIO_POOF_TIME)
+		{
+			isPoofTransforming = false;
+			SetNewForm(nextPoofForm);
+			accelY = MARIO_GRAVITY;
+		}
+		return;
+	}
+
 	if (isOnPlatform)
 	{
 		canFly = false;
@@ -261,7 +272,7 @@ void Mario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
 	else if (form != MarioForm::RACOON)
 	{
 		// NOTE để nhớ làm hiệu ứng boom
-		SetNewForm(MarioForm::RACOON);
+		StartPoofTransform(MarioForm::RACOON);
 	}
 
 
@@ -442,6 +453,11 @@ void Mario::Render()
 			aniId = 1000;
 		}
 	}
+	else if (isPoofTransforming)
+	{
+		aniId = ID_ANI_MARIO_POOF;
+		renderY = y;
+	}
 	else if (isTakingDamage)
 	{
 		float heightDiff = (MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT) / 2;
@@ -497,7 +513,7 @@ void Mario::SetState(MarioState state)
 	// DIE is the end state, cannot be changed! 
 	if (this->state == static_cast<int>(MarioState::DIE)) return;
 
-	if (isTakingDamage || isSuperTransforming) return;
+	if (isTakingDamage || isSuperTransforming || isPoofTransforming) return;
 
 	switch (state)
 	{
@@ -660,7 +676,12 @@ void Mario::TakeDamage()
 {
 	if (untouchable != 0) return;
 
-	if (form > MarioForm::SMALL)
+	if (form == MarioForm::RACOON)
+	{
+		StartPoofTransform(MarioForm::SUPER);
+		StartUntouchable();
+	}
+	else if (form > MarioForm::SMALL)
 	{
 		isTakingDamage = true;
 		damage_start = GetTickCount64();
@@ -676,4 +697,22 @@ void Mario::TakeDamage()
 		DebugOut(L">>> Mario DIE >>> \n");
 		SetState(MarioState::DIE);
 	}
+}
+
+void Mario::StartTransform()
+{
+	isSuperTransforming = true;
+	transform_start = GetTickCount64();
+	vx = vy = 0;
+	accelX = accelY = 0;
+}
+
+void Mario::StartPoofTransform(MarioForm targetForm)
+{
+	isPoofTransforming = true;
+	poof_start = GetTickCount64();
+	nextPoofForm = targetForm;
+
+	vx = vy = 0;
+	accelX = accelY = 0;
 }
