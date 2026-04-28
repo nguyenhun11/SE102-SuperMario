@@ -7,8 +7,8 @@
 #include "debug.h"
 
 // Moving Speed
-#define MARIO_WALKING_SPEED		0.12f
-#define MARIO_RUNNING_SPEED		0.2f
+#define MARIO_WALKING_SPEED		0.1f
+#define MARIO_RUNNING_SPEED		0.18f
 
 // Accelaration
 #define MARIO_ACCEL_WALK_X	0.0004f
@@ -19,19 +19,27 @@
 #define MARIO_DECCEL_WALK_X	0.0002f
 #define MARIO_DECCEL_RUN_X	0.0004f
 
-// Jump speed
-#define MARIO_JUMP_SPEED_Y		0.35f
-#define MARIO_JUMP_RUN_SPEED_Y	0.4f
+//// Jump speed
+//#define MARIO_JUMP_SPEED_Y		0.35f
+//#define MARIO_JUMP_RUN_SPEED_Y	0.4f
+//
+//// Gravity
+//#define MARIO_GRAVITY			0.0007f
+
+#define MARIO_JUMP_SPEED_Y		0.3f
+#define MARIO_JUMP_RUN_SPEED_Y	0.35f
 
 // Gravity
-#define MARIO_GRAVITY			0.0007f
+#define MARIO_GRAVITY			0.00055f
 
 // Bounce force
 #define MARIO_JUMP_DEFLECT_SPEED  0.2f
-#define MARIO_HIGH_JUMP_DEFLECT_SPEED 0.4f
+#define MARIO_HIGH_JUMP_DEFLECT_SPEED 0.35f
 
-// Floating speed
-#define MARIO_FLOATING_SPEED_Y	0.15f
+// Floating & flying speed
+#define MARIO_FLYING_TIME 4000     
+#define MARIO_SLOW_FALL_SPEED 0.01f 
+#define MARIO_FLYING_UP_FORCE 0.5f
 
 
 // ------------------------- MARIO STATE -------------------------------- //
@@ -114,6 +122,9 @@ enum class MarioForm
 #define ID_ANI_MARIO_RACOON_SIT 1207
 // NOTE NÈ: thiếu slow fall với flying
 
+#define ID_ANI_MARIO_RACOON_FLYING 1213
+#define ID_ANI_MARIO_RACOON_FLOATING 1214
+
 
 // ---- Other Game feel Stuff ----
 // Die Animation
@@ -128,6 +139,10 @@ enum class MarioForm
 // Transform Animation
 #define MARIO_TRANSFORM_SUPER_TIME 1000
 #define MARIO_TRANSFORM_TIME 500
+
+// Poof Transform
+#define MARIO_POOF_TIME 500  
+#define ID_ANI_POOF 5000
 
 #define GROUND_Y 160.0f
 
@@ -154,12 +169,21 @@ class Mario : public GameObject
 	
 	bool isSuperTransforming;
 	bool isTakingDamage;
+	bool canFly;
+	bool isFlying;
+	bool isFloating;
+	
+
 	MarioForm form; 
 	int untouchable; 
+
 	ULONGLONG die_start;
 	ULONGLONG damage_start;
 	ULONGLONG untouchable_start;
 	ULONGLONG transform_start;
+	ULONGLONG fly_start;
+	ULONGLONG flap_start;
+
 	BOOLEAN isOnPlatform;
 	int coin; 
 
@@ -187,12 +211,18 @@ public:
 
 		isSuperTransforming = false;
 		isTakingDamage = false;
+		canFly = false;
+		isFlying = false;
+		isFloating = false;
+
 		form = MarioForm::SMALL;
 		untouchable = 0;
 		untouchable_start = -1;
 		die_start = -1;
 		damage_start = -1;
 		transform_start = -1;
+		fly_start = -1;
+		flap_start = -1;
 		isOnPlatform = false;
 		coin = 0;
 

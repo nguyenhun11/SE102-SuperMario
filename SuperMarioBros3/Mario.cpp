@@ -40,7 +40,10 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		if (GetTickCount64() - damage_start > MARIO_HIT_TIMEOUT)
 		{
 			isTakingDamage = false;
-			SetNewForm(MarioForm::SMALL);
+			if (form != MarioForm::SMALL && form != MarioForm::SUPER)
+				SetNewForm(MarioForm::SUPER);
+			else if(form == MarioForm::SUPER)
+				SetNewForm(MarioForm::SMALL);
 			accelY = MARIO_GRAVITY;
 		}
 		return;
@@ -56,6 +59,36 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			accelY = MARIO_GRAVITY;
 		}
 		return;
+	}
+
+	if (isOnPlatform)
+	{
+		canFly = false;
+		isFlying = false;
+		isFloating = false;
+	}
+	else
+	{
+		if (canFly && GetTickCount64() - fly_start > MARIO_FLYING_TIME)
+		{
+			canFly = false;
+		}
+
+		if (isFlying || isFloating)
+		{
+			if (GetTickCount64() - flap_start > 150)
+			{
+				isFloating = false;
+				isFlying = false;
+			}
+			else
+			{
+				if (isFloating)
+				{
+					vy = MARIO_SLOW_FALL_SPEED;
+				}
+			}
+		}
 	}
 
 	vy += accelY * dt;
@@ -342,6 +375,9 @@ int Mario::GetAniIdRacoon()
 	int aniId = -1;
 	if (!isOnPlatform)
 	{
+		if (isFlying) return ID_ANI_MARIO_RACOON_FLYING;
+		if (isFloating) return ID_ANI_MARIO_RACOON_FLOATING;
+
 		if (abs(accelX) == MARIO_ACCEL_RUN_X)
 		{
 			aniId = ID_ANI_MARIO_RACOON_JUMP_RUN;
@@ -440,6 +476,12 @@ void Mario::Render()
 			shouldRender = false;
 		}
 	}
+
+	if (aniId == ID_ANI_MARIO_RACOON_SKIDDING)
+	{
+		renderY -= 2.0f;
+	}
+
 	if (shouldRender == true)
 	{
 		animations->Get(aniId)->Render(renderX, renderY, isFlip);
@@ -461,9 +503,29 @@ void Mario::SetState(MarioState state)
 	{
 	case MarioState::RUNNING:
 		if (isSitting) break;
-		if (!isOnPlatform) return;
-		maxVx = MARIO_RUNNING_SPEED * nx;
-		accelX = MARIO_ACCEL_RUN_X * nx;
+
+		if (!isOnPlatform)
+		{
+			// trên không
+			// Nếu vận tốc hiện tại đang chậm, chỉ cho phép đánh võng với giới hạn tốc độ Đi bộ
+			if (abs(this->vx) <= MARIO_WALKING_SPEED)
+			{
+				maxVx = MARIO_WALKING_SPEED * nx;
+				accelX = MARIO_ACCEL_WALK_X * nx;
+			}
+			else
+			{
+				// Nếu đã có đà chạy nhanh từ trước khi nhảy, cho phép giữ nguyên giới hạn tốc độ Chạy
+				maxVx = MARIO_RUNNING_SPEED * nx;
+				accelX = MARIO_ACCEL_RUN_X * nx;
+			}
+		}
+		else
+		{
+			// ĐANG DƯỚI ĐẤT: Bơm ga chạy hết tốc lực
+			maxVx = MARIO_RUNNING_SPEED * nx;
+			accelX = MARIO_ACCEL_RUN_X * nx;
+		}
 		break;
 	case MarioState::WALKING:
 		if (isSitting) break;
@@ -472,12 +534,39 @@ void Mario::SetState(MarioState state)
 		break;
 	case MarioState::JUMP:
 		if (isSitting) break;
-		if (isOnPlatform)
+		if (isOnPlatform)	// ddungw duoi dat
 		{
 			if (abs(this->vx) == MARIO_RUNNING_SPEED)
+			{
 				vy = -MARIO_JUMP_RUN_SPEED_Y;
+				if (form == MarioForm::RACOON)
+				{
+					canFly = true;
+					fly_start = GetTickCount64();
+				}
+			}
 			else
 				vy = -MARIO_JUMP_SPEED_Y;
+		}
+		else	// dang tren khong
+		{
+			if (form == MarioForm::RACOON)
+			{
+				if (canFly)
+				{
+					vy = -MARIO_FLYING_UP_FORCE;
+					isFlying = true;
+					isFloating = false;
+					flap_start = GetTickCount64(); 
+				}
+				else if (vy > 0 && !isFloating) // Đang rớt và chưa trong chu kỳ vẫy đuôi
+				{
+					vy = MARIO_SLOW_FALL_SPEED;
+					isFlying = false;
+					isFloating = true;
+					flap_start = GetTickCount64();
+				}
+			}
 		}
 		break;
 
@@ -503,10 +592,6 @@ void Mario::SetState(MarioState state)
 			state = MarioState::IDLE;
 			y -= MARIO_SIT_HEIGHT_ADJUST;
 		}
-		break;
-
-	case MarioState::FLOATING:
-		vy = -MARIO_FLOATING_SPEED_Y;
 		break;
 
 	case MarioState::IDLE:
