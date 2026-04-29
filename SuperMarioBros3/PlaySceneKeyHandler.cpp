@@ -14,21 +14,28 @@ void PlaySceneKeyHandler::OnKeyDown(int KeyCode)
 	switch (KeyCode)
 	{
 	case DIK_DOWN:
+	case DIK_S:
 		mario->SetState(MarioState::SIT);
 		break;
-	case DIK_S:
+	case DIK_C:
+	case DIK_SPACE:
 		mario->SetState(MarioState::JUMP);
 		mario->IsHoldingJump = true; // 
 		break;
+	/// begin Test Mario Form
 	case DIK_1:
 		mario->SetNewForm(MarioForm::SMALL);
 		break;
 	case DIK_2:
 		mario->SetNewForm(MarioForm::SUPER);
 		break;
+	case DIK_3:
+		mario->SetNewForm(MarioForm::RACOON);
 	case DIK_0:
 		mario->SetState(MarioState::DIE);
 		break;
+	/// end Test Mario Form
+
 	case DIK_R: // reset
 		//Reload();
 		break;
@@ -44,11 +51,13 @@ void PlaySceneKeyHandler::OnKeyUp(int KeyCode)
 
 	switch (KeyCode)
 	{
-	case DIK_S:
+	case DIK_C:
+	case DIK_SPACE:
 		mario->SetState(MarioState::JUMP_RELEASE);
 		mario->IsHoldingJump = false;
 		break;
 	case DIK_DOWN:
+	case DIK_S:
 		mario->SetState(MarioState::SIT_RELEASE);
 		break;
 	}
@@ -60,18 +69,18 @@ void PlaySceneKeyHandler::KeyState(BYTE *states)
 	Mario* mario = (Mario*)((LPPLAYSCENE)SceneManager::GetInstance()->GetCurrentScene())->GetPlayer();
 	if (mario == NULL) return;
 
-	if (input->IsKeyDown(DIK_RIGHT))
+	if (input->IsKeyDown(DIK_RIGHT) || input->IsKeyDown(DIK_D))
 	{
 		mario->SetDirection(1);
-		if (input->IsKeyDown(DIK_A))
+		if (input->IsKeyDown(DIK_X) || input->IsKeyDown(DIK_LSHIFT))
 			mario->SetState(MarioState::RUNNING);
 		else
 			mario->SetState(MarioState::WALKING);
 	}
-	else if (input->IsKeyDown(DIK_LEFT))
+	else if (input->IsKeyDown(DIK_LEFT) || input->IsKeyDown(DIK_A))
 	{
 		mario->SetDirection(-1);
-		if (input->IsKeyDown(DIK_A))
+		if (input->IsKeyDown(DIK_X) || input->IsKeyDown(DIK_LSHIFT))
 			mario->SetState(MarioState::RUNNING);
 		else
 			mario->SetState(MarioState::WALKING);
