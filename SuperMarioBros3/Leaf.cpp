@@ -5,7 +5,7 @@ Leaf::Leaf(float x, float y) : GameObject(x, y)
 	this->startX = x;
 	this->startY = y;
 	SetState(LeafState::SPAWNING);
-	zIndex = 1;
+	zIndex = 5;
 }
 
 void Leaf::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)

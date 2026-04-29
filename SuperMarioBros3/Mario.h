@@ -144,7 +144,7 @@ enum class MarioForm
 #define MARIO_TRANSFORM_TIME 500
 
 // Poof Transform
-#define MARIO_POOF_TIME 500  
+#define MARIO_POOF_TIME 320
 #define ID_ANI_MARIO_POOF 1980
 
 #define GROUND_Y 160.0f

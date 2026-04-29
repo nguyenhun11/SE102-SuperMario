@@ -84,10 +84,10 @@ void QuestionBlock::SpawnItem()
 			Mushroom* mushroom = new Mushroom(x, y);
 			playScene->AddObject(mushroom);
 		}
-		else if(mario->GetCurrentForm() == MarioForm::SUPER)
+		else
 		{
 			// sinh đồ xịn honw nếu con mario đang ở trạng thái TO
-			Leaf* leaf = new Leaf(x, y);
+			Leaf* leaf = new Leaf(x, y - 16);
 			playScene->AddObject(leaf);
 		}
 	}
