@@ -7,29 +7,47 @@
 #include "debug.h"
 
 // Moving Speed
-#define MARIO_WALKING_SPEED		0.12f
-#define MARIO_RUNNING_SPEED		0.2f
+#define MARIO_WALKING_SPEED		0.1f
+#define MARIO_RUNNING_SPEED		0.18f
 
 // Accelaration
-#define MARIO_ACCEL_WALK_X	0.0004f
-#define MARIO_ACCEL_RUN_X	0.0008f
-#define MARIO_ACCEL_SKID	0.0002f
+#define MARIO_ACCEL_WALK_X	0.0003f
+#define MARIO_ACCEL_RUN_X	0.0005f
+#define MARIO_ACCEL_SKID	0.00015f
 
 // Deccelation
 #define MARIO_DECCEL_WALK_X	0.0002f
 #define MARIO_DECCEL_RUN_X	0.0004f
 
-// Jump speed
-#define MARIO_JUMP_SPEED_Y		0.35f
-#define MARIO_JUMP_RUN_SPEED_Y	0.4f
+//// Jump speed
+//#define MARIO_JUMP_SPEED_Y		0.35f
+//#define MARIO_JUMP_RUN_SPEED_Y	0.4f
+//
+//// Gravity
+//#define MARIO_GRAVITY			0.0007f
+
+#define MARIO_JUMP_SPEED_Y		0.3f
+#define MARIO_JUMP_RUN_SPEED_Y	0.35f
 
 // Gravity
-#define MARIO_GRAVITY			0.0007f
+#define MARIO_GRAVITY			0.0006f
 
 // Bounce force
 #define MARIO_JUMP_DEFLECT_SPEED  0.2f
-#define MARIO_HIGH_JUMP_DEFLECT_SPEED 0.4f
+#define MARIO_HIGH_JUMP_DEFLECT_SPEED 0.35f
 
+// Floating & flying speed
+#define MARIO_FLYING_TIME 4000    
+#define MARIO_FLOATING_TIME	250
+#define MARIO_SLOW_FALL_SPEED 0.01f 
+#define MARIO_FLYING_UP_FORCE 0.5f
+
+// Tail attack 
+#define MARIO_SPIN_TIME	240
+
+// P-meter
+#define MARIO_PMETER_MAX 7
+#define MARIO_PMETER_CHARGE_TIME 200 
 
 // ------------------------- MARIO STATE -------------------------------- //
 #pragma	region	MARIO_STATES & MARIO_FORMS
@@ -61,8 +79,8 @@ enum class MarioForm
 {
 	SMALL = 0,
 	SUPER = 1,
-	FIRE = 2,
-	RACOON = 3
+	RACOON = 2,
+	FIRE = 3
 };
 
 #pragma	endregion
@@ -97,19 +115,42 @@ enum class MarioForm
 #define ID_ANI_MARIO_SMALL_JUMP_WALK 1004
 #define ID_ANI_MARIO_SMALL_JUMP_RUN 1005
 
+// RACOON MARIO
+#define ID_ANI_MARIO_RACOON_IDLE 1200
+#define ID_ANI_MARIO_RACOON_SKIDDING 1203
+
+#define ID_ANI_MARIO_RACOON_WALKING 1201
+#define ID_ANI_MARIO_RACOON_RUNNING 1202
+
+#define ID_ANI_MARIO_RACOON_JUMP_WALK 1204
+#define ID_ANI_MARIO_RACOON_JUMP_RUN 1205
+#define ID_ANI_MARIO_RACOON_FALLING	1206
+
+#define ID_ANI_MARIO_RACOON_SIT 1207
+#define ID_ANI_MARIO_RACOON_SPIN 1215
+// NOTE NÈ: thiếu slow fall với flying
+
+#define ID_ANI_MARIO_RACOON_FLYING 1213
+#define ID_ANI_MARIO_RACOON_FLOATING 1214
+
+
 // ---- Other Game feel Stuff ----
 // Die Animation
 #define	MARIO_DIE_TIMEOUT	800
 #define MARIO_DIE_BOUNCE_FORCE	0.25f
-#define	MARIO_DIE_GRAVITY	0.0005f
+#define	MARIO_DIE_GRAVITY	0.0004f
 
 // Hit Animation
-#define MARIO_HIT_TIMEOUT	500
+#define MARIO_HIT_TIMEOUT	1000
 #pragma endregion
 
 // Transform Animation
-#define MARIO_TRANSFORM_SUPER_TIME 500
+#define MARIO_TRANSFORM_SUPER_TIME 1000
 #define MARIO_TRANSFORM_TIME 500
+
+// Poof Transform
+#define MARIO_POOF_TIME 320
+#define ID_ANI_MARIO_POOF 1980
 
 #define GROUND_Y 160.0f
 
@@ -136,12 +177,29 @@ class Mario : public GameObject
 	
 	bool isSuperTransforming;
 	bool isTakingDamage;
+	bool canFly;
+	bool isFlying;
+	bool isFloating;
+	bool isPoofTransforming;
+	bool isSpinning;
+	
+	// pmeter
+	int pmeter;
+
 	MarioForm form; 
 	int untouchable; 
+
 	ULONGLONG die_start;
 	ULONGLONG damage_start;
 	ULONGLONG untouchable_start;
 	ULONGLONG transform_start;
+	ULONGLONG fly_start;
+	ULONGLONG flap_start;
+	ULONGLONG poof_start;
+	ULONGLONG spin_start;
+	ULONGLONG pmeter_start;
+
+	MarioForm nextPoofForm;
 	BOOLEAN isOnPlatform;
 	int coin; 
 
@@ -150,9 +208,11 @@ class Mario : public GameObject
 	void OnCollisionWithPortal(LPCOLLISIONEVENT e);
 	void OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e);
 	void OnCollisionWithMushroom(LPCOLLISIONEVENT e);
+	void OnCollisionWithLeaf(LPCOLLISIONEVENT e);
 
 	int GetAniIdBig();
 	int GetAniIdSmall();
+	int GetAniIdRacoon();
 
 	MarioState currentState;
 
@@ -164,19 +224,33 @@ public:
 		maxVx = 0.0f;
 		accelX = 0.0f;
 		accelY = MARIO_GRAVITY; 
+		pmeter = 0;
 
+		isOnPlatform = false;
 		isSuperTransforming = false;
 		isTakingDamage = false;
-		form = MarioForm::SMALL;
+		canFly = false;
+		isFlying = false;
+		isFloating = false;
+		isPoofTransforming = false;
+		isSpinning = false;
+
 		untouchable = 0;
 		untouchable_start = -1;
 		die_start = -1;
 		damage_start = -1;
 		transform_start = -1;
-		isOnPlatform = false;
+		fly_start = -1;
+		flap_start = -1;
+		poof_start = -1;
+		spin_start = -1;
+		pmeter_start = -1;
+
 		coin = 0;
 
+		form = MarioForm::SMALL;
 		currentState = MarioState::IDLE;
+		nextPoofForm = MarioForm::RACOON;
 
 		zIndex = 10;
 	}
@@ -214,18 +288,23 @@ public:
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 
 	// Transformation
-	void StartTransform()
-	{
-		isSuperTransforming = true;
-		transform_start = GetTickCount64();
-		vx = vy = 0;
-		accelX = accelY = 0;
-	}
+	void StartTransform();
+	void StartPoofTransform(MarioForm targetForm);
 
+	// Behaviours
+	void Attack();
 	void TakeDamage();
+
+	// Handle Update
+	void HandleDying(DWORD dt, vector<LPGAMEOBJECT>* coObjects); 
+	void HandleTakingDamage(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
+	void HandleSpinning(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
+	void HandleTransform(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
+	void HandlePMeter(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 
 	// Getters & Setters
 	float GetX() { return x; }
 	float GetY() { return y; }
 	MarioForm GetCurrentForm() { return form; }
+	int GetPMeter() { return pmeter; }
 };

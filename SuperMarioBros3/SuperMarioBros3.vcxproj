@@ -159,6 +159,7 @@
     <ClCompile Include="GameGlobal.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Goomba.cpp" />
+    <ClCompile Include="Leaf.cpp" />
     <ClCompile Include="Mushroom.cpp" />
     <ClCompile Include="NineSliceBox.cpp" />
     <ClCompile Include="Ground.cpp" />
@@ -191,6 +192,7 @@
     <ClInclude Include="GameGlobal.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Goomba.h" />
+    <ClInclude Include="Leaf.h" />
     <ClInclude Include="Mushroom.h" />
     <ClInclude Include="NineSliceBox.h" />
     <ClInclude Include="Ground.h" />
@@ -218,6 +220,7 @@
     <Text Include="coin.txt" />
     <Text Include="game-data.txt" />
     <Text Include="goomba.txt" />
+    <Text Include="leaf.txt" />
     <Text Include="map1.txt" />
     <Text Include="mario.txt" />
     <Text Include="mushroom.txt" />
