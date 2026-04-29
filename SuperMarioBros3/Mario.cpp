@@ -17,61 +17,9 @@
 
 void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
-	if (state == static_cast<int>(MarioState::DIE))
-	{
-		// Kiểm tra xem đã hết thời gian timeout chưa
-		if (GetTickCount64() - die_start > MARIO_DIE_TIMEOUT && accelY == 0)
-		{
-			// nảy mario lên
-			vy = -MARIO_DIE_BOUNCE_FORCE;
-			accelY = MARIO_DIE_GRAVITY;
-		}
-
-		vy += accelY * dt;
-		y += vy * dt;
-		x += vx * dt;
-
-		return; 
-	}
-
-
-	if (isTakingDamage)
-	{
-		if (GetTickCount64() - damage_start > MARIO_HIT_TIMEOUT)
-		{
-			isTakingDamage = false;
-			if (form != MarioForm::SMALL && form != MarioForm::SUPER)
-				SetNewForm(MarioForm::SUPER);
-			else if(form == MarioForm::SUPER)
-				SetNewForm(MarioForm::SMALL);
-			accelY = MARIO_GRAVITY;
-		}
-		return;
-	}
-
-	if (isSuperTransforming)
-	{
-		if (GetTickCount64() - transform_start > MARIO_TRANSFORM_SUPER_TIME)
-		{
-			untouchable = 0;
-			isSuperTransforming = false;
-			SetNewForm(MarioForm::SUPER);
-			accelY = MARIO_GRAVITY;
-		}
-		return;
-	}
-
-	if (isPoofTransforming)
-	{
-		if (GetTickCount64() - poof_start > MARIO_POOF_TIME)
-		{
-			isPoofTransforming = false;
-			SetNewForm(nextPoofForm);
-			accelY = MARIO_GRAVITY;
-		}
-		return;
-	}
-
+	HandleDying(dt, coObjects);
+	HandleTakingDamage(dt, coObjects);
+	HandleTransform(dt, coObjects);
 	HandleSpinning(dt, coObjects);
 
 	if (isOnPlatform)
@@ -806,3 +754,68 @@ void Mario::HandleSpinning(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 	}
 }
+
+void Mario::HandleDying(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+{
+	if (state == static_cast<int>(MarioState::DIE))
+	{
+		// Kiểm tra xem đã hết thời gian timeout chưa
+		if (GetTickCount64() - die_start > MARIO_DIE_TIMEOUT && accelY == 0)
+		{
+			// nảy mario lên
+			vy = -MARIO_DIE_BOUNCE_FORCE;
+			accelY = MARIO_DIE_GRAVITY;
+		}
+
+		vy += accelY * dt;
+		y += vy * dt;
+		x += vx * dt;
+
+		return;
+	}
+}
+
+void Mario::HandleTakingDamage(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+{
+	if (isTakingDamage)
+	{
+		if (GetTickCount64() - damage_start > MARIO_HIT_TIMEOUT)
+		{
+			isTakingDamage = false;
+			if (form != MarioForm::SMALL && form != MarioForm::SUPER)
+				SetNewForm(MarioForm::SUPER);
+			else if (form == MarioForm::SUPER)
+				SetNewForm(MarioForm::SMALL);
+			accelY = MARIO_GRAVITY;
+		}
+		return;
+	}
+}
+
+void Mario::HandleTransform(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+{
+	if (isSuperTransforming)
+	{
+		if (GetTickCount64() - transform_start > MARIO_TRANSFORM_SUPER_TIME)
+		{
+			untouchable = 0;
+			isSuperTransforming = false;
+			SetNewForm(MarioForm::SUPER);
+			accelY = MARIO_GRAVITY;
+		}
+		return;
+	}
+
+	if (isPoofTransforming)
+	{
+		if (GetTickCount64() - poof_start > MARIO_POOF_TIME)
+		{
+			isPoofTransforming = false;
+			SetNewForm(nextPoofForm);
+			accelY = MARIO_GRAVITY;
+		}
+		return;
+	}
+}
+
+#pragma endregion

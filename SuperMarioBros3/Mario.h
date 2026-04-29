@@ -30,7 +30,7 @@
 #define MARIO_JUMP_RUN_SPEED_Y	0.35f
 
 // Gravity
-#define MARIO_GRAVITY			0.00055f
+#define MARIO_GRAVITY			0.0006f
 
 // Bounce force
 #define MARIO_JUMP_DEFLECT_SPEED  0.2f
@@ -217,6 +217,7 @@ public:
 		accelX = 0.0f;
 		accelY = MARIO_GRAVITY; 
 
+		isOnPlatform = false;
 		isSuperTransforming = false;
 		isTakingDamage = false;
 		canFly = false;
@@ -225,7 +226,6 @@ public:
 		isPoofTransforming = false;
 		isSpinning = false;
 
-		form = MarioForm::SMALL;
 		untouchable = 0;
 		untouchable_start = -1;
 		die_start = -1;
@@ -236,10 +236,11 @@ public:
 		poof_start = -1;
 		spin_start = -1;
 
-		isOnPlatform = false;
 		coin = 0;
 
+		form = MarioForm::SMALL;
 		currentState = MarioState::IDLE;
+		nextPoofForm = MarioForm::RACOON;
 
 		zIndex = 10;
 	}
@@ -285,7 +286,10 @@ public:
 	void TakeDamage();
 
 	// Handle Update
+	void HandleDying(DWORD dt, vector<LPGAMEOBJECT>* coObjects); 
+	void HandleTakingDamage(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void HandleSpinning(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
+	void HandleTransform(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 
 	// Getters & Setters
 	float GetX() { return x; }
