@@ -72,6 +72,8 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		return;
 	}
 
+	HandleSpinning(dt, coObjects);
+
 	if (isOnPlatform)
 	{
 		canFly = false;
@@ -383,6 +385,7 @@ int Mario::GetAniIdBig()
 
 int Mario::GetAniIdRacoon()
 {
+	if (isSpinning) return ID_ANI_MARIO_RACOON_SPIN;
 	int aniId = -1;
 	if (!isOnPlatform)
 	{
@@ -493,9 +496,30 @@ void Mario::Render()
 		}
 	}
 
+	/// ---------- Điều chỉnh pivot
 	if (aniId == ID_ANI_MARIO_RACOON_SKIDDING)
 	{
 		renderY -= 2.0f;
+	}
+	if (aniId == ID_ANI_MARIO_RACOON_SPIN)
+	{
+		ULONGLONG time_passed = GetTickCount64() - spin_start;
+		if (time_passed < 50)
+		{
+			renderX = x;
+		}
+		else if (time_passed >= 50 && time_passed < 100)
+		{
+			renderX += 2.0f * nx;
+		}
+		else if (time_passed >= 100 && time_passed < 150)
+		{
+			renderX += 3.0f * nx;
+		}
+		else if (time_passed >= 150 && time_passed < 200)
+		{
+			renderX += 2.0f * nx;
+		}
 	}
 
 	if (shouldRender == true)
@@ -672,6 +696,35 @@ void Mario::SetNewForm(MarioForm newForm)
 	this->form = newForm;
 }
 
+
+// ============================== TRANSFORM ===============================
+void Mario::StartTransform()
+{
+	isSuperTransforming = true;
+	transform_start = GetTickCount64();
+	vx = vy = 0;
+	accelX = accelY = 0;
+}
+
+void Mario::StartPoofTransform(MarioForm targetForm)
+{
+	isPoofTransforming = true;
+	poof_start = GetTickCount64();
+	nextPoofForm = targetForm;
+
+	vx = vy = 0;
+	accelX = accelY = 0;
+}
+
+// ============================== BEHAVIOUR ===============================
+void Mario::Attack()
+{
+	if (form != MarioForm::RACOON || isSpinning == true) return;
+	isSpinning = true;
+	spin_start = GetTickCount64();
+}
+
+
 void Mario::TakeDamage()
 {
 	if (untouchable != 0) return;
@@ -699,20 +752,57 @@ void Mario::TakeDamage()
 	}
 }
 
-void Mario::StartTransform()
+// ============================== HANDLE UPDATE ===============================
+#pragma region HANDLE UPDATE
+void Mario::HandleSpinning(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	isSuperTransforming = true;
-	transform_start = GetTickCount64();
-	vx = vy = 0;
-	accelX = accelY = 0;
-}
+	if (isSpinning)
+	{
+		if (GetTickCount64() - spin_start > MARIO_SPIN_TIME)
+			isSpinning = false;
+		else
+		{
+			if ((GetTickCount64() - spin_start >= MARIO_SPIN_TIME * 0.25) && (GetTickCount64() - spin_start <= MARIO_SPIN_TIME * 0.75))
+			{
+				float ml, mt, mr, mb;
+				GetBoundingBox(ml, mt, mr, mb);
+				ml -= 12.0f;
+				mr += 12.0f;
+				for (size_t i = 0; i < coObjects->size(); i++)
+				{
+					LPGAMEOBJECT obj = coObjects->at(i);
+					if (dynamic_cast<Goomba*>(obj))
+					{
+						float gl, gt, gr, gb;
+						obj->GetBoundingBox(gl, gt, gr, gb);
 
-void Mario::StartPoofTransform(MarioForm targetForm)
-{
-	isPoofTransforming = true;
-	poof_start = GetTickCount64();
-	nextPoofForm = targetForm;
+						if (mr >= gl && ml <= gr && mb >= gt && mt <= gb)
+						{
+							Goomba* goomba = dynamic_cast<Goomba*>(obj);
+							if (goomba->GetState() != GOOMBA_STATE_DIE)
+							{
+								// Goomba bị quất đuôi sẽ văng ngược lên trời
+								goomba->SetState(GOOMBA_STATE_DIE);
+								//goomba->SetVy(-0.2f); // nhay len
+							}
+						}
+					}
 
-	vx = vy = 0;
-	accelX = accelY = 0;
+					if (dynamic_cast<QuestionBlock*>(obj))
+					{
+						QuestionBlock* qb = dynamic_cast<QuestionBlock*>(obj);
+						if (qb->GetState() == static_cast<int>(QuestionBlockState::ACTIVE))
+						{
+							float qbl, qbt, qbr, qbb;
+							obj->GetBoundingBox(qbl, qbt, qbr, qbb);
+							if (mr >= qbl && ml <= qbr && mb >= qbt && mt <= qbb)
+							{
+								qb->SetState(QuestionBlockState::BOUNCING);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }
