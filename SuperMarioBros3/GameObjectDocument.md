@@ -19,7 +19,7 @@ Trước khi phân hoạch các ID, cùng phân loại các loại vật thể, 
 1. Player: nhân vật được người chơi điều khiển
 2. Enemies: quái vật
 	- Goomba
-	- Kooba
+	- Koopa
 	- Piranha Plant
 	- ...
 3. Interactive Blocks: Khối tương tác và môi trường có phản ứng
