@@ -11,7 +11,7 @@
 #define MARIO_RUNNING_SPEED		0.18f
 
 // Accelaration
-#define MARIO_ACCEL_WALK_X	0.0003f
+#define MARIO_ACCEL_WALK_X	0.0002f
 #define MARIO_ACCEL_RUN_X	0.0006f
 #define MARIO_ACCEL_SKID	0.0002f
 
@@ -37,12 +37,13 @@
 #define MARIO_HIGH_JUMP_DEFLECT_SPEED 0.35f
 
 // Floating & flying speed
-#define MARIO_FLYING_TIME 4000     
+#define MARIO_FLYING_TIME 4000    
+#define MARIO_FLOATING_TIME	250
 #define MARIO_SLOW_FALL_SPEED 0.01f 
 #define MARIO_FLYING_UP_FORCE 0.5f
 
 // Tail attack 
-#define MARIO_SPIN_TIME	200
+#define MARIO_SPIN_TIME	240
 
 // ------------------------- MARIO STATE -------------------------------- //
 #pragma	region	MARIO_STATES & MARIO_FORMS

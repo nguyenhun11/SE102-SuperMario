@@ -37,7 +37,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 		if (isFlying || isFloating)
 		{
-			if (GetTickCount64() - flap_start > 150)
+			if (GetTickCount64() - flap_start > MARIO_FLOATING_TIME)
 			{
 				isFloating = false;
 				isFlying = false;
@@ -420,8 +420,8 @@ void Mario::Render()
 		}
 		else
 		{
-			aniId = 1000; 
-			renderY = y + heightDiff; 
+			aniId = 1000;
+			renderY = y + heightDiff;
 		}
 	}
 	else
@@ -431,7 +431,10 @@ void Mario::Render()
 		else if (form == MarioForm::SMALL)
 			aniId = GetAniIdSmall();
 		else if (form == MarioForm::RACOON)
+		{
 			aniId = GetAniIdRacoon();
+			renderX -= 3.0f * nx;
+		}
 	}
 
 	bool isFlip = (nx > 0);
@@ -452,21 +455,25 @@ void Mario::Render()
 	if (aniId == ID_ANI_MARIO_RACOON_SPIN)
 	{
 		ULONGLONG time_passed = GetTickCount64() - spin_start;
-		if (time_passed < 50)
+		if (time_passed < (MARIO_SPIN_TIME) * 0.25)
 		{
-			renderX = x;
+			renderX -= 1.0f * nx;
 		}
-		else if (time_passed >= 50 && time_passed < 100)
-		{
-			renderX += 2.0f * nx;
-		}
-		else if (time_passed >= 100 && time_passed < 150)
+		else if (time_passed >= (MARIO_SPIN_TIME) * 0.25 && time_passed < (MARIO_SPIN_TIME * 0.5))
 		{
 			renderX += 3.0f * nx;
 		}
-		else if (time_passed >= 150 && time_passed < 200)
+		else if (time_passed >= (MARIO_SPIN_TIME) * 0.5 && time_passed < (MARIO_SPIN_TIME) * 0.75)
 		{
-			renderX += 2.0f * nx;
+			renderX += 6.0f * nx;
+		}
+		else if (time_passed >= (MARIO_SPIN_TIME) * 0.75 && time_passed < (MARIO_SPIN_TIME) * 1.0)
+		{
+			renderX += 3.0f * nx;
+		}
+		else
+		{
+			renderX -= 1.0f * nx;
 		}
 	}
 
