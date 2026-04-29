@@ -68,19 +68,24 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 	}
 
+	HandlePMeter(dt, coObjects);
+
 	vx += effectiveAccel * dt;
 
-	if (accelX == 0 && vx != 0)
+	if (isOnPlatform)
 	{
-		if (vx > 0)	// mario đang di chuyển về bên phải
+		if (accelX == 0 && vx != 0)
 		{
-			vx -= MARIO_DECCEL_WALK_X * dt;
-			if (vx < 0) vx = 0;
-		}
-		else		// mario dang di chuyen ve ben trai
-		{
-			vx += MARIO_DECCEL_WALK_X * dt;
-			if (vx > 0) vx = 0;
+			if (vx > 0)	// mario đang di chuyển về bên phải
+			{
+				vx -= MARIO_DECCEL_WALK_X * dt;
+				if (vx < 0) vx = 0;
+			}
+			else		// mario dang di chuyen ve ben trai
+			{
+				vx += MARIO_DECCEL_WALK_X * dt;
+				if (vx > 0) vx = 0;
+			}
 		}
 	}
 
@@ -241,7 +246,7 @@ int Mario::GetAniIdSmall()
 	int aniId = -1;
 	if (!isOnPlatform)	// mario tren khong
 	{
-		if (abs(accelX) == MARIO_ACCEL_RUN_X)
+		if (pmeter == MARIO_PMETER_MAX)
 		{
 			aniId = ID_ANI_MARIO_SMALL_JUMP_RUN;
 		}
@@ -268,7 +273,10 @@ int Mario::GetAniIdSmall()
 				else if (vx * accelX < 0 && accelX != 0)	// Nguoi choi tha nut di chuyen --> Skidding
 					aniId = ID_ANI_MARIO_SMALL_SKIDDING;
 				else if (abs(accelX) == MARIO_ACCEL_RUN_X)
-					aniId = ID_ANI_MARIO_SMALL_RUNNING;
+				{
+					if (pmeter == MARIO_PMETER_MAX) aniId = ID_ANI_MARIO_SMALL_RUNNING;
+					else aniId = ID_ANI_MARIO_SMALL_WALKING;
+				}
 				else if (abs(accelX) == MARIO_ACCEL_WALK_X)
 					aniId = ID_ANI_MARIO_SMALL_WALKING;
 			}
@@ -288,20 +296,14 @@ int Mario::GetAniIdBig()
 	int aniId = -1;
 	if (!isOnPlatform)
 	{
-		if (abs(accelX) == MARIO_ACCEL_RUN_X)
+		if (pmeter == MARIO_PMETER_MAX)
 		{
 			aniId = ID_ANI_MARIO_SUPER_JUMP_RUN;
 		}
 		else
 		{
-			if (vy > 0) // Lúc rớt xuống
-			{
-				aniId = ID_ANI_MARIO_SUPER_FALLING;
-			}
-			else // Lúc bay lên
-			{
-				aniId = ID_ANI_MARIO_SUPER_JUMP_WALK;
-			}
+			if (vy > 0) aniId = ID_ANI_MARIO_SUPER_FALLING;
+			else aniId = ID_ANI_MARIO_SUPER_JUMP_WALK;
 		}
 	}
 	else
@@ -316,12 +318,13 @@ int Mario::GetAniIdBig()
 			}
 			else // vx < 0
 			{
-				if (accelX == 0)
-					aniId = ID_ANI_MARIO_SUPER_WALKING;
-				if (accelX * vx < 0 && accelX != 0)
-					aniId = ID_ANI_MARIO_SUPER_SKIDDING;
+				if (accelX == 0) aniId = ID_ANI_MARIO_SUPER_WALKING;
+				if (accelX * vx < 0 && accelX != 0) aniId = ID_ANI_MARIO_SUPER_SKIDDING;
 				else if (abs(accelX) == MARIO_ACCEL_RUN_X)
-					aniId = ID_ANI_MARIO_SUPER_RUNNING;
+				{
+					if (pmeter == MARIO_PMETER_MAX) aniId = ID_ANI_MARIO_SUPER_RUNNING;
+					else aniId = ID_ANI_MARIO_SUPER_WALKING;
+				}
 				else if (abs(accelX) == MARIO_ACCEL_WALK_X)
 					aniId = ID_ANI_MARIO_SUPER_WALKING;
 			}
@@ -340,16 +343,14 @@ int Mario::GetAniIdRacoon()
 		if (isFlying) return ID_ANI_MARIO_RACOON_FLYING;
 		if (isFloating) return ID_ANI_MARIO_RACOON_FLOATING;
 
-		if (abs(accelX) == MARIO_ACCEL_RUN_X)
+		if (pmeter == MARIO_PMETER_MAX)
 		{
 			aniId = ID_ANI_MARIO_RACOON_JUMP_RUN;
 		}
 		else
 		{
-			if (vy > 0) // Lúc rớt xuống
-				aniId = ID_ANI_MARIO_RACOON_FALLING;
-			else // Lúc bay lên
-				aniId = ID_ANI_MARIO_RACOON_JUMP_WALK;
+			if (vy > 0) aniId = ID_ANI_MARIO_RACOON_FALLING;
+			else aniId = ID_ANI_MARIO_RACOON_JUMP_WALK;
 		}
 	}
 	else
@@ -362,14 +363,15 @@ int Mario::GetAniIdRacoon()
 			{
 				aniId = ID_ANI_MARIO_RACOON_IDLE;
 			}
-			else // Đang di chuyển
+			else
 			{
-				if (accelX == 0)
-					aniId = ID_ANI_MARIO_RACOON_WALKING;
-				else if (accelX * vx < 0 && accelX != 0)
-					aniId = ID_ANI_MARIO_RACOON_SKIDDING;
+				if (accelX == 0) aniId = ID_ANI_MARIO_RACOON_WALKING;
+				else if (accelX * vx < 0 && accelX != 0) aniId = ID_ANI_MARIO_RACOON_SKIDDING;
 				else if (abs(accelX) == MARIO_ACCEL_RUN_X)
-					aniId = ID_ANI_MARIO_RACOON_RUNNING;
+				{
+					if (pmeter == MARIO_PMETER_MAX) aniId = ID_ANI_MARIO_RACOON_RUNNING;
+					else aniId = ID_ANI_MARIO_RACOON_WALKING;
+				}
 				else if (abs(accelX) == MARIO_ACCEL_WALK_X)
 					aniId = ID_ANI_MARIO_RACOON_WALKING;
 			}
@@ -822,6 +824,26 @@ void Mario::HandleTransform(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			accelY = MARIO_GRAVITY;
 		}
 		return;
+	}
+}
+
+void Mario::HandlePMeter(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+{
+	if (isOnPlatform && abs(vx) >= MARIO_RUNNING_SPEED * 0.8f && state == static_cast<int>(MarioState::RUNNING))
+	{
+		if (GetTickCount64() - pmeter_start > MARIO_PMETER_CHARGE_TIME)
+		{
+			if (pmeter < MARIO_PMETER_MAX) pmeter++;
+			pmeter_start = GetTickCount64();
+		}
+	}
+	else if (isOnPlatform && pmeter > 0 && !isFlying && !canFly)
+	{
+		if (GetTickCount64() - pmeter_start > MARIO_PMETER_CHARGE_TIME * 1.5f)
+		{
+			pmeter--;
+			pmeter_start = GetTickCount64();
+		}
 	}
 }
 

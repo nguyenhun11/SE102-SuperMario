@@ -11,9 +11,9 @@
 #define MARIO_RUNNING_SPEED		0.18f
 
 // Accelaration
-#define MARIO_ACCEL_WALK_X	0.0002f
-#define MARIO_ACCEL_RUN_X	0.0006f
-#define MARIO_ACCEL_SKID	0.0002f
+#define MARIO_ACCEL_WALK_X	0.0003f
+#define MARIO_ACCEL_RUN_X	0.0005f
+#define MARIO_ACCEL_SKID	0.00015f
 
 // Deccelation
 #define MARIO_DECCEL_WALK_X	0.0002f
@@ -44,6 +44,10 @@
 
 // Tail attack 
 #define MARIO_SPIN_TIME	240
+
+// P-meter
+#define MARIO_PMETER_MAX 7
+#define MARIO_PMETER_CHARGE_TIME 200 
 
 // ------------------------- MARIO STATE -------------------------------- //
 #pragma	region	MARIO_STATES & MARIO_FORMS
@@ -134,7 +138,7 @@ enum class MarioForm
 // Die Animation
 #define	MARIO_DIE_TIMEOUT	800
 #define MARIO_DIE_BOUNCE_FORCE	0.25f
-#define	MARIO_DIE_GRAVITY	0.0005f
+#define	MARIO_DIE_GRAVITY	0.0004f
 
 // Hit Animation
 #define MARIO_HIT_TIMEOUT	1000
@@ -179,6 +183,8 @@ class Mario : public GameObject
 	bool isPoofTransforming;
 	bool isSpinning;
 	
+	// pmeter
+	int pmeter;
 
 	MarioForm form; 
 	int untouchable; 
@@ -191,6 +197,7 @@ class Mario : public GameObject
 	ULONGLONG flap_start;
 	ULONGLONG poof_start;
 	ULONGLONG spin_start;
+	ULONGLONG pmeter_start;
 
 	MarioForm nextPoofForm;
 	BOOLEAN isOnPlatform;
@@ -217,6 +224,7 @@ public:
 		maxVx = 0.0f;
 		accelX = 0.0f;
 		accelY = MARIO_GRAVITY; 
+		pmeter = 0;
 
 		isOnPlatform = false;
 		isSuperTransforming = false;
@@ -236,6 +244,7 @@ public:
 		flap_start = -1;
 		poof_start = -1;
 		spin_start = -1;
+		pmeter_start = -1;
 
 		coin = 0;
 
@@ -291,9 +300,11 @@ public:
 	void HandleTakingDamage(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void HandleSpinning(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void HandleTransform(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
+	void HandlePMeter(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 
 	// Getters & Setters
 	float GetX() { return x; }
 	float GetY() { return y; }
 	MarioForm GetCurrentForm() { return form; }
+	int GetPMeter() { return pmeter; }
 };
