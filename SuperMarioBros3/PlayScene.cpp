@@ -8,6 +8,7 @@
 #include "Sprites.h"
 #include "Portal.h"
 #include "Coin.h"
+#include "Koopa.h"
 #include "Platform.h"
 #include "QuestionBlock.h"
 #include "Ground.h"
@@ -130,6 +131,7 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 	case OBJECT_TYPE_GOOMBA: obj = new Goomba(x,y); break;
 	case OBJECT_TYPE_BRICK: obj = new Brick(x,y); break;
 	case OBJECT_TYPE_COIN: obj = new Coin(x, y); break;
+	case OBJECT_TYPE_KOOPA: obj = new Koopa(x, y); break;
 
 	case OBJECT_TYPE_PLATFORM:
 	{

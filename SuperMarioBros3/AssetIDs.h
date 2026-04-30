@@ -35,7 +35,7 @@ Each ID for a type of object will BEGIN with:
 #define OBJECT_TYPE_MARIO	0
 #define OBJECT_TYPE_BRICK	1
 #define OBJECT_TYPE_GOOMBA	2
-#define OBJECT_TYPE_KOOPAS	3
+#define OBJECT_TYPE_KOOPA	3
 
 #define OBJECT_TYPE_PLATFORM 7
 
