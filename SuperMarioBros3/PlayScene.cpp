@@ -167,10 +167,15 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		int spriteID_bm = atoi(tokens[14].c_str());
 		int spriteID_br = atoi(tokens[15].c_str());
 
+		int shadow_top = atoi(tokens[16].c_str());
+		int shadow_mid = atoi(tokens[17].c_str());
+		int shadow_bot = atoi(tokens[18].c_str());
+
 		obj = new SemisolidPlatform(x, y, cell_width, cell_height, columns, rows,
 			spriteID_tl, spriteID_tm, spriteID_tr,
 			spriteID_ml, spriteID_mm, spriteID_mr,
-			spriteID_bl, spriteID_bm, spriteID_br);
+			spriteID_bl, spriteID_bm, spriteID_br,
+			shadow_top, shadow_mid, shadow_bot);
 
 		break;
 	}

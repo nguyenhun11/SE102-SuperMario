@@ -2,11 +2,13 @@
 #include "NineSliceBox.h"
 class SemisolidPlatform : public NineSliceBox
 {
+	int shadowTop, shadowMid, shadowBot;
 public:
 	SemisolidPlatform(float x, float y, float cell_width, float cell_height, int columns, int rows,
 		int stl, int stm, int str,
 		int sml, int smm, int smr,
-		int sbl, int sbm, int sbr)
+		int sbl, int sbm, int sbr,
+		int shadow_top, int shadow_mid, int shadow_bot)
 		: NineSliceBox(x, y, cell_width, cell_height, columns, rows, nullptr)
 	{
 		this->spriteIDs[0][0] = stl; this->spriteIDs[0][1] = stm; this->spriteIDs[0][2] = str;
@@ -15,6 +17,10 @@ public:
 
 		this->hasTop = true; this->hasBottom = true;
 		this->hasLeft = true; this->hasRight = true;
+
+		this->shadowTop = shadow_top;
+		this->shadowMid = shadow_mid;
+		this->shadowBot = shadow_bot;
 	}
 
 	int IsBlocking() override { return 1; }
@@ -22,19 +28,9 @@ public:
 	int IsDirectionColliable(float nx, float ny) override
 	{
 		if (nx == 0.0f && ny < 0.0f) return 1;
-
 		return 0; 
 	}
 
-	//void GetBoundingBox(float& l, float& t, float& r, float& b) override
-	//{
-	//	l = x;
-	//	t = y;
-	//	r = l + this->columns * this->cellWidth;
-
-	//	// ĐIỂM MẤU CHỐT: Không nhân với this->rows. 
-	//	// Chỉ lấy độ dày bằng đúng 1 ô đầu (cellHeight) để làm bề mặt ván gỗ.
-	//	b = t + this->cellHeight;
-	//}
+	void Render() override;
 };
 
