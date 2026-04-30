@@ -21,6 +21,8 @@ public:
 		this->shadowTop = shadow_top;
 		this->shadowMid = shadow_mid;
 		this->shadowBot = shadow_bot;
+
+		zIndex = 1;
 	}
 
 	int IsBlocking() override { return 1; }

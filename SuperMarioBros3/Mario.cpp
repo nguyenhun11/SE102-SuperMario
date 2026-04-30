@@ -713,6 +713,7 @@ void Mario::TakeDamage()
 #pragma region HANDLE UPDATE
 void Mario::HandleSpinning(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	if (isSitting) return;
 	if (isSpinning)
 	{
 		if (GetTickCount64() - spin_start > MARIO_SPIN_TIME)
