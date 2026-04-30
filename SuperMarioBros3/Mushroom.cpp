@@ -7,7 +7,7 @@ Mushroom::Mushroom(float x, float y) : GameObject(x, y)
 {
 	this->startY = y;
 	SetState(MushroomState::SPAWNING);
-	zIndex = 1;
+	zIndex = 4;
 }
 
 void Mushroom::GetBoundingBox(float& l, float& t, float& r, float& b)
