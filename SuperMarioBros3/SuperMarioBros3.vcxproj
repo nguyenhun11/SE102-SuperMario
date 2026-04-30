@@ -160,6 +160,7 @@
     <ClCompile Include="GameGlobal.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Goomba.cpp" />
+    <ClCompile Include="HUD.cpp" />
     <ClCompile Include="Leaf.cpp" />
     <ClCompile Include="Mushroom.cpp" />
     <ClCompile Include="NineSliceBox.cpp" />
@@ -196,6 +197,7 @@
     <ClInclude Include="GameGlobal.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Goomba.h" />
+    <ClInclude Include="HUD.h" />
     <ClInclude Include="Leaf.h" />
     <ClInclude Include="Mushroom.h" />
     <ClInclude Include="NineSliceBox.h" />
@@ -226,6 +228,7 @@
     <Text Include="coin.txt" />
     <Text Include="game-data.txt" />
     <Text Include="goomba.txt" />
+    <Text Include="HUD.txt" />
     <Text Include="leaf.txt" />
     <Text Include="map1.txt" />
     <Text Include="mario.txt" />
@@ -244,6 +247,7 @@
     <Image Include="textures\200_Enemies.png" />
     <Image Include="textures\300_Tilesets_StageTiles.png" />
     <Image Include="textures\400_Items.png" />
+    <Image Include="textures\500_HUD.png" />
     <Image Include="textures\bbox.png" />
     <Image Include="textures\enemies.png" />
     <Image Include="textures\EnemiesBosses_Bosses.png" />
