@@ -13,6 +13,7 @@
 #include "Ground.h"
 #include "SemisolidPlatform.h"
 #include "Background.h"
+#include "VerticalPipe.h"
 
 #include "PlaySceneKeyHandler.h"
 
@@ -178,6 +179,24 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 			spriteID_bl, spriteID_bm, spriteID_br,
 			shadow_top, shadow_mid, shadow_bot);
 
+		break;
+	}
+	case OBJECT_TYPE_VERTICAL_PIPE:
+	{
+		float cell_width = (float)atof(tokens[3].c_str());
+		float cell_height = (float)atof(tokens[4].c_str());
+
+		int rows = atoi(tokens[5].c_str());
+
+		int idTopLeft = atoi(tokens[6].c_str());
+		int idTopRight = atoi(tokens[7].c_str());
+		int idBodyLeft = atoi(tokens[8].c_str());
+		int idBodyRight = atoi(tokens[9].c_str());
+
+		obj = new VerticalPipe(x, y, cell_width, cell_height, rows,
+			idTopLeft, idTopRight, idBodyLeft, idBodyRight);
+
+		objects.push_back(obj);
 		break;
 	}
 	case OBJECT_TYPE_QUESTION_BLOCK:

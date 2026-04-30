@@ -167,6 +167,7 @@
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mario.cpp" />
+    <ClCompile Include="VerticalPipe.cpp" />
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="PlayScene.cpp" />
     <ClCompile Include="Portal.cpp" />
@@ -202,6 +203,7 @@
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="KeyEventHandler.h" />
     <ClInclude Include="Mario.h" />
+    <ClInclude Include="VerticalPipe.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="PlayScene.h" />
     <ClInclude Include="Portal.h" />
@@ -234,6 +236,7 @@
     <Text Include="scene02.txt" />
     <Text Include="scene_hun.txt" />
     <Text Include="scene_mario_dev.txt" />
+    <Text Include="pipe.txt" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="mario.ico" />

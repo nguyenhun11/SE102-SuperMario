@@ -7,6 +7,7 @@ goomba.txt
 cloud.txt
 map1.txt
 question_block.txt
+pipe.txt
 
 [GRID_OBJECTS]
 # type x y extra_settings per object type
@@ -14,7 +15,7 @@ question_block.txt
 # See OBJECT_TYPE constants in AssetIDs.h
 
 # MARIO
-0	2	10
+0	50	10
 302	-1	22	0 question block tam chan player
 
 # tree 1
@@ -89,3 +90,7 @@ question_block.txt
 4 7 7
 4 8 7
 4 9 7
+
+# Pipe
+# id x y, sprite size wh, tl tr ml mr
+702 45 17	16 16	3	70211 70212 70221 70222
