@@ -3,6 +3,8 @@
 mario.txt
 brick.txt
 coin.txt
+mushroom.txt
+leaf.txt
 goomba.txt
 cloud.txt
 map1.txt

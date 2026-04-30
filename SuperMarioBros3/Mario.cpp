@@ -336,7 +336,7 @@ int Mario::GetAniIdBig()
 
 int Mario::GetAniIdRacoon()
 {
-	if (isSpinning) return ID_ANI_MARIO_RACOON_SPIN;
+	if (isSpinning && !isSitting) return ID_ANI_MARIO_RACOON_SPIN;
 	int aniId = -1;
 	if (!isOnPlatform)
 	{
