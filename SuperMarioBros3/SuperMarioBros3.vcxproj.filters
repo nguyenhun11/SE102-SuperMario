@@ -83,9 +83,6 @@
     <ClCompile Include="Mario.cpp">
       <Filter>Entities</Filter>
     </ClCompile>
-    <ClCompile Include="Portal.cpp">
-      <Filter>Entities</Filter>
-    </ClCompile>
     <ClCompile Include="Collision.cpp">
       <Filter>Physics</Filter>
     </ClCompile>
@@ -150,6 +147,9 @@
     <ClCompile Include="SemisolidPlatform.cpp">
       <Filter>Entities\Platforms</Filter>
     </ClCompile>
+    <ClCompile Include="Portal.cpp">
+      <Filter>Entities\Items</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h">
@@ -180,9 +180,6 @@
       <Filter>Scenes</Filter>
     </ClInclude>
     <ClInclude Include="Mario.h">
-      <Filter>Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="Portal.h">
       <Filter>Entities</Filter>
     </ClInclude>
     <ClInclude Include="KeyEventHandler.h">
@@ -262,6 +259,9 @@
     </ClInclude>
     <ClInclude Include="SemisolidPlatform.h">
       <Filter>Entities\Platforms</Filter>
+    </ClInclude>
+    <ClInclude Include="Portal.h">
+      <Filter>Entities\Items</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
