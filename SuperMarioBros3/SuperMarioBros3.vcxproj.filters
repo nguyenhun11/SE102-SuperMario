@@ -150,6 +150,12 @@
     <ClCompile Include="Portal.cpp">
       <Filter>Entities\Items</Filter>
     </ClCompile>
+    <ClCompile Include="HUD.cpp">
+      <Filter>Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Koopa.cpp">
+      <Filter>Entities\Enemies</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h">
@@ -263,6 +269,12 @@
     <ClInclude Include="Portal.h">
       <Filter>Entities\Items</Filter>
     </ClInclude>
+    <ClInclude Include="HUD.h">
+      <Filter>Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Koopa.h">
+      <Filter>Entities\Enemies</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="brick.txt">
@@ -309,6 +321,12 @@
       <Filter>Assets</Filter>
     </Text>
     <Text Include="leaf.txt">
+      <Filter>Assets</Filter>
+    </Text>
+    <Text Include="koopa.txt">
+      <Filter>Assets</Filter>
+    </Text>
+    <Text Include="HUD.txt">
       <Filter>Assets</Filter>
     </Text>
   </ItemGroup>
@@ -383,6 +401,9 @@
       <Filter>Resources</Filter>
     </Image>
     <Image Include="textures\400_Items.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="textures\500_HUD.png">
       <Filter>Resources</Filter>
     </Image>
   </ItemGroup>
