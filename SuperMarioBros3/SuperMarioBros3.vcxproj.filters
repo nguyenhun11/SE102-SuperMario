@@ -37,6 +37,21 @@
     <Filter Include="Assets">
       <UniqueIdentifier>{3706caf5-5a41-4109-bc45-f10bc3be8820}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Entities\Items">
+      <UniqueIdentifier>{ddf04ea3-f2c6-4535-a723-e42f10af9d1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Entities\StageMaps">
+      <UniqueIdentifier>{d35644ea-ffcb-4b4b-a693-376b93e3cefe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Entities\Enemies">
+      <UniqueIdentifier>{ef9d83b2-7d03-4094-bd98-e64c64f89067}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Entities\Platforms">
+      <UniqueIdentifier>{6a48acba-b8bd-4215-a3cb-99f1f7caaab4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Entities\Blocks">
+      <UniqueIdentifier>{44de4162-5f32-417c-8361-0b14508a70e9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -65,19 +80,7 @@
     <ClCompile Include="Scence.cpp">
       <Filter>Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="Brick.cpp">
-      <Filter>Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Coin.cpp">
-      <Filter>Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Goomba.cpp">
-      <Filter>Entities</Filter>
-    </ClCompile>
     <ClCompile Include="Mario.cpp">
-      <Filter>Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Platform.cpp">
       <Filter>Entities</Filter>
     </ClCompile>
     <ClCompile Include="Portal.cpp">
@@ -111,8 +114,41 @@
     <ClCompile Include="Utils.cpp">
       <Filter>CoreGame\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Brick.cpp">
+      <Filter>Entities\Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="Coin.cpp">
+      <Filter>Entities\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="Goomba.cpp">
+      <Filter>Entities\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform.cpp">
+      <Filter>Entities\Platforms</Filter>
+    </ClCompile>
     <ClCompile Include="QuestionBlock.cpp">
+      <Filter>Entities\Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="Background.cpp">
+      <Filter>Entities\StageMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="Ground.cpp">
+      <Filter>Entities\StageMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="Leaf.cpp">
+      <Filter>Entities\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="Mushroom.cpp">
+      <Filter>Entities\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="NineSliceBox.cpp">
       <Filter>Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="VerticalPipe.cpp">
+      <Filter>Entities\Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="SemisolidPlatform.cpp">
+      <Filter>Entities\Platforms</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -143,22 +179,10 @@
     <ClInclude Include="PlayScene.h">
       <Filter>Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="Brick.h">
-      <Filter>Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="Coin.h">
-      <Filter>Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="Goomba.h">
-      <Filter>Entities</Filter>
-    </ClInclude>
     <ClInclude Include="Mario.h">
       <Filter>Entities</Filter>
     </ClInclude>
     <ClInclude Include="Portal.h">
-      <Filter>Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="Platform.h">
       <Filter>Entities</Filter>
     </ClInclude>
     <ClInclude Include="KeyEventHandler.h">
@@ -203,8 +227,41 @@
     <ClInclude Include="Utils.h">
       <Filter>CoreGame\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Brick.h">
+      <Filter>Entities\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="Coin.h">
+      <Filter>Entities\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Goomba.h">
+      <Filter>Entities\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform.h">
+      <Filter>Entities\Platforms</Filter>
+    </ClInclude>
     <ClInclude Include="QuestionBlock.h">
+      <Filter>Entities\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="Background.h">
+      <Filter>Entities\StageMaps</Filter>
+    </ClInclude>
+    <ClInclude Include="Ground.h">
+      <Filter>Entities\StageMaps</Filter>
+    </ClInclude>
+    <ClInclude Include="Leaf.h">
+      <Filter>Entities\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Mushroom.h">
+      <Filter>Entities\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="NineSliceBox.h">
       <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="VerticalPipe.h">
+      <Filter>Entities\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="SemisolidPlatform.h">
+      <Filter>Entities\Platforms</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -240,6 +297,18 @@
       <Filter>Maps</Filter>
     </Text>
     <Text Include="question_block.txt">
+      <Filter>Assets</Filter>
+    </Text>
+    <Text Include="pipe.txt">
+      <Filter>Assets</Filter>
+    </Text>
+    <Text Include="mushroom.txt">
+      <Filter>Assets</Filter>
+    </Text>
+    <Text Include="map1.txt">
+      <Filter>Assets</Filter>
+    </Text>
+    <Text Include="leaf.txt">
       <Filter>Assets</Filter>
     </Text>
   </ItemGroup>
