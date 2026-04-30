@@ -319,7 +319,6 @@ void PlayScene::Load()
 			case SCENE_SECTION_GRID_OBJECTS: _ParseSection_OBJECTS(line, true); break;
 		}
 	}
-
 	f.close();
 
 	DebugOut(L"[INFO] Done loading scene  %s\n", sceneFilePath);
@@ -348,12 +347,23 @@ void PlayScene::Update(DWORD dt)
 	float cx, cy;
 	player->GetPosition(cx, cy);
 
+	// HUD space
+	float hudHeight = 32.0f;
+	float playableHeight = GameGlobal::GetHeight() - hudHeight;
+
 	cx -= GameGlobal::GetWidth() / 2;
-	cy -= GameGlobal::GetHeight() / 2;
+	cy -= playableHeight / 2;;
 
 	if (cx < 0) cx = 0;
+	if (cy < 0) cy = 0;
 
-	Camera::GetInstance()->SetCamPos(cx, 0.0f /*cy*/);
+	float mapHeight = 240.0f;
+	float max_cy = mapHeight - GameGlobal::GetHeight();
+
+	if (max_cy < 0) max_cy = 0;
+	if (cy > max_cy) cy = max_cy;
+
+	Camera::GetInstance()->SetCamPos(cx, cy);
 
 	PurgeDeletedObjects();
 }
