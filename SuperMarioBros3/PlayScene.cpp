@@ -12,6 +12,7 @@
 #include "QuestionBlock.h"
 #include "Ground.h"
 #include "SemisolidPlatform.h"
+#include "Background.h"
 
 #include "PlaySceneKeyHandler.h"
 
@@ -214,6 +215,10 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 
 		break;
 	}
+	case OBJECT_TYPE_BACKGROUND: {
+		obj = new Background(x, y, atoi(tokens[3].c_str()));
+		break;
+	}
 
 
 	default:
@@ -241,6 +246,7 @@ void PlayScene::LoadAssets(LPCWSTR assetFile)
 	while (f.getline(str, MAX_SCENE_LINE))
 	{
 		string line(str);
+		//DebugOut(L"[READSCENE] Read: %s \n", ToWSTR(line).c_str());
 
 		if (line[0] == '#') continue;	// skip comment lines	
 
