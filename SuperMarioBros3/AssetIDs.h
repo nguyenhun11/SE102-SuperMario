@@ -44,7 +44,12 @@ Each ID for a type of object will BEGIN with:
 
 // Block
 #define OBJECT_TYPE_QUESTION_BLOCK	302
+#define OBJECT_TYPE_BACKGROUND 600
 #define OBJECT_TYPE_GROUND 601
+
+//Platform
+#define OBJECT_TYPE_SEMISOLID_PLATFORM 701
+//#define OBJECT_TYPE_SEMISOLID_PLATFORM_SHADOW -701
 
 // Objects
 #define OBJECT_TYPE_COIN 401
