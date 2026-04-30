@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <fstream>
 #include "AssetIDs.h"
 
@@ -12,6 +12,9 @@
 #include "Platform.h"
 #include "QuestionBlock.h"
 #include "Ground.h"
+#include "SemisolidPlatform.h"
+#include "Background.h"
+#include "VerticalPipe.h"
 
 #include "PlaySceneKeyHandler.h"
 
@@ -28,12 +31,14 @@ PlayScene::PlayScene(int id, LPCWSTR filePath):
 #define SCENE_SECTION_UNKNOWN -1
 #define SCENE_SECTION_ASSETS	1
 #define SCENE_SECTION_OBJECTS	2
+#define SCENE_SECTION_GRID_OBJECTS	3
 
 #define ASSETS_SECTION_UNKNOWN -1
 #define ASSETS_SECTION_SPRITES 1
 #define ASSETS_SECTION_ANIMATIONS 2
 
 #define MAX_SCENE_LINE 1024
+#define TILE_SIZE 8.0f
 
 void PlayScene::_ParseSection_SPRITES(string line)
 {
@@ -93,7 +98,7 @@ void PlayScene::_ParseSection_ANIMATIONS(string line)
 /*
 	Parse a line in section [OBJECTS] 
 */
-void PlayScene::_ParseSection_OBJECTS(string line)
+void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 {
 	vector<string> tokens = split(line);
 
@@ -101,8 +106,12 @@ void PlayScene::_ParseSection_OBJECTS(string line)
 	if (tokens.size() < 3) return;
 
 	int object_type = atoi(tokens[0].c_str());
-	float x = (float)atof(tokens[1].c_str());
-	float y = (float)atof(tokens[2].c_str());
+	float raw_x = (float)atof(tokens[1].c_str());
+	float raw_y = (float)atof(tokens[2].c_str());
+
+	// Áp dụng phép nhân nếu đang ở chế độ Grid, nếu không thì giữ nguyên
+	float x = isGridCoordinate ? (raw_x * TILE_SIZE) : raw_x;
+	float y = isGridCoordinate ? (raw_y * TILE_SIZE) : raw_y;
 
 	GameObject *obj = NULL;
 
@@ -142,7 +151,56 @@ void PlayScene::_ParseSection_OBJECTS(string line)
 
 		break;
 	}
+	case OBJECT_TYPE_SEMISOLID_PLATFORM:
+	{
+		float cell_width = (float)atof(tokens[3].c_str());
+		float cell_height = (float)atof(tokens[4].c_str());
 
+		int columns = atoi(tokens[5].c_str());
+		int rows = atoi(tokens[6].c_str());
+
+		int spriteID_tl = atoi(tokens[7].c_str());
+		int spriteID_tm = atoi(tokens[8].c_str());
+		int spriteID_tr = atoi(tokens[9].c_str());
+
+		int spriteID_ml = atoi(tokens[10].c_str());
+		int spriteID_mm = atoi(tokens[11].c_str());
+		int spriteID_mr = atoi(tokens[12].c_str());
+
+		int spriteID_bl = atoi(tokens[13].c_str());
+		int spriteID_bm = atoi(tokens[14].c_str());
+		int spriteID_br = atoi(tokens[15].c_str());
+
+		int shadow_top = atoi(tokens[16].c_str());
+		int shadow_mid = atoi(tokens[17].c_str());
+		int shadow_bot = atoi(tokens[18].c_str());
+
+		obj = new SemisolidPlatform(x, y, cell_width, cell_height, columns, rows,
+			spriteID_tl, spriteID_tm, spriteID_tr,
+			spriteID_ml, spriteID_mm, spriteID_mr,
+			spriteID_bl, spriteID_bm, spriteID_br,
+			shadow_top, shadow_mid, shadow_bot);
+
+		break;
+	}
+	case OBJECT_TYPE_VERTICAL_PIPE:
+	{
+		float cell_width = (float)atof(tokens[3].c_str());
+		float cell_height = (float)atof(tokens[4].c_str());
+
+		int rows = atoi(tokens[5].c_str());
+
+		int idTopLeft = atoi(tokens[6].c_str());
+		int idTopRight = atoi(tokens[7].c_str());
+		int idBodyLeft = atoi(tokens[8].c_str());
+		int idBodyRight = atoi(tokens[9].c_str());
+
+		obj = new VerticalPipe(x, y, cell_width, cell_height, rows,
+			idTopLeft, idTopRight, idBodyLeft, idBodyRight);
+
+		objects.push_back(obj);
+		break;
+	}
 	case OBJECT_TYPE_QUESTION_BLOCK:
 	{
 		int contained_item_id = atoi(tokens[3].c_str());
@@ -178,6 +236,10 @@ void PlayScene::_ParseSection_OBJECTS(string line)
 
 		break;
 	}
+	case OBJECT_TYPE_BACKGROUND: {
+		obj = new Background(x, y, atoi(tokens[3].c_str()));
+		break;
+	}
 
 
 	default:
@@ -205,6 +267,7 @@ void PlayScene::LoadAssets(LPCWSTR assetFile)
 	while (f.getline(str, MAX_SCENE_LINE))
 	{
 		string line(str);
+		//DebugOut(L"[READSCENE] Read: %s \n", ToWSTR(line).c_str());
 
 		if (line[0] == '#') continue;	// skip comment lines	
 
@@ -245,6 +308,7 @@ void PlayScene::Load()
 		if (line[0] == '#') continue;	// skip comment lines	
 		if (line == "[ASSETS]") { section = SCENE_SECTION_ASSETS; continue; };
 		if (line == "[OBJECTS]") { section = SCENE_SECTION_OBJECTS; continue; };
+		if (line == "[GRID_OBJECTS]") { section = SCENE_SECTION_GRID_OBJECTS; continue; };
 		if (line[0] == '[') { section = SCENE_SECTION_UNKNOWN; continue; }	
 
 		//
@@ -254,9 +318,9 @@ void PlayScene::Load()
 		{ 
 			case SCENE_SECTION_ASSETS: _ParseSection_ASSETS(line); break;
 			case SCENE_SECTION_OBJECTS: _ParseSection_OBJECTS(line); break;
+			case SCENE_SECTION_GRID_OBJECTS: _ParseSection_OBJECTS(line, true); break;
 		}
 	}
-
 	f.close();
 
 	DebugOut(L"[INFO] Done loading scene  %s\n", sceneFilePath);
@@ -285,12 +349,23 @@ void PlayScene::Update(DWORD dt)
 	float cx, cy;
 	player->GetPosition(cx, cy);
 
+	// HUD space
+	float hudHeight = 32.0f;
+	float playableHeight = GameGlobal::GetHeight() - hudHeight;
+
 	cx -= GameGlobal::GetWidth() / 2;
-	cy -= GameGlobal::GetHeight() / 2;
+	cy -= playableHeight / 2;;
 
 	if (cx < 0) cx = 0;
+	if (cy < 0) cy = 0;
 
-	Camera::GetInstance()->SetCamPos(cx, 0.0f /*cy*/);
+	float mapHeight = 240.0f;
+	float max_cy = mapHeight - GameGlobal::GetHeight();
+
+	if (max_cy < 0) max_cy = 0;
+	if (cy > max_cy) cy = max_cy;
+
+	Camera::GetInstance()->SetCamPos(cx, cy);
 
 	PurgeDeletedObjects();
 }

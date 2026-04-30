@@ -137,8 +137,8 @@ enum class MarioForm
 // ---- Other Game feel Stuff ----
 // Die Animation
 #define	MARIO_DIE_TIMEOUT	800
-#define MARIO_DIE_BOUNCE_FORCE	0.25f
-#define	MARIO_DIE_GRAVITY	0.0004f
+#define MARIO_DIE_BOUNCE_FORCE	0.08f
+#define	MARIO_DIE_GRAVITY	0.00006f
 
 // Hit Animation
 #define MARIO_HIT_TIMEOUT	1000

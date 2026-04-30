@@ -464,7 +464,7 @@ void Game::Update(DWORD dt)
 /*
 	Render a frame
 */
-#define BACKGROUND_COLOR D3DXCOLOR(224.0f/255, 163.0f/255, 216.0f/255, 0.0f)
+#define BACKGROUND_COLOR D3DXCOLOR(181.0f/255, 235.0f/255, 242.0f/255, 0.0f)
 void Game::Render()
 {
 	ID3D10Device* pD3DDevice = GameGlobal::pD3DDevice;
