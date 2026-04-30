@@ -49,7 +49,8 @@ Each ID for a type of object will BEGIN with:
 
 //Platform
 #define OBJECT_TYPE_SEMISOLID_PLATFORM 701
-//#define OBJECT_TYPE_SEMISOLID_PLATFORM_SHADOW -701
+#define OBJECT_TYPE_VERTICAL_PIPE 702
+#define OBJECT_TYPE_HORIZOLTAL_PIPE 703 //Chua lam
 
 // Objects
 #define OBJECT_TYPE_COIN 401
