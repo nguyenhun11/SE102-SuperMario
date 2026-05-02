@@ -20,8 +20,8 @@
 #define KOOPA_STATE_SHELL_MOVING 400
 #define KOOPA_STATE_WING 500
 
-#define ID_ANI_KOOPA_WALKING 2010
-#define ID_ANI_KOOPA_DIE 2011
+#define ID_ANI_KOOPA_WALKING 20210
+#define ID_ANI_KOOPA_DIE 20220
 
 class Koopa : public GameObject
 {

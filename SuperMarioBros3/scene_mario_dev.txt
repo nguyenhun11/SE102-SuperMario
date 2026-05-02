@@ -93,7 +93,7 @@ leaf.txt
 2	400	10
 
 #Koopa
-3	300	5
+202	300	5
 
 #Platform
 7	90	136	16	15	5	51000	52000	53000	# Platform trắng

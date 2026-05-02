@@ -78,7 +78,7 @@ void Koopa::Render()
 	}
 
 	Animations::GetInstance()->Get(aniId)->Render(x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void Koopa::SetState(int state)

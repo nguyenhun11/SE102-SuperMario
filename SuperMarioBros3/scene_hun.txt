@@ -6,6 +6,7 @@ coin.txt
 mushroom.txt
 leaf.txt
 goomba.txt
+koopa.txt
 cloud.txt
 map1.txt
 question_block.txt
@@ -22,6 +23,9 @@ HUD.txt
 
 # MARIO
 0	2	10
+
+202 10 10
+
 302	-1	22	0 question block tam chan player
 302	-1	20	0
 302	-1	18	0
