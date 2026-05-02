@@ -33,7 +33,6 @@ Each ID for a type of object will BEGIN with:
 
 // Characters
 #define OBJECT_TYPE_MARIO	0
-#define OBJECT_TYPE_BRICK	1
 #define OBJECT_TYPE_GOOMBA	2
 #define OBJECT_TYPE_KOOPA	202
 
@@ -43,7 +42,11 @@ Each ID for a type of object will BEGIN with:
 
 
 // Block
+#define OBJECT_TYPE_BRICK	301
 #define OBJECT_TYPE_QUESTION_BLOCK	302
+
+
+// Map
 #define OBJECT_TYPE_BACKGROUND 600
 #define OBJECT_TYPE_GROUND 601
 
