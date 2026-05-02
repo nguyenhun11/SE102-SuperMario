@@ -42,12 +42,13 @@ Each ID for a type of object will BEGIN with:
 
 
 // Block
+#define OBJECT_TYPE_SOLID_BLOCK 300
 #define OBJECT_TYPE_BRICK	301
 #define OBJECT_TYPE_QUESTION_BLOCK	302
 
 
 // Map
-#define OBJECT_TYPE_BACKGROUND 600
+#define OBJECT_TYPE_DECORATION 600
 #define OBJECT_TYPE_GROUND 601
 
 //Platform

@@ -1,10 +1,10 @@
 #pragma once
 #include "GameObject.h"
-class Background : public GameObject
+class Decoration : public GameObject
 {
 	int spriteId;
 public:
-	Background(float x, float y, int sprite_id)
+	Decoration(float x, float y, int sprite_id)
 	{
 		this->x = x;
 		this->y = y;

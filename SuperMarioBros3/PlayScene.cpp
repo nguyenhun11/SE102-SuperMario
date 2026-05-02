@@ -13,8 +13,9 @@
 #include "QuestionBlock.h"
 #include "Ground.h"
 #include "SemisolidPlatform.h"
-#include "Background.h"
+#include "Decoration.h"
 #include "VerticalPipe.h"
+#include "SolidBlock.h"
 
 #include "PlaySceneKeyHandler.h"
 
@@ -128,6 +129,12 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 
 		DebugOut(L"[INFO] Player object has been created!\n");
 		break;
+	case OBJECT_TYPE_SOLID_BLOCK:
+	{
+		int sprite_id = atoi(tokens[3].c_str());
+		obj = new SolidBlock(x, y, sprite_id);
+		break;
+	}
 	case OBJECT_TYPE_GOOMBA: obj = new Goomba(x,y); break;
 	case OBJECT_TYPE_BRICK:
 	{
@@ -245,8 +252,8 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 
 		break;
 	}
-	case OBJECT_TYPE_BACKGROUND: {
-		obj = new Background(x, y, atoi(tokens[3].c_str()));
+	case OBJECT_TYPE_DECORATION: {
+		obj = new Decoration(x, y, atoi(tokens[3].c_str()));
 		break;
 	}
 

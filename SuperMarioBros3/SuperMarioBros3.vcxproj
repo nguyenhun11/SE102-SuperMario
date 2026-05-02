@@ -151,7 +151,7 @@
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Animations.cpp" />
-    <ClCompile Include="Background.cpp" />
+    <ClCompile Include="Decoration.cpp" />
     <ClCompile Include="Brick.cpp" />
     <ClCompile Include="BrickDebris.cpp" />
     <ClCompile Include="Coin.cpp" />
@@ -171,6 +171,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mario.cpp" />
     <ClCompile Include="ScoreEffect.cpp" />
+    <ClCompile Include="SolidBlock.cpp" />
     <ClCompile Include="VerticalPipe.cpp" />
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="PlayScene.cpp" />
@@ -190,7 +191,7 @@
     <ClInclude Include="AnimationFrame.h" />
     <ClInclude Include="Animations.h" />
     <ClInclude Include="AssetIDs.h" />
-    <ClInclude Include="Background.h" />
+    <ClInclude Include="Decoration.h" />
     <ClInclude Include="Brick.h" />
     <ClInclude Include="BrickDebris.h" />
     <ClInclude Include="Camera.h" />
@@ -211,6 +212,7 @@
     <ClInclude Include="KeyEventHandler.h" />
     <ClInclude Include="Mario.h" />
     <ClInclude Include="ScoreEffect.h" />
+    <ClInclude Include="SolidBlock.h" />
     <ClInclude Include="VerticalPipe.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="PlayScene.h" />
@@ -248,6 +250,7 @@
     <Text Include="scene_mario_dev.txt" />
     <Text Include="pipe.txt" />
     <Text Include="score_effect.txt" />
+    <Text Include="block.txt" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="mario.ico" />
