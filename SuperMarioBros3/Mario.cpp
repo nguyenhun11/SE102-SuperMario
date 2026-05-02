@@ -229,13 +229,22 @@ void Mario::OnCollisionWithBrick(LPCOLLISIONEVENT e)
 	{
 		if (brick->GetCurrentState() == BrickState::ACTIVE)
 		{
-			if(this->GetCurrentForm() == MarioForm::SMALL)
+			if (brick->GetContainedItem() != BrickItem::NONE)
 			{
+				// Có đồ: Bất kể Mario dạng nào cũng chỉ nảy lên để lấy đồ
 				brick->SetState(BrickState::BOUNCING);
 			}
 			else
 			{
-				brick->Break();
+				// Không có đồ, xét theo sức mạnh của Mario
+				if (this->GetCurrentForm() == MarioForm::SMALL)
+				{
+					brick->SetState(BrickState::BOUNCING); // Yếu thì chỉ nảy
+				}
+				else
+				{
+					brick->Break(); // Mạnh (To, Đuôi, Lửa) thì đập vỡ
+				}
 			}
 		}
 	}

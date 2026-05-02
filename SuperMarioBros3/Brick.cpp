@@ -1,13 +1,16 @@
 #include "Brick.h"
 #include "debug.h"
 
-Brick::Brick(float x, float y) : GameObject(x, y)
+Brick::Brick(float x, float y, int itemType) : GameObject(x, y)
 {
 	this->startY = y;
 	this->currentState = BrickState::ACTIVE;
 	this->state = static_cast<int>(BrickState::ACTIVE);
 	this->vy = 0;
 	this->zIndex = 5;
+
+	// Ép kiểu int từ file text truyền vào thành Enum
+	this->containedItem = static_cast<BrickItem>(itemType);
 }
 
 void Brick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
@@ -26,7 +29,15 @@ void Brick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			y = startY;
 			vy = 0;
-			SetState(BrickState::ACTIVE); // Gạch nảy xong thì khôi phục bình thường
+			if (containedItem != BrickItem::NONE)
+			{
+				SetState(BrickState::EMPTY);
+				SpawnItem(); // Nhả đồ ra
+			}
+			else
+			{
+				SetState(BrickState::ACTIVE); // Gạch rỗng thì khôi phục lại bình thường
+			}
 		}
 	}
 }
@@ -35,8 +46,15 @@ void Brick::Render()
 {
 	if (currentState == BrickState::BROKEN) return;
 
+	int aniId = ID_ANI_BRICK_ACTIVE;
+
+	if (currentState == BrickState::EMPTY || (currentState == BrickState::BOUNCING && containedItem != BrickItem::NONE))
+	{
+		aniId = ID_ANI_BRICK_EMPTY;
+	}
+
 	Animations* animations = Animations::GetInstance();
-	animations->Get(ID_ANI_BRICK_ACTIVE)->Render(x, y);
+	animations->Get(aniId)->Render(x, y);
 }
 
 void Brick::GetBoundingBox(float& l, float& t, float& r, float& b)
@@ -58,6 +76,7 @@ void Brick::SetState(BrickState state)
 	case BrickState::BOUNCING:
 		vy = -BRICK_BOUNCE_SPEED;
 		break;
+	case BrickState::EMPTY:
 	case BrickState::ACTIVE:
 		vy = 0;
 		break;
@@ -92,5 +111,20 @@ void Brick::Break()
 		// Mảnh dưới - phải
 		BrickDebris* bottomRight = new BrickDebris(x, y, DEBRIS_BOUNCE_SPEED_X, -DEBRIS_BOUNCE_SPEED_Y_LOW);
 		scene->AddObject(bottomRight);
+	}
+}
+
+void Brick::SpawnItem()
+{
+	PlayScene* playScene = (PlayScene*)SceneManager::GetInstance()->GetCurrentScene();
+
+	if (containedItem == BrickItem::MUSHROOM)
+	{
+		Mushroom* mushroom = new Mushroom(x, y);
+		playScene->AddObject(mushroom);
+	}
+	else if (containedItem == BrickItem::P_SWITCH)
+	{
+		//  P-Switch sau
 	}
 }

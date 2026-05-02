@@ -129,7 +129,16 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		DebugOut(L"[INFO] Player object has been created!\n");
 		break;
 	case OBJECT_TYPE_GOOMBA: obj = new Goomba(x,y); break;
-	case OBJECT_TYPE_BRICK: obj = new Brick(x,y); break;
+	case OBJECT_TYPE_BRICK:
+	{
+		int item_type = 0;
+		if (tokens.size() > 3)
+		{
+			item_type = atoi(tokens[3].c_str());
+		}
+		obj = new Brick(x, y, item_type);
+		break;
+	}
 	case OBJECT_TYPE_COIN: obj = new Coin(x, y); break;
 	case OBJECT_TYPE_KOOPA: obj = new Koopa(x, y); break;
 
