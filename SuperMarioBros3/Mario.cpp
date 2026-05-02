@@ -147,6 +147,8 @@ void Mario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithMushroom(e);
 	else if (dynamic_cast<Leaf*>(e->obj))
 		OnCollisionWithLeaf(e);
+	else if (dynamic_cast<Brick*>(e->obj))
+		OnCollisionWithBrick(e);
 }
 
 void Mario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -217,6 +219,20 @@ void Mario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 	}
 
 	// note để nhớ cộng điểm ở đây nữa
+}
+
+void Mario::OnCollisionWithBrick(LPCOLLISIONEVENT e)
+{
+	Brick* brick = dynamic_cast<Brick*>(e->obj);
+
+	if (e->ny > 0)
+	{
+		if (brick->GetCurrentState() == BrickState::ACTIVE)
+		{
+			brick->SetState(BrickState::BOUNCING);
+		}
+	}
+	// Nảy ra P-switch
 }
 
 /// <summary>

@@ -211,6 +211,7 @@ class Mario : public GameObject
 	void OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e);
 	void OnCollisionWithMushroom(LPCOLLISIONEVENT e);
 	void OnCollisionWithLeaf(LPCOLLISIONEVENT e);
+	void OnCollisionWithBrick(LPCOLLISIONEVENT e);
 
 	int GetAniIdBig();
 	int GetAniIdSmall();
@@ -249,6 +250,7 @@ public:
 		pmeter_start = -1;
 
 		coin = 0;
+		score = 0;
 
 		form = MarioForm::SMALL;
 		currentState = MarioState::IDLE;
