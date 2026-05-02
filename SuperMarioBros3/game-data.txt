@@ -1,6 +1,6 @@
 [SETTINGS]
 # Start scene
-start	6
+start	7
 
 # Screen size
 width	320
@@ -28,3 +28,4 @@ height	240
 300		textures\300_Tilesets_StageTiles.png
 400		textures\400_Items.png
 500		textures\500_HUD.png
+600		textures\misc.png

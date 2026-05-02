@@ -27,7 +27,8 @@
 //#define MARIO_GRAVITY			0.0007f
 
 #define MARIO_JUMP_SPEED_Y		0.3f
-#define MARIO_JUMP_RUN_SPEED_Y	0.35f
+#define MARIO_SMALL_JUMP_RUN_SPEED_Y	0.35f
+#define MARIO_JUMP_RUN_SPEED_Y	0.4f
 
 // Gravity
 #define MARIO_GRAVITY			0.0006f
@@ -202,6 +203,7 @@ class Mario : public GameObject
 	MarioForm nextPoofForm;
 	BOOLEAN isOnPlatform;
 	int coin; 
+	int score;
 
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithCoin(LPCOLLISIONEVENT e);
@@ -259,6 +261,12 @@ public:
 	{
 		coin += amount;
 		DebugOut(L">>> CurrentCoin: %d\n", coin);
+	}
+
+	void AddScore(int amount = 100)
+	{
+		score += amount;
+		DebugOut(L">>> CurrentScore: %d\n", score);
 	}
 
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
