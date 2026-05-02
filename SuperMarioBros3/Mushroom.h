@@ -40,4 +40,7 @@ public:
 	}
 
 	virtual int IsBlocking() { return 0; }
+
+	float GetX() { return x; }
+	float GetY() { return y; }
 };

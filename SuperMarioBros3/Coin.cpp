@@ -1,4 +1,7 @@
 #include "Coin.h"
+#include "PlayScene.h"
+#include "Mario.h"
+#include "ScoreEffect.h"
 
 void Coin::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
@@ -8,6 +11,11 @@ void Coin::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	y += vy * dt;
 	if (y >= startY && vy > 0)
 	{
+		PlayScene* scene = dynamic_cast<PlayScene*>(SceneManager::GetInstance()->GetCurrentScene());
+		Mario* mario = dynamic_cast<Mario*>(scene->GetPlayer());
+		mario->AddScore();
+		ScoreEffect* scoreEffect = new ScoreEffect(this->x, this->y, Score::ONE_HUNDRED);
+		scene->AddObject(scoreEffect);
 		this->Delete();
 
 		// gọi hiệu ứng chớp chớp cái điểm số

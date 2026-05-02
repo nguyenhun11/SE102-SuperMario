@@ -52,6 +52,9 @@
     <Filter Include="Entities\Blocks">
       <UniqueIdentifier>{44de4162-5f32-417c-8361-0b14508a70e9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Entities\Effects">
+      <UniqueIdentifier>{2dd82a35-ce79-481c-8c54-9e242ac5af03}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -155,6 +158,9 @@
     </ClCompile>
     <ClCompile Include="Koopa.cpp">
       <Filter>Entities\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="ScoreEffect.cpp">
+      <Filter>Entities\Effects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -275,6 +281,9 @@
     <ClInclude Include="Koopa.h">
       <Filter>Entities\Enemies</Filter>
     </ClInclude>
+    <ClInclude Include="ScoreEffect.h">
+      <Filter>Entities\Effects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="brick.txt">
@@ -327,6 +336,9 @@
       <Filter>Assets</Filter>
     </Text>
     <Text Include="HUD.txt">
+      <Filter>Assets</Filter>
+    </Text>
+    <Text Include="score_effect.txt">
       <Filter>Assets</Filter>
     </Text>
   </ItemGroup>

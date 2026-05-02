@@ -9,6 +9,7 @@ cloud.txt
 question_block.txt
 mushroom.txt
 leaf.txt
+score_effect.txt
 
 #
 [OBJECTS]

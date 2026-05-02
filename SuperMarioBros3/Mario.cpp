@@ -3,12 +3,14 @@
 
 #include "Mario.h"
 #include "Game.h"
+#include "PlayScene.h"
 
 #include "Goomba.h"
 
 #include "Mushroom.h"
 #include "Leaf.h"
 #include "Coin.h"
+#include "ScoreEffect.h"
 
 #include "Portal.h"
 #include "QuestionBlock.h"
@@ -200,7 +202,12 @@ void Mario::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 
 void Mario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 {
+	// coongj dieemr
 	Mushroom* mushroom = dynamic_cast<Mushroom*>(e->obj);
+	PlayScene* scene = dynamic_cast<PlayScene*>(SceneManager::GetInstance()->GetCurrentScene());
+	ScoreEffect* scoreEff = new ScoreEffect(mushroom->GetX(), mushroom->GetY(), Score::ONE_THOUSAND);
+	scene->AddObject(scoreEff);
+	AddScore(1000);
 	mushroom->Delete();
 
 	// note để nhớ bổ sung hiệu ứng bất tử chớp chớp 2.5s
@@ -218,8 +225,12 @@ void Mario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 /// <param name="e"></param>
 void Mario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
 {
-	e->obj->Delete();
-
+	Leaf* leaf = dynamic_cast<Leaf*>(e->obj);
+	PlayScene* scene = dynamic_cast<PlayScene*>(SceneManager::GetInstance()->GetCurrentScene());
+	ScoreEffect* scoreEff = new ScoreEffect(leaf->GetX(), leaf->GetY(), Score::ONE_THOUSAND);
+	scene->AddObject(scoreEff);
+	AddScore(1000);
+	leaf->Delete();
 	if (form == MarioForm::SMALL)
 	{
 		StartTransform();
@@ -535,7 +546,15 @@ void Mario::SetState(MarioState state)
 		{
 			if (abs(this->vx) == MARIO_RUNNING_SPEED)
 			{
-				vy = -MARIO_JUMP_RUN_SPEED_Y;
+				if (form == MarioForm::SMALL)
+				{
+					vy = -MARIO_SMALL_JUMP_RUN_SPEED_Y;
+				}
+				else
+				{
+					vy = -MARIO_JUMP_RUN_SPEED_Y;
+					vx *= 1.2f;
+				}
 				if (form == MarioForm::RACOON)
 				{
 					canFly = true;
