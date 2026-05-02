@@ -36,7 +36,7 @@ void Brick::Render()
 	if (currentState == BrickState::BROKEN) return;
 
 	Animations* animations = Animations::GetInstance();
-	animations->Get(ID_ANI_BRICK)->Render(x, y);
+	animations->Get(ID_ANI_BRICK_ACTIVE)->Render(x, y);
 }
 
 void Brick::GetBoundingBox(float& l, float& t, float& r, float& b)
@@ -62,7 +62,6 @@ void Brick::SetState(BrickState state)
 		vy = 0;
 		break;
 	case BrickState::BROKEN:
-		// Đánh dấu xóa đối tượng khỏi danh sách Update/Render của Scene
 		this->Delete();
 		break;
 	}
@@ -76,7 +75,22 @@ void Brick::Break()
 	{
 		SetState(BrickState::BROKEN);
 
-		// TODO: Khởi tạo 4 mảnh vỡ (Debris) và AddObject vào PlayScene tại đây
-		// DebugOut(L"[INFO] Brick broken at %f, %f\n", x, y);
+		PlayScene* scene = (PlayScene*)SceneManager::GetInstance()->GetCurrentScene();
+
+		// Mảnh trên - trái
+		BrickDebris* topLeft = new BrickDebris(x, y, -DEBRIS_BOUNCE_SPEED_X, -DEBRIS_BOUNCE_SPEED_Y_HIGH);
+		scene->AddObject(topLeft);
+
+		// Mảnh trên - phải
+		BrickDebris* topRight = new BrickDebris(x, y, DEBRIS_BOUNCE_SPEED_X, -DEBRIS_BOUNCE_SPEED_Y_HIGH);
+		scene->AddObject(topRight);
+
+		// Mảnh dưới - trái
+		BrickDebris* bottomLeft = new BrickDebris(x, y, -DEBRIS_BOUNCE_SPEED_X, -DEBRIS_BOUNCE_SPEED_Y_LOW);
+		scene->AddObject(bottomLeft);
+
+		// Mảnh dưới - phải
+		BrickDebris* bottomRight = new BrickDebris(x, y, DEBRIS_BOUNCE_SPEED_X, -DEBRIS_BOUNCE_SPEED_Y_LOW);
+		scene->AddObject(bottomRight);
 	}
 }

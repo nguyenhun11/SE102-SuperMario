@@ -3,8 +3,11 @@
 #include "GameObject.h"
 #include "Animation.h"
 #include "Animations.h"
+#include "PlayScene.h"
+#include "BrickDebris.h"
 
-#define ID_ANI_BRICK 30100
+#define ID_ANI_BRICK_ACTIVE 30100
+#define ID_ANI_BRICK_EMPTY	30110
 
 // boundary box
 #define BRICK_BBOX_WIDTH 16

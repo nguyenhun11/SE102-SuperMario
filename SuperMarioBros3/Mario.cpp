@@ -229,10 +229,16 @@ void Mario::OnCollisionWithBrick(LPCOLLISIONEVENT e)
 	{
 		if (brick->GetCurrentState() == BrickState::ACTIVE)
 		{
-			brick->SetState(BrickState::BOUNCING);
+			if(this->GetCurrentForm() == MarioForm::SMALL)
+			{
+				brick->SetState(BrickState::BOUNCING);
+			}
+			else
+			{
+				brick->Break();
+			}
 		}
 	}
-	// Nảy ra P-switch
 }
 
 /// <summary>
