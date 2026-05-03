@@ -25,13 +25,6 @@ score_effect.txt
 # MARIO
 0 1 10
 
-302	-1	11	0 question block tam chan player
-302	-1	10	0
-302	-1	9	0
-302	-1	8	0
-302	-1	7	0
-302	-1	6	0
-
 #GROUND
 601 0 12 16 16 39 6 60111 60112 60113 60121 60122 60123
 
