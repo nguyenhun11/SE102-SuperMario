@@ -14,6 +14,6 @@ void SemisolidPlatform::Render()
 		if (i == 0) spriteToDraw = this->shadowTop;
 		else if (i == this->rows - 1) spriteToDraw = this->shadowBot;
 
-		Sprites::GetInstance()->Get(spriteToDraw)->Draw(shadowX, shadowY);
+		Sprites::GetInstance()->Get(spriteToDraw)->DrawOnCamera(shadowX, shadowY);
 	}
 }

@@ -18,7 +18,7 @@ public:
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) override {}
 	void Render() override
 	{
-		Sprites::GetInstance()->Get(spriteId)->Draw(x, y);
+		Sprites::GetInstance()->Get(spriteId)->DrawOnCamera(x, y);
 	}
 };
 

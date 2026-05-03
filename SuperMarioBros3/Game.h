@@ -35,16 +35,16 @@ public:
 	void _ParseSection_SCENES(string line);
 	void _ParseSection_TEXTURES(string line);
 
-	void Draw(float x, float y, LPTEXTURE tex, RECT* rect = NULL, float alpha = 1.0f, int sprite_width = 0, int sprite_height = 0);
+	void DrawOnCamera(float x, float y, LPTEXTURE tex, RECT* rect = NULL, float alpha = 1.0f, int sprite_width = 0, int sprite_height = 0);
 
-	void Draw(float x, float y, LPTEXTURE tex, int l, int t, int r, int b, float alpha = 1.0f, int sprite_width = 0, int sprite_height = 0)
+	void DrawOnCamera(float x, float y, LPTEXTURE tex, int l, int t, int r, int b, float alpha = 1.0f, int sprite_width = 0, int sprite_height = 0)
 	{
 		RECT rect;
 		rect.left = l;
 		rect.top = t;
 		rect.right = r;
 		rect.bottom = b;
-		this->Draw(x, y, tex, &rect, alpha, sprite_width, sprite_height);
+		this->DrawOnCamera(x, y, tex, &rect, alpha, sprite_width, sprite_height);
 	}
 
 	LPTEXTURE LoadTexture(LPCWSTR texturePath);

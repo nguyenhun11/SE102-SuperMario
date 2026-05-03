@@ -28,7 +28,7 @@ void NineSliceBox::Render()
 
 			// Bốc SpriteID ra từ mảng
 			int spriteToDraw = this->spriteIDs[row_index][col_index];
-			Sprites::GetInstance()->Get(spriteToDraw)->Draw(cellX, cellY);
+			Sprites::GetInstance()->Get(spriteToDraw)->DrawOnCamera(cellX, cellY);
 		}
 	}
 }

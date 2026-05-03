@@ -17,7 +17,7 @@ public:
 		this->zIndex = 4;
 	}
 
-	virtual void Render() { Sprites::GetInstance()->Get(spriteId)->Draw(x, y); }
+	virtual void Render() { Sprites::GetInstance()->Get(spriteId)->DrawOnCamera(x, y); }
 
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) {}
 

@@ -40,6 +40,7 @@ PlayScene::PlayScene(int id, LPCWSTR filePath):
 
 #define MAX_SCENE_LINE 1024
 #define TILE_SIZE 16.0f
+#define HUD_HEIGHT 48.0f
 
 void PlayScene::_ParseSection_SPRITES(string line)
 {
@@ -338,6 +339,9 @@ void PlayScene::Load()
 	}
 	f.close();
 
+	float screenHeight = GameGlobal::GetHeight();
+	HUD::GetInstance()->SetPosition(0.0f, screenHeight - HUD_HEIGHT);
+
 	DebugOut(L"[INFO] Done loading scene  %s\n", sceneFilePath);
 }
 
@@ -375,7 +379,7 @@ void PlayScene::Update(DWORD dt)
 		player-> GetSpeed(pvx, pvy);
 		player->SetSpeed(0.0f, pvy);
 	}
-	float deathZone = mapBottom + 48.0f;
+	float deathZone = mapBottom + 48.0f; // Rot xuong 48px la die
 	if (py > deathZone)
 	{
 		DebugOut(L"[INFO] GAME OVER!\n");
@@ -388,7 +392,7 @@ void PlayScene::Update(DWORD dt)
 	float cx = px, cy = py;
 
 	// HUD space
-	float hudHeight = 32.0f;
+	float hudHeight = HUD_HEIGHT;
 	float playableHeight = GameGlobal::GetHeight() - hudHeight;
 
 	cx -= GameGlobal::GetWidth() / 2;
@@ -415,6 +419,7 @@ void PlayScene::Render()
 			objects[i]->Render();
 
 	player->Render();
+	HUD::GetInstance()->Render();
 }
 
 /*

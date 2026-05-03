@@ -64,5 +64,3 @@ Each ID for a type of object will BEGIN with:
 
 // Others
 #define OBJECT_TYPE_PORTAL	50
-
-#define SCENE_HUD 901

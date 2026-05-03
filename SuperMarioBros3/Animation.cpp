@@ -34,6 +34,6 @@ void Animation::Render(float x, float y, bool isFlip)
 
 	}
 
-	frames[currentFrame]->GetSprite()->Draw(x, y, isFlip);
+	frames[currentFrame]->GetSprite()->DrawOnCamera(x, y, isFlip);
 }
 
