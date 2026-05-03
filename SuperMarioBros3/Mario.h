@@ -138,8 +138,8 @@ enum class MarioForm
 // ---- Other Game feel Stuff ----
 // Die Animation
 #define	MARIO_DIE_TIMEOUT	800
-#define MARIO_DIE_BOUNCE_FORCE	0.08f
-#define	MARIO_DIE_GRAVITY	0.00006f
+#define MARIO_DIE_BOUNCE_FORCE	0.09f
+#define	MARIO_DIE_GRAVITY	0.00008f
 
 // Hit Animation
 #define MARIO_HIT_TIMEOUT	1000
@@ -248,7 +248,9 @@ public:
 		spin_start = -1;
 		pmeter_start = -1;
 
+		//  mario stats
 		coin = 0;
+		score = 0;
 
 		form = MarioForm::SMALL;
 		currentState = MarioState::IDLE;
