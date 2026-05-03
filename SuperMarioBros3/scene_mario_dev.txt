@@ -1,0 +1,104 @@
+# list of object assets to load in this scene
+[ASSETS]
+mario.txt
+brick.txt
+coin.txt
+goomba.txt
+koopa.txt
+cloud.txt
+question_block.txt
+mushroom.txt
+leaf.txt
+score_effect.txt
+
+#
+[OBJECTS]
+# type	x	y	extra_settings per object type
+# type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopa, 302 = question block, 401 == coin
+# See OBJECT_TYPE constants in AssetIDs.h
+
+# MARIO
+0	20	100
+
+# BRICKS
+1	0	148
+1	0	164
+
+1	0	180
+1	16	180
+1	32	180
+1	48	180
+1	64	180
+1	80	180
+1	96	180
+1	112	180
+1	128	180
+1	144	180
+1	160	180
+1	176	180
+1	192	180
+1	208	180
+1	224	180
+1	240	180
+1	256	180
+1	272	180
+1	288	180
+1	304	180
+1	320	180
+1	336	180
+1	352	180
+1	368	180
+1	384	180
+1	400	180
+1	416	180
+1	432	180
+1	448	180
+1	464	180
+1	480	180
+1	496	180
+1	512	180
+1	528	180
+
+1	348	180
+1	352	148
+1	352	164
+1	368	148
+1	368	164
+1	368	132
+1	368	116
+1	384	148
+1	384	164
+1	384	132
+1	384	116
+
+# QUESTION BLOCK
+### id_coin	x	y	contained_time_id
+### 0 - coin, 1 - mushroom/leaf/fire, 2 - 1-up mushroom
+302	96	60	0
+302	112	60	0
+302	128	60	1
+302	144	60	1
+
+#COIN
+401	100	120
+401	120	120
+401	140	120
+401	160	120
+401	180	120
+
+#Goomba
+2	300	10
+
+2	250	10
+
+2	400	10
+
+#Koopa
+202	300	5
+
+#Platform
+7	90	136	16	15	5	51000	52000	53000	# Platform trắng
+#7	120	90	16	16	5	20001	20001	20001	# Platform đen
+
+#Portal 
+#50	300	110	316	140	2

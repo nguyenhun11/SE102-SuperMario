@@ -14,20 +14,33 @@ void PlaySceneKeyHandler::OnKeyDown(int KeyCode)
 	switch (KeyCode)
 	{
 	case DIK_DOWN:
-		mario->SetState(MARIO_STATE_SIT);
-		break;
 	case DIK_S:
-		mario->SetState(MARIO_STATE_JUMP);
+		mario->SetState(MarioState::SIT);
 		break;
+	case DIK_Z:
+	case DIK_SPACE:
+		mario->SetState(MarioState::JUMP);
+		mario->IsHoldingJump = true; // 
+		break;
+	case DIK_W:
+	case DIK_X:
+		mario->Attack();
+		break;
+	/// begin Test Mario Form
 	case DIK_1:
-		mario->SetLevel(MARIO_LEVEL_SMALL);
+		mario->SetNewForm(MarioForm::SMALL);
 		break;
 	case DIK_2:
-		mario->SetLevel(MARIO_LEVEL_BIG);
+		mario->SetNewForm(MarioForm::SUPER);
+		break;
+	case DIK_3:
+		mario->SetNewForm(MarioForm::RACOON);
 		break;
 	case DIK_0:
-		mario->SetState(MARIO_STATE_DIE);
+		mario->SetState(MarioState::DIE);
 		break;
+	/// end Test Mario Form
+
 	case DIK_R: // reset
 		//Reload();
 		break;
@@ -43,11 +56,14 @@ void PlaySceneKeyHandler::OnKeyUp(int KeyCode)
 
 	switch (KeyCode)
 	{
-	case DIK_S:
-		mario->SetState(MARIO_STATE_RELEASE_JUMP);
+	case DIK_Z:
+	case DIK_SPACE:
+		mario->SetState(MarioState::JUMP_RELEASE);
+		mario->IsHoldingJump = false;
 		break;
 	case DIK_DOWN:
-		mario->SetState(MARIO_STATE_SIT_RELEASE);
+	case DIK_S:
+		mario->SetState(MarioState::SIT_RELEASE);
 		break;
 	}
 }
@@ -58,20 +74,22 @@ void PlaySceneKeyHandler::KeyState(BYTE *states)
 	Mario* mario = (Mario*)((LPPLAYSCENE)SceneManager::GetInstance()->GetCurrentScene())->GetPlayer();
 	if (mario == NULL) return;
 
-	if (input->IsKeyDown(DIK_RIGHT))
+	if (input->IsKeyDown(DIK_RIGHT) || input->IsKeyDown(DIK_D))
 	{
-		if (input->IsKeyDown(DIK_A))
-			mario->SetState(MARIO_STATE_RUNNING_RIGHT);
+		mario->SetDirection(1);
+		if (input->IsKeyDown(DIK_X) || input->IsKeyDown(DIK_W))
+			mario->SetState(MarioState::RUNNING);
 		else
-			mario->SetState(MARIO_STATE_WALKING_RIGHT);
+			mario->SetState(MarioState::WALKING);
 	}
-	else if (input->IsKeyDown(DIK_LEFT))
+	else if (input->IsKeyDown(DIK_LEFT) || input->IsKeyDown(DIK_A))
 	{
-		if (input->IsKeyDown(DIK_A))
-			mario->SetState(MARIO_STATE_RUNNING_LEFT);
+		mario->SetDirection(-1);
+		if (input->IsKeyDown(DIK_X) || input->IsKeyDown(DIK_W))
+			mario->SetState(MarioState::RUNNING);
 		else
-			mario->SetState(MARIO_STATE_WALKING_LEFT);
+			mario->SetState(MarioState::WALKING);
 	}
 	else
-		mario->SetState(MARIO_STATE_IDLE);
+		mario->SetState(MarioState::IDLE);
 }

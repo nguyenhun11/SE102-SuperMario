@@ -1,5 +1,34 @@
-#include "Sprite.h"
+﻿#include "Sprite.h"
 #include "Game.h"
+
+void Sprite::Draw(float x, float y, float cx, float cy, bool isFlip)
+{
+	x = (FLOAT)floor(x);
+	y = (FLOAT)floor(y);
+	cx = (FLOAT)floor(cx);
+	cy = (FLOAT)floor(cy);
+
+	D3DXMATRIX matTranslation;
+	D3DXMatrixTranslation(&matTranslation, x - cx, GameGlobal::GetHeight() - y + cy, 0.1f);
+
+	this->sprite.matWorld = (this->matScaling * matTranslation);
+
+	float texWidth = (float)this->texture->getWidth();
+	int spriteWidth = (this->right - this->left + 1);
+
+	if (isFlip)
+	{
+		this->sprite.TexCoord.x = (this->right + 1.0f) / texWidth;
+		this->sprite.TexSize.x = -(float)spriteWidth / texWidth;
+	}
+	else
+	{
+		this->sprite.TexCoord.x = this->left / texWidth;
+		this->sprite.TexSize.x = (float)spriteWidth / texWidth;
+	}
+
+	GameGlobal::spriteObject->DrawSpritesImmediate(&sprite, 1, 0, 0);
+}
 
 Sprite::Sprite(int id, int left, int top, int right, int bottom, LPTEXTURE tex)
 {
@@ -13,7 +42,7 @@ Sprite::Sprite(int id, int left, int top, int right, int bottom, LPTEXTURE tex)
 	float texWidth = (float)tex->getWidth();
 	float texHeight = (float)tex->getHeight();
 
-	// Set the sprite�s shader resource view
+	// Set the sprite’s shader resource view
 	sprite.pTexture = tex->getShaderResourceView();
 
 	sprite.TexCoord.x = this->left / texWidth;
@@ -31,24 +60,15 @@ Sprite::Sprite(int id, int left, int top, int right, int bottom, LPTEXTURE tex)
 	D3DXMatrixScaling(&this->matScaling, (FLOAT)spriteWidth, (FLOAT)spriteHeight, 1.0f);
 }
 
-void Sprite::Draw(float x, float y)
+void Sprite::DrawOnCamera(float x, float y, bool isFlip)
 {
-	//Game* g = Game::GetInstance();
 	float cx, cy;
 	Camera::GetInstance()->GetCamPos(cx, cy);
+	Draw(x, y, cx, cy, isFlip);
+}
 
-	cx = (FLOAT)floor(cx);
-	cy = (FLOAT)floor(cy);
-
-	D3DXMATRIX matTranslation;
-	
-	x = (FLOAT)floor(x);
-	y = (FLOAT)floor(y);
-
-	D3DXMatrixTranslation(&matTranslation, x - cx, GameGlobal::GetHeight() - y + cy, 0.1f);
-
-	this->sprite.matWorld = (this->matScaling * matTranslation);
-
-	GameGlobal::spriteObject->DrawSpritesImmediate(&sprite, 1, 0, 0);
+void Sprite::DrawOnScreen(float x, float y)
+{
+	Draw(x, y, 0.0f, 0.0f, false);
 }
 

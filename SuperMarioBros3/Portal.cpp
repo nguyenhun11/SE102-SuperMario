@@ -29,7 +29,7 @@ void Portal::RenderBoundingBox()
 	float cx, cy;
 	Camera::GetInstance()->GetCamPos(cx, cy);
 
-	Game::GetInstance()->Draw(x - cx, y - cy, bbox, nullptr, BBOX_ALPHA, rect.right - 1, rect.bottom - 1);
+	Game::GetInstance()->DrawOnCamera(x - cx, y - cy, bbox, nullptr, BBOX_ALPHA, rect.right - 1, rect.bottom - 1);
 }
 
 void Portal::Render()

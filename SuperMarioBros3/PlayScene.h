@@ -6,6 +6,8 @@
 #include "Brick.h"
 #include "Mario.h"
 #include "Goomba.h"
+#include "HUD.h"
+#include "GameManager.h"
 //#include "Koopas.h"
 
 
@@ -21,7 +23,7 @@ protected:
 	void _ParseSection_ANIMATIONS(string line);
 
 	void _ParseSection_ASSETS(string line);
-	void _ParseSection_OBJECTS(string line);
+	void _ParseSection_OBJECTS(string line, bool isGridCoordinat = false);
 
 	void LoadAssets(LPCWSTR assetFile);
 	
@@ -34,6 +36,11 @@ public:
 	virtual void Unload();
 
 	LPGAMEOBJECT GetPlayer() { return player; }
+	void AddObject(LPGAMEOBJECT obj) { objects.push_back(obj); }
+	void InsertObjectToFront(LPGAMEOBJECT obj)
+	{
+		objects.insert(objects.begin(), obj);
+	}
 
 	void Clear();
 	void PurgeDeletedObjects();

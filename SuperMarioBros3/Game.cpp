@@ -167,7 +167,7 @@ void Game::SetPointSamplerState()
 	NOTE: This function is very inefficient because it has to convert
 	from texture to sprite every time we need to draw it
 */
-void Game::Draw(float x, float y, LPTEXTURE tex, RECT* rect, float alpha, int sprite_width, int sprite_height)
+void Game::DrawOnCamera(float x, float y, LPTEXTURE tex, RECT* rect, float alpha, int sprite_width, int sprite_height)
 {
 	if (tex == NULL) return;
 
@@ -464,7 +464,7 @@ void Game::Update(DWORD dt)
 /*
 	Render a frame
 */
-#define BACKGROUND_COLOR D3DXCOLOR(200.0f/255, 200.0f/255, 255.0f/255, 0.0f)
+#define BACKGROUND_COLOR D3DXCOLOR(181.0f/255, 235.0f/255, 242.0f/255, 0.0f)
 void Game::Render()
 {
 	ID3D10Device* pD3DDevice = GameGlobal::pD3DDevice;

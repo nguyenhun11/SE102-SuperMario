@@ -26,7 +26,7 @@ void Platform::RenderBoundingBox()
 
 	float xx = x - this->cellWidth / 2 + rect.right / 2;
 
-	Game::GetInstance()->Draw(xx - cx, y - cy, bbox, nullptr, BBOX_ALPHA, rect.right - 1, rect.bottom - 1);
+	Game::GetInstance()->DrawOnCamera(xx - cx, y - cy, bbox, nullptr, BBOX_ALPHA, rect.right - 1, rect.bottom - 1);
 }
 
 void Platform::Render()
@@ -35,15 +35,15 @@ void Platform::Render()
 	float xx = x; 
 	Sprites * s = Sprites::GetInstance();
 
-	s->Get(this->spriteIdBegin)->Draw(xx, y);
+	s->Get(this->spriteIdBegin)->DrawOnCamera(xx, y);
 	xx += this->cellWidth;
 	for (int i = 1; i < this->length - 1; i++)
 	{
-		s->Get(this->spriteIdMiddle)->Draw(xx, y);
+		s->Get(this->spriteIdMiddle)->DrawOnCamera(xx, y);
 		xx += this->cellWidth;
 	}
 	if (length>1)
-		s->Get(this->spriteIdEnd)->Draw(xx, y);
+		s->Get(this->spriteIdEnd)->DrawOnCamera(xx, y);
 
 	RenderBoundingBox();
 }
