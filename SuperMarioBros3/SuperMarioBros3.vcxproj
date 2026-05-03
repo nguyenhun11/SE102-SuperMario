@@ -164,6 +164,7 @@
     <ClCompile Include="Koopa.cpp" />
     <ClCompile Include="HUD.cpp" />
     <ClCompile Include="Leaf.cpp" />
+    <ClCompile Include="MapBackground.cpp" />
     <ClCompile Include="Mushroom.cpp" />
     <ClCompile Include="NineSliceBox.cpp" />
     <ClCompile Include="Ground.cpp" />
@@ -208,6 +209,7 @@
     <ClInclude Include="Koopa.h" />
     <ClInclude Include="HUD.h" />
     <ClInclude Include="Leaf.h" />
+    <ClInclude Include="MapBackground.h" />
     <ClInclude Include="Mushroom.h" />
     <ClInclude Include="NineSliceBox.h" />
     <ClInclude Include="Ground.h" />
@@ -244,7 +246,7 @@
     <Text Include="koopa.txt" />
     <Text Include="HUD.txt" />
     <Text Include="leaf.txt" />
-    <Text Include="map1.txt" />
+    <Text Include="stage1_assets.txt" />
     <Text Include="mario.txt" />
     <Text Include="mushroom.txt" />
     <Text Include="question_block.txt" />
@@ -255,6 +257,8 @@
     <Text Include="scene_mario_dev.txt" />
     <Text Include="pipe.txt" />
     <Text Include="score_effect.txt" />
+    <Text Include="world-scene-assets.txt" />
+    <Text Include="world-scene.txt" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="mario.ico" />

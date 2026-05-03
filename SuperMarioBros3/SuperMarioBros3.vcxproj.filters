@@ -55,6 +55,12 @@
     <Filter Include="Scenes\Playscene">
       <UniqueIdentifier>{d24973f5-c708-465c-92f6-6b52f6e63fe9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scenes\WorldScene">
+      <UniqueIdentifier>{e41e294c-df0d-4703-b285-ea03035b3d56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Entities\WorldMaps">
+      <UniqueIdentifier>{4952307e-d1de-45b2-961e-4c01c16e4568}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -77,9 +83,6 @@
     </ClCompile>
     <ClCompile Include="Sprite.cpp">
       <Filter>Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayScene.cpp">
-      <Filter>Scenes</Filter>
     </ClCompile>
     <ClCompile Include="Scence.cpp">
       <Filter>Scenes</Filter>
@@ -169,14 +172,20 @@
     <ClCompile Include="BrickDebris.cpp">
       <Filter>Entities\Effects</Filter>
     </ClCompile>
-    <ClCompile Include="WorldScene.cpp">
-      <Filter>Scenes</Filter>
-    </ClCompile>
     <ClCompile Include="GameManager.cpp">
       <Filter>CoreGame\Managers</Filter>
     </ClCompile>
     <ClCompile Include="WorldSceneKeyHandler.cpp">
       <Filter>Scenes\KeyHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayScene.cpp">
+      <Filter>Scenes\Playscene</Filter>
+    </ClCompile>
+    <ClCompile Include="WorldScene.cpp">
+      <Filter>Scenes\WorldScene</Filter>
+    </ClCompile>
+    <ClCompile Include="MapBackground.cpp">
+      <Filter>Entities\WorldMaps</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -202,9 +211,6 @@
       <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">
-      <Filter>Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayScene.h">
       <Filter>Scenes</Filter>
     </ClInclude>
     <ClInclude Include="Mario.h">
@@ -306,14 +312,20 @@
     <ClInclude Include="BrickDebris.h">
       <Filter>Entities\Effects</Filter>
     </ClInclude>
-    <ClInclude Include="WorldScene.h">
-      <Filter>Scenes</Filter>
-    </ClInclude>
     <ClInclude Include="GameManager.h">
       <Filter>CoreGame\Managers</Filter>
     </ClInclude>
     <ClInclude Include="WorldSceneKeyHandler.h">
       <Filter>Scenes\KeyHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayScene.h">
+      <Filter>Scenes\Playscene</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldScene.h">
+      <Filter>Scenes\WorldScene</Filter>
+    </ClInclude>
+    <ClInclude Include="MapBackground.h">
+      <Filter>Entities\WorldMaps</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -357,7 +369,7 @@
     <Text Include="mushroom.txt">
       <Filter>Assets</Filter>
     </Text>
-    <Text Include="map1.txt">
+    <Text Include="stage1_assets.txt">
       <Filter>Assets</Filter>
     </Text>
     <Text Include="leaf.txt">
@@ -370,6 +382,12 @@
       <Filter>Assets</Filter>
     </Text>
     <Text Include="score_effect.txt">
+      <Filter>Assets</Filter>
+    </Text>
+    <Text Include="world-scene.txt">
+      <Filter>Scenes\WorldScene</Filter>
+    </Text>
+    <Text Include="world-scene-assets.txt">
       <Filter>Assets</Filter>
     </Text>
   </ItemGroup>

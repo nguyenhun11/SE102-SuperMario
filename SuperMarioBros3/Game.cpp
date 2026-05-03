@@ -7,6 +7,7 @@
 #include "Texture.h"
 #include "Animations.h"
 #include "PlayScene.h"
+#include "WorldScene.h"
 #include "GameGlobal.h"
 #include "SceneManager.h"
 
@@ -407,7 +408,7 @@ void Game::_ParseSection_SCENES(string line)
 	switch (type)
 	{
 	case 0: // Intro
-		// scene = new IntroScene(id, path); (Sau này thêm IntroScene thì mở comment ra)
+		scene = new WorldScene(id, path);
 		break;
 	case 1: // Play Scene
 		scene = new PlayScene(id, path);

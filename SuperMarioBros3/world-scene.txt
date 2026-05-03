@@ -1,0 +1,6 @@
+[ASSETS]
+world-scene-assets.txt
+hud.txt
+
+[OBJECTS]
+800 0 0 80000

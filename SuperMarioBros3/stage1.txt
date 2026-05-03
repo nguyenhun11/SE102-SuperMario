@@ -8,7 +8,7 @@ leaf.txt
 goomba.txt
 koopa.txt
 cloud.txt
-map1.txt
+stage1_assets.txt
 question_block.txt
 pipe.txt
 HUD.txt

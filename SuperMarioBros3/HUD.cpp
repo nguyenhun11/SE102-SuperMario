@@ -67,19 +67,9 @@ void HUD::DrawNumberFromRight(int number, float x, float y, int width) {
 
 void HUD::Render()
 {
-	Mario* mario = GetMarioHUD();
-	if (mario == nullptr) return;
-
 	GameManager* gm = GameManager::GetInstance();
 
 	DrawHUD(ID_HUD_PANEL, 0, 0);
-
-	// Vẽ P-Meter
-	for (int i = 0; i < min(mario->GetPMeter(), 6); ++i) {
-		DrawHUD(ID_HUD_METER, HUD_PMETER_X + i * 8, HUD_PMETER_Y);
-	}
-	if (mario->GetPMeter() == 7 && frameCount < 8)
-		DrawHUD(ID_HUD_METER_P, HUD_P_X, HUD_P_Y);
 
 	// Lấy số từ GameManager để vẽ
 	DrawNumber(1, HUD_WORLD_X, HUD_WORLD_Y, 1);
@@ -89,16 +79,24 @@ void HUD::Render()
 	DrawNumber(gm->timer / 1000, HUD_TIME_X, HUD_TIME_Y, 3);
 	DrawNumberFromRight(gm->coinNumber, HUD_COIN_X, HUD_COIN_Y, 2);
 
-	/*if (gm->displayWinningText) {
-		DrawUI(ID_UI_CLEAR, 130, 25);
-		DrawUI(ID_UI_YOU_GOT, 130, 50);
-	}*/
-	/*if (gm->isGamePaused)
-	DrawUI(ID_UI_PAUSE_TEXT, 128, 100);*/
-
 	DrawHUD(gm->cards[0], HUD_CARD_1_X, HUD_CARD_Y);
 	DrawHUD(gm->cards[1], HUD_CARD_2_X, HUD_CARD_Y);
 	DrawHUD(gm->cards[2], HUD_CARD_3_X, HUD_CARD_Y);
+
+	Scene* currentScene = SceneManager::GetInstance()->GetCurrentScene();
+	if (dynamic_cast<PlayScene*>(currentScene))
+	{
+		Mario* mario = GetMarioHUD();
+		if (mario != nullptr)
+		{
+			// Vẽ P-Meter
+			for (int i = 0; i < min(mario->GetPMeter(), 6); ++i) {
+				DrawHUD(ID_HUD_METER, HUD_PMETER_X + i * 8, HUD_PMETER_Y);
+			}
+			if (mario->GetPMeter() == 7 && frameCount < 8)
+				DrawHUD(ID_HUD_METER_P, HUD_P_X, HUD_P_Y);
+		}
+	}
 
 	frameCount++;
 	frameCount %= 16;

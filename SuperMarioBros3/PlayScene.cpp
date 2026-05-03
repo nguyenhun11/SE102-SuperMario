@@ -40,7 +40,6 @@ PlayScene::PlayScene(int id, LPCWSTR filePath):
 
 #define MAX_SCENE_LINE 1024
 #define TILE_SIZE 16.0f
-#define HUD_HEIGHT 40.0f
 
 void PlayScene::_ParseSection_SPRITES(string line)
 {

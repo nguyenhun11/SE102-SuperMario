@@ -1,11 +1,11 @@
 [SETTINGS]
 # Start scene
-start	6
+start	0
 
 # id	type	file
-# type: 0: intro, 1: play scene 
+# type: 0: world, 1: play scene 
 [SCENES]
-0	0	intro.txt
+0	0	world-scene.txt
 1	1	scene01.txt
 2	1	scene02.txt
 5	1	scene0005.txt
