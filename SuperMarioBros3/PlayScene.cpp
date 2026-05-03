@@ -355,12 +355,37 @@ void PlayScene::Update(DWORD dt)
 		objects[i]->Update(dt, &coObjects);
 	}
 
+	//--- PLAYER POSITION
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return; 
 
-	// Update camera to follow mario
-	float cx, cy;
-	player->GetPosition(cx, cy);
+	float px, py;
+	player->GetPosition(px, py);
+
+	float mapLeft = -8.0f;	//Khoang trong bat dau map
+	float mapTop = -300.0f;    // Cho phép bầu trời cao lên đến tọa độ âm 300
+	float mapBottom = 240.0f;
+
+	if (px < mapLeft + 24.0f)
+	{
+		px = mapLeft + 24.0f;
+		player->SetPosition(px, py); // Khóa Y, ép X quay lại mép trái
+
+		float pvx, pvy;
+		player-> GetSpeed(pvx, pvy);
+		player->SetSpeed(0.0f, pvy);
+	}
+	float deathZone = mapBottom + 48.0f;
+	if (py > deathZone)
+	{
+		DebugOut(L"[INFO] GAME OVER!\n");
+		exit(0);
+
+		//TODO: Game over
+	}
+
+	//--- FOLLOW CAMERA
+	float cx = px, cy = py;
 
 	// HUD space
 	float hudHeight = 32.0f;
@@ -369,9 +394,6 @@ void PlayScene::Update(DWORD dt)
 	cx -= GameGlobal::GetWidth() / 2;
 	cy -= playableHeight / 2;
 
-	float mapLeft = -8.0f;	//Khoang trong bat dau map
-	float mapTop = -300.0f;    // Cho phép bầu trời cao lên đến tọa độ âm 300
-	float mapBottom = 240.0f;
 
 	if (cx < mapLeft) cx = mapLeft;
 	if (cy < mapTop) cy = mapTop;

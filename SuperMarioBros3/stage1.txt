@@ -22,6 +22,9 @@ score_effect.txt
 # type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopas
 # See OBJECT_TYPE constants in AssetIDs.h
 
+# MARIO
+0 1 10
+
 302	-1	11	0 question block tam chan player
 302	-1	10	0
 302	-1	9	0
@@ -391,8 +394,6 @@ score_effect.txt
 
 ################################## SKY SECTION ##################################
 
-# MARIO
-0 141 -10
 
 #COINS TO THE SKY
 401 67 6
