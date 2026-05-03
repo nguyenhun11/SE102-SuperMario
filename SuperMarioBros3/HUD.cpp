@@ -38,15 +38,29 @@ std::string HUD::IntToString(int n, int width) {
 void HUD::DrawNumber(int number, float local_x, float local_y, int width) {
 	std::string s = IntToString(number, width);
 	for (int i = 0; i < s.size(); ++i) {
-		int id = s[i] - '0' + ID_UI_NUMBER_0;
+		int id = s[i] - '0' + ID_HUD_NUMBER_0;
 		DrawHUD(id, local_x + i * 8, local_y); // number width = 8px
 	}
 }
 
-void HUD::DrawNumberFromRight(int number, float x, float y) {
-	std::string s = IntToString(number, 0);
+void HUD::DrawNumberFromRight(int number, float x, float y, int width) {
+	std::string s = std::to_string(number); 
+
+	if (s.size() < width) {
+		s.insert(0, width - s.size(), ' ');
+	}
+
 	for (int i = 0; i < s.size(); ++i) {
-		int id = s[s.size() - i - 1] - '0' + ID_UI_NUMBER_0;
+		char c = s[s.size() - i - 1];
+		int id = 0;
+
+		if (c == ' ') {
+			id = ID_HUD_NUMBER_0 + 10;
+		}
+		else {
+			id = c - '0' + ID_HUD_NUMBER_0;
+		}
+
 		DrawHUD(id, x - i * 8, y);
 	}
 }
@@ -58,14 +72,14 @@ void HUD::Render()
 
 	GameManager* gm = GameManager::GetInstance();
 
-	DrawHUD(ID_UI_PANEL, 0, 0);
+	DrawHUD(ID_HUD_PANEL, 0, 0);
 
 	// Vẽ P-Meter
 	for (int i = 0; i < min(mario->GetPMeter(), 6); ++i) {
-		DrawHUD(ID_UI_ENERGY, HUD_PMETER_X + i * 8, HUD_PMETER_Y);
+		DrawHUD(ID_HUD_METER, HUD_PMETER_X + i * 8, HUD_PMETER_Y);
 	}
 	if (mario->GetPMeter() == 7 && frameCount < 8)
-		DrawHUD(ID_UI_ENERGY_P, HUD_P_X, HUD_P_Y);
+		DrawHUD(ID_HUD_METER_P, HUD_P_X, HUD_P_Y);
 
 	// Lấy số từ GameManager để vẽ
 	DrawNumber(1, HUD_WORLD_X, HUD_WORLD_Y, 1);
@@ -73,7 +87,7 @@ void HUD::Render()
 	
 	DrawNumber(gm->score, HUD_SCORE_X, HUD_SCORE_Y, 7);
 	DrawNumber(gm->timer / 1000, HUD_TIME_X, HUD_TIME_Y, 3);
-	DrawNumberFromRight(gm->coinNumber, HUD_COIN_X, HUD_COIN_Y);
+	DrawNumberFromRight(gm->coinNumber, HUD_COIN_X, HUD_COIN_Y, 2);
 
 	/*if (gm->displayWinningText) {
 		DrawUI(ID_UI_CLEAR, 130, 25);
@@ -81,6 +95,10 @@ void HUD::Render()
 	}*/
 	/*if (gm->isGamePaused)
 	DrawUI(ID_UI_PAUSE_TEXT, 128, 100);*/
+
+	DrawHUD(gm->cards[0], HUD_CARD_1_X, HUD_CARD_Y);
+	DrawHUD(gm->cards[1], HUD_CARD_2_X, HUD_CARD_Y);
+	DrawHUD(gm->cards[2], HUD_CARD_3_X, HUD_CARD_Y);
 
 	frameCount++;
 	frameCount %= 16;

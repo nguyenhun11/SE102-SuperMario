@@ -40,7 +40,7 @@ PlayScene::PlayScene(int id, LPCWSTR filePath):
 
 #define MAX_SCENE_LINE 1024
 #define TILE_SIZE 16.0f
-#define HUD_HEIGHT 48.0f
+#define HUD_HEIGHT 40.0f
 
 void PlayScene::_ParseSection_SPRITES(string line)
 {
@@ -341,6 +341,7 @@ void PlayScene::Load()
 
 	float screenHeight = GameGlobal::GetHeight();
 	HUD::GetInstance()->SetPosition(0.0f, screenHeight - HUD_HEIGHT);
+	GameManager::GetInstance()->ResetTimer(300000);
 
 	DebugOut(L"[INFO] Done loading scene  %s\n", sceneFilePath);
 }
@@ -358,6 +359,8 @@ void PlayScene::Update(DWORD dt)
 	{
 		objects[i]->Update(dt, &coObjects);
 	}
+
+	GameManager::GetInstance()->Update(dt);
 
 	//--- PLAYER POSITION
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)

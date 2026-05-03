@@ -24,7 +24,7 @@
 #define MAIN_WINDOW_TITLE L"Super Mario Bros 3"
 #define WINDOW_ICON_PATH L"mario.ico"
 
-#define SCREEN_WIDTH 320
+#define SCREEN_WIDTH 270
 #define SCREEN_HEIGHT 240
 
 LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
