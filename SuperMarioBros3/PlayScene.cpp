@@ -385,10 +385,7 @@ void PlayScene::Update(DWORD dt)
 	float deathZone = mapBottom + 48.0f; // Rot xuong 48px la die
 	if (py > deathZone)
 	{
-		DebugOut(L"[INFO] GAME OVER!\n");
-		exit(0);
-
-		//TODO: Game over
+		GameManager::GetInstance()->LevelFailed();
 	}
 
 	//--- FOLLOW CAMERA

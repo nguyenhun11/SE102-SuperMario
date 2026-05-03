@@ -25,4 +25,8 @@ public:
 	void AddScore(int points);
 
 	void ResetTimer(DWORD start_time = 300000);
+
+	void LevelFailed();
+	void LevelSuccess();
+	void GameOver();
 };

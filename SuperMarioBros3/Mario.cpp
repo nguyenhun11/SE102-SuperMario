@@ -528,7 +528,7 @@ void Mario::Render()
 
 	//RenderBoundingBox();
 	
-	DebugOutTitle(L"Coins: %d", coin);
+	DebugOutTitle(L"Pmeter: %d", pmeter);
 }
 
 void Mario::SetState(MarioState state)

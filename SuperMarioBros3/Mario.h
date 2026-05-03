@@ -3,7 +3,7 @@
 
 #include "Animation.h"
 #include "Animations.h"
-
+#include "GameManager.h"
 #include "debug.h"
 
 // Moving Speed
@@ -202,8 +202,8 @@ class Mario : public GameObject
 
 	MarioForm nextPoofForm;
 	BOOLEAN isOnPlatform;
-	int coin; 
-	int score;
+	//int coin; 
+	//int score;
 
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithCoin(LPCOLLISIONEVENT e);
@@ -249,8 +249,8 @@ public:
 		spin_start = -1;
 		pmeter_start = -1;
 
-		coin = 0;
-		score = 0;
+		//coin = 0;
+		//score = 0;
 
 		form = MarioForm::SMALL;
 		currentState = MarioState::IDLE;
@@ -261,14 +261,16 @@ public:
 
 	void AddCoin(int amount = 1)
 	{
-		coin += amount;
-		DebugOut(L">>> CurrentCoin: %d\n", coin);
+		//coin += amount;
+		GameManager::GetInstance()->AddCoin(amount);
+		//DebugOut(L">>> CurrentCoin: %d\n", coin);
 	}
 
 	void AddScore(int amount = 100)
 	{
-		score += amount;
-		DebugOut(L">>> CurrentScore: %d\n", score);
+		//score += amount;
+		GameManager::GetInstance()->AddScore(amount);
+		//DebugOut(L">>> CurrentScore: %d\n", score);
 	}
 
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);

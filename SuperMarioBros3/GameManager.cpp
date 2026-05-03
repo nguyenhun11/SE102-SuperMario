@@ -42,3 +42,8 @@ void GameManager::ResetTimer(DWORD start_time)
 	this->timer = start_time;
 	this->isGameOver = false;
 }
+
+void GameManager::LevelFailed()
+{
+	exit(0);
+}
