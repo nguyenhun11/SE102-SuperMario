@@ -814,6 +814,21 @@ void Mario::HandleSpinning(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 							}
 						}
 					}
+
+
+					if (dynamic_cast<Brick*>(obj))
+					{
+						Brick* brick = dynamic_cast<Brick*>(obj);
+						if (brick->GetState() == static_cast<int>(BrickState::ACTIVE))
+						{
+							float qbl, qbt, qbr, qbb;
+							obj->GetBoundingBox(qbl, qbt, qbr, qbb);
+							if (mr >= qbl && ml <= qbr && mb >= qbt && mt <= qbb)
+							{
+								brick->Break();
+							}
+						}
+					}
 				}
 			}
 		}
