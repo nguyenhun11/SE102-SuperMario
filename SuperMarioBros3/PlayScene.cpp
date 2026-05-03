@@ -13,8 +13,9 @@
 #include "QuestionBlock.h"
 #include "Ground.h"
 #include "SemisolidPlatform.h"
-#include "Background.h"
+#include "Decoration.h"
 #include "VerticalPipe.h"
+#include "SolidBlock.h"
 
 #include "PlaySceneKeyHandler.h"
 
@@ -38,7 +39,8 @@ PlayScene::PlayScene(int id, LPCWSTR filePath):
 #define ASSETS_SECTION_ANIMATIONS 2
 
 #define MAX_SCENE_LINE 1024
-#define TILE_SIZE 8.0f
+#define TILE_SIZE 16.0f
+#define HUD_HEIGHT 40.0f
 
 void PlayScene::_ParseSection_SPRITES(string line)
 {
@@ -128,8 +130,23 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 
 		DebugOut(L"[INFO] Player object has been created!\n");
 		break;
+	case OBJECT_TYPE_SOLID_BLOCK:
+	{
+		int sprite_id = atoi(tokens[3].c_str());
+		obj = new SolidBlock(x, y, sprite_id);
+		break;
+	}
 	case OBJECT_TYPE_GOOMBA: obj = new Goomba(x,y); break;
-	case OBJECT_TYPE_BRICK: obj = new Brick(x,y); break;
+	case OBJECT_TYPE_BRICK:
+	{
+		int item_type = 0;
+		if (tokens.size() > 3)
+		{
+			item_type = atoi(tokens[3].c_str());
+		}
+		obj = new Brick(x, y, item_type);
+		break;
+	}
 	case OBJECT_TYPE_COIN: obj = new Coin(x, y); break;
 	case OBJECT_TYPE_KOOPA: obj = new Koopa(x, y); break;
 
@@ -198,7 +215,6 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		obj = new VerticalPipe(x, y, cell_width, cell_height, rows,
 			idTopLeft, idTopRight, idBodyLeft, idBodyRight);
 
-		objects.push_back(obj);
 		break;
 	}
 	case OBJECT_TYPE_QUESTION_BLOCK:
@@ -236,8 +252,8 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 
 		break;
 	}
-	case OBJECT_TYPE_BACKGROUND: {
-		obj = new Background(x, y, atoi(tokens[3].c_str()));
+	case OBJECT_TYPE_DECORATION: {
+		obj = new Decoration(x, y, atoi(tokens[3].c_str()));
 		break;
 	}
 
@@ -323,17 +339,19 @@ void PlayScene::Load()
 	}
 	f.close();
 
+	float screenHeight = GameGlobal::GetHeight();
+	HUD::GetInstance()->SetPosition(0.0f, screenHeight - HUD_HEIGHT);
+	GameManager::GetInstance()->ResetTimer(300000);
+
 	DebugOut(L"[INFO] Done loading scene  %s\n", sceneFilePath);
 }
 
 void PlayScene::Update(DWORD dt)
 {
-	// We know that Mario is the first object in the list hence we won't add him into the colliable object list
-	// TO-DO: This is a "dirty" way, need a more organized way 
-
 	vector<LPGAMEOBJECT> coObjects;
-	for (size_t i = 1; i < objects.size(); i++)
+	for (size_t i = 0; i < objects.size(); i++)
 	{
+		if (objects[i] == player) continue;
 		coObjects.push_back(objects[i]);
 	}
 
@@ -342,27 +360,48 @@ void PlayScene::Update(DWORD dt)
 		objects[i]->Update(dt, &coObjects);
 	}
 
+	GameManager::GetInstance()->Update(dt);
+
+	//--- PLAYER POSITION
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return; 
 
-	// Update camera to follow mario
-	float cx, cy;
-	player->GetPosition(cx, cy);
+	float px, py;
+	player->GetPosition(px, py);
+
+	float mapLeft = -8.0f;	//Khoang trong bat dau map
+	float mapTop = -300.0f;    // Cho phép bầu trời cao lên đến tọa độ âm 300
+	float mapBottom = 240.0f;
+
+	if (px < mapLeft + 24.0f)
+	{
+		px = mapLeft + 24.0f;
+		player->SetPosition(px, py); // Khóa Y, ép X quay lại mép trái
+
+		float pvx, pvy;
+		player-> GetSpeed(pvx, pvy);
+		player->SetSpeed(0.0f, pvy);
+	}
+	float deathZone = mapBottom + 48.0f; // Rot xuong 48px la die
+	if (py > deathZone)
+	{
+		GameManager::GetInstance()->LevelFailed();
+	}
+
+	//--- FOLLOW CAMERA
+	float cx = px, cy = py;
 
 	// HUD space
-	float hudHeight = 32.0f;
+	float hudHeight = HUD_HEIGHT;
 	float playableHeight = GameGlobal::GetHeight() - hudHeight;
 
 	cx -= GameGlobal::GetWidth() / 2;
-	cy -= playableHeight / 2;;
+	cy -= playableHeight / 2;
 
-	if (cx < 0) cx = 0;
-	if (cy < 0) cy = 0;
 
-	float mapHeight = 240.0f;
-	float max_cy = mapHeight - GameGlobal::GetHeight();
-
-	if (max_cy < 0) max_cy = 0;
+	if (cx < mapLeft) cx = mapLeft;
+	if (cy < mapTop) cy = mapTop;
+	float max_cy = mapBottom - GameGlobal::GetHeight();
 	if (cy > max_cy) cy = max_cy;
 
 	Camera::GetInstance()->SetCamPos(cx, cy);
@@ -380,6 +419,7 @@ void PlayScene::Render()
 			objects[i]->Render();
 
 	player->Render();
+	HUD::GetInstance()->Render();
 }
 
 /*

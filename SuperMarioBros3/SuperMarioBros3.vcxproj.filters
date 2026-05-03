@@ -129,9 +129,6 @@
     <ClCompile Include="QuestionBlock.cpp">
       <Filter>Entities\Blocks</Filter>
     </ClCompile>
-    <ClCompile Include="Background.cpp">
-      <Filter>Entities\StageMaps</Filter>
-    </ClCompile>
     <ClCompile Include="Ground.cpp">
       <Filter>Entities\StageMaps</Filter>
     </ClCompile>
@@ -160,6 +157,15 @@
       <Filter>Entities\Enemies</Filter>
     </ClCompile>
     <ClCompile Include="ScoreEffect.cpp">
+      <Filter>Entities\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="SolidBlock.cpp">
+      <Filter>Entities\Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="Decoration.cpp">
+      <Filter>Entities\StageMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="BrickDebris.cpp">
       <Filter>Entities\Effects</Filter>
     </ClCompile>
   </ItemGroup>
@@ -251,9 +257,6 @@
     <ClInclude Include="QuestionBlock.h">
       <Filter>Entities\Blocks</Filter>
     </ClInclude>
-    <ClInclude Include="Background.h">
-      <Filter>Entities\StageMaps</Filter>
-    </ClInclude>
     <ClInclude Include="Ground.h">
       <Filter>Entities\StageMaps</Filter>
     </ClInclude>
@@ -284,6 +287,15 @@
     <ClInclude Include="ScoreEffect.h">
       <Filter>Entities\Effects</Filter>
     </ClInclude>
+    <ClInclude Include="SolidBlock.h">
+      <Filter>Entities\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="Decoration.h">
+      <Filter>Entities\StageMaps</Filter>
+    </ClInclude>
+    <ClInclude Include="BrickDebris.h">
+      <Filter>Entities\Effects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="brick.txt">
@@ -311,7 +323,7 @@
       <Filter>Maps</Filter>
     </Text>
     <Text Include="game-data.txt" />
-    <Text Include="scene_hun.txt">
+    <Text Include="stage1.txt">
       <Filter>Maps</Filter>
     </Text>
     <Text Include="scene_mario_dev.txt">

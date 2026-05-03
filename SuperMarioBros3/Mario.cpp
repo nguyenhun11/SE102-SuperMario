@@ -147,6 +147,8 @@ void Mario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithMushroom(e);
 	else if (dynamic_cast<Leaf*>(e->obj))
 		OnCollisionWithLeaf(e);
+	else if (dynamic_cast<Brick*>(e->obj))
+		OnCollisionWithBrick(e);
 }
 
 void Mario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -217,6 +219,35 @@ void Mario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 	}
 
 	// note để nhớ cộng điểm ở đây nữa
+}
+
+void Mario::OnCollisionWithBrick(LPCOLLISIONEVENT e)
+{
+	Brick* brick = dynamic_cast<Brick*>(e->obj);
+
+	if (e->ny > 0)
+	{
+		if (brick->GetCurrentState() == BrickState::ACTIVE)
+		{
+			if (brick->GetContainedItem() != BrickItem::NONE)
+			{
+				// Có đồ: Bất kể Mario dạng nào cũng chỉ nảy lên để lấy đồ
+				brick->SetState(BrickState::BOUNCING);
+			}
+			else
+			{
+				// Không có đồ, xét theo sức mạnh của Mario
+				if (this->GetCurrentForm() == MarioForm::SMALL)
+				{
+					brick->SetState(BrickState::BOUNCING); // Yếu thì chỉ nảy
+				}
+				else
+				{
+					brick->Break(); // Mạnh (To, Đuôi, Lửa) thì đập vỡ
+				}
+			}
+		}
+	}
 }
 
 /// <summary>
@@ -497,7 +528,7 @@ void Mario::Render()
 
 	//RenderBoundingBox();
 	
-	DebugOutTitle(L"Coins: %d", coin);
+	DebugOutTitle(L"Pmeter: %d", pmeter);
 }
 
 void Mario::SetState(MarioState state)
@@ -544,7 +575,7 @@ void Mario::SetState(MarioState state)
 		if (isSitting) break;
 		if (isOnPlatform)	// ddungw duoi dat
 		{
-			if (abs(this->vx) == MARIO_RUNNING_SPEED)
+			if (pmeter == MARIO_PMETER_MAX)
 			{
 				if (form == MarioForm::SMALL)
 				{
@@ -555,14 +586,17 @@ void Mario::SetState(MarioState state)
 					vy = -MARIO_JUMP_RUN_SPEED_Y;
 					vx *= 1.2f;
 				}
+
 				if (form == MarioForm::RACOON)
 				{
 					canFly = true;
-					fly_start = GetTickCount64();
+					fly_start = GetTickCount64(); 
 				}
 			}
 			else
+			{
 				vy = -MARIO_JUMP_SPEED_Y;
+			}
 		}
 		else	// dang tren khong
 		{
@@ -864,6 +898,10 @@ void Mario::HandlePMeter(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			pmeter--;
 			pmeter_start = GetTickCount64();
 		}
+	}
+	else if (!canFly && pmeter == MARIO_PMETER_MAX)
+	{
+		pmeter = 0;
 	}
 }
 

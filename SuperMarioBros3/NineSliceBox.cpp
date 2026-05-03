@@ -9,9 +9,10 @@ void NineSliceBox::Render()
 	{
 		for (int j = 0; j < this->columns; j++)
 		{
-			// [SỬA TẠI ĐÂY] Dịch tâm vẽ vào đúng giữa của mỗi ô lưới
-			float cellX = x + (this->cellWidth / 2) + j * this->cellWidth;
-			float cellY = y + (this->cellHeight / 2) + i * this->cellHeight;
+			// (x, y) đã là tâm của ô đầu tiên. 
+			// Chỉ cần dịch chuyển sang phải (j) và dịch xuống dưới (i) theo kích thước ô.
+			float cellX = x + j * this->cellWidth;
+			float cellY = y + i * this->cellHeight;
 
 			// --- KIỂM TRA TRỤC Y (DÒNG) ---
 			int row_index = 1; // Khởi điểm: Luôn là Lõi giữa (Center)
@@ -27,18 +28,18 @@ void NineSliceBox::Render()
 
 			// Bốc SpriteID ra từ mảng
 			int spriteToDraw = this->spriteIDs[row_index][col_index];
-			Sprites::GetInstance()->Get(spriteToDraw)->Draw(cellX, cellY);
+			Sprites::GetInstance()->Get(spriteToDraw)->DrawOnCamera(cellX, cellY);
 		}
 	}
-
-	// Bật dòng này lên để so sánh khung viền vật lý và hình ảnh
-	// RenderBoundingBox(); 
 }
 
 void NineSliceBox::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
-	l = x;
-	t = y;
-	r = l + this->columns * this->cellWidth;
-	b = t + this->rows * this->cellHeight;
+	// Lùi (x,y) về nửa ô để lấy đúng mép ngoài cùng (Top-Left) của khối
+	l = x - (this->cellWidth / 2.0f);
+	t = y - (this->cellHeight / 2.0f);
+
+	// Có góc Top-Left rồi thì chỉ cần cộng thêm tổng chiều dài và tổng chiều cao
+	r = l + (this->columns * this->cellWidth);
+	b = t + (this->rows * this->cellHeight);
 }

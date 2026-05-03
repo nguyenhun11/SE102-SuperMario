@@ -18,7 +18,7 @@ public:
 
 		// Mặc định Ground là mặt đất nền, nên ta bật hết các viền
 		this->hasTop = true;
-		this->hasBottom = true;
+		this->hasBottom = false;
 		this->hasLeft = true;
 		this->hasRight = true;
 	}
