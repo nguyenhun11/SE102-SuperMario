@@ -370,7 +370,7 @@ void PlayScene::Update(DWORD dt)
 	player->GetPosition(px, py);
 
 	float mapLeft = -8.0f;	//Khoang trong bat dau map
-	float mapTop = -300.0f;    // Cho phép bầu trời cao lên đến tọa độ âm 300
+	float mapTop = -100.0f;    // Cho phép bầu trời cao lên đến tọa độ âm 300
 	float mapBottom = 240.0f;
 
 	if (px < mapLeft + 24.0f)
