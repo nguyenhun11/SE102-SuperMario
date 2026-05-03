@@ -185,6 +185,8 @@
     <ClCompile Include="Sprites.cpp" />
     <ClCompile Include="Textures.cpp" />
     <ClCompile Include="Utils.cpp" />
+    <ClCompile Include="WorldScene.cpp" />
+    <ClCompile Include="WorldSceneKeyHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
@@ -230,6 +232,8 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Textures.h" />
     <ClInclude Include="Utils.h" />
+    <ClInclude Include="WorldScene.h" />
+    <ClInclude Include="WorldSceneKeyHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="brick.txt" />
@@ -259,12 +263,13 @@
     <Image Include="textures\300_Tilesets_StageTiles.png" />
     <Image Include="textures\400_Items.png" />
     <Image Include="textures\500_HUD.png" />
+    <Image Include="textures\600_misc.png" />
+    <Image Include="textures\700_WorldMaps.png" />
     <Image Include="textures\bbox.png" />
     <Image Include="textures\enemies.png" />
     <Image Include="textures\EnemiesBosses_Bosses.png" />
     <Image Include="textures\EnemiesBosses_Enemies.png" />
     <Image Include="textures\mario.png" />
-    <Image Include="textures\misc.png" />
     <Image Include="textures\MiscellaneousItems_and_Objects.png" />
     <Image Include="textures\OtherBackgrounds_TitleScreen.png" />
     <Image Include="textures\PlayableCharacters_Mario&amp;Luigi.png" />
@@ -277,7 +282,6 @@
     <Image Include="textures\Tilesets_MiscellaneousScreenTiles.png" />
     <Image Include="textures\Tilesets_StageTiles.png" />
     <Image Include="textures\WorldMaps_MapPopups.png" />
-    <Image Include="textures\WorldMaps_World1_GrassLand.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
