@@ -474,14 +474,23 @@ void Game::Render()
 	ID3DX10Sprite* spriteHandler = GameGlobal::spriteObject;
 	ID3D10BlendState* pBlendStateAlpha = GameGlobal::pBlendStateAlpha;
 
-	pD3DDevice->ClearRenderTargetView(pRenderTargetView, BACKGROUND_COLOR);
+	LPSCENE currentScene = SceneManager::GetInstance()->GetCurrentScene();
+	if (currentScene != NULL)
+	{
+		pD3DDevice->ClearRenderTargetView(pRenderTargetView, currentScene->GetBackgroundColor());
+	}
+	else
+	{
+		// Màu dự phòng nếu game bị lỗi chưa có Scene
+		float fallbackColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+		pD3DDevice->ClearRenderTargetView(pRenderTargetView, fallbackColor);
+	}
 
 	spriteHandler->Begin(D3DX10_SPRITE_SORT_TEXTURE);
 
 	FLOAT NewBlendFactor[4] = { 0,0,0,0 };
 	pD3DDevice->OMSetBlendState(pBlendStateAlpha, NewBlendFactor, 0xffffffff);
 
-	LPSCENE currentScene = SceneManager::GetInstance()->GetCurrentScene();
 	if (currentScene != NULL)
 	{
 		currentScene->Render();
