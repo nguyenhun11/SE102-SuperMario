@@ -343,12 +343,10 @@ void PlayScene::Load()
 
 void PlayScene::Update(DWORD dt)
 {
-	// We know that Mario is the first object in the list hence we won't add him into the colliable object list
-	// TO-DO: This is a "dirty" way, need a more organized way 
-
 	vector<LPGAMEOBJECT> coObjects;
-	for (size_t i = 1; i < objects.size(); i++)
+	for (size_t i = 0; i < objects.size(); i++)
 	{
+		if (objects[i] == player) continue;
 		coObjects.push_back(objects[i]);
 	}
 
@@ -371,7 +369,7 @@ void PlayScene::Update(DWORD dt)
 	cx -= GameGlobal::GetWidth() / 2;
 	cy -= playableHeight / 2;
 
-	float mapLeft = -8.0f;
+	float mapLeft = -8.0f;	//Khoang trong bat dau map
 	float mapTop = -300.0f;    // Cho phép bầu trời cao lên đến tọa độ âm 300
 	float mapBottom = 240.0f;
 

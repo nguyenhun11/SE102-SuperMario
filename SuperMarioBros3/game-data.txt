@@ -13,7 +13,7 @@ height	240
 1	1	scene01.txt
 2	1	scene02.txt
 5	1	scene0005.txt
-6	1	scene_hun.txt
+6	1	stage1.txt
 7	1	scene_mario_dev.txt
 
 # id	file 

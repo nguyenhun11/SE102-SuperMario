@@ -246,11 +246,10 @@
     <Text Include="scene0005.txt" />
     <Text Include="scene01.txt" />
     <Text Include="scene02.txt" />
-    <Text Include="scene_hun.txt" />
+    <Text Include="stage1.txt" />
     <Text Include="scene_mario_dev.txt" />
     <Text Include="pipe.txt" />
     <Text Include="score_effect.txt" />
-    <Text Include="block.txt" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="mario.ico" />
