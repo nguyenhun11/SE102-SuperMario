@@ -24,13 +24,13 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	HandleTransform(dt, coObjects);
 	HandleSpinning(dt, coObjects);
 
-	if (isOnPlatform && vy >= 0)
+	if (isOnPlatform && vy >= 0) // mario đang đứng trên platform
 	{
 		canFly = false;
 		isFlying = false;
 		isFloating = false;
 	}
-	else
+	else   // mario đứng trên ko trung
 	{
 		if (canFly && GetTickCount64() - fly_start > MARIO_FLYING_TIME)
 		{
