@@ -39,7 +39,7 @@ PlayScene::PlayScene(int id, LPCWSTR filePath):
 #define ASSETS_SECTION_ANIMATIONS 2
 
 #define MAX_SCENE_LINE 1024
-#define TILE_SIZE 8.0f
+#define TILE_SIZE 16.0f
 
 void PlayScene::_ParseSection_SPRITES(string line)
 {
@@ -214,7 +214,6 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		obj = new VerticalPipe(x, y, cell_width, cell_height, rows,
 			idTopLeft, idTopRight, idBodyLeft, idBodyRight);
 
-		objects.push_back(obj);
 		break;
 	}
 	case OBJECT_TYPE_QUESTION_BLOCK:
@@ -370,15 +369,15 @@ void PlayScene::Update(DWORD dt)
 	float playableHeight = GameGlobal::GetHeight() - hudHeight;
 
 	cx -= GameGlobal::GetWidth() / 2;
-	cy -= playableHeight / 2;;
+	cy -= playableHeight / 2;
 
-	if (cx < 0) cx = 0;
-	if (cy < 0) cy = 0;
+	float mapLeft = -8.0f;
+	float mapTop = -300.0f;    // Cho phép bầu trời cao lên đến tọa độ âm 300
+	float mapBottom = 240.0f;
 
-	float mapHeight = 240.0f;
-	float max_cy = mapHeight - GameGlobal::GetHeight();
-
-	if (max_cy < 0) max_cy = 0;
+	if (cx < mapLeft) cx = mapLeft;
+	if (cy < mapTop) cy = mapTop;
+	float max_cy = mapBottom - GameGlobal::GetHeight();
 	if (cy > max_cy) cy = max_cy;
 
 	Camera::GetInstance()->SetCamPos(cx, cy);
