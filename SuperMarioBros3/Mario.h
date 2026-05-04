@@ -41,7 +41,7 @@
 #define MARIO_FLYING_TIME 4000    
 #define MARIO_FLOATING_TIME	250
 #define MARIO_SLOW_FALL_SPEED 0.01f 
-#define MARIO_FLYING_UP_FORCE 0.5f
+#define MARIO_FLYING_UP_FORCE 0.25f
 
 // Tail attack 
 #define MARIO_SPIN_TIME	240
@@ -138,8 +138,8 @@ enum class MarioForm
 // ---- Other Game feel Stuff ----
 // Die Animation
 #define	MARIO_DIE_TIMEOUT	800
-#define MARIO_DIE_BOUNCE_FORCE	0.08f
-#define	MARIO_DIE_GRAVITY	0.00006f
+#define MARIO_DIE_BOUNCE_FORCE	0.09f
+#define	MARIO_DIE_GRAVITY	0.00008f
 
 // Hit Animation
 #define MARIO_HIT_TIMEOUT	1000

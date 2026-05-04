@@ -24,17 +24,18 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	HandleTransform(dt, coObjects);
 	HandleSpinning(dt, coObjects);
 
-	if (isOnPlatform)
+	if (isOnPlatform && vy >= 0) // mario đang đứng trên platform
 	{
 		canFly = false;
 		isFlying = false;
 		isFloating = false;
 	}
-	else
+	else   // mario đứng trên ko trung
 	{
 		if (canFly && GetTickCount64() - fly_start > MARIO_FLYING_TIME)
 		{
 			canFly = false;
+			pmeter = 0;
 		}
 
 		if (isFlying || isFloating)
@@ -575,7 +576,7 @@ void Mario::SetState(MarioState state)
 		if (isSitting) break;
 		if (isOnPlatform)	// ddungw duoi dat
 		{
-			if (abs(this->vx) == MARIO_RUNNING_SPEED)
+			if (pmeter == MARIO_PMETER_MAX)
 			{
 				if (form == MarioForm::SMALL)
 				{
@@ -586,14 +587,18 @@ void Mario::SetState(MarioState state)
 					vy = -MARIO_JUMP_RUN_SPEED_Y;
 					vx *= 1.2f;
 				}
+
+				// nếu là gấu mèo thì bật bay
 				if (form == MarioForm::RACOON)
 				{
 					canFly = true;
 					fly_start = GetTickCount64();
 				}
 			}
-			else
+			else // Nhảy bình thường khi chưa đầy P-Meter
+			{
 				vy = -MARIO_JUMP_SPEED_Y;
+			}
 		}
 		else	// dang tren khong
 		{
@@ -604,7 +609,7 @@ void Mario::SetState(MarioState state)
 					vy = -MARIO_FLYING_UP_FORCE;
 					isFlying = true;
 					isFloating = false;
-					flap_start = GetTickCount64(); 
+					flap_start = GetTickCount64();
 				}
 				else if (vy > 0 && !isFloating) // Đang rớt và chưa trong chu kỳ vẫy đuôi
 				{
@@ -806,6 +811,21 @@ void Mario::HandleSpinning(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 							if (mr >= qbl && ml <= qbr && mb >= qbt && mt <= qbb)
 							{
 								qb->SetState(QuestionBlockState::BOUNCING);
+							}
+						}
+					}
+
+
+					if (dynamic_cast<Brick*>(obj))
+					{
+						Brick* brick = dynamic_cast<Brick*>(obj);
+						if (brick->GetState() == static_cast<int>(BrickState::ACTIVE))
+						{
+							float qbl, qbt, qbr, qbb;
+							obj->GetBoundingBox(qbl, qbt, qbr, qbb);
+							if (mr >= qbl && ml <= qbr && mb >= qbt && mt <= qbb)
+							{
+								brick->Break();
 							}
 						}
 					}
