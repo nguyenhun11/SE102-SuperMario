@@ -9,6 +9,7 @@
 
 #include "Item.h"
 #include "ScoreEffect.h"
+#include "OneUpEffect.h"
 #include "Slope.h"
 
 #include "Portal.h"
@@ -210,8 +211,15 @@ void Mario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 	Mushroom* mushroom = dynamic_cast<Mushroom*>(e->obj);
 	PlayScene* scene = dynamic_cast<PlayScene*>(SceneManager::GetInstance()->GetCurrentScene());
 
+	if (mushroom == dynamic_cast<OneUpMushroom*>(e->obj))		// nếu là nấm 1 up
+	{
+		// Hiệu ứng 1UP
+		OneUpEffect* effect = new OneUpEffect(mushroom->GetX(), mushroom->GetY());
+		scene->AddObject(effect);
+		// cộng mạng
+	}
 	// nếu là nấm bình thường, không phải nấm 1 up
-	if (mushroom != dynamic_cast<OneUpMushroom*>(e->obj))
+	else
 	{
 		if (form == MarioForm::SMALL)
 		{
@@ -221,12 +229,8 @@ void Mario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 		// hiệu ứng điểm
 		ScoreEffect* scoreEff = new ScoreEffect(mushroom->GetX(), mushroom->GetY(), Score::ONE_THOUSAND);
 		scene->AddObject(scoreEff);
+		// coongj điểm
 		AddScore(1000);
-	}
-	else		// nếu là nấm 1 up
-	{
-		// Hiệu ứng 1UP
-		// cộng mạng
 	}
 
 	mushroom->Delete();

@@ -14,7 +14,7 @@ pipe.txt
 HUD.txt
 power_up.txt
 HUD.txt
-score_effect.txt
+effect.txt
 
 [GRID_OBJECTS]
 # type x y extra_settings per object type

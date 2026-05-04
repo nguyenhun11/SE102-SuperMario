@@ -55,6 +55,9 @@
     <Filter Include="Entities\Effects">
       <UniqueIdentifier>{2dd82a35-ce79-481c-8c54-9e242ac5af03}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Assets\Header">
+      <UniqueIdentifier>{c5ed1505-4d05-40ed-b07d-3c27b1be484a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -174,6 +177,12 @@
     <ClCompile Include="Slope.cpp">
       <Filter>Entities\Blocks</Filter>
     </ClCompile>
+    <ClCompile Include="OneUpEffect.h">
+      <Filter>Entities\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="OneUpEffect.cpp">
+      <Filter>Entities\Effects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h">
@@ -214,9 +223,6 @@
     </ClInclude>
     <ClInclude Include="SceneKeyHandler.h">
       <Filter>Input</Filter>
-    </ClInclude>
-    <ClInclude Include="AssetIDs.h">
-      <Filter>Assets</Filter>
     </ClInclude>
     <ClInclude Include="PlaySceneKeyHandler.h">
       <Filter>Input</Filter>
@@ -309,11 +315,14 @@
     <ClInclude Include="Slope.h">
       <Filter>Entities\Blocks</Filter>
     </ClInclude>
-    <ClInclude Include="Item.h">
-      <Filter>Assets</Filter>
+    <ClInclude Include="AssetIDs.h">
+      <Filter>Assets\Header</Filter>
     </ClInclude>
     <ClInclude Include="Core.h">
-      <Filter>Assets</Filter>
+      <Filter>Assets\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>Assets\Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -363,7 +372,7 @@
     <Text Include="HUD.txt">
       <Filter>Assets</Filter>
     </Text>
-    <Text Include="score_effect.txt">
+    <Text Include="effect.txt">
       <Filter>Assets</Filter>
     </Text>
     <Text Include="power_up.txt">
@@ -389,7 +398,7 @@
     <Image Include="mario.ico">
       <Filter>Resources</Filter>
     </Image>
-    <Image Include="textures\misc.png">
+    <Image Include="textures\600_misc.png">
       <Filter>Resources</Filter>
     </Image>
     <Image Include="textures\Stage1_1.png">

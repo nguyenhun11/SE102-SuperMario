@@ -170,6 +170,8 @@
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mario.cpp" />
+    <ClCompile Include="OneUpEffect.cpp" />
+    <ClCompile Include="OneUpEffect.h" />
     <ClCompile Include="OneUpMushroom.cpp" />
     <ClCompile Include="ScoreEffect.cpp" />
     <ClCompile Include="Slope.cpp" />
@@ -256,7 +258,7 @@
     <Text Include="stage1.txt" />
     <Text Include="scene_mario_dev.txt" />
     <Text Include="pipe.txt" />
-    <Text Include="score_effect.txt" />
+    <Text Include="effect.txt" />
     <Text Include="stage2.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -271,7 +273,7 @@
     <Image Include="textures\EnemiesBosses_Bosses.png" />
     <Image Include="textures\EnemiesBosses_Enemies.png" />
     <Image Include="textures\mario.png" />
-    <Image Include="textures\misc.png" />
+    <Image Include="textures\600_misc.png" />
     <Image Include="textures\MiscellaneousItems_and_Objects.png" />
     <Image Include="textures\OtherBackgrounds_TitleScreen.png" />
     <Image Include="textures\PlayableCharacters_Mario&amp;Luigi.png" />
