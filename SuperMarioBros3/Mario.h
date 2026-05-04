@@ -175,6 +175,10 @@ class Mario : public GameObject
 	float maxVx;
 	float accelX;				// acceleration on x 
 	float accelY;				// acceleration on y 
+
+	// original pos
+	float start_x;
+	float start_y;
 	
 	bool isSuperTransforming;
 	bool isTakingDamage;
@@ -225,6 +229,8 @@ class Mario : public GameObject
 public:
 	Mario(float x, float y) : GameObject(x, y)
 	{
+		start_x = x;
+		start_y = y;
 		isSitting = false;
 		maxVx = 0.0f;
 		accelX = 0.0f;
@@ -309,6 +315,7 @@ public:
 	// Behaviours
 	void Attack();
 	void TakeDamage();
+	void Reset();
 
 	// Handle Update
 	void HandleDying(DWORD dt, vector<LPGAMEOBJECT>* coObjects); 

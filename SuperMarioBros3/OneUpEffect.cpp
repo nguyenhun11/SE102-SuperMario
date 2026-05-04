@@ -10,7 +10,7 @@ void OneUpEffect::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	y += vy * dt;
 
-	if (GetTickCount64() - effect_start > 1000)
+	if (GetTickCount64() - effect_start > 800)
 	{
 		this->Delete();
 	}

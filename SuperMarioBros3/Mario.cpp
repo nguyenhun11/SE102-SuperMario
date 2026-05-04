@@ -217,6 +217,7 @@ void Mario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 		OneUpEffect* effect = new OneUpEffect(mushroom->GetX(), mushroom->GetY());
 		scene->AddObject(effect);
 		// cộng mạng
+		GameManager::GetInstance()->AddLife(1);
 	}
 	// nếu là nấm bình thường, không phải nấm 1 up
 	else
@@ -791,6 +792,35 @@ void Mario::TakeDamage()
 		DebugOut(L">>> Mario DIE >>> \n");
 		SetState(MarioState::DIE);
 	}
+}
+
+void Mario::Reset()
+{
+	//về vị trí cũ
+	x = start_x;
+	y = start_y;
+
+	// Reset hình dáng
+	SetNewForm(MarioForm::SMALL);
+	SetState(MarioState::IDLE);
+
+	vx = 0;
+	vy = 0;
+	accelX = 0;
+	accelY = MARIO_GRAVITY;
+
+	isTakingDamage = false;
+	isSuperTransforming = false;
+	isPoofTransforming = false;
+	isSpinning = false;
+	canFly = false;
+	isFlying = false;
+	isFloating = false;
+
+	untouchable = 0;
+	pmeter = 0;
+
+	SetDirection(1);
 }
 
 // ============================== HANDLE UPDATE ===============================
