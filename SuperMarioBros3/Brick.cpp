@@ -127,4 +127,9 @@ void Brick::SpawnItem()
 	{
 		//  P-Switch sau
 	}
+	else if (containedItem == BrickItem::ONE_UP_MUSHROOM)
+	{
+		OneUpMushroom* mr = new OneUpMushroom(x, y);
+		playScene->AddObject(mr);
+	}
 }
