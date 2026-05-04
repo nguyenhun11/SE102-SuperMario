@@ -171,6 +171,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mario.cpp" />
     <ClCompile Include="ScoreEffect.cpp" />
+    <ClCompile Include="Slope.cpp" />
     <ClCompile Include="SolidBlock.cpp" />
     <ClCompile Include="VerticalPipe.cpp" />
     <ClCompile Include="Platform.cpp" />
@@ -213,6 +214,7 @@
     <ClInclude Include="KeyEventHandler.h" />
     <ClInclude Include="Mario.h" />
     <ClInclude Include="ScoreEffect.h" />
+    <ClInclude Include="Slope.h" />
     <ClInclude Include="SolidBlock.h" />
     <ClInclude Include="VerticalPipe.h" />
     <ClInclude Include="Platform.h" />
@@ -241,6 +243,7 @@
     <Text Include="HUD.txt" />
     <Text Include="leaf.txt" />
     <Text Include="map1.txt" />
+    <Text Include="map_2.txt" />
     <Text Include="mario.txt" />
     <Text Include="mushroom.txt" />
     <Text Include="question_block.txt" />
@@ -251,6 +254,7 @@
     <Text Include="scene_mario_dev.txt" />
     <Text Include="pipe.txt" />
     <Text Include="score_effect.txt" />
+    <Text Include="stage2.txt" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="mario.ico" />

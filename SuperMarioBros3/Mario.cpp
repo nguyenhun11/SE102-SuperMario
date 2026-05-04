@@ -11,6 +11,7 @@
 #include "Leaf.h"
 #include "Coin.h"
 #include "ScoreEffect.h"
+#include "Slope.h"
 
 #include "Portal.h"
 #include "QuestionBlock.h"
@@ -72,6 +73,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 
 	HandlePMeter(dt, coObjects);
+	HandleSlope(dt, coObjects);
 
 	vx += effectiveAccel * dt;
 
@@ -629,11 +631,20 @@ void Mario::SetState(MarioState state)
 	case MarioState::SIT:
 		if (isOnPlatform && form != MarioForm::SMALL)
 		{
-			state = MarioState::IDLE;
 			isSitting = true;
-			vy = 0.0f;
-			accelX = 0.0f;
-			y +=MARIO_SIT_HEIGHT_ADJUST;
+			if (isOnSlope)
+			{
+				// có thể thêm biến slopeDirection từ class dốc qua để biết nên trượt lùi hay tiến
+				accelX = MARIO_ACCEL_RUN_X * 1.5f; 
+				maxVx = MARIO_RUNNING_SPEED * 1.5f;
+			}
+			else
+			{
+				vy = 0.0f;
+				accelX = 0.0f;
+			}
+
+			y += MARIO_SIT_HEIGHT_ADJUST;
 		}
 		break;
 
@@ -914,6 +925,41 @@ void Mario::HandlePMeter(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			pmeter--;
 			pmeter_start = GetTickCount64();
+		}
+	}
+}
+
+void Mario::HandleSlope(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+{
+	float marioBottomY = y + MARIO_BIG_BBOX_HEIGHT / 2; // tọa độ chân
+
+	for (size_t i = 0; i < coObjects->size(); i++)
+	{
+		LPGAMEOBJECT obj = coObjects->at(i);
+		if (dynamic_cast<Slope*>(obj))
+		{
+			Slope* slope = dynamic_cast<Slope*>(obj);
+			float sl, st, sr, sb;
+			slope->GetBoundingBox(sl, st, sr, sb);
+
+			// Rút tâm X của Mario ra
+			float marioCenterX = x;
+
+			// kiểm tra mario đang đứng trên dốc
+			if (marioCenterX >= sl && marioCenterX <= sr && marioBottomY >= st && marioBottomY <= sb)
+			{
+				// lấy tọa độ y
+				float expectedY = slope->GetSurfaceY(marioCenterX);
+
+				// kéo mairo lên nếu chân < dốc
+				if (marioBottomY >= expectedY - 2.0f) // -2.0f sai số nhỏ
+				{
+					y = expectedY - MARIO_BIG_BBOX_HEIGHT / 2;
+					vy = 0;
+					isOnPlatform = true;
+					isOnSlope = true;
+				}
+			}
 		}
 	}
 }

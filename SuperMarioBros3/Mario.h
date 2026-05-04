@@ -202,6 +202,7 @@ class Mario : public GameObject
 
 	MarioForm nextPoofForm;
 	BOOLEAN isOnPlatform;
+	BOOLEAN isOnSlope;
 	//int coin; 
 	//int score;
 
@@ -230,6 +231,7 @@ public:
 		pmeter = 0;
 
 		isOnPlatform = false;
+		isOnSlope = false;
 		isSuperTransforming = false;
 		isTakingDamage = false;
 		canFly = false;
@@ -313,6 +315,7 @@ public:
 	void HandleSpinning(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void HandleTransform(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void HandlePMeter(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
+	void HandleSlope(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 
 	// Getters & Setters
 	float GetX() { return x; }
