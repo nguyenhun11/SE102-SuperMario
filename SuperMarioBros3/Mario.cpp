@@ -673,6 +673,12 @@ void Mario::SetState(MarioState state)
 	GameObject::SetState(static_cast<int>(state));
 }
 
+void Mario::SetDirection(int d)
+{
+	if (isTakingDamage || isSuperTransforming || isSuperTransforming) return;
+	nx = d;
+}
+
 void Mario::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
 	if (form==MarioForm::SUPER || form == MarioForm::RACOON)

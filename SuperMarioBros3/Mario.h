@@ -278,7 +278,7 @@ public:
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();
 	void SetState(MarioState state);
-	void SetDirection(int d) { nx = d; }
+	void SetDirection(int d);
 
 	int IsCollidable()
 	{ 
