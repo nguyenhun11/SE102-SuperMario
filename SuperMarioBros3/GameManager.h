@@ -21,8 +21,9 @@ public:
 
 	void Update(DWORD dt);
 
-	void AddCoin(int coins);
-	void AddScore(int points);
+	void AddCoin(int coins = 1);
+	void AddScore(int points = 100);
+	void AddLife(int amount = 1);
 
 	void ResetTimer(DWORD start_time = 300000);
 

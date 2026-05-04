@@ -5,7 +5,7 @@
 #include "Animations.h"
 #include "PlayScene.h"
 #include "BrickDebris.h"
-#include "Mushroom.h"
+#include "Item.h"
 
 #define ID_ANI_BRICK_ACTIVE 30100
 #define ID_ANI_BRICK_EMPTY	30110
@@ -22,7 +22,8 @@ enum class BrickItem {
 	NONE = 0,
 	P_SWITCH = 1,
 	MUSHROOM = 2,
-	COIN = 3
+	ONE_UP_MUSHROOM = 3,
+	COIN = 4,
 };
 
 enum class BrickState {

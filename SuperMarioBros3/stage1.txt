@@ -12,10 +12,9 @@ map1.txt
 question_block.txt
 pipe.txt
 HUD.txt
-mushroom.txt
-leaf.txt
+power_up.txt
 HUD.txt
-score_effect.txt
+effect.txt
 
 [GRID_OBJECTS]
 # type x y extra_settings per object type
@@ -291,7 +290,7 @@ score_effect.txt
 
 # BRICK
 # id x y spawn item
-# 0/none = NONE, 1 = P-SWITCH, 2 = MUSHROOM
+# 0/none = NONE, 1 = P-SWITCH, 2 = MUSHROOM, 3 = ONE UP MUSHROOM, 4 = COIN
 301 122 11
 301 123 11
 301 124 11
@@ -399,7 +398,7 @@ score_effect.txt
 600 86 -3 7010043
 
 # BRICK
-301 90 -6 2
+301 90 -6 3
 
 # SOLID CLOUD
 300 88 -2 30002

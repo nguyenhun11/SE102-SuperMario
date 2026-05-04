@@ -7,10 +7,10 @@
 
 #include "Goomba.h"
 
-#include "Mushroom.h"
-#include "Leaf.h"
-#include "Coin.h"
+#include "Item.h"
 #include "ScoreEffect.h"
+#include "OneUpEffect.h"
+#include "Slope.h"
 
 #include "Portal.h"
 #include "QuestionBlock.h"
@@ -72,6 +72,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 
 	HandlePMeter(dt, coObjects);
+	HandleSlope(dt, coObjects);
 
 	vx += effectiveAccel * dt;
 
@@ -203,23 +204,37 @@ void Mario::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 	}
 }
 
+
 void Mario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 {
 	// coongj dieemr
 	Mushroom* mushroom = dynamic_cast<Mushroom*>(e->obj);
 	PlayScene* scene = dynamic_cast<PlayScene*>(SceneManager::GetInstance()->GetCurrentScene());
-	ScoreEffect* scoreEff = new ScoreEffect(mushroom->GetX(), mushroom->GetY(), Score::ONE_THOUSAND);
-	scene->AddObject(scoreEff);
-	AddScore(1000);
-	mushroom->Delete();
 
-	// note để nhớ bổ sung hiệu ứng bất tử chớp chớp 2.5s
-	if (form == MarioForm::SMALL)
+	if (mushroom == dynamic_cast<OneUpMushroom*>(e->obj))		// nếu là nấm 1 up
 	{
-		StartTransform();
+		// Hiệu ứng 1UP
+		OneUpEffect* effect = new OneUpEffect(mushroom->GetX(), mushroom->GetY());
+		scene->AddObject(effect);
+		// cộng mạng
+		GameManager::GetInstance()->AddLife(1);
+	}
+	// nếu là nấm bình thường, không phải nấm 1 up
+	else
+	{
+		if (form == MarioForm::SMALL)
+		{
+			StartTransform();
+		}
+
+		// hiệu ứng điểm
+		ScoreEffect* scoreEff = new ScoreEffect(mushroom->GetX(), mushroom->GetY(), Score::ONE_THOUSAND);
+		scene->AddObject(scoreEff);
+		// coongj điểm
+		AddScore(1000);
 	}
 
-	// note để nhớ cộng điểm ở đây nữa
+	mushroom->Delete();
 }
 
 void Mario::OnCollisionWithBrick(LPCOLLISIONEVENT e)
@@ -629,11 +644,20 @@ void Mario::SetState(MarioState state)
 	case MarioState::SIT:
 		if (isOnPlatform && form != MarioForm::SMALL)
 		{
-			state = MarioState::IDLE;
 			isSitting = true;
-			vy = 0.0f;
-			accelX = 0.0f;
-			y +=MARIO_SIT_HEIGHT_ADJUST;
+			if (isOnSlope)
+			{
+				// có thể thêm biến slopeDirection từ class dốc qua để biết nên trượt lùi hay tiến
+				accelX = MARIO_ACCEL_RUN_X * 1.5f; 
+				maxVx = MARIO_RUNNING_SPEED * 1.5f;
+			}
+			else
+			{
+				vy = 0.0f;
+				accelX = 0.0f;
+			}
+
+			y += MARIO_SIT_HEIGHT_ADJUST;
 		}
 		break;
 
@@ -660,6 +684,12 @@ void Mario::SetState(MarioState state)
 	}
 
 	GameObject::SetState(static_cast<int>(state));
+}
+
+void Mario::SetDirection(int d)
+{
+	if (isTakingDamage || isSuperTransforming || isSuperTransforming) return;
+	nx = d;
 }
 
 void Mario::GetBoundingBox(float &left, float &top, float &right, float &bottom)
@@ -762,6 +792,35 @@ void Mario::TakeDamage()
 		DebugOut(L">>> Mario DIE >>> \n");
 		SetState(MarioState::DIE);
 	}
+}
+
+void Mario::Reset()
+{
+	//về vị trí cũ
+	x = start_x;
+	y = start_y;
+
+	// Reset hình dáng
+	SetNewForm(MarioForm::SMALL);
+	SetState(MarioState::IDLE);
+
+	vx = 0;
+	vy = 0;
+	accelX = 0;
+	accelY = MARIO_GRAVITY;
+
+	isTakingDamage = false;
+	isSuperTransforming = false;
+	isPoofTransforming = false;
+	isSpinning = false;
+	canFly = false;
+	isFlying = false;
+	isFloating = false;
+
+	untouchable = 0;
+	pmeter = 0;
+
+	SetDirection(1);
 }
 
 // ============================== HANDLE UPDATE ===============================
@@ -914,6 +973,41 @@ void Mario::HandlePMeter(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			pmeter--;
 			pmeter_start = GetTickCount64();
+		}
+	}
+}
+
+void Mario::HandleSlope(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+{
+	float marioBottomY = y + MARIO_BIG_BBOX_HEIGHT / 2; // tọa độ chân
+
+	for (size_t i = 0; i < coObjects->size(); i++)
+	{
+		LPGAMEOBJECT obj = coObjects->at(i);
+		if (dynamic_cast<Slope*>(obj))
+		{
+			Slope* slope = dynamic_cast<Slope*>(obj);
+			float sl, st, sr, sb;
+			slope->GetBoundingBox(sl, st, sr, sb);
+
+			// Rút tâm X của Mario ra
+			float marioCenterX = x;
+
+			// kiểm tra mario đang đứng trên dốc
+			if (marioCenterX >= sl && marioCenterX <= sr && marioBottomY >= st && marioBottomY <= sb)
+			{
+				// lấy tọa độ y
+				float expectedY = slope->GetSurfaceY(marioCenterX);
+
+				// kéo mairo lên nếu chân < dốc
+				if (marioBottomY >= expectedY - 2.0f) // -2.0f sai số nhỏ
+				{
+					y = expectedY - MARIO_BIG_BBOX_HEIGHT / 2;
+					vy = 0;
+					isOnPlatform = true;
+					isOnSlope = true;
+				}
+			}
 		}
 	}
 }

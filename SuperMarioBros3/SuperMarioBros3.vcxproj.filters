@@ -55,10 +55,12 @@
     <Filter Include="Entities\Effects">
       <UniqueIdentifier>{2dd82a35-ce79-481c-8c54-9e242ac5af03}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Assets\Header">
+      <UniqueIdentifier>{c5ed1505-4d05-40ed-b07d-3c27b1be484a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="ClassDiagram.cd" />
     <None Include="GameObjectDocument.md" />
   </ItemGroup>
   <ItemGroup>
@@ -168,6 +170,19 @@
     <ClCompile Include="BrickDebris.cpp">
       <Filter>Entities\Effects</Filter>
     </ClCompile>
+    <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="OneUpMushroom.cpp">
+      <Filter>Entities\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="Slope.cpp">
+      <Filter>Entities\Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="OneUpEffect.h">
+      <Filter>Entities\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="OneUpEffect.cpp">
+      <Filter>Entities\Effects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h">
@@ -208,9 +223,6 @@
     </ClInclude>
     <ClInclude Include="SceneKeyHandler.h">
       <Filter>Input</Filter>
-    </ClInclude>
-    <ClInclude Include="AssetIDs.h">
-      <Filter>Assets</Filter>
     </ClInclude>
     <ClInclude Include="PlaySceneKeyHandler.h">
       <Filter>Input</Filter>
@@ -296,6 +308,22 @@
     <ClInclude Include="BrickDebris.h">
       <Filter>Entities\Effects</Filter>
     </ClInclude>
+    <ClInclude Include="GameManager.h" />
+    <ClInclude Include="OneUpMushroom.h">
+      <Filter>Entities\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Slope.h">
+      <Filter>Entities\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="AssetIDs.h">
+      <Filter>Assets\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Core.h">
+      <Filter>Assets\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>Assets\Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="brick.txt">
@@ -335,13 +363,7 @@
     <Text Include="pipe.txt">
       <Filter>Assets</Filter>
     </Text>
-    <Text Include="mushroom.txt">
-      <Filter>Assets</Filter>
-    </Text>
     <Text Include="map1.txt">
-      <Filter>Assets</Filter>
-    </Text>
-    <Text Include="leaf.txt">
       <Filter>Assets</Filter>
     </Text>
     <Text Include="koopa.txt">
@@ -350,8 +372,17 @@
     <Text Include="HUD.txt">
       <Filter>Assets</Filter>
     </Text>
-    <Text Include="score_effect.txt">
+    <Text Include="effect.txt">
       <Filter>Assets</Filter>
+    </Text>
+    <Text Include="power_up.txt">
+      <Filter>Assets</Filter>
+    </Text>
+    <Text Include="map_2.txt">
+      <Filter>Assets</Filter>
+    </Text>
+    <Text Include="stage2.txt">
+      <Filter>Maps</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>
@@ -367,7 +398,7 @@
     <Image Include="mario.ico">
       <Filter>Resources</Filter>
     </Image>
-    <Image Include="textures\misc.png">
+    <Image Include="textures\600_misc.png">
       <Filter>Resources</Filter>
     </Image>
     <Image Include="textures\Stage1_1.png">

@@ -175,6 +175,10 @@ class Mario : public GameObject
 	float maxVx;
 	float accelX;				// acceleration on x 
 	float accelY;				// acceleration on y 
+
+	// original pos
+	float start_x;
+	float start_y;
 	
 	bool isSuperTransforming;
 	bool isTakingDamage;
@@ -202,6 +206,7 @@ class Mario : public GameObject
 
 	MarioForm nextPoofForm;
 	BOOLEAN isOnPlatform;
+	BOOLEAN isOnSlope;
 	//int coin; 
 	//int score;
 
@@ -209,6 +214,7 @@ class Mario : public GameObject
 	void OnCollisionWithCoin(LPCOLLISIONEVENT e);
 	void OnCollisionWithPortal(LPCOLLISIONEVENT e);
 	void OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e);
+	void OnCollisionWithOneUpMushroom(LPCOLLISIONEVENT e);
 	void OnCollisionWithMushroom(LPCOLLISIONEVENT e);
 	void OnCollisionWithLeaf(LPCOLLISIONEVENT e);
 	void OnCollisionWithBrick(LPCOLLISIONEVENT e);
@@ -223,6 +229,8 @@ class Mario : public GameObject
 public:
 	Mario(float x, float y) : GameObject(x, y)
 	{
+		start_x = x;
+		start_y = y;
 		isSitting = false;
 		maxVx = 0.0f;
 		accelX = 0.0f;
@@ -230,6 +238,7 @@ public:
 		pmeter = 0;
 
 		isOnPlatform = false;
+		isOnSlope = false;
 		isSuperTransforming = false;
 		isTakingDamage = false;
 		canFly = false;
@@ -276,7 +285,7 @@ public:
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();
 	void SetState(MarioState state);
-	void SetDirection(int d) { nx = d; }
+	void SetDirection(int d);
 
 	int IsCollidable()
 	{ 
@@ -306,6 +315,7 @@ public:
 	// Behaviours
 	void Attack();
 	void TakeDamage();
+	void Reset();
 
 	// Handle Update
 	void HandleDying(DWORD dt, vector<LPGAMEOBJECT>* coObjects); 
@@ -313,6 +323,7 @@ public:
 	void HandleSpinning(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void HandleTransform(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void HandlePMeter(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
+	void HandleSlope(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 
 	// Getters & Setters
 	float GetX() { return x; }
