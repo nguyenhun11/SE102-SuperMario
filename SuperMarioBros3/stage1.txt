@@ -12,8 +12,7 @@ map1.txt
 question_block.txt
 pipe.txt
 HUD.txt
-mushroom.txt
-leaf.txt
+power_up.txt
 HUD.txt
 score_effect.txt
 
@@ -80,9 +79,9 @@ score_effect.txt
 # QUESTION BLOCK
 ### id_coin	x	y	contained_time_id
 ### 0 - coin, 1 - mushroom/leaf/fire, 2 - 1-up mushroom
-302	11	8	0
-302	12	8	0
-302	14	5	0
+302	11	8	2
+302	12	8	2
+302	14	5	2
 302	15	5	1
 
 # SEMI-SOLID PLATFORM

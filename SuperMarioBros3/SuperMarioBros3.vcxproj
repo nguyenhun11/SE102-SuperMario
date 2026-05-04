@@ -170,6 +170,7 @@
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mario.cpp" />
+    <ClCompile Include="OneUpMushroom.cpp" />
     <ClCompile Include="ScoreEffect.cpp" />
     <ClCompile Include="Slope.cpp" />
     <ClCompile Include="SolidBlock.cpp" />
@@ -192,6 +193,7 @@
     <ClInclude Include="AnimationFrame.h" />
     <ClInclude Include="Animations.h" />
     <ClInclude Include="AssetIDs.h" />
+    <ClInclude Include="Core.h" />
     <ClInclude Include="Decoration.h" />
     <ClInclude Include="Brick.h" />
     <ClInclude Include="BrickDebris.h" />
@@ -204,6 +206,7 @@
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Goomba.h" />
+    <ClInclude Include="Item.h" />
     <ClInclude Include="Koopa.h" />
     <ClInclude Include="HUD.h" />
     <ClInclude Include="Leaf.h" />
@@ -213,6 +216,7 @@
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="KeyEventHandler.h" />
     <ClInclude Include="Mario.h" />
+    <ClInclude Include="OneUpMushroom.h" />
     <ClInclude Include="ScoreEffect.h" />
     <ClInclude Include="Slope.h" />
     <ClInclude Include="SolidBlock.h" />
@@ -241,11 +245,10 @@
     <Text Include="goomba.txt" />
     <Text Include="koopa.txt" />
     <Text Include="HUD.txt" />
-    <Text Include="leaf.txt" />
     <Text Include="map1.txt" />
     <Text Include="map_2.txt" />
     <Text Include="mario.txt" />
-    <Text Include="mushroom.txt" />
+    <Text Include="power_up.txt" />
     <Text Include="question_block.txt" />
     <Text Include="scene0005.txt" />
     <Text Include="scene01.txt" />

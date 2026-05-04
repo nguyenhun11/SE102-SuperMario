@@ -7,9 +7,7 @@
 
 #include "Goomba.h"
 
-#include "Mushroom.h"
-#include "Leaf.h"
-#include "Coin.h"
+#include "Item.h"
 #include "ScoreEffect.h"
 #include "Slope.h"
 
@@ -205,23 +203,33 @@ void Mario::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 	}
 }
 
+
 void Mario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 {
 	// coongj dieemr
 	Mushroom* mushroom = dynamic_cast<Mushroom*>(e->obj);
 	PlayScene* scene = dynamic_cast<PlayScene*>(SceneManager::GetInstance()->GetCurrentScene());
-	ScoreEffect* scoreEff = new ScoreEffect(mushroom->GetX(), mushroom->GetY(), Score::ONE_THOUSAND);
-	scene->AddObject(scoreEff);
-	AddScore(1000);
-	mushroom->Delete();
 
-	// note để nhớ bổ sung hiệu ứng bất tử chớp chớp 2.5s
-	if (form == MarioForm::SMALL)
+	// nếu là nấm bình thường, không phải nấm 1 up
+	if (mushroom != dynamic_cast<OneUpMushroom*>(e->obj))
 	{
-		StartTransform();
+		if (form == MarioForm::SMALL)
+		{
+			StartTransform();
+		}
+
+		// hiệu ứng điểm
+		ScoreEffect* scoreEff = new ScoreEffect(mushroom->GetX(), mushroom->GetY(), Score::ONE_THOUSAND);
+		scene->AddObject(scoreEff);
+		AddScore(1000);
+	}
+	else		// nếu là nấm 1 up
+	{
+		// Hiệu ứng 1UP
+		// cộng mạng
 	}
 
-	// note để nhớ cộng điểm ở đây nữa
+	mushroom->Delete();
 }
 
 void Mario::OnCollisionWithBrick(LPCOLLISIONEVENT e)
