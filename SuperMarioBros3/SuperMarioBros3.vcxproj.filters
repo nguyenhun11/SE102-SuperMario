@@ -110,6 +110,12 @@
     <ClCompile Include="Utils.cpp">
       <Filter>CoreGame\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="PiranhaPlant.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Fire.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h">
@@ -199,6 +205,12 @@
     <ClInclude Include="Utils.h">
       <Filter>CoreGame\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="PiranhaPlant.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Fire.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="brick.txt">
@@ -228,6 +240,12 @@
     <Text Include="game-data.txt" />
     <Text Include="scene_hun.txt">
       <Filter>Maps</Filter>
+    </Text>
+    <Text Include="piranha.txt">
+      <Filter>Assets</Filter>
+    </Text>
+    <Text Include="fire.txt">
+      <Filter>Assets</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>
