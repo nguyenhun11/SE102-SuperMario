@@ -20,11 +20,11 @@ public:
 		this->sceneFilePath = filePath;
 		this->key_handler = NULL;
 
-		// Mặc định là màu xanh da trời cũ cho mọi PlayScene
+		//default color cho playscene
 		backColor[0] = 181.0f / 255; // R
 		backColor[1] = 235.0f / 255; // G
 		backColor[2] = 242.0f / 255; // B
-		backColor[3] = 0.0f;         // Alpha
+		backColor[3] = 0.0f;         // A
 	}
 
 	LPKEYEVENTHANDLER GetKeyEventHandler() { return key_handler; }

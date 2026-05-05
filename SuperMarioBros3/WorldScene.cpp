@@ -37,6 +37,7 @@ WorldScene::WorldScene(int id, LPCWSTR filePath) : Scene(id, filePath)
 	SetBackgroundColor(0.0f, 0.0f, 0.0f);
 	// Tạm thời comment lại, bước sau tụi mình viết class này rồi mở ra
 	// key_handler = new WorldKeyEventHandler(this); 
+	SetBackgroundColor(0.0f, 0.0f, 0.0f);
 }
 
 void WorldScene::Load()

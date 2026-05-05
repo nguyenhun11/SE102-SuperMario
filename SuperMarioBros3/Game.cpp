@@ -473,10 +473,7 @@ void Game::Render()
 	ID3DX10Sprite* spriteHandler = GameGlobal::spriteObject;
 	ID3D10BlendState* pBlendStateAlpha = GameGlobal::pBlendStateAlpha;
 
-	// 1. Lấy Scene hiện tại ra TRƯỚC
 	LPSCENE currentScene = SceneManager::GetInstance()->GetCurrentScene();
-
-	// 2. Đổ màu nền dựa theo ý thích của Scene đó
 	if (currentScene != NULL)
 	{
 		pD3DDevice->ClearRenderTargetView(pRenderTargetView, currentScene->GetBackgroundColor());
