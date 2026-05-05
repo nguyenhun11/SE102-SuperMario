@@ -12,6 +12,7 @@
 #include "Sprites.h"
 #include "Camera.h"
 #include "MapBackground.h"
+#include "WorldMapObject.h"
 
 // Tụi mình sẽ tạo 2 class này ở các bước sau:
 // #include "MarioMap.h" 
@@ -22,6 +23,7 @@ using namespace std;
 #define SCENE_SECTION_UNKNOWN -1
 #define SCENE_SECTION_ASSETS	1
 #define SCENE_SECTION_OBJECTS	2
+#define SCENE_SECTION_GRID_OBJECTS 3
 
 #define ASSETS_SECTION_UNKNOWN -1
 #define ASSETS_SECTION_SPRITES 1
@@ -32,6 +34,7 @@ using namespace std;
 WorldScene::WorldScene(int id, LPCWSTR filePath) : Scene(id, filePath)
 {
 	worldPlayer = NULL;
+	SetBackgroundColor(0.0f, 0.0f, 0.0f);
 	// Tạm thời comment lại, bước sau tụi mình viết class này rồi mở ra
 	// key_handler = new WorldKeyEventHandler(this); 
 }
@@ -55,6 +58,7 @@ void WorldScene::Load()
 
 		if (line == "[ASSETS]") { section = SCENE_SECTION_ASSETS; continue; };
 		if (line == "[OBJECTS]") { section = SCENE_SECTION_OBJECTS; continue; };
+		if (line == "[GRID_OBJECTS]") { section = SCENE_SECTION_GRID_OBJECTS; continue; };
 		if (line[0] == '[') { section = SCENE_SECTION_UNKNOWN; continue; }
 
 		//
@@ -64,6 +68,7 @@ void WorldScene::Load()
 		{
 		case SCENE_SECTION_ASSETS: _ParseSection_ASSETS(line); break;
 		case SCENE_SECTION_OBJECTS: _ParseSection_OBJECTS(line); break;
+		case SCENE_SECTION_GRID_OBJECTS: _ParseSection_OBJECTS(line, true); break;
 		}
 	}
 	f.close();
@@ -85,11 +90,20 @@ void WorldScene::Update(DWORD dt)
 		objects[i]->Update(dt);
 	}
 
-	// Cập nhật GameManager (để thời gian không bị đứng)
 	GameManager::GetInstance()->Update(dt);
 
-	// Ghim Camera cứng ở góc trên cùng bên trái
-	Camera::GetInstance()->SetCamPos(0.0f, 0.0f);
+	// Tự động tính toán dựa trên kích thước map đã load
+	float screenWidth = GameGlobal::GetWidth();
+	float playableHeight = GameGlobal::GetHeight() - HUD_HEIGHT;
+
+	float offset_x = (screenWidth - this->mapWidth) / 2.0f;
+	float offset_y = (playableHeight - this->mapHeight) / 2.0f;
+
+	// Nếu map to hơn hoặc bằng màn hình thì ghim Camera ở 0 (không cần canh giữa)
+	if (offset_x < 0) offset_x = 0;
+	if (offset_y < 0) offset_y = 0;
+
+	Camera::GetInstance()->SetCamPos(-offset_x, -offset_y);
 
 	PurgeDeletedObjects();
 }
@@ -161,33 +175,37 @@ void WorldScene::_ParseSection_ANIMATIONS(string line)
 	Animations::GetInstance()->Add(ani_id, ani);
 }
 
-void WorldScene::_ParseSection_OBJECTS(string line)
+void WorldScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 {
 	vector<string> tokens = split(line);
 	if (tokens.size() < 3) return;
 
 	int object_type = atoi(tokens[0].c_str());
-	float x = (float)atof(tokens[1].c_str());
-	float y = (float)atof(tokens[2].c_str());
+	float raw_x = (float)atof(tokens[1].c_str());
+	float raw_y = (float)atof(tokens[2].c_str());
+
+	// Áp dụng phép nhân nếu đang ở chế độ Grid, nếu không thì giữ nguyên
+	float x = isGridCoordinate ? (raw_x * TILE_SIZE) : raw_x;
+	float y = isGridCoordinate ? (raw_y * TILE_SIZE) : raw_y;
 
 	GameObject* obj = NULL;
 
 	switch (object_type)
 	{
-		/* Tụi mình sẽ định nghĩa OBJECT_TYPE_MARIO_MAP sau
-		case OBJECT_TYPE_MARIO_MAP:
-			if (player != NULL)
-			{
-				DebugOut(L"[ERROR] MARIO MAP was created before!\n");
-				return;
-			}
-			obj = new MarioMap(x, y);
-			player = (MarioMap*)obj;
-			DebugOut(L"[INFO] Player Map object has been created!\n");
-			break;
-		*/
 	case WORLDMAP_MAP: {
-		obj = new MapBackground(x, y, atoi(tokens[3].c_str()));
+		int sprite_id = atoi(tokens[3].c_str());
+		obj = new MapBackground(x, y, sprite_id);
+
+		// Lấy kích thước thực tế của tấm ảnh Map và lưu lại
+		Sprite* spr = Sprites::GetInstance()->Get(sprite_id);
+		if (spr != NULL) {
+			this->mapWidth = spr->GetWidth();
+			this->mapHeight = spr->GetHeight();
+		}
+		break;
+	}
+	case WORLDMAP_OBJECT: {
+		obj = new WorldMapObject(x, y, atoi(tokens[3].c_str()));
 		break;
 	}
 	// Sau này sẽ thêm case cho OBJECT_TYPE_NODE (Trạm dừng) ở đây...

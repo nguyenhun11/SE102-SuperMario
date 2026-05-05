@@ -465,7 +465,6 @@ void Game::Update(DWORD dt)
 /*
 	Render a frame
 */
-#define BACKGROUND_COLOR D3DXCOLOR(181.0f/255, 235.0f/255, 242.0f/255, 0.0f)
 void Game::Render()
 {
 	ID3D10Device* pD3DDevice = GameGlobal::pD3DDevice;
@@ -474,14 +473,27 @@ void Game::Render()
 	ID3DX10Sprite* spriteHandler = GameGlobal::spriteObject;
 	ID3D10BlendState* pBlendStateAlpha = GameGlobal::pBlendStateAlpha;
 
-	pD3DDevice->ClearRenderTargetView(pRenderTargetView, BACKGROUND_COLOR);
+	// 1. Lấy Scene hiện tại ra TRƯỚC
+	LPSCENE currentScene = SceneManager::GetInstance()->GetCurrentScene();
 
+	// 2. Đổ màu nền dựa theo ý thích của Scene đó
+	if (currentScene != NULL)
+	{
+		pD3DDevice->ClearRenderTargetView(pRenderTargetView, currentScene->GetBackgroundColor());
+	}
+	else
+	{
+		// Màu dự phòng nếu game bị lỗi chưa có Scene
+		float fallbackColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+		pD3DDevice->ClearRenderTargetView(pRenderTargetView, fallbackColor);
+	}
+
+	// 3. Bắt đầu vẽ các vật thể
 	spriteHandler->Begin(D3DX10_SPRITE_SORT_TEXTURE);
 
 	FLOAT NewBlendFactor[4] = { 0,0,0,0 };
 	pD3DDevice->OMSetBlendState(pBlendStateAlpha, NewBlendFactor, 0xffffffff);
 
-	LPSCENE currentScene = SceneManager::GetInstance()->GetCurrentScene();
 	if (currentScene != NULL)
 	{
 		currentScene->Render();

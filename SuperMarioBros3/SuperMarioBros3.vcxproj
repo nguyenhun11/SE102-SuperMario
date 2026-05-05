@@ -148,6 +148,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="WorldMapObject.cpp" />
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Animations.cpp" />
     <ClCompile Include="Decoration.cpp" />
@@ -190,6 +191,7 @@
     <ClCompile Include="WorldSceneKeyHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="WorldMapObject.h" />
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AnimationFrame.h" />
     <ClInclude Include="Animations.h" />

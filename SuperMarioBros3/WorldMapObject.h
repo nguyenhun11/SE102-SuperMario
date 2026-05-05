@@ -1,13 +1,12 @@
 #pragma once
 #include "GameObject.h"
 
-class MapBackground : public GameObject
+class WorldMapObject : public GameObject
 {
 protected:
-	int spriteId;
-	//float map_scene_X, map_screen_Y;
+	int aniId;
 public:
-	MapBackground(float x, float y, int spriteId);
+	WorldMapObject(float x, float y, int aniId);
 
 	virtual void Render();
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL) {}
