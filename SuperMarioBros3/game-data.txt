@@ -1,6 +1,6 @@
 [SETTINGS]
 # Start scene
-start	6
+start	8
 
 # Screen size
 width	320
@@ -15,6 +15,7 @@ height	240
 5	1	scene0005.txt
 6	1	stage1.txt
 7	1	scene_mario_dev.txt
+8	1	scene_mario_dev2.txt
 
 # id	file 
 [TEXTURES]
