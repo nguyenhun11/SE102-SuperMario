@@ -14,6 +14,7 @@ GameObject::GameObject()
 	vx = vy = 0;
 	nx = 1;	
 	state = -1;
+	zIndex = 0;
 	isDeleted = false;
 }
 

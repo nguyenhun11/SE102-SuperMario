@@ -13,6 +13,7 @@
 #include "Camera.h"
 #include "MapBackground.h"
 #include "WorldMapObject.h"
+#include "InvisibleNode.h"
 
 // Tụi mình sẽ tạo 2 class này ở các bước sau:
 // #include "MarioMap.h" 
@@ -209,7 +210,16 @@ void WorldScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		obj = new WorldMapObject(x, y, atoi(tokens[3].c_str()));
 		break;
 	}
-	// Sau này sẽ thêm case cho OBJECT_TYPE_NODE (Trạm dừng) ở đây...
+	case WORLDMAP_NODE_INVISIBLE: {
+		int l, r, u, d;
+		if (tokens.size() < 7) l = r = u = d = 0;
+		l = atoi(tokens[3].c_str());
+		r = atoi(tokens[4].c_str());
+		u = atoi(tokens[5].c_str());
+		d = atoi(tokens[6].c_str());
+		obj = new InvisibleNode(x, y, l, r, u, d);
+		break;
+	}
 
 	default:
 		DebugOut(L"[ERROR] Invalid object type: %d\n", object_type);

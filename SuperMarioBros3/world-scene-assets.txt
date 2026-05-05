@@ -1,4 +1,8 @@
 [SPRITES]
+
+[SPRITES]
+# Cắt tấm ảnh Texture -100 ra làm 1 cái Sprite (ID: 9999)
+9999 0 0 16 16 -100
 # background
 80000 1 11 240 178 700
 
