@@ -4,6 +4,7 @@
 #include "debug.h"
 
 #include "GameGlobal.h"
+#include "WorldSceneKeyHandler.h"
 #include "WorldScene.h"
 #include "HUD.h"
 #include "GameManager.h"
@@ -38,8 +39,7 @@ WorldScene::WorldScene(int id, LPCWSTR filePath) : Scene(id, filePath)
 {
 	worldMario = NULL;
 	SetBackgroundColor(0.0f, 0.0f, 0.0f);
-	// Tạm thời comment lại, bước sau tụi mình viết class này rồi mở ra
-	// key_handler = new WorldKeyEventHandler(this); 
+	this->key_handler = new WorldSceneKeyHandler(this);
 	SetBackgroundColor(0.0f, 0.0f, 0.0f);
 }
 
@@ -91,7 +91,7 @@ void WorldScene::Update(DWORD dt)
 {
 	for (size_t i = 0; i < objects.size(); i++)
 	{
-		objects[i]->Update(dt);
+		objects[i]->Update(dt, &objects);
 	}
 
 	GameManager::GetInstance()->Update(dt);

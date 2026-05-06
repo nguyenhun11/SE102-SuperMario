@@ -23,6 +23,25 @@ void MapMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		flipTimer = now;
 	}
 
+	if (coObjects == NULL) return;
+
+	if (currentNode == NULL)
+	{
+		for (size_t i = 0; i < coObjects->size(); i++)
+		{
+			MapNode* node = dynamic_cast<MapNode*>(coObjects->at(i));
+			if (node != NULL)
+			{
+				// Quét xem vị trí ban đầu của Mario có đang đè lên Node nào không
+				if (abs(this->x - node->GetX()) <= 1.5f && abs(this->y - node->GetY()) <= 1.5f)
+				{
+					this->currentNode = node; // Lưu lại trạm xuất phát!
+					break;
+				}
+			}
+		}
+	}
+
 	if (!isMoving) return;
 
 	x += vx * dt;
@@ -44,6 +63,8 @@ void MapMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 				this->isMoving = false;
 				this->currentNode = node;
+
+				this->stopTimer = GetTickCount64();
 
 				SetState(MARIO_MAP_STATE_IDLE);
 				return;
@@ -132,24 +153,33 @@ void MapMario::SetState(int state)
 
 void MapMario::MoveLeft()
 {
+	// Nếu vừa tới trạm chưa đủ 150ms -> Bỏ qua lệnh
+	if (GetTickCount64() - stopTimer < 150) return;
+
 	if (!isMoving && (currentNode == NULL || currentNode->canLeft))
 		SetState(MARIO_MAP_STATE_WALKING_LEFT);
 }
 
 void MapMario::MoveRight()
 {
+	if (GetTickCount64() - stopTimer < 150) return;
+
 	if (!isMoving && (currentNode == NULL || currentNode->canRight))
 		SetState(MARIO_MAP_STATE_WALKING_RIGHT);
 }
 
 void MapMario::MoveUp()
 {
+	if (GetTickCount64() - stopTimer < 150) return;
+
 	if (!isMoving && (currentNode == NULL || currentNode->canUp))
 		SetState(MARIO_MAP_STATE_WALKING_UP);
 }
 
 void MapMario::MoveDown()
 {
+	if (GetTickCount64() - stopTimer < 150) return;
+
 	if (!isMoving && (currentNode == NULL || currentNode->canDown))
 		SetState(MARIO_MAP_STATE_WALKING_DOWN);
 }

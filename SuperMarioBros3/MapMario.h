@@ -31,6 +31,8 @@ protected:
 	bool renderFlip;
 	ULONGLONG flipTimer;
 
+	ULONGLONG stopTimer;
+
 public:
 	MapMario(float x, float y);
 
