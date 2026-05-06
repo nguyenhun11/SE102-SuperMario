@@ -352,7 +352,8 @@ int Mario::GetAniIdSmall()
 	else		// mario dung tren mat đất
 		if (isSitting)
 		{
-			aniId = ID_ANI_MARIO_SUPER_SIT;
+			if (isSliding)
+				aniId = ID_ANI_MARIO_SMALL_SLIDING;
 		}
 		else
 		{
@@ -562,9 +563,10 @@ void Mario::Render()
 	{
 		renderY -= 2.0f;
 	}
-	if (aniId == ID_ANI_MARIO_SUPER_SLIDING || aniId == ID_ANI_MARIO_RACOON_SLIDING)
+	if (isSliding)
 	{
-		renderY -= 4.0f;
+		if(form != MarioForm::SMALL)
+			renderY -= 4.0f;
 	}
 	if (aniId == ID_ANI_MARIO_RACOON_SPIN)
 	{
@@ -696,11 +698,15 @@ void Mario::SetState(MarioState state)
 		break;
 
 	case MarioState::SIT:
-		if (isSitting) return;
-		if (isOnPlatform && form != MarioForm::SMALL)
+		if (isSitting) break;
+		
+		if (isOnPlatform)
 		{
+			if (form == MarioForm::SMALL && !isOnSlope) break;
 			isSitting = true;
-			y += MARIO_SIT_HEIGHT_ADJUST;
+
+			if(form != MarioForm::SMALL)
+				y += MARIO_SIT_HEIGHT_ADJUST;
 		}
 		break;
 
@@ -709,7 +715,8 @@ void Mario::SetState(MarioState state)
 		{
 			isSitting = false;
 			state = MarioState::IDLE;
-			y -= MARIO_SIT_HEIGHT_ADJUST;
+			if(form != MarioForm::SMALL)
+				y -= MARIO_SIT_HEIGHT_ADJUST;
 		}
 		break;
 
