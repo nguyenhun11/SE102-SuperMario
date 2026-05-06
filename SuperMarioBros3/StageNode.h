@@ -18,12 +18,14 @@ class StageNode : public MapNode
 {
 private:
 	StageNodeState state;
+	int sceneId;
 
 public:
-	StageNode(float x, float y, int l, int r, int u, int d, int stage)
+	StageNode(float x, float y, int l, int r, int u, int d, int stage, int sceneId)
 		: MapNode(x, y, l, r, u, d)
 	{
 		SetState((StageNodeState)stage);
+		this->sceneId = sceneId;
 	}
 
 	void Render();
@@ -32,4 +34,6 @@ public:
 	void SetState(StageNodeState state) { this->state = state; }
 
 	bool IsUnlocked() { return state == StageNodeState::unlocked; }
+
+	int GetSceneId() { return sceneId; }
 };

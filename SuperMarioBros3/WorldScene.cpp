@@ -228,14 +228,15 @@ void WorldScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		break;
 	}
 	case WORLDMAP_NODE_STAGE: {
-		int l, r, u, d, stage;
+		int l, r, u, d, stage, sceneId;
 		if (tokens.size() < 7) l = r = u = d = 0;
 		l = atoi(tokens[3].c_str());
 		r = atoi(tokens[4].c_str());
 		u = atoi(tokens[5].c_str());
 		d = atoi(tokens[6].c_str());
 		stage = atoi(tokens[7].c_str());
-		obj = new StageNode(x, y, l, r, u, d, stage);
+		sceneId = atoi(tokens[8].c_str());
+		obj = new StageNode(x, y, l, r, u, d, stage, sceneId);
 		break;
 	}
 

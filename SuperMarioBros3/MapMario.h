@@ -1,6 +1,8 @@
 #pragma once
 #include "GameObject.h"
 #include "MapNode.h"
+#include "SceneManager.h"
+#include "StageNode.h"
 
 #define MARIO_MAP_STATE_IDLE			0
 #define MARIO_MAP_STATE_WALKING_LEFT	100
@@ -48,4 +50,6 @@ public:
 	void MoveRight();
 	void MoveUp();
 	void MoveDown();
+
+	void EnterNode();
 };

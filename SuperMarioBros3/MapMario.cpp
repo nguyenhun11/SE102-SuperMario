@@ -183,3 +183,21 @@ void MapMario::MoveDown()
 	if (!isMoving && (currentNode == NULL || currentNode->canDown))
 		SetState(MARIO_MAP_STATE_WALKING_DOWN);
 }
+
+void MapMario::EnterNode()
+{
+	if (isMoving || currentNode == NULL) return;
+
+	StageNode* stageNode = dynamic_cast<StageNode*>(currentNode);
+
+	if (stageNode != NULL)
+	{
+		int sceneId = (int)stageNode->GetSceneId();
+
+		if (sceneId > 0)
+		{
+			// if (stageNode->IsUnlocked()) return;
+			SceneManager::GetInstance()->InitiateSwitchScene(sceneId);
+		}
+	}
+}
