@@ -7,6 +7,7 @@ hud.txt
 
 [GRID_OBJECTS]
 # NODE
+# invisible node
 # id x y l r u d
 80300 2 3 0 1 0 0 # start
 80300 4 3 1 0 1 0 # start - 1
@@ -19,7 +20,17 @@ hud.txt
 80300 8 7 1 1 0 1
 80300 10 7 1 1 0 0
 
+# stage node
+# id x y l r u d stage
+80301 4 1	0 1 0 1		1
+80301 8 1	1 1 0 1		2
+80301 10 1	1 1 0 0		3
+80301 10 3	1 1 0 0		4
+80301 4 9	0 1 1 0		5
+80301 8 9	1 0 1 0		6
 
+# help
+802 13 6 80001
 
 
 # tree

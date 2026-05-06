@@ -150,6 +150,7 @@
   <ItemGroup>
     <ClCompile Include="InvisibleNode.cpp" />
     <ClCompile Include="MapNode.cpp" />
+    <ClCompile Include="StageNode.cpp" />
     <ClCompile Include="WorldMapObject.cpp" />
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Animations.cpp" />
@@ -195,6 +196,7 @@
   <ItemGroup>
     <ClInclude Include="InvisibleNode.h" />
     <ClInclude Include="MapNode.h" />
+    <ClInclude Include="StageNode.h" />
     <ClInclude Include="WorldMapObject.h" />
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AnimationFrame.h" />

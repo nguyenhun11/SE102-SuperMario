@@ -187,6 +187,18 @@
     <ClCompile Include="MapBackground.cpp">
       <Filter>Entities\WorldMaps</Filter>
     </ClCompile>
+    <ClCompile Include="InvisibleNode.cpp">
+      <Filter>Entities\WorldMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="MapNode.cpp">
+      <Filter>Entities\WorldMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="StageNode.cpp">
+      <Filter>Entities\WorldMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="WorldMapObject.cpp">
+      <Filter>Entities\WorldMaps</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h">
@@ -325,6 +337,18 @@
       <Filter>Scenes\WorldScene</Filter>
     </ClInclude>
     <ClInclude Include="MapBackground.h">
+      <Filter>Entities\WorldMaps</Filter>
+    </ClInclude>
+    <ClInclude Include="StageNode.h">
+      <Filter>Entities\WorldMaps</Filter>
+    </ClInclude>
+    <ClInclude Include="InvisibleNode.h">
+      <Filter>Entities\WorldMaps</Filter>
+    </ClInclude>
+    <ClInclude Include="MapNode.h">
+      <Filter>Entities\WorldMaps</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldMapObject.h">
       <Filter>Entities\WorldMaps</Filter>
     </ClInclude>
   </ItemGroup>
