@@ -96,6 +96,10 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		{
 			//effectiveMaxVx = MARIO_WALKING_SPEED * 1.05f;
 			//effectiveAccel *= 1.05f; 
+			if (vy >= 0)
+			{
+				vy = abs(vx) + 0.05f;
+			}
 		}
 	}
 
@@ -1049,17 +1053,18 @@ void Mario::HandleSlope(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			float sl, st, sr, sb;
 			slope->GetBoundingBox(sl, st, sr, sb);
 
-			// Rút tâm X của Mario ra
+			// tâm ủa Mario ra
 			float marioCenterX = x;
 
 			// kiểm tra mario đang đứng trên dốc
-			if (marioCenterX >= sl && marioCenterX <= sr && marioBottomY >= st && marioBottomY <= sb)
+			float epsilon = 0.0f;
+
+			if (marioCenterX >= (sl - epsilon) && marioCenterX <= (sr + epsilon) && marioBottomY >= st && marioBottomY <= sb)
 			{
-				// lấy tọa độ y
 				float expectedY = slope->GetSurfaceY(marioCenterX);
 
 				// kéo mairo lên nếu chân < dốc
-				if (marioBottomY >= expectedY - 4.0f && vy >=0) // -2.0f sai số nhỏ
+				if (marioBottomY >= expectedY - 4.0f && vy >=0) 
 				{
 					y = expectedY - bboxHeight / 2;
 					vy = 0;
@@ -1085,6 +1090,10 @@ void Mario::HandleSlopePhysics(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			maxVx = (MARIO_RUNNING_SPEED * 1.3f) * slideDirection;
 			nx = slideDirection;
 			isSliding = true;
+			if (vy >= 0)
+			{
+				vy = abs(vx) + 0.05f;
+			}
 
 		}
 		else
