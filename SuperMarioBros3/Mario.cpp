@@ -403,7 +403,7 @@ int Mario::GetAniIdBig()
 	else
 		if (isSitting)
 		{
-			if (isOnSlope)
+			if (isSliding)
 			{
 				aniId = ID_ANI_MARIO_SUPER_SLIDING;
 			}
@@ -457,10 +457,14 @@ int Mario::GetAniIdRacoon()
 	else
 		if (isSitting)
 		{
-			if (!isOnSlope)
-				aniId = ID_ANI_MARIO_RACOON_SIT;
-			else
+			if (isSliding)
+			{
 				aniId = ID_ANI_MARIO_RACOON_SLIDING;
+			}
+			else
+			{
+				aniId = ID_ANI_MARIO_RACOON_SIT;
+			}
 		}
 		else
 			if (vx == 0)
@@ -557,6 +561,10 @@ void Mario::Render()
 	if (aniId == ID_ANI_MARIO_RACOON_SKIDDING)
 	{
 		renderY -= 2.0f;
+	}
+	if (aniId == ID_ANI_MARIO_SUPER_SLIDING || aniId == ID_ANI_MARIO_RACOON_SLIDING)
+	{
+		renderY -= 4.0f;
 	}
 	if (aniId == ID_ANI_MARIO_RACOON_SPIN)
 	{
@@ -688,6 +696,7 @@ void Mario::SetState(MarioState state)
 		break;
 
 	case MarioState::SIT:
+		if (isSitting) return;
 		if (isOnPlatform && form != MarioForm::SMALL)
 		{
 			isSitting = true;
@@ -850,6 +859,8 @@ void Mario::Reset()
 	canFly = false;
 	isFlying = false;
 	isFloating = false;
+	isSliding = false;
+
 
 	untouchable = 0;
 	pmeter = 0;
@@ -1066,11 +1077,20 @@ void Mario::HandleSlopePhysics(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			accelX = (MARIO_ACCEL_RUN_X * 1.3f) * slideDirection;
 			maxVx = (MARIO_RUNNING_SPEED * 1.3f) * slideDirection;
 			nx = slideDirection;
+			isSliding = true;
+
 		}
 		else
 		{
 			accelX = 0.0f;
+			if(abs(vx) < 0.05f) 
+				isSliding = false;
+
 		}
+	}
+	else
+	{
+		isSliding = false;
 	}
 }
 

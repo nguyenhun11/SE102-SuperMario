@@ -190,6 +190,7 @@ class Mario : public GameObject
 	bool isFloating;
 	bool isPoofTransforming;
 	bool isSpinning;
+	bool isSliding;
 	
 	// pmeter
 	int pmeter;
@@ -250,6 +251,7 @@ public:
 		isFloating = false;
 		isPoofTransforming = false;
 		isSpinning = false;
+		isSliding = false;
 
 		untouchable = 0;
 		untouchable_start = -1;
