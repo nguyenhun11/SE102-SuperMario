@@ -403,7 +403,14 @@ int Mario::GetAniIdBig()
 	else
 		if (isSitting)
 		{
-			aniId = ID_ANI_MARIO_SUPER_SIT;
+			if (isOnSlope)
+			{
+				aniId = ID_ANI_MARIO_SUPER_SLIDING;
+			}
+			else
+			{
+				aniId = ID_ANI_MARIO_SUPER_SIT;
+			}
 		}
 		else
 			if (vx == 0)
@@ -450,7 +457,10 @@ int Mario::GetAniIdRacoon()
 	else
 		if (isSitting)
 		{
-			aniId = ID_ANI_MARIO_RACOON_SIT;
+			if (!isOnSlope)
+				aniId = ID_ANI_MARIO_RACOON_SIT;
+			else
+				aniId = ID_ANI_MARIO_RACOON_SLIDING;
 		}
 		else
 			if (vx == 0)

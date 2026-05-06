@@ -102,6 +102,7 @@ enum class MarioForm
 #define ID_ANI_MARIO_SUPER_FALLING	1106
 
 #define ID_ANI_MARIO_SUPER_SIT 1107
+#define ID_ANI_MARIO_SUPER_SLIDING 1108
 
 #define ID_ANI_MARIO_DIE 999
 
@@ -128,6 +129,7 @@ enum class MarioForm
 #define ID_ANI_MARIO_RACOON_FALLING	1206
 
 #define ID_ANI_MARIO_RACOON_SIT 1207
+#define ID_ANI_MARIO_RACOON_SLIDING 1208
 #define ID_ANI_MARIO_RACOON_SPIN 1215
 // NOTE NÈ: thiếu slow fall với flying
 
