@@ -73,6 +73,9 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 	}
 
+	///// ------ vật lý của joke
+	HandleSlopePhysics(dt, coObjects);
+
 	if (isOnSlope && !isSitting)
 	{
 		if (slopeDirection * nx > 0)	/// LÊN  JOKE
@@ -91,8 +94,8 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 		else if (slopeDirection * nx < 0) // XUỐNG JOKE
 		{
-			effectiveMaxVx = MARIO_RUNNING_SPEED * 1.1f;
-			effectiveAccel *= 1.2f; // Được thả trôi, gia tốc tăng mạnh
+			effectiveMaxVx = MARIO_WALKING_SPEED * 1.05f;
+			effectiveAccel *= 1.05f; 
 		}
 	}
 
@@ -103,6 +106,9 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		if (vx < 0 && effectiveMaxVx < 0 && vx < effectiveMaxVx) vx = effectiveMaxVx;
 	}
 
+	////
+
+	/// -- P meter
 	HandlePMeter(dt, coObjects);
 
 	if (isOnPlatform)
@@ -675,19 +681,6 @@ void Mario::SetState(MarioState state)
 		if (isOnPlatform && form != MarioForm::SMALL)
 		{
 			isSitting = true;
-			if (isOnSlope)
-			{
-				// kéo Mario trượt tuột xuống chân dốc
-				int slideDirection = -slopeDirection;
-
-				accelX = (MARIO_ACCEL_RUN_X * 1.3f) * slideDirection;
-				maxVx = (MARIO_RUNNING_SPEED * 1.3f) * slideDirection;
-			}
-			else
-			{
-				vy = 0.0f;
-				accelX = 0.0f;
-			}
 			y += MARIO_SIT_HEIGHT_ADJUST;
 		}
 		break;
@@ -1051,6 +1044,23 @@ void Mario::HandleSlope(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 
 	isOnSlope = foundSlope;
+}
+
+void Mario::HandleSlopePhysics(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+{
+	if (isSitting && isOnPlatform)
+	{
+		if (isOnSlope)
+		{
+			int slideDirection = -slopeDirection;
+			accelX = (MARIO_ACCEL_RUN_X * 1.3f) * slideDirection;
+			maxVx = (MARIO_RUNNING_SPEED * 1.3f) * slideDirection;
+		}
+		else
+		{
+			accelX = 0.0f;
+		}
+	}
 }
 
 

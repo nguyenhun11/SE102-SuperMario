@@ -326,6 +326,7 @@ public:
 	void HandleTransform(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void HandlePMeter(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void HandleSlope(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
+	void HandleSlopePhysics(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 
 	// Getters & Setters
 	float GetX() { return x; }
