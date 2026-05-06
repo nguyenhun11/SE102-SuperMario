@@ -94,8 +94,8 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 		else if (slopeDirection * nx < 0) // XUỐNG JOKE
 		{
-			effectiveMaxVx = MARIO_WALKING_SPEED * 1.05f;
-			effectiveAccel *= 1.05f; 
+			//effectiveMaxVx = MARIO_WALKING_SPEED * 1.05f;
+			//effectiveAccel *= 1.05f; 
 		}
 	}
 
@@ -1065,6 +1065,7 @@ void Mario::HandleSlopePhysics(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			int slideDirection = -slopeDirection;
 			accelX = (MARIO_ACCEL_RUN_X * 1.3f) * slideDirection;
 			maxVx = (MARIO_RUNNING_SPEED * 1.3f) * slideDirection;
+			nx = slideDirection;
 		}
 		else
 		{
