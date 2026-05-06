@@ -213,7 +213,7 @@ void Mario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 	mushroom->Delete();
 
 	// note để nhớ bổ sung hiệu ứng bất tử chớp chớp 2.5s
-	if (form == MarioForm::SMALL)
+	if (form == MapMario::SMALL)
 	{
 		StartTransform();
 	}
@@ -237,7 +237,7 @@ void Mario::OnCollisionWithBrick(LPCOLLISIONEVENT e)
 			else
 			{
 				// Không có đồ, xét theo sức mạnh của Mario
-				if (this->GetCurrentForm() == MarioForm::SMALL)
+				if (this->GetCurrentForm() == MapMario::SMALL)
 				{
 					brick->SetState(BrickState::BOUNCING); // Yếu thì chỉ nảy
 				}
@@ -262,14 +262,14 @@ void Mario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
 	scene->AddObject(scoreEff);
 	AddScore(1000);
 	leaf->Delete();
-	if (form == MarioForm::SMALL)
+	if (form == MapMario::SMALL)
 	{
 		StartTransform();
 	}
-	else if (form != MarioForm::RACOON)
+	else if (form != MapMario::RACOON)
 	{
 		// NOTE để nhớ làm hiệu ứng boom
-		StartPoofTransform(MarioForm::RACOON);
+		StartPoofTransform(MapMario::RACOON);
 	}
 
 
@@ -459,7 +459,7 @@ void Mario::Render()
 
 		if ((GetTickCount64() / 50) % 2 == 0)
 		{
-			if (form == MarioForm::RACOON) aniId = ID_ANI_MARIO_RACOON_IDLE; // nhấp ngáy form chồn
+			if (form == MapMario::RACOON) aniId = ID_ANI_MARIO_RACOON_IDLE; // nhấp ngáy form chồn
 			else aniId = 1100; // nhấp nháy form to
 		}
 		else
@@ -470,11 +470,11 @@ void Mario::Render()
 	}
 	else
 	{
-		if (form == MarioForm::SUPER)
+		if (form == MapMario::SUPER)
 			aniId = GetAniIdBig();
-		else if (form == MarioForm::SMALL)
+		else if (form == MapMario::SMALL)
 			aniId = GetAniIdSmall();
-		else if (form == MarioForm::RACOON)
+		else if (form == MapMario::RACOON)
 		{
 			aniId = GetAniIdRacoon();
 			renderX -= 3.0f * nx;
@@ -577,7 +577,7 @@ void Mario::SetState(MarioState state)
 		{
 			if (abs(this->vx) == MARIO_RUNNING_SPEED)
 			{
-				if (form == MarioForm::SMALL)
+				if (form == MapMario::SMALL)
 				{
 					vy = -MARIO_SMALL_JUMP_RUN_SPEED_Y;
 				}
@@ -586,7 +586,7 @@ void Mario::SetState(MarioState state)
 					vy = -MARIO_JUMP_RUN_SPEED_Y;
 					vx *= 1.2f;
 				}
-				if (form == MarioForm::RACOON)
+				if (form == MapMario::RACOON)
 				{
 					canFly = true;
 					fly_start = GetTickCount64();
@@ -597,7 +597,7 @@ void Mario::SetState(MarioState state)
 		}
 		else	// dang tren khong
 		{
-			if (form == MarioForm::RACOON)
+			if (form == MapMario::RACOON)
 			{
 				if (canFly)
 				{
@@ -622,7 +622,7 @@ void Mario::SetState(MarioState state)
 		break;
 
 	case MarioState::SIT:
-		if (isOnPlatform && form != MarioForm::SMALL)
+		if (isOnPlatform && form != MapMario::SMALL)
 		{
 			state = MarioState::IDLE;
 			isSitting = true;
@@ -659,7 +659,7 @@ void Mario::SetState(MarioState state)
 
 void Mario::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
-	if (form==MarioForm::SUPER || form == MarioForm::RACOON)
+	if (form==MapMario::SUPER || form == MapMario::RACOON)
 	{
 		if (isSitting)
 		{
@@ -685,17 +685,17 @@ void Mario::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 	}
 }
 
-void Mario::SetNewForm(MarioForm newForm)
+void Mario::SetNewForm(MapMario newForm)
 {
 	float heightDiff = (MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT) / 2;
 
 
-	if (this->form == MarioForm::SMALL && newForm != MarioForm::SMALL)
+	if (this->form == MapMario::SMALL && newForm != MapMario::SMALL)
 	{
 		y -= heightDiff;
 	}
 	// THÊM: Nếu đang Lớn mà về Nhỏ: Phải đẩy y xuống dưới
-	else if (this->form != MarioForm::SMALL && newForm == MarioForm::SMALL)
+	else if (this->form != MapMario::SMALL && newForm == MapMario::SMALL)
 	{
 		y += heightDiff;
 	}
@@ -713,7 +713,7 @@ void Mario::StartTransform()
 	accelX = accelY = 0;
 }
 
-void Mario::StartPoofTransform(MarioForm targetForm)
+void Mario::StartPoofTransform(MapMario targetForm)
 {
 	isPoofTransforming = true;
 	poof_start = GetTickCount64();
@@ -726,7 +726,7 @@ void Mario::StartPoofTransform(MarioForm targetForm)
 // ============================== BEHAVIOUR ===============================
 void Mario::Attack()
 {
-	if (form != MarioForm::RACOON || isSpinning == true) return;
+	if (form != MapMario::RACOON || isSpinning == true) return;
 	isSpinning = true;
 	spin_start = GetTickCount64();
 }
@@ -736,12 +736,12 @@ void Mario::TakeDamage()
 {
 	if (untouchable != 0) return;
 
-	if (form == MarioForm::RACOON)
+	if (form == MapMario::RACOON)
 	{
-		StartPoofTransform(MarioForm::SUPER);
+		StartPoofTransform(MapMario::SUPER);
 		StartUntouchable();
 	}
-	else if (form > MarioForm::SMALL)
+	else if (form > MapMario::SMALL)
 	{
 		isTakingDamage = true;
 		damage_start = GetTickCount64();
@@ -842,10 +842,10 @@ void Mario::HandleTakingDamage(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		if (GetTickCount64() - damage_start > MARIO_HIT_TIMEOUT)
 		{
 			isTakingDamage = false;
-			if (form != MarioForm::SMALL && form != MarioForm::SUPER)
-				SetNewForm(MarioForm::SUPER);
-			else if (form == MarioForm::SUPER)
-				SetNewForm(MarioForm::SMALL);
+			if (form != MapMario::SMALL && form != MapMario::SUPER)
+				SetNewForm(MapMario::SUPER);
+			else if (form == MapMario::SUPER)
+				SetNewForm(MapMario::SMALL);
 			accelY = MARIO_GRAVITY;
 		}
 		return;
@@ -860,7 +860,7 @@ void Mario::HandleTransform(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			untouchable = 0;
 			isSuperTransforming = false;
-			SetNewForm(MarioForm::SUPER);
+			SetNewForm(MapMario::SUPER);
 			accelY = MARIO_GRAVITY;
 		}
 		return;

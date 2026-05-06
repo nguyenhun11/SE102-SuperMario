@@ -42,7 +42,7 @@ Each ID for a type of object will BEGIN with:
 
 //Worldmap
 #define WORLDMAP_MAP		800
-#define WORLDMAP_PLAYER		801
+#define WORLDMAP_MARIO		801
 #define WORLDMAP_OBJECT		802
 #define WORLDMAP_NODE_INVISIBLE		80300
 #define WORLDMAP_NODE_STAGE			80301

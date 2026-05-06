@@ -199,6 +199,9 @@
     <ClCompile Include="WorldMapObject.cpp">
       <Filter>Entities\WorldMaps</Filter>
     </ClCompile>
+    <ClCompile Include="MapMario.cpp">
+      <Filter>Entities\WorldMaps</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h">
@@ -351,6 +354,9 @@
     <ClInclude Include="WorldMapObject.h">
       <Filter>Entities\WorldMaps</Filter>
     </ClInclude>
+    <ClInclude Include="MapMario.h">
+      <Filter>Entities\WorldMaps</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="brick.txt">
@@ -489,6 +495,9 @@
       <Filter>Resources</Filter>
     </Image>
     <Image Include="textures\700_WorldMaps.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="textures\101_Mario_Origin.png">
       <Filter>Resources</Filter>
     </Image>
   </ItemGroup>

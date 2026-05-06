@@ -149,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InvisibleNode.cpp" />
+    <ClCompile Include="MapMario.cpp" />
     <ClCompile Include="MapNode.cpp" />
     <ClCompile Include="StageNode.cpp" />
     <ClCompile Include="WorldMapObject.cpp" />
@@ -195,6 +196,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="InvisibleNode.h" />
+    <ClInclude Include="MapMario.h" />
     <ClInclude Include="MapNode.h" />
     <ClInclude Include="StageNode.h" />
     <ClInclude Include="WorldMapObject.h" />
@@ -271,6 +273,7 @@
   <ItemGroup>
     <Image Include="mario.ico" />
     <Image Include="textures\100_Mario.png" />
+    <Image Include="textures\101_Mario_Origin.png" />
     <Image Include="textures\200_Enemies.png" />
     <Image Include="textures\300_Tilesets_StageTiles.png" />
     <Image Include="textures\400_Items.png" />

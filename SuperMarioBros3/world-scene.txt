@@ -6,6 +6,9 @@ hud.txt
 800 0 0 80000
 
 [GRID_OBJECTS]
+#MARIO
+801 2 3
+
 # NODE
 # invisible node
 # id x y l r u d

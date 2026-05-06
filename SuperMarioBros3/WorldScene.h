@@ -11,7 +11,7 @@
 class WorldScene : public Scene
 {
 protected:
-	LPGAMEOBJECT worldPlayer;
+	LPGAMEOBJECT worldMario;
 	float mapWidth = 0.0f;
 	float mapHeight = 0.0f;
 	vector<LPGAMEOBJECT> objects;
@@ -32,7 +32,7 @@ public:
 	virtual void Render();
 	virtual void Unload();
 
-	LPGAMEOBJECT GetPlayer() { return worldPlayer; }
+	LPGAMEOBJECT GetPlayer() { return worldMario; }
 	void AddObject(LPGAMEOBJECT obj) { objects.push_back(obj); }
 	void Clear();
 	void PurgeDeletedObjects();

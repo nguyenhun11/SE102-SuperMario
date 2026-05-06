@@ -20,6 +20,7 @@ start	0
 20		textures\misc.png
 
 100		textures\100_Mario.png
+101		textures\101_Mario_Origin.png
 200		textures\200_Enemies.png
 300		textures\300_Tilesets_StageTiles.png
 400		textures\400_Items.png

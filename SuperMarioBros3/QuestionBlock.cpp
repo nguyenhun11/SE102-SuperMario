@@ -78,7 +78,7 @@ void QuestionBlock::SpawnItem()
 	// logic để sinh ra các power up dựa treenn state hieennnj tại của thằng mairo
 	else if (this->item == ContainedItem::POWER_UP)
 	{
-		if (mario->GetCurrentForm() == MarioForm::SMALL)
+		if (mario->GetCurrentForm() == MapMario::SMALL)
 		{
 			// giữ nguyên tọa độ y
 			Mushroom* mushroom = new Mushroom(x, y);

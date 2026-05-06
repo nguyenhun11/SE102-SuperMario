@@ -28,13 +28,13 @@ void PlaySceneKeyHandler::OnKeyDown(int KeyCode)
 		break;
 	/// begin Test Mario Form
 	case DIK_1:
-		mario->SetNewForm(MarioForm::SMALL);
+		mario->SetNewForm(MapMario::SMALL);
 		break;
 	case DIK_2:
-		mario->SetNewForm(MarioForm::SUPER);
+		mario->SetNewForm(MapMario::SUPER);
 		break;
 	case DIK_3:
-		mario->SetNewForm(MarioForm::RACOON);
+		mario->SetNewForm(MapMario::RACOON);
 		break;
 	case DIK_0:
 		mario->SetState(MarioState::DIE);

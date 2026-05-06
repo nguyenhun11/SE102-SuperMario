@@ -12,6 +12,7 @@
 #include "Sprites.h"
 #include "Camera.h"
 #include "MapBackground.h"
+#include "MapMario.h"
 #include "WorldMapObject.h"
 #include "InvisibleNode.h"
 #include "StageNode.h"
@@ -35,7 +36,7 @@ using namespace std;
 
 WorldScene::WorldScene(int id, LPCWSTR filePath) : Scene(id, filePath)
 {
-	worldPlayer = NULL;
+	worldMario = NULL;
 	SetBackgroundColor(0.0f, 0.0f, 0.0f);
 	// Tạm thời comment lại, bước sau tụi mình viết class này rồi mở ra
 	// key_handler = new WorldKeyEventHandler(this); 
@@ -120,7 +121,7 @@ void WorldScene::Render()
 		if (objects[i]->GetZIndex() >= 5 && objects[i]->GetZIndex() < 10)
 			objects[i]->Render();
 
-	if (worldPlayer != NULL) worldPlayer->Render();
+	if (worldMario != NULL) worldMario->Render();
 
 	HUD::GetInstance()->Render();
 }
@@ -205,6 +206,11 @@ void WorldScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 			this->mapWidth = spr->GetWidth();
 			this->mapHeight = spr->GetHeight();
 		}
+		break;
+	}
+	case WORLDMAP_MARIO: {
+		obj = new MapMario(x, y);
+		worldMario = (MapMario*)obj;
 		break;
 	}
 	case WORLDMAP_OBJECT: {

@@ -76,7 +76,7 @@ enum class MarioState
 	SIT_RELEASE = 81
 };
 
-enum class MarioForm
+enum class MapMario
 {
 	SMALL = 0,
 	SUPER = 1,
@@ -187,7 +187,7 @@ class Mario : public GameObject
 	// pmeter
 	int pmeter;
 
-	MarioForm form; 
+	MapMario form; 
 	int untouchable; 
 
 	ULONGLONG die_start;
@@ -200,7 +200,7 @@ class Mario : public GameObject
 	ULONGLONG spin_start;
 	ULONGLONG pmeter_start;
 
-	MarioForm nextPoofForm;
+	MapMario nextPoofForm;
 	BOOLEAN isOnPlatform;
 	//int coin; 
 	//int score;
@@ -252,9 +252,9 @@ public:
 		//coin = 0;
 		//score = 0;
 
-		form = MarioForm::SMALL;
+		form = MapMario::SMALL;
 		currentState = MarioState::IDLE;
-		nextPoofForm = MarioForm::RACOON;
+		nextPoofForm = MapMario::RACOON;
 
 		zIndex = 10;
 	}
@@ -294,14 +294,14 @@ public:
 	void OnCollisionWith(LPCOLLISIONEVENT e);
 	
 
-	void SetNewForm(MarioForm form);
+	void SetNewForm(MapMario form);
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }
 
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 
 	// Transformation
 	void StartTransform();
-	void StartPoofTransform(MarioForm targetForm);
+	void StartPoofTransform(MapMario targetForm);
 
 	// Behaviours
 	void Attack();
@@ -317,6 +317,6 @@ public:
 	// Getters & Setters
 	float GetX() { return x; }
 	float GetY() { return y; }
-	MarioForm GetCurrentForm() { return form; }
+	MapMario GetCurrentForm() { return form; }
 	int GetPMeter() { return pmeter; }
 };
