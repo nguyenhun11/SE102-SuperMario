@@ -179,6 +179,7 @@ class Mario : public GameObject
 	// original pos
 	float start_x;
 	float start_y;
+	float slopeDirection;
 	
 	bool isSuperTransforming;
 	bool isTakingDamage;
@@ -231,6 +232,7 @@ public:
 	{
 		start_x = x;
 		start_y = y;
+		slopeDirection = 1;
 		isSitting = false;
 		maxVx = 0.0f;
 		accelX = 0.0f;
@@ -261,7 +263,7 @@ public:
 		//coin = 0;
 		//score = 0;
 
-		form = MarioForm::SMALL;
+		form = MarioForm::RACOON;
 		currentState = MarioState::IDLE;
 		nextPoofForm = MarioForm::RACOON;
 
