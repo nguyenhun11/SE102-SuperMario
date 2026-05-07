@@ -3,7 +3,7 @@
 #include "Coin.h"
 #include "Mushroom.h"
 #include "Leaf.h"
-//#include "OneUpMushroom.h"
+#include "OneUpMushroom.h"
 #include "debug.h"
 
 QuestionBlock::QuestionBlock(float x, float y, int containedItem) : GameObject(x, y)
@@ -20,6 +20,9 @@ QuestionBlock::QuestionBlock(float x, float y, int containedItem) : GameObject(x
 			this->item = ContainedItem::POWER_UP;
 			break;
 		}
+		case static_cast<int>(ContainedItem::UP_MUSHROOM):
+			this->item = ContainedItem::UP_MUSHROOM;
+			break;
 		default:
 		{
 			this->item = ContainedItem::COIN;
@@ -78,7 +81,7 @@ void QuestionBlock::SpawnItem()
 	// logic để sinh ra các power up dựa treenn state hieennnj tại của thằng mairo
 	else if (this->item == ContainedItem::POWER_UP)
 	{
-		if (mario->GetCurrentForm() == MapMario::SMALL)
+		if (mario->GetCurrentForm() == MarioForm::SMALL)
 		{
 			// giữ nguyên tọa độ y
 			Mushroom* mushroom = new Mushroom(x, y);
@@ -90,6 +93,11 @@ void QuestionBlock::SpawnItem()
 			Leaf* leaf = new Leaf(x, y - 16);
 			playScene->AddObject(leaf);
 		}
+	}
+	else if (this->item == ContainedItem::UP_MUSHROOM)
+	{
+		OneUpMushroom* mushroom = new OneUpMushroom(x, y);
+		playScene->AddObject(mushroom);
 	}
 
 }

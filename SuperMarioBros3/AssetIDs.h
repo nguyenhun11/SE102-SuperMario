@@ -31,8 +31,9 @@ Each ID for a type of object will BEGIN with:
 #define OBJECT_TYPE_ONEUPMUSHROOM	404
 
 // Map
-#define OBJECT_TYPE_DECORATION		600
-#define OBJECT_TYPE_GROUND			601
+#define OBJECT_TYPE_DECORATION 600
+#define OBJECT_TYPE_GROUND 601
+#define OBJECT_TYPE_SLOPE 603
 
 //Platform
 #define OBJECT_TYPE_PLATFORM			7

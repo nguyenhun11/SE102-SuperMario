@@ -1,0 +1,16 @@
+#	id	left	top	right	bottom	tex_id
+[SPRITES]
+### Mushroom
+40200	133	292	148	307	400
+### Leaf
+40300	133	310	148	325	400
+### 1-up mushroom
+40400	241	292	256	307	400
+
+[ANIMATIONS]
+### Mushroom
+4020	40200	100	40200	100
+### Leaf
+4030	40300	100	40300	100
+### 1-up mushroom
+4040	40400	100	40400	100

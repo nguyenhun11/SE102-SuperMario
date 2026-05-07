@@ -61,12 +61,13 @@
     <Filter Include="Entities\WorldMaps">
       <UniqueIdentifier>{4952307e-d1de-45b2-961e-4c01c16e4568}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Assets\Header">
+      <UniqueIdentifier>{c5ed1505-4d05-40ed-b07d-3c27b1be484a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="GameObjectDocument.md">
-      <Filter>Entities</Filter>
-    </None>
+    <None Include="GameObjectDocument.md" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp">
@@ -83,9 +84,6 @@
     </ClCompile>
     <ClCompile Include="Sprite.cpp">
       <Filter>Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Scence.cpp">
-      <Filter>Scenes</Filter>
     </ClCompile>
     <ClCompile Include="Mario.cpp">
       <Filter>Entities</Filter>
@@ -202,6 +200,21 @@
     <ClCompile Include="MapMario.cpp">
       <Filter>Entities\WorldMaps</Filter>
     </ClCompile>
+    <ClCompile Include="OneUpMushroom.cpp">
+      <Filter>Entities\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="Slope.cpp">
+      <Filter>Entities\Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="OneUpEffect.h">
+      <Filter>Entities\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="OneUpEffect.cpp">
+      <Filter>Entities\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h">
@@ -239,9 +252,6 @@
     </ClInclude>
     <ClInclude Include="SceneKeyHandler.h">
       <Filter>Scenes\KeyHandler</Filter>
-    </ClInclude>
-    <ClInclude Include="AssetIDs.h">
-      <Filter>Assets</Filter>
     </ClInclude>
     <ClInclude Include="PlaySceneKeyHandler.h">
       <Filter>Scenes\KeyHandler</Filter>
@@ -357,6 +367,21 @@
     <ClInclude Include="MapMario.h">
       <Filter>Entities\WorldMaps</Filter>
     </ClInclude>
+    <ClInclude Include="OneUpMushroom.h">
+      <Filter>Entities\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Slope.h">
+      <Filter>Entities\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="AssetIDs.h">
+      <Filter>Assets\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Core.h">
+      <Filter>Assets\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>Assets\Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="brick.txt">
@@ -396,13 +421,7 @@
     <Text Include="pipe.txt">
       <Filter>Assets</Filter>
     </Text>
-    <Text Include="mushroom.txt">
-      <Filter>Assets</Filter>
-    </Text>
     <Text Include="stage1_assets.txt">
-      <Filter>Assets</Filter>
-    </Text>
-    <Text Include="leaf.txt">
       <Filter>Assets</Filter>
     </Text>
     <Text Include="koopa.txt">
@@ -411,13 +430,22 @@
     <Text Include="HUD.txt">
       <Filter>Assets</Filter>
     </Text>
-    <Text Include="score_effect.txt">
+    <Text Include="effect.txt">
       <Filter>Assets</Filter>
     </Text>
     <Text Include="world-scene.txt">
       <Filter>Scenes\WorldScene</Filter>
     </Text>
     <Text Include="world-scene-assets.txt">
+      <Filter>Assets</Filter>
+    </Text>
+    <Text Include="power_up.txt">
+      <Filter>Assets</Filter>
+    </Text>
+    <Text Include="stage2.txt">
+      <Filter>Scenes\Playscene</Filter>
+    </Text>
+    <Text Include="map_2.txt">
       <Filter>Assets</Filter>
     </Text>
   </ItemGroup>

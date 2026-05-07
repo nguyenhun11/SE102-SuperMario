@@ -41,7 +41,7 @@
 #define MARIO_FLYING_TIME 4000    
 #define MARIO_FLOATING_TIME	250
 #define MARIO_SLOW_FALL_SPEED 0.01f 
-#define MARIO_FLYING_UP_FORCE 0.5f
+#define MARIO_FLYING_UP_FORCE 0.25f
 
 // Tail attack 
 #define MARIO_SPIN_TIME	240
@@ -76,7 +76,7 @@ enum class MarioState
 	SIT_RELEASE = 81
 };
 
-enum class MapMario
+enum class MarioForm
 {
 	SMALL = 0,
 	SUPER = 1,
@@ -102,6 +102,7 @@ enum class MapMario
 #define ID_ANI_MARIO_SUPER_FALLING	1106
 
 #define ID_ANI_MARIO_SUPER_SIT 1107
+#define ID_ANI_MARIO_SUPER_SLIDING 1108
 
 #define ID_ANI_MARIO_DIE 999
 
@@ -111,7 +112,7 @@ enum class MapMario
 
 #define ID_ANI_MARIO_SMALL_WALKING 1001
 #define ID_ANI_MARIO_SMALL_RUNNING 1002
-
+#define ID_ANI_MARIO_SMALL_SLIDING 1008
 
 #define ID_ANI_MARIO_SMALL_JUMP_WALK 1004
 #define ID_ANI_MARIO_SMALL_JUMP_RUN 1005
@@ -128,6 +129,7 @@ enum class MapMario
 #define ID_ANI_MARIO_RACOON_FALLING	1206
 
 #define ID_ANI_MARIO_RACOON_SIT 1207
+#define ID_ANI_MARIO_RACOON_SLIDING 1208
 #define ID_ANI_MARIO_RACOON_SPIN 1215
 // NOTE NÈ: thiếu slow fall với flying
 
@@ -138,8 +140,8 @@ enum class MapMario
 // ---- Other Game feel Stuff ----
 // Die Animation
 #define	MARIO_DIE_TIMEOUT	800
-#define MARIO_DIE_BOUNCE_FORCE	0.08f
-#define	MARIO_DIE_GRAVITY	0.00006f
+#define MARIO_DIE_BOUNCE_FORCE	0.09f
+#define	MARIO_DIE_GRAVITY	0.00008f
 
 // Hit Animation
 #define MARIO_HIT_TIMEOUT	1000
@@ -175,6 +177,11 @@ class Mario : public GameObject
 	float maxVx;
 	float accelX;				// acceleration on x 
 	float accelY;				// acceleration on y 
+
+	// original pos
+	float start_x;
+	float start_y;
+	float slopeDirection;
 	
 	bool isSuperTransforming;
 	bool isTakingDamage;
@@ -183,11 +190,12 @@ class Mario : public GameObject
 	bool isFloating;
 	bool isPoofTransforming;
 	bool isSpinning;
+	bool isSliding;
 	
 	// pmeter
 	int pmeter;
 
-	MapMario form; 
+	MarioForm form;
 	int untouchable; 
 
 	ULONGLONG die_start;
@@ -200,8 +208,9 @@ class Mario : public GameObject
 	ULONGLONG spin_start;
 	ULONGLONG pmeter_start;
 
-	MapMario nextPoofForm;
+	MarioForm nextPoofForm;
 	BOOLEAN isOnPlatform;
+	BOOLEAN isOnSlope;
 	//int coin; 
 	//int score;
 
@@ -209,6 +218,7 @@ class Mario : public GameObject
 	void OnCollisionWithCoin(LPCOLLISIONEVENT e);
 	void OnCollisionWithPortal(LPCOLLISIONEVENT e);
 	void OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e);
+	void OnCollisionWithOneUpMushroom(LPCOLLISIONEVENT e);
 	void OnCollisionWithMushroom(LPCOLLISIONEVENT e);
 	void OnCollisionWithLeaf(LPCOLLISIONEVENT e);
 	void OnCollisionWithBrick(LPCOLLISIONEVENT e);
@@ -223,6 +233,9 @@ class Mario : public GameObject
 public:
 	Mario(float x, float y) : GameObject(x, y)
 	{
+		start_x = x;
+		start_y = y;
+		slopeDirection = 1;
 		isSitting = false;
 		maxVx = 0.0f;
 		accelX = 0.0f;
@@ -230,6 +243,7 @@ public:
 		pmeter = 0;
 
 		isOnPlatform = false;
+		isOnSlope = false;
 		isSuperTransforming = false;
 		isTakingDamage = false;
 		canFly = false;
@@ -237,6 +251,7 @@ public:
 		isFloating = false;
 		isPoofTransforming = false;
 		isSpinning = false;
+		isSliding = false;
 
 		untouchable = 0;
 		untouchable_start = -1;
@@ -252,9 +267,9 @@ public:
 		//coin = 0;
 		//score = 0;
 
-		form = MapMario::SMALL;
+		form = MarioForm::SMALL;
 		currentState = MarioState::IDLE;
-		nextPoofForm = MapMario::RACOON;
+		nextPoofForm = MarioForm::RACOON;
 
 		zIndex = 10;
 	}
@@ -276,7 +291,7 @@ public:
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();
 	void SetState(MarioState state);
-	void SetDirection(int d) { nx = d; }
+	void SetDirection(int d);
 
 	int IsCollidable()
 	{ 
@@ -294,18 +309,19 @@ public:
 	void OnCollisionWith(LPCOLLISIONEVENT e);
 	
 
-	void SetNewForm(MapMario form);
+	void SetNewForm(MarioForm form);
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }
 
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 
 	// Transformation
 	void StartTransform();
-	void StartPoofTransform(MapMario targetForm);
+	void StartPoofTransform(MarioForm targetForm);
 
 	// Behaviours
 	void Attack();
 	void TakeDamage();
+	void Reset();
 
 	// Handle Update
 	void HandleDying(DWORD dt, vector<LPGAMEOBJECT>* coObjects); 
@@ -313,10 +329,12 @@ public:
 	void HandleSpinning(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void HandleTransform(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void HandlePMeter(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
+	void HandleSlope(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
+	void HandleSlopePhysics(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 
 	// Getters & Setters
 	float GetX() { return x; }
 	float GetY() { return y; }
-	MapMario GetCurrentForm() { return form; }
+	MarioForm GetCurrentForm() { return form; }
 	int GetPMeter() { return pmeter; }
 };

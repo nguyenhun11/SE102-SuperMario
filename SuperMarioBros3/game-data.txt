@@ -11,6 +11,7 @@ start	0
 5	1	scene0005.txt
 6	1	stage1.txt
 7	1	scene_mario_dev.txt
+8	1	stage2.txt
 
 # id	file 
 [TEXTURES]
