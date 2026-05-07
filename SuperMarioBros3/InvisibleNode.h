@@ -7,7 +7,7 @@ class InvisibleNode : public MapNode
 		zIndex = 5;
 	}
 	virtual void Render() {
-		RenderBoundingBox();
+		//RenderBoundingBox();
 	}
 };
 
