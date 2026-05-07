@@ -662,7 +662,6 @@ void Mario::SetState(MarioState state)
 					vy = -MARIO_JUMP_RUN_SPEED_Y;
 					vx *= 1.2f;
 				}
-
 				// nếu là gấu mèo thì bật bay
 				if (form == MarioForm::RACOON)
 				{
@@ -703,7 +702,6 @@ void Mario::SetState(MarioState state)
 
 	case MarioState::SIT:
 		if (isSitting) break;
-		
 		if (isOnPlatform)
 		{
 			if (form == MarioForm::SMALL && !isOnSlope) break;
@@ -749,7 +747,7 @@ void Mario::SetDirection(int d)
 
 void Mario::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
-	if (form==MarioForm::SUPER || form == MarioForm::RACOON)
+	if (form== MarioForm::SUPER || form == MarioForm::RACOON)
 	{
 		if (isSitting)
 		{

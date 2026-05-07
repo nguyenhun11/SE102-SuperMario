@@ -195,7 +195,7 @@ class Mario : public GameObject
 	// pmeter
 	int pmeter;
 
-	MarioForm form; 
+	MarioForm form;
 	int untouchable; 
 
 	ULONGLONG die_start;
@@ -267,7 +267,7 @@ public:
 		//coin = 0;
 		//score = 0;
 
-		form = MarioForm::RACOON;
+		form = MarioForm::SMALL;
 		currentState = MarioState::IDLE;
 		nextPoofForm = MarioForm::RACOON;
 

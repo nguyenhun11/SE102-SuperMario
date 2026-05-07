@@ -55,7 +55,17 @@ void GameManager::ResetTimer(DWORD start_time)
 
 void GameManager::LevelFailed()
 {
-	
+	AddLife(-1);
+	isReturningFromFail = true;
+	SceneManager::GetInstance()->InitiateSwitchScene(0);
+}
+
+void GameManager::LevelSuccess()
+{
+	mapMarioPrevX = mapMarioCurrentX;
+	mapMarioPrevY = mapMarioCurrentY;
+
+	SceneManager::GetInstance()->InitiateSwitchScene(0);
 }
 
 void GameManager::GameOver()
