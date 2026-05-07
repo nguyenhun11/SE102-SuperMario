@@ -1,4 +1,5 @@
 #include "MapMario.h"
+#include "GameManager.h"
 #include "Animations.h"
 #include "debug.h"
 
@@ -16,6 +17,7 @@ MapMario::MapMario(float x, float y) : GameObject(x, y)
 
 void MapMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	// 1. Lập ảnh animation
 	ULONGLONG now = GetTickCount64();
 	if (now - flipTimer > 150)
 	{
@@ -23,8 +25,8 @@ void MapMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		flipTimer = now;
 	}
 
+	// 2. Tìm node ban đầu
 	if (coObjects == NULL) return;
-
 	if (currentNode == NULL)
 	{
 		for (size_t i = 0; i < coObjects->size(); i++)
@@ -32,16 +34,75 @@ void MapMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			MapNode* node = dynamic_cast<MapNode*>(coObjects->at(i));
 			if (node != NULL)
 			{
-				// Quét xem vị trí ban đầu của Mario có đang đè lên Node nào không
 				if (abs(this->x - node->GetX()) <= 1.5f && abs(this->y - node->GetY()) <= 1.5f)
 				{
-					this->currentNode = node; // Lưu lại trạm xuất phát!
+					this->currentNode = node;
+
+					// Nếu là lần đầu tiên mở game, CẢ HAI đều là Start Node
+					if (GameManager::GetInstance()->mapMarioPrevX == -1.0f)
+					{
+						GameManager::GetInstance()->mapMarioPrevX = this->x;
+						GameManager::GetInstance()->mapMarioPrevY = this->y;
+						GameManager::GetInstance()->mapMarioCurrentX = this->x;
+						GameManager::GetInstance()->mapMarioCurrentY = this->y;
+					}
 					break;
 				}
 			}
 		}
 	}
 
+	// 3. Bị đẩy lùi nếu thua game
+	// 3. Bị đẩy lùi nếu thua game
+	if (GameManager::GetInstance()->isReturningFromFail)
+	{
+		float px = GameManager::GetInstance()->mapMarioPrevX;
+		float py = GameManager::GetInstance()->mapMarioPrevY;
+
+		float dx = px - this->x;
+		float dy = py - this->y;
+		float distance = sqrt(dx * dx + dy * dy);
+
+		// Tính quãng đường tối đa Mario sẽ di chuyển trong frame này
+		float step = MARIO_MAP_SPEED * dt;
+
+		DebugOut(L"[MAP DEBUG] Fail Flag: %d | Current(%.1f, %.1f) | SafePoint(%.1f, %.1f) | Distance: %.1f \n",
+			GameManager::GetInstance()->isReturningFromFail, this->x, this->y, px, py, distance);
+
+		// NẾU KHOẢNG CÁCH CÒN LỚN HƠN BƯỚC NHẢY -> TIẾP TỤC TRƯỢT
+		if (distance > step)
+		{
+			this->vx = (dx / distance) * MARIO_MAP_SPEED;
+			this->vy = (dy / distance) * MARIO_MAP_SPEED;
+			this->isMoving = true;
+
+			this->x += vx * dt;
+			this->y += vy * dt;
+
+			return; // QUAN TRỌNG: Return ngay tại đây! 
+		}
+		// ĐÃ TỚI ĐÍCH (Safe Point) - Bắt dính Mario vào tọa độ px, py
+		else
+		{
+			this->x = px;
+			this->y = py;
+			this->vx = 0;
+			this->vy = 0;
+			this->isMoving = false;
+
+			GameManager::GetInstance()->isReturningFromFail = false;
+			GameManager::GetInstance()->mapMarioCurrentX = this->x;
+			GameManager::GetInstance()->mapMarioCurrentY = this->y;
+
+			this->stopTimer = GetTickCount64();
+			SetState(MARIO_MAP_STATE_IDLE);
+
+			this->currentNode = NULL;
+			return;
+		}
+	}
+
+	// 4. Di chuyển
 	if (!isMoving) return;
 
 	x += vx * dt;
@@ -63,8 +124,10 @@ void MapMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 				this->isMoving = false;
 				this->currentNode = node;
-
 				this->stopTimer = GetTickCount64();
+
+				GameManager::GetInstance()->mapMarioCurrentX = this->x;
+				GameManager::GetInstance()->mapMarioCurrentY = this->y;
 
 				SetState(MARIO_MAP_STATE_IDLE);
 				return;
@@ -156,32 +219,36 @@ void MapMario::MoveLeft()
 	// Nếu vừa tới trạm chưa đủ 150ms -> Bỏ qua lệnh
 	if (GetTickCount64() - stopTimer < 150) return;
 
-	if (!isMoving && (currentNode == NULL || currentNode->canLeft))
+	if (!isMoving && (currentNode == NULL || currentNode->canLeft)) {
 		SetState(MARIO_MAP_STATE_WALKING_LEFT);
+	}
 }
 
 void MapMario::MoveRight()
 {
 	if (GetTickCount64() - stopTimer < 150) return;
 
-	if (!isMoving && (currentNode == NULL || currentNode->canRight))
+	if (!isMoving && (currentNode == NULL || currentNode->canRight)) {
 		SetState(MARIO_MAP_STATE_WALKING_RIGHT);
+	}
 }
 
 void MapMario::MoveUp()
 {
 	if (GetTickCount64() - stopTimer < 150) return;
 
-	if (!isMoving && (currentNode == NULL || currentNode->canUp))
+	if (!isMoving && (currentNode == NULL || currentNode->canUp)) {
 		SetState(MARIO_MAP_STATE_WALKING_UP);
+	}
 }
 
 void MapMario::MoveDown()
 {
 	if (GetTickCount64() - stopTimer < 150) return;
 
-	if (!isMoving && (currentNode == NULL || currentNode->canDown))
+	if (!isMoving && (currentNode == NULL || currentNode->canDown)) {
 		SetState(MARIO_MAP_STATE_WALKING_DOWN);
+	}
 }
 
 void MapMario::EnterNode()
@@ -196,7 +263,9 @@ void MapMario::EnterNode()
 
 		if (sceneId > 0)
 		{
-			// if (stageNode->IsUnlocked()) return;
+			GameManager::GetInstance()->mapMarioCurrentX = this->x;
+			GameManager::GetInstance()->mapMarioCurrentY = this->y;
+
 			SceneManager::GetInstance()->InitiateSwitchScene(sceneId);
 		}
 	}

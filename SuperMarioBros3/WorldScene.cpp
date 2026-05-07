@@ -84,6 +84,18 @@ void WorldScene::Load()
 	// CHÚ Ý: Ở ngoài Map thì không có đếm ngược thời gian, nạp số 0!
 	GameManager::GetInstance()->ResetTimer(0);
 
+	if (worldMario != NULL)
+	{
+		float cx = GameManager::GetInstance()->mapMarioCurrentX;
+		float cy = GameManager::GetInstance()->mapMarioCurrentY;
+
+		// Nếu thẻ nhớ đã ghi nhận tọa độ, thì ép Mario nằm đúng ở đó
+		if (cx != -1.0f && cy != -1.0f)
+		{
+			worldMario->SetPosition(cx, cy);
+		}
+	}
+
 	DebugOut(L"[INFO] Done loading World Map  %s\n", sceneFilePath);
 }
 
@@ -127,10 +139,25 @@ void WorldScene::Render()
 }
 
 void WorldScene::Unload()
-{}
+{
+	for (size_t i = 0; i < objects.size(); i++)
+	{
+		delete objects[i];
+	}
+	objects.clear();
+	worldMario = NULL;
+
+	DebugOut(L"[INFO] Scene %d unloaded! Destroyed all objects.\n", id);
+}
 
 void WorldScene::Clear()
-{}
+{
+	for (size_t i = 0; i < objects.size(); i++)
+	{
+		delete objects[i];
+	}
+	objects.clear();
+}
 
 void WorldScene::PurgeDeletedObjects()
 {}

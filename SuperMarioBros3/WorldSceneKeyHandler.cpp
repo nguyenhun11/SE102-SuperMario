@@ -13,22 +13,6 @@ void WorldSceneKeyHandler::OnKeyDown(int KeyCode)
 
 	switch (KeyCode)
 	{
-	case DIK_LEFT:
-	case DIK_A:
-		mario->MoveLeft();
-		break;
-	case DIK_RIGHT:
-	case DIK_D:
-		mario->MoveRight();
-		break;
-	case DIK_UP:
-	case DIK_W:
-		mario->MoveUp();
-		break;
-	case DIK_DOWN:
-	case DIK_S:
-		mario->MoveDown();
-		break;
 	case DIK_Z:
 	case DIK_SPACE:
 		mario->EnterNode();

@@ -12,6 +12,7 @@ class WorldScene : public Scene
 {
 protected:
 	LPGAMEOBJECT worldMario;
+
 	float mapWidth = 0.0f;
 	float mapHeight = 0.0f;
 	vector<LPGAMEOBJECT> objects;
