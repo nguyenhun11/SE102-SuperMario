@@ -102,6 +102,7 @@ enum class MarioForm
 #define ID_ANI_MARIO_SUPER_FALLING	1106
 
 #define ID_ANI_MARIO_SUPER_SIT 1107
+#define ID_ANI_MARIO_SUPER_SLIDING 1108
 
 #define ID_ANI_MARIO_DIE 999
 
@@ -111,7 +112,7 @@ enum class MarioForm
 
 #define ID_ANI_MARIO_SMALL_WALKING 1001
 #define ID_ANI_MARIO_SMALL_RUNNING 1002
-
+#define ID_ANI_MARIO_SMALL_SLIDING 1008
 
 #define ID_ANI_MARIO_SMALL_JUMP_WALK 1004
 #define ID_ANI_MARIO_SMALL_JUMP_RUN 1005
@@ -128,6 +129,7 @@ enum class MarioForm
 #define ID_ANI_MARIO_RACOON_FALLING	1206
 
 #define ID_ANI_MARIO_RACOON_SIT 1207
+#define ID_ANI_MARIO_RACOON_SLIDING 1208
 #define ID_ANI_MARIO_RACOON_SPIN 1215
 // NOTE NÈ: thiếu slow fall với flying
 
@@ -179,6 +181,7 @@ class Mario : public GameObject
 	// original pos
 	float start_x;
 	float start_y;
+	float slopeDirection;
 	
 	bool isSuperTransforming;
 	bool isTakingDamage;
@@ -187,6 +190,7 @@ class Mario : public GameObject
 	bool isFloating;
 	bool isPoofTransforming;
 	bool isSpinning;
+	bool isSliding;
 	
 	// pmeter
 	int pmeter;
@@ -231,6 +235,7 @@ public:
 	{
 		start_x = x;
 		start_y = y;
+		slopeDirection = 1;
 		isSitting = false;
 		maxVx = 0.0f;
 		accelX = 0.0f;
@@ -246,6 +251,7 @@ public:
 		isFloating = false;
 		isPoofTransforming = false;
 		isSpinning = false;
+		isSliding = false;
 
 		untouchable = 0;
 		untouchable_start = -1;
@@ -261,7 +267,7 @@ public:
 		//coin = 0;
 		//score = 0;
 
-		form = MarioForm::SMALL;
+		form = MarioForm::RACOON;
 		currentState = MarioState::IDLE;
 		nextPoofForm = MarioForm::RACOON;
 
@@ -324,6 +330,7 @@ public:
 	void HandleTransform(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void HandlePMeter(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void HandleSlope(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
+	void HandleSlopePhysics(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 
 	// Getters & Setters
 	float GetX() { return x; }

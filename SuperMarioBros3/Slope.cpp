@@ -24,3 +24,16 @@ float Slope::GetSurfaceY(float marioX)
     }
     return surfaceY;
 }
+
+void Slope::Render()
+{
+    RenderBoundingBox();
+}
+
+void Slope::GetBoundingBox(float& l, float& t, float& r, float& b)
+{
+    l = x - width / 2.0f;
+    t = y - height / 2.0f;
+    r = l + width;
+    b = t + height;
+}

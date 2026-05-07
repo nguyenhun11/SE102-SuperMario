@@ -59,6 +59,8 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	vx += accelX * dt;
 
 	float effectiveAccel = accelX;
+	float effectiveMaxVx = maxVx;
+
 	if (accelX * vx < 0)
 	{
 		if (accelX > 0)
@@ -71,10 +73,47 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 	}
 
-	HandlePMeter(dt, coObjects);
-	HandleSlope(dt, coObjects);
+	///// ------ vật lý của joke
+	HandleSlopePhysics(dt, coObjects);
+
+	if (isOnSlope && !isSitting)
+	{
+		if (slopeDirection * nx > 0)	/// LÊN  JOKE
+		{
+			// giới hạn tốc tối đa
+			effectiveMaxVx = MARIO_WALKING_SPEED * 0.6f;
+
+			// triệt tiêu quán tính
+			if (abs(vx) > effectiveMaxVx)
+			{
+				vx -= (vx > 0 ? 1 : -1) * MARIO_DECCEL_RUN_X * dt * 2.0f;
+			}
+
+			// giảm gia tốc đẩy
+			effectiveAccel *= 0.1f;
+		}
+		else if (slopeDirection * nx < 0) // XUỐNG JOKE
+		{
+			//effectiveMaxVx = MARIO_WALKING_SPEED * 1.05f;
+			//effectiveAccel *= 1.05f; 
+			if (vy >= 0)
+			{
+				vy = abs(vx) + 0.05f;
+			}
+		}
+	}
 
 	vx += effectiveAccel * dt;
+	if (effectiveAccel * vx > 0)
+	{
+		if (vx > 0 && effectiveMaxVx > 0 && vx > effectiveMaxVx) vx = effectiveMaxVx;
+		if (vx < 0 && effectiveMaxVx < 0 && vx < effectiveMaxVx) vx = effectiveMaxVx;
+	}
+
+	////
+
+	/// -- P meter
+	HandlePMeter(dt, coObjects);
 
 	if (isOnPlatform)
 	{
@@ -93,12 +132,12 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 	}
 
-	// gioi han toc do di chuyen
-	if (accelX * vx > 0)
-	{
-		if (vx > 0 && maxVx > 0 && vx > maxVx) vx = maxVx;
-		if (vx < 0 && maxVx < 0 && vx < maxVx) vx = maxVx;
-	}
+	//// gioi han toc do di chuyen
+	//if (accelX * vx > 0)
+	//{
+	//	if (vx > 0 && maxVx > 0 && vx > maxVx) vx = maxVx;
+	//	if (vx < 0 && maxVx < 0 && vx < maxVx) vx = maxVx;
+	//}
 
 	// reset untouchable timer if untouchable time has passed
 	if ( GetTickCount64() - untouchable_start > MARIO_UNTOUCHABLE_TIME) 
@@ -108,6 +147,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 
 	Collision::GetInstance()->Process(this, dt, coObjects);
+	HandleSlope(dt, coObjects);
 }
 
 #pragma region COLLISION
@@ -316,7 +356,8 @@ int Mario::GetAniIdSmall()
 	else		// mario dung tren mat đất
 		if (isSitting)
 		{
-			aniId = ID_ANI_MARIO_SUPER_SIT;
+			if (isSliding)
+				aniId = ID_ANI_MARIO_SMALL_SLIDING;
 		}
 		else
 		{
@@ -367,7 +408,14 @@ int Mario::GetAniIdBig()
 	else
 		if (isSitting)
 		{
-			aniId = ID_ANI_MARIO_SUPER_SIT;
+			if (isSliding)
+			{
+				aniId = ID_ANI_MARIO_SUPER_SLIDING;
+			}
+			else
+			{
+				aniId = ID_ANI_MARIO_SUPER_SIT;
+			}
 		}
 		else
 			if (vx == 0)
@@ -414,7 +462,14 @@ int Mario::GetAniIdRacoon()
 	else
 		if (isSitting)
 		{
-			aniId = ID_ANI_MARIO_RACOON_SIT;
+			if (isSliding)
+			{
+				aniId = ID_ANI_MARIO_RACOON_SLIDING;
+			}
+			else
+			{
+				aniId = ID_ANI_MARIO_RACOON_SIT;
+			}
 		}
 		else
 			if (vx == 0)
@@ -511,6 +566,11 @@ void Mario::Render()
 	if (aniId == ID_ANI_MARIO_RACOON_SKIDDING)
 	{
 		renderY -= 2.0f;
+	}
+	if (isSliding)
+	{
+		if(form != MarioForm::SMALL)
+			renderY -= 4.0f;
 	}
 	if (aniId == ID_ANI_MARIO_RACOON_SPIN)
 	{
@@ -642,22 +702,15 @@ void Mario::SetState(MarioState state)
 		break;
 
 	case MarioState::SIT:
-		if (isOnPlatform && form != MarioForm::SMALL)
+		if (isSitting) break;
+		
+		if (isOnPlatform)
 		{
+			if (form == MarioForm::SMALL && !isOnSlope) break;
 			isSitting = true;
-			if (isOnSlope)
-			{
-				// có thể thêm biến slopeDirection từ class dốc qua để biết nên trượt lùi hay tiến
-				accelX = MARIO_ACCEL_RUN_X * 1.5f; 
-				maxVx = MARIO_RUNNING_SPEED * 1.5f;
-			}
-			else
-			{
-				vy = 0.0f;
-				accelX = 0.0f;
-			}
 
-			y += MARIO_SIT_HEIGHT_ADJUST;
+			if(form != MarioForm::SMALL)
+				y += MARIO_SIT_HEIGHT_ADJUST;
 		}
 		break;
 
@@ -666,11 +719,13 @@ void Mario::SetState(MarioState state)
 		{
 			isSitting = false;
 			state = MarioState::IDLE;
-			y -= MARIO_SIT_HEIGHT_ADJUST;
+			if(form != MarioForm::SMALL)
+				y -= MARIO_SIT_HEIGHT_ADJUST;
 		}
 		break;
 
 	case MarioState::IDLE:
+		if (isSitting) break;
 		accelX = 0.0f;
 		break;
 
@@ -729,7 +784,6 @@ void Mario::SetNewForm(MarioForm newForm)
 	{
 		y -= heightDiff;
 	}
-	// THÊM: Nếu đang Lớn mà về Nhỏ: Phải đẩy y xuống dưới
 	else if (this->form != MarioForm::SMALL && newForm == MarioForm::SMALL)
 	{
 		y += heightDiff;
@@ -816,6 +870,8 @@ void Mario::Reset()
 	canFly = false;
 	isFlying = false;
 	isFloating = false;
+	isSliding = false;
+
 
 	untouchable = 0;
 	pmeter = 0;
@@ -979,7 +1035,13 @@ void Mario::HandlePMeter(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void Mario::HandleSlope(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	float marioBottomY = y + MARIO_BIG_BBOX_HEIGHT / 2; // tọa độ chân
+	float l, t, r, b;
+	GetBoundingBox(l, t, r, b);
+	float marioBottomY = b;
+	float bboxHeight = b - t;
+	//float marioBottomY = y + MARIO_BIG_BBOX_HEIGHT / 2; // tọa độ chân
+
+	bool foundSlope = false;
 
 	for (size_t i = 0; i < coObjects->size(); i++)
 	{
@@ -987,29 +1049,75 @@ void Mario::HandleSlope(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		if (dynamic_cast<Slope*>(obj))
 		{
 			Slope* slope = dynamic_cast<Slope*>(obj);
+			//slopeDirection = slope->GetDirection();
 			float sl, st, sr, sb;
 			slope->GetBoundingBox(sl, st, sr, sb);
 
-			// Rút tâm X của Mario ra
+			// tâm ủa Mario ra
 			float marioCenterX = x;
 
 			// kiểm tra mario đang đứng trên dốc
-			if (marioCenterX >= sl && marioCenterX <= sr && marioBottomY >= st && marioBottomY <= sb)
+			float epsilon = 0.0f;
+
+			if (marioCenterX >= (sl - epsilon) && marioCenterX <= (sr + epsilon) && marioBottomY >= st && marioBottomY <= sb)
 			{
-				// lấy tọa độ y
 				float expectedY = slope->GetSurfaceY(marioCenterX);
 
 				// kéo mairo lên nếu chân < dốc
-				if (marioBottomY >= expectedY - 2.0f) // -2.0f sai số nhỏ
+				if (marioBottomY >= expectedY - 4.0f && vy >=0) 
 				{
-					y = expectedY - MARIO_BIG_BBOX_HEIGHT / 2;
+					y = expectedY - bboxHeight / 2;
 					vy = 0;
 					isOnPlatform = true;
-					isOnSlope = true;
+					foundSlope = true;
+					slopeDirection = slope->direction;
 				}
 			}
 		}
 	}
+
+	isOnSlope = foundSlope;
 }
+
+void Mario::HandleSlopePhysics(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+{
+	if (isSitting && isOnPlatform)
+	{
+		if (isOnSlope)
+		{
+			int slideDirection = -slopeDirection;
+			accelX = (MARIO_ACCEL_RUN_X * 1.3f) * slideDirection;
+			maxVx = (MARIO_RUNNING_SPEED * 1.3f) * slideDirection;
+			nx = slideDirection;
+			isSliding = true;
+			if (vy >= 0)
+			{
+				vy = abs(vx) + 0.05f;
+			}
+
+		}
+		else
+		{
+			accelX = 0.0f;
+			if(abs(vx) < 0.05f) 
+				isSliding = false;
+
+		}
+	}
+	else
+	{
+		isSliding = false;
+	}
+}
+
+
+
+/// Note tính toán phép xử lý lên/xuống dốc
+/// Dốc đi lên có direction của slope là 1, mario đi sang phải thì chậm, đi sang trái thì nhanh
+/// Dốc đi xuống có direction của slope là -1, mario đi sang phải thì nhanh còn đi sang trái thì chậm
+/// ===> marioVx * slopeDirection > 0 thì sẽ đi chậm vì mario đi cùng chiều lên dốc
+/// marioVx * slopeDirection < 0 thì đi nhanh hơn vì đây là đi xuống dốc
+/// 
+
 
 #pragma endregion

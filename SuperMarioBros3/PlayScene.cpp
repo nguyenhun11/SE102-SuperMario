@@ -12,6 +12,7 @@
 #include "Platform.h"
 #include "QuestionBlock.h"
 #include "Ground.h"
+#include "Slope.h"
 #include "SemisolidPlatform.h"
 #include "Decoration.h"
 #include "VerticalPipe.h"
@@ -252,6 +253,33 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 
 		break;
 	}
+	
+
+	/// Cái joke
+	case OBJECT_TYPE_SLOPE:
+	{
+		//float width = (float)atof(tokens[3].c_str());
+		//float height = (float)atof(tokens[4].c_str());
+		//int dir = atoi(tokens[5].c_str());
+
+		//float center_x = x + (width / 2.0f);
+		//float center_y = y + (height / 2.0f);
+
+		//obj = new Slope(center_x, center_y, width, height, dir);
+		//break;
+		float width = (float)atof(tokens[3].c_str());
+		float height = (float)atof(tokens[4].c_str());
+		int dir = atoi(tokens[5].c_str());
+
+		// LƯU Ý: Vì đọc từ [GRID_OBJECTS], x và y đã được nhân với TILE_SIZE (16) ở trên rồi.
+		// Công việc của bạn chỉ là Dịch tọa độ về TÂM cho khớp với hệ thống:
+		float center_x = x + (width / 2.0f);
+		float center_y = y + (height / 2.0f);
+
+		obj = new Slope(center_x, center_y, width, height, dir);
+		break;
+	}
+
 	case OBJECT_TYPE_DECORATION: {
 		obj = new Decoration(x, y, atoi(tokens[3].c_str()));
 		break;
@@ -370,7 +398,7 @@ void PlayScene::Update(DWORD dt)
 	player->GetPosition(px, py);
 
 	float mapLeft = -8.0f;	//Khoang trong bat dau map
-	float mapTop = -100.0f;    // Cho phép bầu trời cao lên đến tọa độ âm 300
+	float mapTop = -300.0f;    // Cho phép bầu trời cao lên đến tọa độ âm 300
 	float mapBottom = 240.0f;
 
 	if (px < mapLeft + 24.0f)
