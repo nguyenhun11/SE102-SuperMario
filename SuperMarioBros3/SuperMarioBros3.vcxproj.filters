@@ -10,9 +10,6 @@
     <Filter Include="Scenes">
       <UniqueIdentifier>{b3fd78cc-d76a-4508-9bc3-01cfd136bcab}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Input">
-      <UniqueIdentifier>{c1a45ab2-2f83-4ac3-b10a-66c15acbb19d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Entities">
       <UniqueIdentifier>{0a55a075-6db8-4a1d-aeba-278cfe29c272}</UniqueIdentifier>
     </Filter>
@@ -21,9 +18,6 @@
     </Filter>
     <Filter Include="Resources">
       <UniqueIdentifier>{f3ecf656-2cae-4ab8-8dae-22e912964ef2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Maps">
-      <UniqueIdentifier>{d24973f5-c708-465c-92f6-6b52f6e63fe9}</UniqueIdentifier>
     </Filter>
     <Filter Include="CoreGame\Cores">
       <UniqueIdentifier>{7e16e561-9f91-4a20-8a77-3f4963294c24}</UniqueIdentifier>
@@ -55,6 +49,18 @@
     <Filter Include="Entities\Effects">
       <UniqueIdentifier>{2dd82a35-ce79-481c-8c54-9e242ac5af03}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scenes\KeyHandler">
+      <UniqueIdentifier>{c1a45ab2-2f83-4ac3-b10a-66c15acbb19d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\Playscene">
+      <UniqueIdentifier>{d24973f5-c708-465c-92f6-6b52f6e63fe9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\WorldScene">
+      <UniqueIdentifier>{e41e294c-df0d-4703-b285-ea03035b3d56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Entities\WorldMaps">
+      <UniqueIdentifier>{4952307e-d1de-45b2-961e-4c01c16e4568}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Assets\Header">
       <UniqueIdentifier>{c5ed1505-4d05-40ed-b07d-3c27b1be484a}</UniqueIdentifier>
     </Filter>
@@ -79,12 +85,6 @@
     <ClCompile Include="Sprite.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="PlayScene.cpp">
-      <Filter>Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="Scence.cpp">
-      <Filter>Scenes</Filter>
-    </ClCompile>
     <ClCompile Include="Mario.cpp">
       <Filter>Entities</Filter>
     </ClCompile>
@@ -93,7 +93,7 @@
     </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PlaySceneKeyHandler.cpp">
-      <Filter>Input</Filter>
+      <Filter>Scenes\KeyHandler</Filter>
     </ClCompile>
     <ClCompile Include="InputManager.cpp">
       <Filter>CoreGame\Managers</Filter>
@@ -170,7 +170,36 @@
     <ClCompile Include="BrickDebris.cpp">
       <Filter>Entities\Effects</Filter>
     </ClCompile>
-    <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="GameManager.cpp">
+      <Filter>CoreGame\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="WorldSceneKeyHandler.cpp">
+      <Filter>Scenes\KeyHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayScene.cpp">
+      <Filter>Scenes\Playscene</Filter>
+    </ClCompile>
+    <ClCompile Include="WorldScene.cpp">
+      <Filter>Scenes\WorldScene</Filter>
+    </ClCompile>
+    <ClCompile Include="MapBackground.cpp">
+      <Filter>Entities\WorldMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="InvisibleNode.cpp">
+      <Filter>Entities\WorldMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="MapNode.cpp">
+      <Filter>Entities\WorldMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="StageNode.cpp">
+      <Filter>Entities\WorldMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="WorldMapObject.cpp">
+      <Filter>Entities\WorldMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="MapMario.cpp">
+      <Filter>Entities\WorldMaps</Filter>
+    </ClCompile>
     <ClCompile Include="OneUpMushroom.cpp">
       <Filter>Entities\Items</Filter>
     </ClCompile>
@@ -182,6 +211,9 @@
     </ClCompile>
     <ClCompile Include="OneUpEffect.cpp">
       <Filter>Entities\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -209,23 +241,20 @@
     <ClInclude Include="Scene.h">
       <Filter>Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="PlayScene.h">
-      <Filter>Scenes</Filter>
-    </ClInclude>
     <ClInclude Include="Mario.h">
       <Filter>Entities</Filter>
     </ClInclude>
     <ClInclude Include="KeyEventHandler.h">
-      <Filter>Input</Filter>
+      <Filter>Scenes\KeyHandler</Filter>
     </ClInclude>
     <ClInclude Include="Collision.h">
       <Filter>Physics</Filter>
     </ClInclude>
     <ClInclude Include="SceneKeyHandler.h">
-      <Filter>Input</Filter>
+      <Filter>Scenes\KeyHandler</Filter>
     </ClInclude>
     <ClInclude Include="PlaySceneKeyHandler.h">
-      <Filter>Input</Filter>
+      <Filter>Scenes\KeyHandler</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>CoreGame\Managers</Filter>
@@ -308,7 +337,36 @@
     <ClInclude Include="BrickDebris.h">
       <Filter>Entities\Effects</Filter>
     </ClInclude>
-    <ClInclude Include="GameManager.h" />
+    <ClInclude Include="GameManager.h">
+      <Filter>CoreGame\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldSceneKeyHandler.h">
+      <Filter>Scenes\KeyHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayScene.h">
+      <Filter>Scenes\Playscene</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldScene.h">
+      <Filter>Scenes\WorldScene</Filter>
+    </ClInclude>
+    <ClInclude Include="MapBackground.h">
+      <Filter>Entities\WorldMaps</Filter>
+    </ClInclude>
+    <ClInclude Include="StageNode.h">
+      <Filter>Entities\WorldMaps</Filter>
+    </ClInclude>
+    <ClInclude Include="InvisibleNode.h">
+      <Filter>Entities\WorldMaps</Filter>
+    </ClInclude>
+    <ClInclude Include="MapNode.h">
+      <Filter>Entities\WorldMaps</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldMapObject.h">
+      <Filter>Entities\WorldMaps</Filter>
+    </ClInclude>
+    <ClInclude Include="MapMario.h">
+      <Filter>Entities\WorldMaps</Filter>
+    </ClInclude>
     <ClInclude Include="OneUpMushroom.h">
       <Filter>Entities\Items</Filter>
     </ClInclude>
@@ -342,20 +400,20 @@
       <Filter>Assets</Filter>
     </Text>
     <Text Include="scene01.txt">
-      <Filter>Maps</Filter>
+      <Filter>Scenes\Playscene</Filter>
     </Text>
     <Text Include="scene02.txt">
-      <Filter>Maps</Filter>
+      <Filter>Scenes\Playscene</Filter>
     </Text>
     <Text Include="scene0005.txt">
-      <Filter>Maps</Filter>
+      <Filter>Scenes\Playscene</Filter>
     </Text>
     <Text Include="game-data.txt" />
     <Text Include="stage1.txt">
-      <Filter>Maps</Filter>
+      <Filter>Scenes\Playscene</Filter>
     </Text>
     <Text Include="scene_mario_dev.txt">
-      <Filter>Maps</Filter>
+      <Filter>Scenes\Playscene</Filter>
     </Text>
     <Text Include="question_block.txt">
       <Filter>Assets</Filter>
@@ -363,7 +421,7 @@
     <Text Include="pipe.txt">
       <Filter>Assets</Filter>
     </Text>
-    <Text Include="map1.txt">
+    <Text Include="stage1_assets.txt">
       <Filter>Assets</Filter>
     </Text>
     <Text Include="koopa.txt">
@@ -375,14 +433,20 @@
     <Text Include="effect.txt">
       <Filter>Assets</Filter>
     </Text>
+    <Text Include="world-scene.txt">
+      <Filter>Scenes\WorldScene</Filter>
+    </Text>
+    <Text Include="world-scene-assets.txt">
+      <Filter>Assets</Filter>
+    </Text>
     <Text Include="power_up.txt">
       <Filter>Assets</Filter>
     </Text>
+    <Text Include="stage2.txt">
+      <Filter>Scenes\Playscene</Filter>
+    </Text>
     <Text Include="map_2.txt">
       <Filter>Assets</Filter>
-    </Text>
-    <Text Include="stage2.txt">
-      <Filter>Maps</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>
@@ -396,9 +460,6 @@
       <Filter>Resources</Filter>
     </Image>
     <Image Include="mario.ico">
-      <Filter>Resources</Filter>
-    </Image>
-    <Image Include="textures\600_misc.png">
       <Filter>Resources</Filter>
     </Image>
     <Image Include="textures\Stage1_1.png">
@@ -426,9 +487,6 @@
       <Filter>Resources</Filter>
     </Image>
     <Image Include="textures\WorldMaps_MapPopups.png">
-      <Filter>Resources</Filter>
-    </Image>
-    <Image Include="textures\WorldMaps_World1_GrassLand.png">
       <Filter>Resources</Filter>
     </Image>
     <Image Include="textures\EnemiesBosses_Bosses.png">
@@ -459,6 +517,15 @@
       <Filter>Resources</Filter>
     </Image>
     <Image Include="textures\500_HUD.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="textures\600_misc.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="textures\700_WorldMaps.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="textures\101_Mario_Origin.png">
       <Filter>Resources</Filter>
     </Image>
   </ItemGroup>

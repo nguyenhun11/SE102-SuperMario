@@ -8,7 +8,7 @@ leaf.txt
 goomba.txt
 koopa.txt
 cloud.txt
-map1.txt
+stage1_assets.txt
 question_block.txt
 pipe.txt
 HUD.txt
@@ -22,7 +22,7 @@ effect.txt
 # See OBJECT_TYPE constants in AssetIDs.h
 
 # MARIO
-0 1 10
+0 60 10
 
 #GROUND
 601 0 12 16 16 39 6 60111 60112 60113 60121 60122 60123

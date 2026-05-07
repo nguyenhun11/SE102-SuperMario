@@ -41,7 +41,6 @@ PlayScene::PlayScene(int id, LPCWSTR filePath):
 
 #define MAX_SCENE_LINE 1024
 #define TILE_SIZE 16.0f
-#define HUD_HEIGHT 40.0f
 
 void PlayScene::_ParseSection_SPRITES(string line)
 {
@@ -413,9 +412,10 @@ void PlayScene::Update(DWORD dt)
 	float deathZone = mapBottom + 48.0f; // Rot xuong 48px la die
 	if (py > deathZone)
 	{
-		GameManager::GetInstance()->AddLife(-1);
+		/*GameManager::GetInstance()->AddLife(-1);
 		Mario* mario = dynamic_cast<Mario*>(player);
-		mario->Reset();
+		mario->Reset();*/
+		GameManager::GetInstance()->LevelFailed();
 	}
 
 	//--- FOLLOW CAMERA

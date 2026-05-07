@@ -7,6 +7,14 @@ class GameManager : public Singleton<GameManager>
 	friend class Singleton<GameManager>;
 	GameManager();
 public:
+	float mapMarioCurrentX = -1.0f;
+	float mapMarioCurrentY = -1.0f;
+
+	float mapMarioPrevX = -1.0f;
+	float mapMarioPrevY = -1.0f;
+
+	bool isReturningFromFail = false;
+
 	int score;
 	int coinNumber;
 	int life;
