@@ -4,6 +4,7 @@
 #include "Mario.h"
 #include "Game.h"
 #include "PlayScene.h"
+#include "SoundManager.h"
 
 #include "Goomba.h"
 
@@ -16,6 +17,13 @@
 #include "QuestionBlock.h"
 
 #include "Collision.h"
+
+void Mario::AddScore(int amount)
+{
+	SoundManager::GetInstance()->Play("score");
+	GameManager::GetInstance()->AddScore(amount);
+	//DebugOut(L">>> CurrentScore: %d\n", score);
+}
 
 void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
@@ -60,6 +68,16 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	float effectiveAccel = accelX;
 	float effectiveMaxVx = maxVx;
+
+	bool isCurrentlySkidding = (accelX * vx < 0) && isOnPlatform;
+	if (isCurrentlySkidding)
+	{
+		if (!wasSkidding)
+		{
+			SoundManager::GetInstance()->PlaySkid("skid");
+		}
+	}
+	wasSkidding = isCurrentlySkidding;
 
 	if (accelX * vx < 0)
 	{
@@ -161,36 +179,30 @@ void Mario::OnNoCollision(DWORD dt)
 
 void Mario::OnCollisionWith(LPCOLLISIONEVENT e)
 {
-	if (dynamic_cast<Mushroom*>(e->obj))
-	{
-		OnCollisionWithMushroom(e);
-		return;
-	}
 	if (e->ny != 0 && e->obj->IsBlocking())
 	{
 		vy = 0;
 		if (e->ny < 0) isOnPlatform = true;
 	}
-	else 
-	if (e->nx != 0 && e->obj->IsBlocking())
+	else if (e->nx != 0 && e->obj->IsBlocking())
 	{
 		vx = 0;
 	}
 
-	if (dynamic_cast<Goomba*>(e->obj))
-		OnCollisionWithGoomba(e);
-	else if (dynamic_cast<Coin*>(e->obj))
+	if (dynamic_cast<Mushroom*>(e->obj))        
+		OnCollisionWithMushroom(e);
+	else if (dynamic_cast<Leaf*>(e->obj))      
+		OnCollisionWithLeaf(e);
+	else if (dynamic_cast<Coin*>(e->obj))    
 		OnCollisionWithCoin(e);
-	else if (dynamic_cast<Portal*>(e->obj))
-		OnCollisionWithPortal(e);
+	else if (dynamic_cast<Goomba*>(e->obj))
+		OnCollisionWithGoomba(e);
 	else if (dynamic_cast<QuestionBlock*>(e->obj))
 		OnCollisionWithQuestionBlock(e);
-	else if (dynamic_cast<Mushroom*>(e->obj))
-		OnCollisionWithMushroom(e);
-	else if (dynamic_cast<Leaf*>(e->obj))
-		OnCollisionWithLeaf(e);
 	else if (dynamic_cast<Brick*>(e->obj))
 		OnCollisionWithBrick(e);
+	else if (dynamic_cast<Portal*>(e->obj))
+		OnCollisionWithPortal(e);
 }
 
 void Mario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -221,6 +233,7 @@ void Mario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 void Mario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 {
 	e->obj->Delete();
+	SoundManager::GetInstance()->Play("coin");
 	AddCoin();
 
 	// cộng điểm ở đây
@@ -257,6 +270,7 @@ void Mario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 		OneUpEffect* effect = new OneUpEffect(mushroom->GetX(), mushroom->GetY());
 		scene->AddObject(effect);
 		// cộng mạng
+		SoundManager::GetInstance()->Play("1up");
 		GameManager::GetInstance()->AddLife(1);
 	}
 	// nếu là nấm bình thường, không phải nấm 1 up
@@ -320,10 +334,12 @@ void Mario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
 	leaf->Delete();
 	if (form == MarioForm::SMALL)
 	{
+		
 		StartTransform();
 	}
 	else if (form != MarioForm::RACOON)
 	{
+		
 		// NOTE để nhớ làm hiệu ứng boom
 		StartPoofTransform(MarioForm::RACOON);
 	}
@@ -653,6 +669,7 @@ void Mario::SetState(MarioState state)
 		//if (isSitting) break;
 		if (isOnPlatform)	// ddungw duoi dat
 		{
+			SoundManager::GetInstance()->Play("jump");
 			if (pmeter == MARIO_PMETER_MAX)
 			{
 				if (form == MarioForm::SMALL)
@@ -805,6 +822,7 @@ void Mario::SetNewForm(MarioForm newForm)
 // ============================== TRANSFORM ===============================
 void Mario::StartTransform()
 {
+	SoundManager::GetInstance()->Play("power_up");
 	isSuperTransforming = true;
 	transform_start = GetTickCount64();
 	vx = vy = 0;
@@ -813,6 +831,7 @@ void Mario::StartTransform()
 
 void Mario::StartPoofTransform(MarioForm targetForm)
 {
+	SoundManager::GetInstance()->Play("racoon");
 	isPoofTransforming = true;
 	poof_start = GetTickCount64();
 	nextPoofForm = targetForm;
@@ -825,6 +844,7 @@ void Mario::StartPoofTransform(MarioForm targetForm)
 void Mario::Attack()
 {
 	if (form != MarioForm::RACOON || isSpinning == true) return;
+	SoundManager::GetInstance()->Play("tail");
 	isSpinning = true;
 	spin_start = GetTickCount64();
 }
@@ -895,6 +915,7 @@ void Mario::HandleSpinning(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (isSitting) return;
 	if (isSpinning)
 	{
+		
 		if (GetTickCount64() - spin_start > MARIO_SPIN_TIME)
 			isSpinning = false;
 		else
@@ -1030,10 +1051,16 @@ void Mario::HandlePMeter(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			if (pmeter < MARIO_PMETER_MAX) pmeter++;
 			pmeter_start = GetTickCount64();
+
+			if (pmeter == MARIO_PMETER_MAX)
+			{
+				SoundManager::GetInstance()->PlayPmeterFull("pmeter");
+			}
 		}
 	}
 	else if (isOnPlatform && pmeter > 0 && !isFlying && !canFly)
 	{
+		SoundManager::GetInstance()->StopPmeterFull();
 		if (GetTickCount64() - pmeter_start > MARIO_PMETER_CHARGE_TIME * 1.5f)
 		{
 			pmeter--;
@@ -1066,14 +1093,13 @@ void Mario::HandleSlope(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			float marioCenterX = x;
 
 			// kiểm tra mario đang đứng trên dốc
-			float epsilon = 0.0f;
 
-			if (marioCenterX >= (sl - epsilon) && marioCenterX <= (sr + epsilon) && marioBottomY >= st && marioBottomY <= sb)
+			if (marioCenterX >= sl && marioCenterX <= sr && marioBottomY >= st && marioBottomY <= sb)
 			{
 				float expectedY = slope->GetSurfaceY(marioCenterX);
-
+				float epsilon = max(4.0f, vy * dt);
 				// kéo mairo lên nếu chân < dốc
-				if (marioBottomY >= expectedY - 8.0f && vy >=0) 
+				if (marioBottomY >= expectedY - epsilon && vy >=0) 
 				{
 					y = expectedY - bboxHeight / 2;
 					vy = 0;

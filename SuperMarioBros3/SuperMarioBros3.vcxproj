@@ -119,11 +119,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Users\ADMIN\Desktop\SE102-SuperMario\SuperMarioBros3\Dependencies\irrKlang\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>d3d10.lib;dxguid.lib;dinput8.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\ADMIN\Desktop\SE102-SuperMario\SuperMarioBros3\Dependencies\irrKlang\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -144,6 +146,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="Dependencies\irrKlang\bin\ikpFlac.dll" />
+    <None Include="Dependencies\irrKlang\bin\ikpMP3.dll" />
+    <None Include="Dependencies\irrKlang\bin\irrKlang.dll" />
     <None Include="GameObjectDocument.md" />
     <None Include="packages.config" />
   </ItemGroup>
@@ -151,6 +156,7 @@
     <ClCompile Include="InvisibleNode.cpp" />
     <ClCompile Include="MapMario.cpp" />
     <ClCompile Include="MapNode.cpp" />
+    <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="StageNode.cpp" />
     <ClCompile Include="WorldMapObject.cpp" />
     <ClCompile Include="Animation.cpp" />
@@ -199,9 +205,31 @@
     <ClCompile Include="WorldSceneKeyHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Dependencies\irrKlang\include\ik_ESoundEngineOptions.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_ESoundOutputDrivers.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_EStreamModes.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_IAudioRecorder.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_IAudioStream.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_IAudioStreamLoader.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_IFileFactory.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_IFileReader.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_IRefCounted.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_irrKlangTypes.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_ISound.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_ISoundDeviceList.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_ISoundEffectControl.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_ISoundEngine.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_ISoundMixedOutputReceiver.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_ISoundSource.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_ISoundStopEventReceiver.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_IVirtualRefCounted.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_SAudioStreamFormat.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_vec3d.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\irrKlang.h" />
     <ClInclude Include="InvisibleNode.h" />
     <ClInclude Include="MapMario.h" />
     <ClInclude Include="MapNode.h" />
+    <ClInclude Include="SoundManager.h" />
     <ClInclude Include="StageNode.h" />
     <ClInclude Include="WorldMapObject.h" />
     <ClInclude Include="Animation.h" />
@@ -306,6 +334,24 @@
     <Image Include="textures\Tilesets_MiscellaneousScreenTiles.png" />
     <Image Include="textures\Tilesets_StageTiles.png" />
     <Image Include="textures\WorldMaps_MapPopups.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="assets\sounds\bgm_stage1.mp3" />
+    <Media Include="assets\sounds\bgm_stage1.wav" />
+    <Media Include="assets\sounds\smb3_1-up.wav" />
+    <Media Include="assets\sounds\smb3_coin.wav" />
+    <Media Include="assets\sounds\smb3_inventory.wav" />
+    <Media Include="assets\sounds\smb3_jump.wav" />
+    <Media Include="assets\sounds\smb3_kick.wav" />
+    <Media Include="assets\sounds\smb3_level_clear.wav" />
+    <Media Include="assets\sounds\smb3_mushroom_appear.wav" />
+    <Media Include="assets\sounds\smb3_pipe.wav" />
+    <Media Include="assets\sounds\smb3_player_down.wav" />
+    <Media Include="assets\sounds\smb3_pmeter.wav" />
+    <Media Include="assets\sounds\smb3_power-up.wav" />
+    <Media Include="assets\sounds\smb3_raccoon_transform.wav" />
+    <Media Include="assets\sounds\smb3_skid.wav" />
+    <Media Include="assets\sounds\smb3_tail.wav" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

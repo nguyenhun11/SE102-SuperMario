@@ -5,6 +5,7 @@
 #include "Leaf.h"
 #include "OneUpMushroom.h"
 #include "debug.h"
+#include "SoundManager.h"
 
 QuestionBlock::QuestionBlock(float x, float y, int containedItem) : GameObject(x, y)
 {
@@ -73,6 +74,7 @@ void QuestionBlock::SpawnItem()
 	if (this->item == ContainedItem::COIN)
 	{
 		// thêm object vào scene đang chơi
+		SoundManager::GetInstance()->Play("coin");
 		Coin* coin = new Coin(x, y - 16); // trừ 16 đơn vị độ cao
 		coin->SetState(CoinState::BOUNCING);
 		playScene->AddObject(coin);

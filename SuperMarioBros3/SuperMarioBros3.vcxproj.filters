@@ -68,6 +68,9 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="GameObjectDocument.md" />
+    <None Include="Dependencies\irrKlang\bin\ikpFlac.dll" />
+    <None Include="Dependencies\irrKlang\bin\ikpMP3.dll" />
+    <None Include="Dependencies\irrKlang\bin\irrKlang.dll" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp">
@@ -214,6 +217,9 @@
     </ClCompile>
     <ClCompile Include="Scene.cpp">
       <Filter>Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundManager.cpp">
+      <Filter>CoreGame\Managers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -382,6 +388,30 @@
     <ClInclude Include="Item.h">
       <Filter>Assets\Header</Filter>
     </ClInclude>
+    <ClInclude Include="SoundManager.h">
+      <Filter>CoreGame\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\irrKlang\include\ik_ESoundEngineOptions.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_ESoundOutputDrivers.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_EStreamModes.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_IAudioRecorder.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_IAudioStream.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_IAudioStreamLoader.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_IFileFactory.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_IFileReader.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_IRefCounted.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_irrKlangTypes.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_ISound.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_ISoundDeviceList.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_ISoundEffectControl.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_ISoundEngine.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_ISoundMixedOutputReceiver.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_ISoundSource.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_ISoundStopEventReceiver.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_IVirtualRefCounted.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_SAudioStreamFormat.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_vec3d.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\irrKlang.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="brick.txt">
@@ -528,5 +558,23 @@
     <Image Include="textures\101_Mario_Origin.png">
       <Filter>Resources</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="assets\sounds\smb3_1-up.wav" />
+    <Media Include="assets\sounds\smb3_coin.wav" />
+    <Media Include="assets\sounds\smb3_jump.wav" />
+    <Media Include="assets\sounds\smb3_kick.wav" />
+    <Media Include="assets\sounds\smb3_level_clear.wav" />
+    <Media Include="assets\sounds\smb3_pipe.wav" />
+    <Media Include="assets\sounds\smb3_player_down.wav" />
+    <Media Include="assets\sounds\smb3_power-up.wav" />
+    <Media Include="assets\sounds\smb3_raccoon_transform.wav" />
+    <Media Include="assets\sounds\smb3_tail.wav" />
+    <Media Include="assets\sounds\bgm_stage1.mp3" />
+    <Media Include="assets\sounds\smb3_pmeter.wav" />
+    <Media Include="assets\sounds\bgm_stage1.wav" />
+    <Media Include="assets\sounds\smb3_skid.wav" />
+    <Media Include="assets\sounds\smb3_mushroom_appear.wav" />
+    <Media Include="assets\sounds\smb3_inventory.wav" />
   </ItemGroup>
 </Project>
