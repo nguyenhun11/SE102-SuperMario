@@ -112,6 +112,11 @@ public:
             }
         }
     }
+
+    void StopAll()
+    {
+        engine->stopAllSounds();
+    }
 #pragma endregion
     ~SoundManager() 
     {

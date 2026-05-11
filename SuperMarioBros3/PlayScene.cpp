@@ -341,6 +341,8 @@ void PlayScene::LoadAssets(LPCWSTR assetFile)
 	SoundManager::GetInstance()->Load("jump", "assets/sounds/smb3_jump.wav");
 	SoundManager::GetInstance()->Load("skid", "assets/sounds/smb3_skid.wav");
 	SoundManager::GetInstance()->Load("kick", "assets/sounds/smb3_kick.wav");
+	SoundManager::GetInstance()->Load("bump", "assets/sounds/smb3_bump.wav");
+	SoundManager::GetInstance()->Load("brick_break", "assets/sounds/smb3_brick_break.wav");
 	SoundManager::GetInstance()->Load("level_clear", "assets/sounds/smb3_level_clear.wav");
 	SoundManager::GetInstance()->Load("pipe", "assets/sounds/smb3_pipe.wav");
 	SoundManager::GetInstance()->Load("player_down", "assets/sounds/smb3_player_down.wav");
@@ -441,6 +443,7 @@ void PlayScene::Update(DWORD dt)
 		Mario* mario = dynamic_cast<Mario*>(player);
 		mario->Reset();*/
 		GameManager::GetInstance()->LevelFailed();
+		SoundManager::GetInstance()->StopAll();
 	}
 
 	//--- FOLLOW CAMERA

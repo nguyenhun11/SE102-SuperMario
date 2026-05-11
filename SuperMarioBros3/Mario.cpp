@@ -20,7 +20,7 @@
 
 void Mario::AddScore(int amount)
 {
-	SoundManager::GetInstance()->Play("score");
+	//SoundManager::GetInstance()->Play("score");
 	GameManager::GetInstance()->AddScore(amount);
 	//DebugOut(L">>> CurrentScore: %d\n", score);
 }
@@ -303,6 +303,7 @@ void Mario::OnCollisionWithBrick(LPCOLLISIONEVENT e)
 			{
 				// Có đồ: Bất kể Mario dạng nào cũng chỉ nảy lên để lấy đồ
 				brick->SetState(BrickState::BOUNCING);
+				SoundManager::GetInstance()->Play("bump");
 			}
 			else
 			{
@@ -310,10 +311,12 @@ void Mario::OnCollisionWithBrick(LPCOLLISIONEVENT e)
 				if (this->GetCurrentForm() == MarioForm::SMALL/* || this->isSitting == true*/)
 				{
 					brick->SetState(BrickState::BOUNCING); // Yếu thì chỉ nảy
+					SoundManager::GetInstance()->Play("bump");
 				}
 				else
 				{
 					brick->Break(); // Mạnh (To, Đuôi, Lửa) thì đập vỡ
+					
 				}
 			}
 		}

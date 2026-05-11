@@ -576,5 +576,7 @@
     <Media Include="assets\sounds\smb3_skid.wav" />
     <Media Include="assets\sounds\smb3_mushroom_appear.wav" />
     <Media Include="assets\sounds\smb3_inventory.wav" />
+    <Media Include="assets\sounds\smb3_brick_break.wav" />
+    <Media Include="assets\sounds\smb3_bump.wav" />
   </ItemGroup>
 </Project>
