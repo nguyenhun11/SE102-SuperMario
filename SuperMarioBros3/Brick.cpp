@@ -1,5 +1,6 @@
 #include "Brick.h"
 #include "debug.h"
+#include "SoundManager.h"
 
 Brick::Brick(float x, float y, int itemType) : GameObject(x, y)
 {
@@ -90,6 +91,7 @@ void Brick::SetState(BrickState state)
 
 void Brick::Break()
 {
+	SoundManager::GetInstance()->Play("brick_break");
 	if (currentState != BrickState::BROKEN)
 	{
 		SetState(BrickState::BROKEN);

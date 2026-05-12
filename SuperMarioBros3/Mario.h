@@ -41,7 +41,7 @@
 #define MARIO_FLYING_TIME 4000    
 #define MARIO_FLOATING_TIME	250
 #define MARIO_SLOW_FALL_SPEED 0.01f 
-#define MARIO_FLYING_UP_FORCE 0.25f
+#define MARIO_FLYING_UP_FORCE 0.2f
 
 // Tail attack 
 #define MARIO_SPIN_TIME	240
@@ -92,6 +92,7 @@ enum class MarioForm
 
 // SUPER MARIO
 #define ID_ANI_MARIO_SUPER_IDLE 1100
+#define ID_ANI_MARIO_SUPER_SKIDDING 1103
 #define ID_ANI_MARIO_SUPER_SKIDDING 1103
 
 #define ID_ANI_MARIO_SUPER_WALKING 1101
@@ -148,7 +149,7 @@ enum class MarioForm
 #pragma endregion
 
 // Transform Animation
-#define MARIO_TRANSFORM_SUPER_TIME 1000
+#define MARIO_TRANSFORM_SUPER_TIME 900
 #define MARIO_TRANSFORM_TIME 500
 
 // Poof Transform
@@ -186,6 +187,7 @@ class Mario : public GameObject
 	bool isSuperTransforming;
 	bool isTakingDamage;
 	bool canFly;
+	bool wasSkidding;
 	bool isFlying;
 	bool isFloating;
 	bool isPoofTransforming;
@@ -207,6 +209,7 @@ class Mario : public GameObject
 	ULONGLONG poof_start;
 	ULONGLONG spin_start;
 	ULONGLONG pmeter_start;
+	ULONGLONG pmeter_sound_start;
 
 	MarioForm nextPoofForm;
 	BOOLEAN isOnPlatform;
@@ -247,6 +250,7 @@ public:
 		isSuperTransforming = false;
 		isTakingDamage = false;
 		canFly = false;
+		wasSkidding = false;
 		isFlying = false;
 		isFloating = false;
 		isPoofTransforming = false;
@@ -281,12 +285,7 @@ public:
 		//DebugOut(L">>> CurrentCoin: %d\n", coin);
 	}
 
-	void AddScore(int amount = 100)
-	{
-		//score += amount;
-		GameManager::GetInstance()->AddScore(amount);
-		//DebugOut(L">>> CurrentScore: %d\n", score);
-	}
+	void AddScore(int amount = 100);
 
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();
