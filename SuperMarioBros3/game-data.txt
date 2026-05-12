@@ -28,3 +28,4 @@ start	6
 500		textures\500_HUD.png
 600		textures\600_misc.png
 700		textures\700_WorldMaps.png
+800		textures\800_Goal.png

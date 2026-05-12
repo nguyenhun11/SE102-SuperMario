@@ -11,6 +11,7 @@
 #include "Koopa.h"
 #include "Platform.h"
 #include "QuestionBlock.h"
+#include "GoalBlock.h"
 #include "Ground.h"
 #include "Slope.h"
 #include "SemisolidPlatform.h"
@@ -18,6 +19,7 @@
 #include "VerticalPipe.h"
 #include "SolidBlock.h"
 #include "SoundManager.h"
+
 
 #include "PlaySceneKeyHandler.h"
 
@@ -222,6 +224,13 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 	{
 		int contained_item_id = atoi(tokens[3].c_str());
 		obj = new QuestionBlock(x, y, contained_item_id);
+		break;
+
+	}
+
+	case OBJECT_TYPE_GOAL_BLOCK:
+	{
+		obj = new GoalBlock(x, y);
 		break;
 
 	}

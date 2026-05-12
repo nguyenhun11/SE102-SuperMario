@@ -217,6 +217,7 @@ class Mario : public GameObject
 	//int coin; 
 	//int score;
 
+	void OnCollisionWithGoalBlock(LPCOLLISIONEVENT e);
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithCoin(LPCOLLISIONEVENT e);
 	void OnCollisionWithPortal(LPCOLLISIONEVENT e);

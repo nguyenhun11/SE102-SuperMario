@@ -11,10 +11,12 @@
 #include "Item.h"
 #include "ScoreEffect.h"
 #include "OneUpEffect.h"
+#include "CourseClearEffect.h"
 #include "Slope.h"
 
 #include "Portal.h"
 #include "QuestionBlock.h"
+#include "GoalBlock.h"
 
 #include "Collision.h"
 
@@ -179,6 +181,11 @@ void Mario::OnNoCollision(DWORD dt)
 
 void Mario::OnCollisionWith(LPCOLLISIONEVENT e)
 {
+	if (dynamic_cast<GoalBlock*>(e->obj))
+	{
+		OnCollisionWithGoalBlock(e);
+		return;
+	}
 	if (e->ny != 0 && e->obj->IsBlocking())
 	{
 		vy = 0;
@@ -203,6 +210,28 @@ void Mario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithBrick(e);
 	else if (dynamic_cast<Portal*>(e->obj))
 		OnCollisionWithPortal(e);
+
+}
+
+void Mario::OnCollisionWithGoalBlock(LPCOLLISIONEVENT e)
+{
+	GoalBlock* goal = dynamic_cast<GoalBlock*>(e->obj);
+	if (goal->GetState() == static_cast<int>(GoalBlockState::ROULETTE))
+	{
+		// chơi nhạc thắng
+		SoundManager::GetInstance()->StopAll();
+		SoundManager::GetInstance()->Play("level_clear");
+
+		goal->SetFinished();
+
+		// mario chạy đi luôn
+		this->nx = 1;
+		this->SetState(MarioState::WALKING);
+		this->accelX = MARIO_ACCEL_WALK_X;
+
+		// hiệu ứng khác 
+		// âm thanh khác
+	}
 }
 
 void Mario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)

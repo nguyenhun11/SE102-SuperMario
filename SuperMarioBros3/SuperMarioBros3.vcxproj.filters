@@ -64,13 +64,31 @@
     <Filter Include="Assets\Header">
       <UniqueIdentifier>{c5ed1505-4d05-40ed-b07d-3c27b1be484a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="irrKlang">
+      <UniqueIdentifier>{33b2615b-1ae7-489c-845e-e749f4289ff3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="irrKlang\include">
+      <UniqueIdentifier>{252a29df-89d0-438a-9502-af73a0f1c4e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="irrKlang\lib">
+      <UniqueIdentifier>{0d584dfd-8b79-48ac-acf3-58487b123966}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sounds">
+      <UniqueIdentifier>{0d05e6e8-afe7-4b71-bd04-38778539d116}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="GameObjectDocument.md" />
-    <None Include="Dependencies\irrKlang\bin\ikpFlac.dll" />
-    <None Include="Dependencies\irrKlang\bin\ikpMP3.dll" />
-    <None Include="Dependencies\irrKlang\bin\irrKlang.dll" />
+    <None Include="Dependencies\irrKlang\bin\ikpFlac.dll">
+      <Filter>irrKlang\lib</Filter>
+    </None>
+    <None Include="Dependencies\irrKlang\bin\ikpMP3.dll">
+      <Filter>irrKlang\lib</Filter>
+    </None>
+    <None Include="Dependencies\irrKlang\bin\irrKlang.dll">
+      <Filter>irrKlang\lib</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp">
@@ -209,17 +227,18 @@
     <ClCompile Include="Slope.cpp">
       <Filter>Entities\Blocks</Filter>
     </ClCompile>
-    <ClCompile Include="OneUpEffect.h">
-      <Filter>Entities\Effects</Filter>
-    </ClCompile>
-    <ClCompile Include="OneUpEffect.cpp">
-      <Filter>Entities\Effects</Filter>
-    </ClCompile>
     <ClCompile Include="Scene.cpp">
       <Filter>Scenes</Filter>
     </ClCompile>
     <ClCompile Include="SoundManager.cpp">
       <Filter>CoreGame\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="GoalBlock.cpp">
+      <Filter>Entities\Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="CourseClearEffect.cpp" />
+    <ClCompile Include="OneUpEffect.cpp">
+      <Filter>Entities\Effects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -391,27 +410,76 @@
     <ClInclude Include="SoundManager.h">
       <Filter>CoreGame\Managers</Filter>
     </ClInclude>
-    <ClInclude Include="Dependencies\irrKlang\include\ik_ESoundEngineOptions.h" />
-    <ClInclude Include="Dependencies\irrKlang\include\ik_ESoundOutputDrivers.h" />
-    <ClInclude Include="Dependencies\irrKlang\include\ik_EStreamModes.h" />
-    <ClInclude Include="Dependencies\irrKlang\include\ik_IAudioRecorder.h" />
-    <ClInclude Include="Dependencies\irrKlang\include\ik_IAudioStream.h" />
-    <ClInclude Include="Dependencies\irrKlang\include\ik_IAudioStreamLoader.h" />
-    <ClInclude Include="Dependencies\irrKlang\include\ik_IFileFactory.h" />
-    <ClInclude Include="Dependencies\irrKlang\include\ik_IFileReader.h" />
-    <ClInclude Include="Dependencies\irrKlang\include\ik_IRefCounted.h" />
-    <ClInclude Include="Dependencies\irrKlang\include\ik_irrKlangTypes.h" />
-    <ClInclude Include="Dependencies\irrKlang\include\ik_ISound.h" />
-    <ClInclude Include="Dependencies\irrKlang\include\ik_ISoundDeviceList.h" />
-    <ClInclude Include="Dependencies\irrKlang\include\ik_ISoundEffectControl.h" />
-    <ClInclude Include="Dependencies\irrKlang\include\ik_ISoundEngine.h" />
-    <ClInclude Include="Dependencies\irrKlang\include\ik_ISoundMixedOutputReceiver.h" />
-    <ClInclude Include="Dependencies\irrKlang\include\ik_ISoundSource.h" />
-    <ClInclude Include="Dependencies\irrKlang\include\ik_ISoundStopEventReceiver.h" />
-    <ClInclude Include="Dependencies\irrKlang\include\ik_IVirtualRefCounted.h" />
-    <ClInclude Include="Dependencies\irrKlang\include\ik_SAudioStreamFormat.h" />
-    <ClInclude Include="Dependencies\irrKlang\include\ik_vec3d.h" />
-    <ClInclude Include="Dependencies\irrKlang\include\irrKlang.h" />
+    <ClInclude Include="GoalBlock.h">
+      <Filter>Entities\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="CourseClearEffect.h" />
+    <ClInclude Include="Dependencies\irrKlang\include\ik_ESoundEngineOptions.h">
+      <Filter>irrKlang\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\irrKlang\include\ik_ESoundOutputDrivers.h">
+      <Filter>irrKlang\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\irrKlang\include\ik_EStreamModes.h">
+      <Filter>irrKlang\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\irrKlang\include\ik_IAudioRecorder.h">
+      <Filter>irrKlang\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\irrKlang\include\ik_IAudioStream.h">
+      <Filter>irrKlang\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\irrKlang\include\ik_IAudioStreamLoader.h">
+      <Filter>irrKlang\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\irrKlang\include\ik_IFileFactory.h">
+      <Filter>irrKlang\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\irrKlang\include\ik_IFileReader.h">
+      <Filter>irrKlang\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\irrKlang\include\ik_IRefCounted.h">
+      <Filter>irrKlang\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\irrKlang\include\ik_irrKlangTypes.h">
+      <Filter>irrKlang\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\irrKlang\include\ik_ISound.h">
+      <Filter>irrKlang\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\irrKlang\include\ik_ISoundDeviceList.h">
+      <Filter>irrKlang\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\irrKlang\include\ik_ISoundEffectControl.h">
+      <Filter>irrKlang\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\irrKlang\include\ik_ISoundEngine.h">
+      <Filter>irrKlang\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\irrKlang\include\ik_ISoundMixedOutputReceiver.h">
+      <Filter>irrKlang\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\irrKlang\include\ik_ISoundSource.h">
+      <Filter>irrKlang\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\irrKlang\include\ik_ISoundStopEventReceiver.h">
+      <Filter>irrKlang\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\irrKlang\include\ik_IVirtualRefCounted.h">
+      <Filter>irrKlang\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\irrKlang\include\ik_SAudioStreamFormat.h">
+      <Filter>irrKlang\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\irrKlang\include\ik_vec3d.h">
+      <Filter>irrKlang\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\irrKlang\include\irrKlang.h">
+      <Filter>irrKlang\include</Filter>
+    </ClInclude>
+    <ClInclude Include="OneUpEffect.h">
+      <Filter>Entities\Effects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="brick.txt">
@@ -476,6 +544,12 @@
       <Filter>Scenes\Playscene</Filter>
     </Text>
     <Text Include="map_2.txt">
+      <Filter>Assets</Filter>
+    </Text>
+    <Text Include="goalblock.txt">
+      <Filter>Assets</Filter>
+    </Text>
+    <Text Include="goal.txt">
       <Filter>Assets</Filter>
     </Text>
   </ItemGroup>
@@ -558,25 +632,64 @@
     <Image Include="textures\101_Mario_Origin.png">
       <Filter>Resources</Filter>
     </Image>
+    <Image Include="textures\800_Goal.png">
+      <Filter>Resources</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
-    <Media Include="assets\sounds\smb3_1-up.wav" />
-    <Media Include="assets\sounds\smb3_coin.wav" />
-    <Media Include="assets\sounds\smb3_jump.wav" />
-    <Media Include="assets\sounds\smb3_kick.wav" />
-    <Media Include="assets\sounds\smb3_level_clear.wav" />
-    <Media Include="assets\sounds\smb3_pipe.wav" />
-    <Media Include="assets\sounds\smb3_player_down.wav" />
-    <Media Include="assets\sounds\smb3_power-up.wav" />
-    <Media Include="assets\sounds\smb3_raccoon_transform.wav" />
-    <Media Include="assets\sounds\smb3_tail.wav" />
-    <Media Include="assets\sounds\bgm_stage1.mp3" />
-    <Media Include="assets\sounds\smb3_pmeter.wav" />
-    <Media Include="assets\sounds\bgm_stage1.wav" />
-    <Media Include="assets\sounds\smb3_skid.wav" />
-    <Media Include="assets\sounds\smb3_mushroom_appear.wav" />
-    <Media Include="assets\sounds\smb3_inventory.wav" />
-    <Media Include="assets\sounds\smb3_brick_break.wav" />
-    <Media Include="assets\sounds\smb3_bump.wav" />
+    <Media Include="assets\sounds\bgm_stage1.mp3">
+      <Filter>Sounds</Filter>
+    </Media>
+    <Media Include="assets\sounds\bgm_stage1.wav">
+      <Filter>Sounds</Filter>
+    </Media>
+    <Media Include="assets\sounds\smb3_1-up.wav">
+      <Filter>Sounds</Filter>
+    </Media>
+    <Media Include="assets\sounds\smb3_brick_break.wav">
+      <Filter>Sounds</Filter>
+    </Media>
+    <Media Include="assets\sounds\smb3_bump.wav">
+      <Filter>Sounds</Filter>
+    </Media>
+    <Media Include="assets\sounds\smb3_coin.wav">
+      <Filter>Sounds</Filter>
+    </Media>
+    <Media Include="assets\sounds\smb3_inventory.wav">
+      <Filter>Sounds</Filter>
+    </Media>
+    <Media Include="assets\sounds\smb3_jump.wav">
+      <Filter>Sounds</Filter>
+    </Media>
+    <Media Include="assets\sounds\smb3_kick.wav">
+      <Filter>Sounds</Filter>
+    </Media>
+    <Media Include="assets\sounds\smb3_level_clear.wav">
+      <Filter>Sounds</Filter>
+    </Media>
+    <Media Include="assets\sounds\smb3_mushroom_appear.wav">
+      <Filter>Sounds</Filter>
+    </Media>
+    <Media Include="assets\sounds\smb3_pipe.wav">
+      <Filter>Sounds</Filter>
+    </Media>
+    <Media Include="assets\sounds\smb3_player_down.wav">
+      <Filter>Sounds</Filter>
+    </Media>
+    <Media Include="assets\sounds\smb3_pmeter.wav">
+      <Filter>Sounds</Filter>
+    </Media>
+    <Media Include="assets\sounds\smb3_power-up.wav">
+      <Filter>Sounds</Filter>
+    </Media>
+    <Media Include="assets\sounds\smb3_raccoon_transform.wav">
+      <Filter>Sounds</Filter>
+    </Media>
+    <Media Include="assets\sounds\smb3_skid.wav">
+      <Filter>Sounds</Filter>
+    </Media>
+    <Media Include="assets\sounds\smb3_tail.wav">
+      <Filter>Sounds</Filter>
+    </Media>
   </ItemGroup>
 </Project>
