@@ -22,7 +22,7 @@ effect.txt
 # See OBJECT_TYPE constants in AssetIDs.h
 
 # MARIO
-0 60 10
+0 1 5
 
 #GROUND
 601 0 12 16 16 39 6 60111 60112 60113 60121 60122 60123

@@ -17,6 +17,7 @@
 #include "Decoration.h"
 #include "VerticalPipe.h"
 #include "SolidBlock.h"
+#include "SoundManager.h"
 
 #include "PlaySceneKeyHandler.h"
 
@@ -328,6 +329,32 @@ void PlayScene::LoadAssets(LPCWSTR assetFile)
 		}
 	}
 
+	//// LOAD SFX & BGM
+	// Tại nơi khởi tạo game
+	SoundManager::GetInstance()->Init();
+
+	// Load các file âm thanh (đảm bảo file tồn tại trong thư mục assets)
+	SoundManager::GetInstance()->Load("bgm_stage1", "assets/sounds/bgm_stage1.wav");
+
+	SoundManager::GetInstance()->Load("1up", "assets/sounds/smb3_1-up.wav");
+	SoundManager::GetInstance()->Load("coin", "assets/sounds/smb3_coin.wav");
+	SoundManager::GetInstance()->Load("jump", "assets/sounds/smb3_jump.wav");
+	SoundManager::GetInstance()->Load("skid", "assets/sounds/smb3_skid.wav");
+	SoundManager::GetInstance()->Load("kick", "assets/sounds/smb3_kick.wav");
+	SoundManager::GetInstance()->Load("bump", "assets/sounds/smb3_bump.wav");
+	SoundManager::GetInstance()->Load("brick_break", "assets/sounds/smb3_brick_break.wav");
+	SoundManager::GetInstance()->Load("level_clear", "assets/sounds/smb3_level_clear.wav");
+	SoundManager::GetInstance()->Load("pipe", "assets/sounds/smb3_pipe.wav");
+	SoundManager::GetInstance()->Load("player_down", "assets/sounds/smb3_player_down.wav");
+	SoundManager::GetInstance()->Load("power_up", "assets/sounds/smb3_power-up.wav");
+	SoundManager::GetInstance()->Load("score", "assets/sounds/smb3_inventory.wav");
+	SoundManager::GetInstance()->Load("mushroom_appear", "assets/sounds/smb3_mushroom_appear.wav");
+	SoundManager::GetInstance()->Load("racoon", "assets/sounds/smb3_raccoon_transform.wav");
+	SoundManager::GetInstance()->Load("tail", "assets/sounds/smb3_tail.wav");
+	SoundManager::GetInstance()->Load("pmeter", "assets/sounds/smb3_pmeter.wav");
+	// Phát nhạc nền ngay khi vào màn chơi
+	SoundManager::GetInstance()->PlayBGM("bgm_stage1");
+
 	f.close();
 
 	DebugOut(L"[INFO] Done loading assets from %s\n", assetFile);
@@ -416,6 +443,7 @@ void PlayScene::Update(DWORD dt)
 		Mario* mario = dynamic_cast<Mario*>(player);
 		mario->Reset();*/
 		GameManager::GetInstance()->LevelFailed();
+		SoundManager::GetInstance()->StopAll();
 	}
 
 	//--- FOLLOW CAMERA

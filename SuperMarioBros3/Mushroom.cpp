@@ -2,11 +2,13 @@
 #include "Collision.h"
 #include "PlayScene.h"
 #include "Mario.h"
+#include "SoundManager.h"
 
 Mushroom::Mushroom(float x, float y) : GameObject(x, y)
 {
 	this->startY = y;
 	SetState(MushroomState::SPAWNING);
+	SoundManager::GetInstance()->Play("mushroom_appear");
 	zIndex = 4;
 }
 
