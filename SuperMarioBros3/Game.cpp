@@ -7,6 +7,7 @@
 #include "Texture.h"
 #include "Animations.h"
 #include "PlayScene.h"
+#include "WorldScene.h"
 #include "GameGlobal.h"
 #include "SceneManager.h"
 
@@ -167,7 +168,7 @@ void Game::SetPointSamplerState()
 	NOTE: This function is very inefficient because it has to convert
 	from texture to sprite every time we need to draw it
 */
-void Game::DrawOnCamera(float x, float y, LPTEXTURE tex, RECT* rect, float alpha, int sprite_width, int sprite_height)
+void Game::Draw(float x, float y, LPTEXTURE tex, RECT* rect, float alpha, int sprite_width, int sprite_height)
 {
 	if (tex == NULL) return;
 
@@ -407,7 +408,7 @@ void Game::_ParseSection_SCENES(string line)
 	switch (type)
 	{
 	case 0: // Intro
-		// scene = new IntroScene(id, path); (Sau này thêm IntroScene thì mở comment ra)
+		scene = new WorldScene(id, path);
 		break;
 	case 1: // Play Scene
 		scene = new PlayScene(id, path);
@@ -464,7 +465,6 @@ void Game::Update(DWORD dt)
 /*
 	Render a frame
 */
-#define BACKGROUND_COLOR D3DXCOLOR(181.0f/255, 235.0f/255, 242.0f/255, 0.0f)
 void Game::Render()
 {
 	ID3D10Device* pD3DDevice = GameGlobal::pD3DDevice;
@@ -473,14 +473,24 @@ void Game::Render()
 	ID3DX10Sprite* spriteHandler = GameGlobal::spriteObject;
 	ID3D10BlendState* pBlendStateAlpha = GameGlobal::pBlendStateAlpha;
 
-	pD3DDevice->ClearRenderTargetView(pRenderTargetView, BACKGROUND_COLOR);
+	LPSCENE currentScene = SceneManager::GetInstance()->GetCurrentScene();
+	if (currentScene != NULL)
+	{
+		pD3DDevice->ClearRenderTargetView(pRenderTargetView, currentScene->GetBackgroundColor());
+	}
+	else
+	{
+		// Màu dự phòng nếu game bị lỗi chưa có Scene
+		float fallbackColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+		pD3DDevice->ClearRenderTargetView(pRenderTargetView, fallbackColor);
+	}
 
+	// 3. Bắt đầu vẽ các vật thể
 	spriteHandler->Begin(D3DX10_SPRITE_SORT_TEXTURE);
 
 	FLOAT NewBlendFactor[4] = { 0,0,0,0 };
 	pD3DDevice->OMSetBlendState(pBlendStateAlpha, NewBlendFactor, 0xffffffff);
 
-	LPSCENE currentScene = SceneManager::GetInstance()->GetCurrentScene();
 	if (currentScene != NULL)
 	{
 		currentScene->Render();

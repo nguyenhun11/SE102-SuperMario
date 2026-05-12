@@ -7,10 +7,10 @@
 
 #include "Goomba.h"
 
-#include "Mushroom.h"
-#include "Leaf.h"
-#include "Coin.h"
+#include "Item.h"
 #include "ScoreEffect.h"
+#include "OneUpEffect.h"
+#include "Slope.h"
 
 #include "Portal.h"
 #include "QuestionBlock.h"
@@ -24,17 +24,18 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	HandleTransform(dt, coObjects);
 	HandleSpinning(dt, coObjects);
 
-	if (isOnPlatform)
+	if (isOnPlatform && vy >= 0) // mario đang đứng trên platform
 	{
 		canFly = false;
 		isFlying = false;
 		isFloating = false;
 	}
-	else
+	else   // mario đứng trên ko trung
 	{
 		if (canFly && GetTickCount64() - fly_start > MARIO_FLYING_TIME)
 		{
 			canFly = false;
+			pmeter = 0;
 		}
 
 		if (isFlying || isFloating)
@@ -58,6 +59,8 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	vx += accelX * dt;
 
 	float effectiveAccel = accelX;
+	float effectiveMaxVx = maxVx;
+
 	if (accelX * vx < 0)
 	{
 		if (accelX > 0)
@@ -70,9 +73,47 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 	}
 
-	HandlePMeter(dt, coObjects);
+	///// ------ vật lý của joke
+	HandleSlopePhysics(dt, coObjects);
+
+	if (isOnSlope && !isSitting)
+	{
+		if (slopeDirection * nx > 0)	/// LÊN  JOKE
+		{
+			// giới hạn tốc tối đa
+			effectiveMaxVx = MARIO_WALKING_SPEED * 0.6f;
+
+			// triệt tiêu quán tính
+			if (abs(vx) > effectiveMaxVx)
+			{
+				vx -= (vx > 0 ? 1 : -1) * MARIO_DECCEL_RUN_X * dt * 2.0f;
+			}
+
+			// giảm gia tốc đẩy
+			effectiveAccel *= 0.1f;
+		}
+		else if (slopeDirection * nx < 0) // XUỐNG JOKE
+		{
+			//effectiveMaxVx = MARIO_WALKING_SPEED * 1.05f;
+			//effectiveAccel *= 1.05f; 
+			if (vy >= 0)
+			{
+				vy = abs(vx) + 0.05f;
+			}
+		}
+	}
 
 	vx += effectiveAccel * dt;
+	if (effectiveAccel * vx > 0)
+	{
+		if (vx > 0 && effectiveMaxVx > 0 && vx > effectiveMaxVx) vx = effectiveMaxVx;
+		if (vx < 0 && effectiveMaxVx < 0 && vx < effectiveMaxVx) vx = effectiveMaxVx;
+	}
+
+	////
+
+	/// -- P meter
+	HandlePMeter(dt, coObjects);
 
 	if (isOnPlatform)
 	{
@@ -91,12 +132,12 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 	}
 
-	// gioi han toc do di chuyen
-	if (accelX * vx > 0)
-	{
-		if (vx > 0 && maxVx > 0 && vx > maxVx) vx = maxVx;
-		if (vx < 0 && maxVx < 0 && vx < maxVx) vx = maxVx;
-	}
+	//// gioi han toc do di chuyen
+	//if (accelX * vx > 0)
+	//{
+	//	if (vx > 0 && maxVx > 0 && vx > maxVx) vx = maxVx;
+	//	if (vx < 0 && maxVx < 0 && vx < maxVx) vx = maxVx;
+	//}
 
 	// reset untouchable timer if untouchable time has passed
 	if ( GetTickCount64() - untouchable_start > MARIO_UNTOUCHABLE_TIME) 
@@ -106,6 +147,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 
 	Collision::GetInstance()->Process(this, dt, coObjects);
+	HandleSlope(dt, coObjects);
 }
 
 #pragma region COLLISION
@@ -202,23 +244,37 @@ void Mario::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 	}
 }
 
+
 void Mario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 {
 	// coongj dieemr
 	Mushroom* mushroom = dynamic_cast<Mushroom*>(e->obj);
 	PlayScene* scene = dynamic_cast<PlayScene*>(SceneManager::GetInstance()->GetCurrentScene());
-	ScoreEffect* scoreEff = new ScoreEffect(mushroom->GetX(), mushroom->GetY(), Score::ONE_THOUSAND);
-	scene->AddObject(scoreEff);
-	AddScore(1000);
-	mushroom->Delete();
 
-	// note để nhớ bổ sung hiệu ứng bất tử chớp chớp 2.5s
-	if (form == MarioForm::SMALL)
+	if (mushroom == dynamic_cast<OneUpMushroom*>(e->obj))		// nếu là nấm 1 up
 	{
-		StartTransform();
+		// Hiệu ứng 1UP
+		OneUpEffect* effect = new OneUpEffect(mushroom->GetX(), mushroom->GetY());
+		scene->AddObject(effect);
+		// cộng mạng
+		GameManager::GetInstance()->AddLife(1);
+	}
+	// nếu là nấm bình thường, không phải nấm 1 up
+	else
+	{
+		if (form == MarioForm::SMALL)
+		{
+			StartTransform();
+		}
+
+		// hiệu ứng điểm
+		ScoreEffect* scoreEff = new ScoreEffect(mushroom->GetX(), mushroom->GetY(), Score::ONE_THOUSAND);
+		scene->AddObject(scoreEff);
+		// coongj điểm
+		AddScore(1000);
 	}
 
-	// note để nhớ cộng điểm ở đây nữa
+	mushroom->Delete();
 }
 
 void Mario::OnCollisionWithBrick(LPCOLLISIONEVENT e)
@@ -237,7 +293,7 @@ void Mario::OnCollisionWithBrick(LPCOLLISIONEVENT e)
 			else
 			{
 				// Không có đồ, xét theo sức mạnh của Mario
-				if (this->GetCurrentForm() == MarioForm::SMALL)
+				if (this->GetCurrentForm() == MarioForm::SMALL/* || this->isSitting == true*/)
 				{
 					brick->SetState(BrickState::BOUNCING); // Yếu thì chỉ nảy
 				}
@@ -300,7 +356,8 @@ int Mario::GetAniIdSmall()
 	else		// mario dung tren mat đất
 		if (isSitting)
 		{
-			aniId = ID_ANI_MARIO_SUPER_SIT;
+			if (isSliding)
+				aniId = ID_ANI_MARIO_SMALL_SLIDING;
 		}
 		else
 		{
@@ -338,6 +395,7 @@ int Mario::GetAniIdBig()
 	int aniId = -1;
 	if (!isOnPlatform)
 	{
+		if (isSitting) return ID_ANI_MARIO_SUPER_SIT;
 		if (pmeter == MARIO_PMETER_MAX)
 		{
 			aniId = ID_ANI_MARIO_SUPER_JUMP_RUN;
@@ -351,7 +409,14 @@ int Mario::GetAniIdBig()
 	else
 		if (isSitting)
 		{
-			aniId = ID_ANI_MARIO_SUPER_SIT;
+			if (isSliding)
+			{
+				aniId = ID_ANI_MARIO_SUPER_SLIDING;
+			}
+			else
+			{
+				aniId = ID_ANI_MARIO_SUPER_SIT;
+			}
 		}
 		else
 			if (vx == 0)
@@ -382,6 +447,7 @@ int Mario::GetAniIdRacoon()
 	int aniId = -1;
 	if (!isOnPlatform)
 	{
+		if (isSitting) return ID_ANI_MARIO_RACOON_SIT;
 		if (isFlying) return ID_ANI_MARIO_RACOON_FLYING;
 		if (isFloating) return ID_ANI_MARIO_RACOON_FLOATING;
 
@@ -398,7 +464,14 @@ int Mario::GetAniIdRacoon()
 	else
 		if (isSitting)
 		{
-			aniId = ID_ANI_MARIO_RACOON_SIT;
+			if (isSliding)
+			{
+				aniId = ID_ANI_MARIO_RACOON_SLIDING;
+			}
+			else
+			{
+				aniId = ID_ANI_MARIO_RACOON_SIT;
+			}
 		}
 		else
 			if (vx == 0)
@@ -496,6 +569,11 @@ void Mario::Render()
 	{
 		renderY -= 2.0f;
 	}
+	if (isSliding)
+	{
+		if(form != MarioForm::SMALL)
+			renderY -= 4.0f;
+	}
 	if (aniId == ID_ANI_MARIO_RACOON_SPIN)
 	{
 		ULONGLONG time_passed = GetTickCount64() - spin_start;
@@ -541,7 +619,7 @@ void Mario::SetState(MarioState state)
 	switch (state)
 	{
 	case MarioState::RUNNING:
-		if (isSitting) break;
+		if (isSitting && isOnPlatform) break;
 
 		if (!isOnPlatform)
 		{
@@ -567,15 +645,15 @@ void Mario::SetState(MarioState state)
 		}
 		break;
 	case MarioState::WALKING:
-		if (isSitting) break;
+		if (isSitting && isOnPlatform) break;
 		maxVx = MARIO_WALKING_SPEED * nx;
 		accelX = MARIO_ACCEL_WALK_X * nx;
 		break;
 	case MarioState::JUMP:
-		if (isSitting) break;
+		//if (isSitting) break;
 		if (isOnPlatform)	// ddungw duoi dat
 		{
-			if (abs(this->vx) == MARIO_RUNNING_SPEED)
+			if (pmeter == MARIO_PMETER_MAX)
 			{
 				if (form == MarioForm::SMALL)
 				{
@@ -586,14 +664,17 @@ void Mario::SetState(MarioState state)
 					vy = -MARIO_JUMP_RUN_SPEED_Y;
 					vx *= 1.2f;
 				}
+				// nếu là gấu mèo thì bật bay
 				if (form == MarioForm::RACOON)
 				{
 					canFly = true;
 					fly_start = GetTickCount64();
 				}
 			}
-			else
+			else // Nhảy bình thường khi chưa đầy P-Meter
+			{
 				vy = -MARIO_JUMP_SPEED_Y;
+			}
 		}
 		else	// dang tren khong
 		{
@@ -604,7 +685,7 @@ void Mario::SetState(MarioState state)
 					vy = -MARIO_FLYING_UP_FORCE;
 					isFlying = true;
 					isFloating = false;
-					flap_start = GetTickCount64(); 
+					flap_start = GetTickCount64();
 				}
 				else if (vy > 0 && !isFloating) // Đang rớt và chưa trong chu kỳ vẫy đuôi
 				{
@@ -622,13 +703,14 @@ void Mario::SetState(MarioState state)
 		break;
 
 	case MarioState::SIT:
-		if (isOnPlatform && form != MarioForm::SMALL)
+		if (isSitting) break;
+		if (isOnPlatform)
 		{
-			state = MarioState::IDLE;
+			if (form == MarioForm::SMALL && !isOnSlope) break;
 			isSitting = true;
-			vy = 0.0f;
-			accelX = 0.0f;
-			y +=MARIO_SIT_HEIGHT_ADJUST;
+
+			if(form != MarioForm::SMALL)
+				y += MARIO_SIT_HEIGHT_ADJUST;
 		}
 		break;
 
@@ -637,11 +719,22 @@ void Mario::SetState(MarioState state)
 		{
 			isSitting = false;
 			state = MarioState::IDLE;
-			y -= MARIO_SIT_HEIGHT_ADJUST;
+			if (form != MarioForm::SMALL)
+			{
+				if (isOnPlatform)
+				{
+					y -= MARIO_SIT_HEIGHT_ADJUST;
+				}
+				else
+				{
+					y += MARIO_SIT_HEIGHT_ADJUST;
+				}
+			}
 		}
 		break;
 
 	case MarioState::IDLE:
+		if (isSitting) break;
 		accelX = 0.0f;
 		break;
 
@@ -657,9 +750,15 @@ void Mario::SetState(MarioState state)
 	GameObject::SetState(static_cast<int>(state));
 }
 
+void Mario::SetDirection(int d)
+{
+	if (isTakingDamage || isSuperTransforming || isSuperTransforming) return;
+	nx = d;
+}
+
 void Mario::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
-	if (form==MarioForm::SUPER || form == MarioForm::RACOON)
+	if (form== MarioForm::SUPER || form == MarioForm::RACOON)
 	{
 		if (isSitting)
 		{
@@ -694,7 +793,6 @@ void Mario::SetNewForm(MarioForm newForm)
 	{
 		y -= heightDiff;
 	}
-	// THÊM: Nếu đang Lớn mà về Nhỏ: Phải đẩy y xuống dưới
 	else if (this->form != MarioForm::SMALL && newForm == MarioForm::SMALL)
 	{
 		y += heightDiff;
@@ -759,6 +857,37 @@ void Mario::TakeDamage()
 	}
 }
 
+void Mario::Reset()
+{
+	//về vị trí cũ
+	x = start_x;
+	y = start_y;
+
+	// Reset hình dáng
+	SetNewForm(MarioForm::SMALL);
+	SetState(MarioState::IDLE);
+
+	vx = 0;
+	vy = 0;
+	accelX = 0;
+	accelY = MARIO_GRAVITY;
+
+	isTakingDamage = false;
+	isSuperTransforming = false;
+	isPoofTransforming = false;
+	isSpinning = false;
+	canFly = false;
+	isFlying = false;
+	isFloating = false;
+	isSliding = false;
+
+
+	untouchable = 0;
+	pmeter = 0;
+
+	SetDirection(1);
+}
+
 // ============================== HANDLE UPDATE ===============================
 #pragma region HANDLE UPDATE
 void Mario::HandleSpinning(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
@@ -806,6 +935,21 @@ void Mario::HandleSpinning(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 							if (mr >= qbl && ml <= qbr && mb >= qbt && mt <= qbb)
 							{
 								qb->SetState(QuestionBlockState::BOUNCING);
+							}
+						}
+					}
+
+
+					if (dynamic_cast<Brick*>(obj))
+					{
+						Brick* brick = dynamic_cast<Brick*>(obj);
+						if (brick->GetState() == static_cast<int>(BrickState::ACTIVE))
+						{
+							float qbl, qbt, qbr, qbb;
+							obj->GetBoundingBox(qbl, qbt, qbr, qbb);
+							if (mr >= qbl && ml <= qbr && mb >= qbt && mt <= qbb)
+							{
+								brick->Break();
 							}
 						}
 					}
@@ -897,5 +1041,92 @@ void Mario::HandlePMeter(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 	}
 }
+
+void Mario::HandleSlope(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+{
+	float l, t, r, b;
+	GetBoundingBox(l, t, r, b);
+	float marioBottomY = b;
+	float bboxHeight = b - t;
+	//float marioBottomY = y + MARIO_BIG_BBOX_HEIGHT / 2; // tọa độ chân
+
+	bool foundSlope = false;
+
+	for (size_t i = 0; i < coObjects->size(); i++)
+	{
+		LPGAMEOBJECT obj = coObjects->at(i);
+		if (dynamic_cast<Slope*>(obj))
+		{
+			Slope* slope = dynamic_cast<Slope*>(obj);
+			//slopeDirection = slope->GetDirection();
+			float sl, st, sr, sb;
+			slope->GetBoundingBox(sl, st, sr, sb);
+
+			// tâm ủa Mario ra
+			float marioCenterX = x;
+
+			// kiểm tra mario đang đứng trên dốc
+			float epsilon = 0.0f;
+
+			if (marioCenterX >= (sl - epsilon) && marioCenterX <= (sr + epsilon) && marioBottomY >= st && marioBottomY <= sb)
+			{
+				float expectedY = slope->GetSurfaceY(marioCenterX);
+
+				// kéo mairo lên nếu chân < dốc
+				if (marioBottomY >= expectedY - 8.0f && vy >=0) 
+				{
+					y = expectedY - bboxHeight / 2;
+					vy = 0;
+					isOnPlatform = true;
+					foundSlope = true;
+					slopeDirection = slope->direction;
+				}
+			}
+		}
+	}
+
+	isOnSlope = foundSlope;
+}
+
+void Mario::HandleSlopePhysics(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+{
+	if (isSitting && isOnPlatform)
+	{
+		if (isOnSlope)
+		{
+			int slideDirection = -slopeDirection;
+			accelX = (MARIO_ACCEL_RUN_X * 1.2f) * slideDirection;
+			maxVx = (MARIO_RUNNING_SPEED * 1.2f) * slideDirection;
+			nx = slideDirection;
+			isSliding = true;
+			if (vy >= 0)
+			{
+				vy = abs(vx) + 0.05f;
+			}
+
+		}
+		else
+		{
+			accelX = 0.0f;
+			if(abs(vx) < 0.05f) 
+				isSliding = false;
+
+		}
+	}
+	else
+	{
+		isSliding = false;
+	}
+}
+
+
+
+/// Note tính toán phép xử lý lên/xuống dốc
+/// Dốc đi lên có direction của slope là 1, mario đi sang phải thì chậm, đi sang trái thì nhanh
+/// Dốc đi xuống có direction của slope là -1, mario đi sang phải thì nhanh còn đi sang trái thì chậm
+/// ===> marioVx * slopeDirection > 0 thì sẽ đi chậm vì mario đi cùng chiều lên dốc
+/// marioVx * slopeDirection < 0 thì đi nhanh hơn vì đây là đi xuống dốc
+/// 
+
 
 #pragma endregion

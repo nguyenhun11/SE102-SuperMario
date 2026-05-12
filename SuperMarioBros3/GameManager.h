@@ -7,6 +7,14 @@ class GameManager : public Singleton<GameManager>
 	friend class Singleton<GameManager>;
 	GameManager();
 public:
+	float mapMarioCurrentX = -1.0f;
+	float mapMarioCurrentY = -1.0f;
+
+	float mapMarioPrevX = -1.0f;
+	float mapMarioPrevY = -1.0f;
+
+	bool isReturningFromFail = false;
+
 	int score;
 	int coinNumber;
 	int life;
@@ -21,8 +29,9 @@ public:
 
 	void Update(DWORD dt);
 
-	void AddCoin(int coins);
-	void AddScore(int points);
+	void AddCoin(int coins = 1);
+	void AddScore(int points = 100);
+	void AddLife(int amount = 1);
 
 	void ResetTimer(DWORD start_time = 300000);
 

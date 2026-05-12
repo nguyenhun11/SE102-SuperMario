@@ -25,7 +25,7 @@
 #define WINDOW_ICON_PATH L"mario.ico"
 
 #define SCREEN_WIDTH 270
-#define SCREEN_HEIGHT 240
+#define SCREEN_HEIGHT 250
 
 LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {

@@ -37,6 +37,16 @@ void GameManager::AddScore(int points)
 	score += points;
 }
 
+void GameManager::AddLife(int amount)	// hàm này dùng để cộng/trừ máu luôn nhee, truyền đối số âm để trừ
+{
+	life += amount;
+	if (life < 0)
+	{
+		GameOver();
+		return;
+	}
+}
+
 void GameManager::ResetTimer(DWORD start_time)
 {
 	this->timer = start_time;
@@ -44,6 +54,21 @@ void GameManager::ResetTimer(DWORD start_time)
 }
 
 void GameManager::LevelFailed()
+{
+	AddLife(-1);
+	isReturningFromFail = true;
+	SceneManager::GetInstance()->InitiateSwitchScene(0);
+}
+
+void GameManager::LevelSuccess()
+{
+	mapMarioPrevX = mapMarioCurrentX;
+	mapMarioPrevY = mapMarioCurrentY;
+
+	SceneManager::GetInstance()->InitiateSwitchScene(0);
+}
+
+void GameManager::GameOver()
 {
 	exit(0);
 }

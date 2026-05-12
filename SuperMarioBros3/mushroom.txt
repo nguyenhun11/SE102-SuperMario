@@ -1,8 +1,0 @@
-#	id	left	top	right	bottom	tex_id
-[SPRITES]
-### Normal
-40200	133	292	148	307	400
-
-
-[ANIMATIONS]
-4020	40200	100	40200	100
