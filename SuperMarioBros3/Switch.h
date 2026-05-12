@@ -6,8 +6,11 @@
 #define COIN_TO_BRICK_OFF_ANI_ID 4050201
 #define COIN_TO_BRICK_ON_ANI_ID 4050200
 
+#define SWITCH_SPAWN_SPEED 0.05f // Vận tốc trồi lên, bạn có thể chỉnh cho mượt
+
 enum class SwitchState
 {
+	Spawning,
 	Off,
 	On
 };
@@ -21,22 +24,23 @@ enum class SwitchType
 class Switch : public GameObject
 {
 private:
-	SwitchState state;
 	SwitchType type;
+	float startY; // Dùng để đo quãng đường trồi lên
 
 public:
-	Switch(SwitchType type) : GameObject() { state = SwitchState::Off; this->type = type; }
+	Switch(float x, float y, SwitchType type);
 
 	SwitchType GetType() { return type; }
 	void SetType(SwitchType type) { this->type = type; }
 
-	bool IsPressed() { return state == SwitchState::On; }
-	void SetPressed() { this->state = SwitchState::On; }
+	bool IsPressed() { return this->state == (int)SwitchState::On; }
+	void SetPressed() { SetState((int)SwitchState::On); }
 
+	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) override;
 	void Render() override;
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom) override;
-	
-	int IsBlocking() override { return state == SwitchState::Off; }
-	int IsCollidable() override { return state == SwitchState::Off; }
-};
+	void SetState(int state) override;
 
+	int IsBlocking() override { return this->state == (int)SwitchState::Off; }
+	int IsCollidable() override { return this->state == (int)SwitchState::Off; }
+};

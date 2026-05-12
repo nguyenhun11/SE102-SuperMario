@@ -1,17 +1,17 @@
 #include "Brick.h"
+#include "Switch.h"
 #include "debug.h"
 #include "SoundManager.h"
 
-Brick::Brick(float x, float y, int itemType) : GameObject(x, y)
+Brick::Brick(float x, float y, int itemType, int switchType) : GameObject(x, y)
 {
 	this->startY = y;
 	this->currentState = BrickState::ACTIVE;
 	this->state = static_cast<int>(BrickState::ACTIVE);
 	this->vy = 0;
 	this->zIndex = 5;
-
-	// Ép kiểu int từ file text truyền vào thành Enum
 	this->containedItem = static_cast<BrickItem>(itemType);
+	this->containedSwitchType = switchType;
 }
 
 void Brick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
@@ -127,7 +127,8 @@ void Brick::SpawnItem()
 	}
 	else if (containedItem == BrickItem::P_SWITCH)
 	{
-		//  P-Switch sau
+		Switch* pSwitch = new Switch(x, y, (SwitchType)containedSwitchType);
+		playScene->AddObject(pSwitch);
 	}
 	else if (containedItem == BrickItem::ONE_UP_MUSHROOM)
 	{

@@ -11,7 +11,7 @@
 #include "GameManager.h"
 //#include "Koopas.h"
 
-#define SWITCH_ACTIVATION_TIME 1000 // thời gian hiệu lực của switch
+#define SWITCH_ACTIVATION_TIME 5000 // thời gian hiệu lực của switch
 
 class PlayScene: public Scene
 {

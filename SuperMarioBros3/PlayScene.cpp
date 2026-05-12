@@ -153,22 +153,21 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 	case OBJECT_TYPE_BRICK:
 	{
 		int item_type = 0;
+		int switch_type = 0;
+
 		if (tokens.size() > 3)
 		{
 			item_type = atoi(tokens[3].c_str());
 		}
-		obj = new Brick(x, y, item_type);
+		if (tokens.size() > 4)
+		{
+			switch_type = atoi(tokens[4].c_str());
+		}
+		obj = new Brick(x, y, item_type, switch_type);
 		break;
 	}
 	case OBJECT_TYPE_COIN: obj = new Coin(x, y); break;	
 	case OBJECT_TYPE_KOOPA: obj = new Koopa(x, y); break;
-	case OBJECT_TYPE_SWITCH:
-	{
-		int switch_type = atoi(tokens[3].c_str());
-		SwitchType type = (switch_type == 0) ? SwitchType::BrickToCoin : SwitchType::CoinToBrick;
-		obj = new Switch(type);
-		break;
-	}
 	case OBJECT_TYPE_PLATFORM:
 	{
 
@@ -516,11 +515,11 @@ void PlayScene::Update(DWORD dt)
 	{
 		if (GetTickCount64() - pSwitchTimer > SWITCH_ACTIVATION_TIME)
 		{
-			DebugOut(L"[PSWITCH] ---> ĐÃ HẾT GIỜ! Gọi DeactivatePSwitch()\n");
+			//DebugOut(L"[PSWITCH] ---> ĐÃ HẾT GIỜ! Gọi DeactivatePSwitch()\n");
 			DeactivatePSwitch(currentSwitchType);
 		}
 
-		DebugOut(L"[INFO] P-Switch active for %lld ms\n", GetTickCount64() - pSwitchTimer);
+		//DebugOut(L"[INFO] P-Switch active for %lld ms\n", GetTickCount64() - pSwitchTimer);
 	}
 
 	PurgeDeletedObjects();

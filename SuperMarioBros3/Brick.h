@@ -38,9 +38,10 @@ protected:
 	float startY;
 	BrickState currentState;
 	BrickItem containedItem;
+	int containedSwitchType;
 
 public:
-	Brick(float x, float y, int itemType = 0);
+	Brick(float x, float y, int itemType = 0, int switchType = 0);
 
 	virtual void Render();
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
