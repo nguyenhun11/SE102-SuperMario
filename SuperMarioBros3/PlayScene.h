@@ -7,12 +7,16 @@
 #include "Mario.h"
 #include "Goomba.h"
 #include "HUD.h"
+#include "Switch.h"
 #include "GameManager.h"
 //#include "Koopas.h"
 
+#define SWITCH_ACTIVATION_TIME 1000 // thời gian hiệu lực của switch
 
 class PlayScene: public Scene
 {
+private: 
+	SwitchType currentSwitchType = SwitchType::BrickToCoin;
 protected: 
 	// A play scene has to have player, right? 
 	LPGAMEOBJECT player;					
@@ -33,6 +37,9 @@ protected:
 	float mapLeft = -8.0f;
 	float mapTop = -300.0f;    
 	float mapBottom = 240.0f;
+
+	ULONGLONG pSwitchTimer = 0;
+	bool isPSwitchActive = false;
 	
 public: 
 	PlayScene(int id, LPCWSTR filePath);
@@ -53,6 +60,9 @@ public:
 	void PurgeDeletedObjects();
 
 	static bool IsGameObjectDeleted(const LPGAMEOBJECT& o);
+
+	void ActivatePSwitch(SwitchType type);
+	void DeactivatePSwitch(SwitchType type);
 };
 
 typedef PlayScene* LPPLAYSCENE;

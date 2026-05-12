@@ -19,7 +19,7 @@
 #include "VerticalPipe.h"
 #include "SolidBlock.h"
 #include "SoundManager.h"
-
+#include "Switch.h"
 
 #include "PlaySceneKeyHandler.h"
 
@@ -160,9 +160,15 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		obj = new Brick(x, y, item_type);
 		break;
 	}
-	case OBJECT_TYPE_COIN: obj = new Coin(x, y); break;
+	case OBJECT_TYPE_COIN: obj = new Coin(x, y); break;	
 	case OBJECT_TYPE_KOOPA: obj = new Koopa(x, y); break;
-
+	case OBJECT_TYPE_SWITCH:
+	{
+		int switch_type = atoi(tokens[3].c_str());
+		SwitchType type = (switch_type == 0) ? SwitchType::BrickToCoin : SwitchType::CoinToBrick;
+		obj = new Switch(type);
+		break;
+	}
 	case OBJECT_TYPE_PLATFORM:
 	{
 
@@ -506,6 +512,17 @@ void PlayScene::Update(DWORD dt)
 
 	Camera::GetInstance()->SetCamPos(cx, cy);
 
+	if (isPSwitchActive)
+	{
+		if (GetTickCount64() - pSwitchTimer > SWITCH_ACTIVATION_TIME)
+		{
+			DebugOut(L"[PSWITCH] ---> ĐÃ HẾT GIỜ! Gọi DeactivatePSwitch()\n");
+			DeactivatePSwitch(currentSwitchType);
+		}
+
+		DebugOut(L"[INFO] P-Switch active for %lld ms\n", GetTickCount64() - pSwitchTimer);
+	}
+
 	PurgeDeletedObjects();
 }
 
@@ -553,6 +570,92 @@ void PlayScene::Unload()
 }
 
 bool PlayScene::IsGameObjectDeleted(const LPGAMEOBJECT& o) { return o == NULL; }
+
+void PlayScene::ActivatePSwitch(SwitchType type)
+{
+	isPSwitchActive = true;
+	currentSwitchType = type;
+	pSwitchTimer = GetTickCount64();
+	vector<LPGAMEOBJECT> newObjects;
+
+	for (size_t i = 0; i < objects.size(); i++)
+	{
+		LPGAMEOBJECT obj = objects[i];
+
+		if (type == SwitchType::BrickToCoin && dynamic_cast<Brick*>(obj)
+		&& ((Brick*)obj)->GetCurrentState() == BrickState::ACTIVE)
+		{
+			// Xóa viên gạch
+			obj->Delete();
+
+			// Sinh ra đồng tiền tại vị trí đó
+			Coin* c = new Coin(obj->GetX(), obj->GetY());
+			c->isCreatedBySwitch = true; // Đánh dấu đây là đồ giả
+			newObjects.push_back(c);
+		}
+		else if (type == SwitchType::CoinToBrick && dynamic_cast<Coin*>(obj))
+		{
+			// Xóa đồng tiền
+			obj->Delete();
+
+			// Sinh ra viên gạch
+			Brick* b = new Brick(obj->GetX(), obj->GetY());
+			b->isCreatedBySwitch = true;
+			newObjects.push_back(b);
+		}
+	}
+
+	// Đổ các object mới tạo vào danh sách chính
+	for (auto newObj : newObjects) {
+		objects.push_back(newObj);
+	}
+}
+
+void PlayScene::DeactivatePSwitch(SwitchType type)
+{
+	isPSwitchActive = false;
+	vector<LPGAMEOBJECT> newObjects;
+
+	int fakeCount = 0;     // Đếm số lượng "hàng giả" tìm thấy
+	int deletedCount = 0;  // Đếm số lượng đã xóa và biến đổi thành công
+
+	DebugOut(L"[DeactivatePSwitch] Bat dau quet %d objects...\n", objects.size());
+
+	for (size_t i = 0; i < objects.size(); i++)
+	{
+		LPGAMEOBJECT obj = objects[i];
+
+		// Chỉ thao tác trên những Object có cờ "Hàng giả"
+		if (obj->isCreatedBySwitch)
+		{
+			fakeCount++; // Đã tìm thấy 1 món!
+
+			// Thay currentSwitchType bằng biến 'type' được truyền vào cho an toàn tuyệt đối
+			if (type == SwitchType::BrickToCoin && dynamic_cast<Coin*>(obj))
+			{
+				obj->Delete();
+				Brick* b = new Brick(obj->GetX(), obj->GetY());
+				b->SetState(BrickState::ACTIVE); // MỘT SỐ ENGINE CẦN DÒNG NÀY (VD: BRICK_STATE_ACTIVE) ĐỂ GẠCH HIỆN LÊN
+				newObjects.push_back(b);
+				deletedCount++;
+			}
+			else if (type == SwitchType::CoinToBrick && dynamic_cast<Brick*>(obj))
+			{
+				obj->Delete();
+				Coin* c = new Coin(obj->GetX(), obj->GetY());
+				newObjects.push_back(c);
+				deletedCount++;
+			}
+		}
+	}
+
+	for (auto newObj : newObjects) {
+		objects.push_back(newObj);
+	}
+
+	// DÒNG KẾT LUẬN QUAN TRỌNG NHẤT
+	DebugOut(L"[DeactivatePSwitch] Tim thay %d hang gia | Da bien doi %d mon\n", fakeCount, deletedCount);
+}
 
 void PlayScene::PurgeDeletedObjects()
 {

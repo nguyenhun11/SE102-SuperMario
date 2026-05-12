@@ -17,6 +17,7 @@
 #include "Portal.h"
 #include "QuestionBlock.h"
 #include "GoalBlock.h"
+#include "Switch.h"
 
 #include "Collision.h"
 
@@ -207,6 +208,13 @@ void Mario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithBrick(e);
 	else if (dynamic_cast<Portal*>(e->obj))
 		OnCollisionWithPortal(e);
+	else if (dynamic_cast<Switch*>(e->obj)) {
+		Switch* p = dynamic_cast<Switch*>(e->obj);
+		if (/*e->ny < 0 &&*/ !p->IsPressed()) {
+			p->SetPressed();
+			((PlayScene*)SceneManager::GetInstance()->GetCurrentScene())->ActivatePSwitch(p->GetType());
+		}
+	}
 
 }
 
