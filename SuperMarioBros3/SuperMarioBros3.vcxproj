@@ -317,6 +317,7 @@
     <Text Include="stage1.txt" />
     <Text Include="scene_mario_dev.txt" />
     <Text Include="pipe.txt" />
+    <Text Include="switch.txt" />
     <Text Include="world-scene-assets.txt" />
     <Text Include="world-scene.txt" />
     <Text Include="effect.txt" />
