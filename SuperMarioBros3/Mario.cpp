@@ -229,11 +229,11 @@ void Mario::OnCollisionWithGoalBlock(LPCOLLISIONEVENT e)
 		this->accelX = MARIO_ACCEL_WALK_X;
 
 		// cutscene nhẹ nhẹ
-		//PlayScene* scene = dynamic_cast<PlayScene*>(SceneManager::GetInstance()->GetCurrentScene());
+		PlayScene* scene = dynamic_cast<PlayScene*>(SceneManager::GetInstance()->GetCurrentScene());
 
 		//// 
-		//CourseClearEffect* effect = new CourseClearEffect(this->x, this->y, goal->GetCardType());
-		//scene->AddObject(effect);
+		CourseClearEffect* effect = new CourseClearEffect(168, 7, goal->GetCardType());
+		scene->AddObject(effect);
 
 		// hiệu ứng khác 
 		// âm thanh khác
