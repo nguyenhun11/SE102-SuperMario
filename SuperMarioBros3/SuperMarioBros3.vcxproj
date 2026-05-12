@@ -154,8 +154,8 @@
   <ItemGroup>
     <None Include="Dependencies\irrKlang\bin\ikpFlac.dll" />
     <None Include="Dependencies\irrKlang\bin\ikpMP3.dll" />
-    <None Include="Dependencies\irrKlang\bin\irrKlang.dll" />
     <None Include="GameObjectDocument.md" />
+    <None Include="irrKlang.dll" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
