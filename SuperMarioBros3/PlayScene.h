@@ -19,6 +19,7 @@ protected:
 
 	vector<LPGAMEOBJECT> objects;
 
+	void _ParseSection_MAP_INFO(string line);
 	void _ParseSection_SPRITES(string line);
 	void _ParseSection_ANIMATIONS(string line);
 
@@ -26,6 +27,12 @@ protected:
 	void _ParseSection_OBJECTS(string line, bool isGridCoordinat = false);
 
 	void LoadAssets(LPCWSTR assetFile);
+
+	float mapRight = 180;	// này tính theo tile (16 x 16)
+	// 3 cái dưới này tính theo pixel
+	float mapLeft = -8.0f;
+	float mapTop = -300.0f;    
+	float mapBottom = 240.0f;
 	
 public: 
 	PlayScene(int id, LPCWSTR filePath);

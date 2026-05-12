@@ -181,11 +181,6 @@ void Mario::OnNoCollision(DWORD dt)
 
 void Mario::OnCollisionWith(LPCOLLISIONEVENT e)
 {
-	if (dynamic_cast<GoalBlock*>(e->obj))
-	{
-		OnCollisionWithGoalBlock(e);
-		return;
-	}
 	if (e->ny != 0 && e->obj->IsBlocking())
 	{
 		vy = 0;
@@ -198,6 +193,8 @@ void Mario::OnCollisionWith(LPCOLLISIONEVENT e)
 
 	if (dynamic_cast<Mushroom*>(e->obj))        
 		OnCollisionWithMushroom(e);
+	else if (dynamic_cast<GoalBlock*>(e->obj))
+		OnCollisionWithGoalBlock(e);
 	else if (dynamic_cast<Leaf*>(e->obj))      
 		OnCollisionWithLeaf(e);
 	else if (dynamic_cast<Coin*>(e->obj))    
@@ -216,7 +213,9 @@ void Mario::OnCollisionWith(LPCOLLISIONEVENT e)
 void Mario::OnCollisionWithGoalBlock(LPCOLLISIONEVENT e)
 {
 	GoalBlock* goal = dynamic_cast<GoalBlock*>(e->obj);
-	if (goal->GetState() == static_cast<int>(GoalBlockState::ROULETTE))
+
+	// Kiểm tra xem GoalBlock còn đang xoay không
+	if (goal->GetBlockState() == GoalBlockState::ROULETTE)
 	{
 		// chơi nhạc thắng
 		SoundManager::GetInstance()->StopAll();
@@ -264,7 +263,7 @@ void Mario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 	e->obj->Delete();
 	SoundManager::GetInstance()->Play("coin");
 	AddCoin();
-
+	AddScore(50);
 	// cộng điểm ở đây
 }
 

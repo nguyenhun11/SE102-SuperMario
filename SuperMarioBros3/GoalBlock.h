@@ -2,10 +2,13 @@
 
 #define GOALBLOCK_BBOX_WIDTH 16
 #define GOALBLOCK_BBOX_HEIGHT 16
-#define GOALBLOCK_ROULETTE_CHANGE_TIME 100
+#define GOALBLOCK_ROULETTE_CHANGE_TIME 150
 #define GOALBLOCK_CARD_MUSHROOM 3090
 #define GOALBLOCK_CARD_FLOWER 3091
 #define GOALBLOCK_CARD_STAR 3092
+#define GOALBLOCK_ANI_MUSHROOM_FLY 3096
+#define GOALBLOCK_ANI_FLOWER_FLY 3097
+#define GOALBLOCK_ANI_STAR_FLY 3098
 
 // trạng thái
 enum class GoalBlockState 
@@ -28,6 +31,7 @@ private:
     GoalBlockState state;
     CardType card = CardType::MUSHROOM;
     ULONGLONG last_change = 0;
+    bool isFinished = false;
 
 public:
     GoalBlock(float x, float y) : GameObject(x, y)
@@ -40,6 +44,7 @@ public:
     void SetFinished() 
     {
         state = GoalBlockState::FINISHED;
+        vy = -0.05f;
     }
 
     void Render();
@@ -51,4 +56,5 @@ public:
     void GetBoundingBox(float& l, float& t, float& r, float& b);
 
     CardType GetCardType() { return card; }
+	GoalBlockState GetBlockState() { return state; }
 };
