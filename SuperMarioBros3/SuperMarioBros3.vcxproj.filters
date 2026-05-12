@@ -233,8 +233,13 @@
     <ClCompile Include="GoalBlock.cpp">
       <Filter>Entities\Blocks</Filter>
     </ClCompile>
-    <ClCompile Include="CourseClearEffect.cpp" />
     <ClCompile Include="OneUpEffect.cpp">
+      <Filter>Entities\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Switch.cpp">
+      <Filter>Entities\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="CourseClearEffect.cpp">
       <Filter>Entities\Effects</Filter>
     </ClCompile>
   </ItemGroup>
@@ -470,6 +475,18 @@
     <ClInclude Include="Dependencies\irrKlang\include\irrKlang.h">
       <Filter>Resources\Sounds\irrKlang</Filter>
     </ClInclude>
+    <ClInclude Include="Switch.h">
+      <Filter>Entities\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="CourseClearEffect.h">
+      <Filter>Entities\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="OneUpEffect.h">
+      <Filter>Entities\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="GoalBlock.h">
+      <Filter>Entities\Blocks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="brick.txt">
@@ -540,6 +557,9 @@
       <Filter>Assets</Filter>
     </Text>
     <Text Include="goal.txt">
+      <Filter>Assets</Filter>
+    </Text>
+    <Text Include="switch.txt">
       <Filter>Assets</Filter>
     </Text>
   </ItemGroup>
