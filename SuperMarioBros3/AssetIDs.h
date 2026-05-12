@@ -30,6 +30,7 @@ Each ID for a type of object will BEGIN with:
 #define OBJECT_TYPE_MUSHROOM		402
 #define OBJECT_TYPE_LEAF			403
 #define OBJECT_TYPE_ONEUPMUSHROOM	404
+#define OBJECT_TYPE_SWITCH			405
 
 // Map
 #define OBJECT_TYPE_DECORATION 600

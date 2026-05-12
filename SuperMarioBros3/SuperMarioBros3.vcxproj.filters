@@ -64,30 +64,27 @@
     <Filter Include="Assets\Header">
       <UniqueIdentifier>{c5ed1505-4d05-40ed-b07d-3c27b1be484a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="irrKlang">
-      <UniqueIdentifier>{33b2615b-1ae7-489c-845e-e749f4289ff3}</UniqueIdentifier>
+    <Filter Include="Resources\Textures">
+      <UniqueIdentifier>{7f7998f2-9743-43cc-ba8d-c663a20e4c12}</UniqueIdentifier>
     </Filter>
-    <Filter Include="irrKlang\include">
-      <UniqueIdentifier>{252a29df-89d0-438a-9502-af73a0f1c4e4}</UniqueIdentifier>
+    <Filter Include="Resources\Sounds">
+      <UniqueIdentifier>{ba1939f6-f711-45cc-9ec2-034e3b0a4091}</UniqueIdentifier>
     </Filter>
-    <Filter Include="irrKlang\lib">
-      <UniqueIdentifier>{0d584dfd-8b79-48ac-acf3-58487b123966}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Sounds">
-      <UniqueIdentifier>{0d05e6e8-afe7-4b71-bd04-38778539d116}</UniqueIdentifier>
+    <Filter Include="Resources\Sounds\irrKlang">
+      <UniqueIdentifier>{19bbaa1b-2f37-41b3-a36c-ccd7ec651abc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="GameObjectDocument.md" />
     <None Include="Dependencies\irrKlang\bin\ikpFlac.dll">
-      <Filter>irrKlang\lib</Filter>
+      <Filter>Resources\Sounds\irrKlang</Filter>
     </None>
     <None Include="Dependencies\irrKlang\bin\ikpMP3.dll">
-      <Filter>irrKlang\lib</Filter>
+      <Filter>Resources\Sounds\irrKlang</Filter>
     </None>
-    <None Include="Dependencies\irrKlang\bin\irrKlang.dll">
-      <Filter>irrKlang\lib</Filter>
+    <None Include="irrKlang.dll">
+      <Filter>Resources\Sounds\irrKlang</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -410,75 +407,68 @@
     <ClInclude Include="SoundManager.h">
       <Filter>CoreGame\Managers</Filter>
     </ClInclude>
-    <ClInclude Include="GoalBlock.h">
-      <Filter>Entities\Blocks</Filter>
-    </ClInclude>
-    <ClInclude Include="CourseClearEffect.h" />
     <ClInclude Include="Dependencies\irrKlang\include\ik_ESoundEngineOptions.h">
-      <Filter>irrKlang\include</Filter>
+      <Filter>Resources\Sounds\irrKlang</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\irrKlang\include\ik_ESoundOutputDrivers.h">
-      <Filter>irrKlang\include</Filter>
+      <Filter>Resources\Sounds\irrKlang</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\irrKlang\include\ik_EStreamModes.h">
-      <Filter>irrKlang\include</Filter>
+      <Filter>Resources\Sounds\irrKlang</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\irrKlang\include\ik_IAudioRecorder.h">
-      <Filter>irrKlang\include</Filter>
+      <Filter>Resources\Sounds\irrKlang</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\irrKlang\include\ik_IAudioStream.h">
-      <Filter>irrKlang\include</Filter>
+      <Filter>Resources\Sounds\irrKlang</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\irrKlang\include\ik_IAudioStreamLoader.h">
-      <Filter>irrKlang\include</Filter>
+      <Filter>Resources\Sounds\irrKlang</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\irrKlang\include\ik_IFileFactory.h">
-      <Filter>irrKlang\include</Filter>
+      <Filter>Resources\Sounds\irrKlang</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\irrKlang\include\ik_IFileReader.h">
-      <Filter>irrKlang\include</Filter>
+      <Filter>Resources\Sounds\irrKlang</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\irrKlang\include\ik_IRefCounted.h">
-      <Filter>irrKlang\include</Filter>
+      <Filter>Resources\Sounds\irrKlang</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\irrKlang\include\ik_irrKlangTypes.h">
-      <Filter>irrKlang\include</Filter>
+      <Filter>Resources\Sounds\irrKlang</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\irrKlang\include\ik_ISound.h">
-      <Filter>irrKlang\include</Filter>
+      <Filter>Resources\Sounds\irrKlang</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\irrKlang\include\ik_ISoundDeviceList.h">
-      <Filter>irrKlang\include</Filter>
+      <Filter>Resources\Sounds\irrKlang</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\irrKlang\include\ik_ISoundEffectControl.h">
-      <Filter>irrKlang\include</Filter>
+      <Filter>Resources\Sounds\irrKlang</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\irrKlang\include\ik_ISoundEngine.h">
-      <Filter>irrKlang\include</Filter>
+      <Filter>Resources\Sounds\irrKlang</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\irrKlang\include\ik_ISoundMixedOutputReceiver.h">
-      <Filter>irrKlang\include</Filter>
+      <Filter>Resources\Sounds\irrKlang</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\irrKlang\include\ik_ISoundSource.h">
-      <Filter>irrKlang\include</Filter>
+      <Filter>Resources\Sounds\irrKlang</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\irrKlang\include\ik_ISoundStopEventReceiver.h">
-      <Filter>irrKlang\include</Filter>
+      <Filter>Resources\Sounds\irrKlang</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\irrKlang\include\ik_IVirtualRefCounted.h">
-      <Filter>irrKlang\include</Filter>
+      <Filter>Resources\Sounds\irrKlang</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\irrKlang\include\ik_SAudioStreamFormat.h">
-      <Filter>irrKlang\include</Filter>
+      <Filter>Resources\Sounds\irrKlang</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\irrKlang\include\ik_vec3d.h">
-      <Filter>irrKlang\include</Filter>
+      <Filter>Resources\Sounds\irrKlang</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\irrKlang\include\irrKlang.h">
-      <Filter>irrKlang\include</Filter>
-    </ClInclude>
-    <ClInclude Include="OneUpEffect.h">
-      <Filter>Entities\Effects</Filter>
+      <Filter>Resources\Sounds\irrKlang</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -554,83 +544,83 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="textures\bbox.png">
-      <Filter>Resources</Filter>
-    </Image>
-    <Image Include="textures\enemies.png">
-      <Filter>Resources</Filter>
-    </Image>
-    <Image Include="textures\mario.png">
-      <Filter>Resources</Filter>
-    </Image>
-    <Image Include="mario.ico">
-      <Filter>Resources</Filter>
-    </Image>
-    <Image Include="textures\Stage1_1.png">
-      <Filter>Resources</Filter>
-    </Image>
-    <Image Include="textures\Stage1_2.png">
-      <Filter>Resources</Filter>
-    </Image>
-    <Image Include="textures\Stage1_3.png">
-      <Filter>Resources</Filter>
-    </Image>
-    <Image Include="textures\Stage1_4.png">
-      <Filter>Resources</Filter>
-    </Image>
-    <Image Include="textures\Stage1_5.png">
-      <Filter>Resources</Filter>
-    </Image>
-    <Image Include="textures\Tilesets_MapTileset.png">
-      <Filter>Resources</Filter>
-    </Image>
-    <Image Include="textures\Tilesets_MiscellaneousScreenTiles.png">
-      <Filter>Resources</Filter>
-    </Image>
-    <Image Include="textures\Tilesets_StageTiles.png">
-      <Filter>Resources</Filter>
-    </Image>
-    <Image Include="textures\WorldMaps_MapPopups.png">
-      <Filter>Resources</Filter>
-    </Image>
-    <Image Include="textures\EnemiesBosses_Bosses.png">
-      <Filter>Resources</Filter>
-    </Image>
-    <Image Include="textures\EnemiesBosses_Enemies.png">
-      <Filter>Resources</Filter>
-    </Image>
-    <Image Include="textures\MiscellaneousItems_and_Objects.png">
-      <Filter>Resources</Filter>
-    </Image>
-    <Image Include="textures\OtherBackgrounds_TitleScreen.png">
-      <Filter>Resources</Filter>
-    </Image>
-    <Image Include="textures\PlayableCharacters_Mario&amp;Luigi.png">
-      <Filter>Resources</Filter>
-    </Image>
     <Image Include="textures\100_Mario.png">
-      <Filter>Resources</Filter>
-    </Image>
-    <Image Include="textures\200_Enemies.png">
-      <Filter>Resources</Filter>
-    </Image>
-    <Image Include="textures\300_Tilesets_StageTiles.png">
-      <Filter>Resources</Filter>
-    </Image>
-    <Image Include="textures\400_Items.png">
-      <Filter>Resources</Filter>
-    </Image>
-    <Image Include="textures\500_HUD.png">
-      <Filter>Resources</Filter>
-    </Image>
-    <Image Include="textures\600_misc.png">
-      <Filter>Resources</Filter>
-    </Image>
-    <Image Include="textures\700_WorldMaps.png">
-      <Filter>Resources</Filter>
+      <Filter>Resources\Textures</Filter>
     </Image>
     <Image Include="textures\101_Mario_Origin.png">
-      <Filter>Resources</Filter>
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="textures\200_Enemies.png">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="textures\300_Tilesets_StageTiles.png">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="textures\400_Items.png">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="textures\500_HUD.png">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="textures\600_misc.png">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="textures\700_WorldMaps.png">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="textures\bbox.png">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="textures\enemies.png">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="textures\EnemiesBosses_Bosses.png">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="textures\EnemiesBosses_Enemies.png">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="mario.ico">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="textures\mario.png">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="textures\MiscellaneousItems_and_Objects.png">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="textures\OtherBackgrounds_TitleScreen.png">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="textures\PlayableCharacters_Mario&amp;Luigi.png">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="textures\Stage1_1.png">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="textures\Stage1_2.png">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="textures\Stage1_3.png">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="textures\Stage1_4.png">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="textures\Stage1_5.png">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="textures\Tilesets_MapTileset.png">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="textures\Tilesets_MiscellaneousScreenTiles.png">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="textures\Tilesets_StageTiles.png">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="textures\WorldMaps_MapPopups.png">
+      <Filter>Resources\Textures</Filter>
     </Image>
     <Image Include="textures\800_Goal.png">
       <Filter>Resources</Filter>
@@ -638,58 +628,58 @@
   </ItemGroup>
   <ItemGroup>
     <Media Include="assets\sounds\bgm_stage1.mp3">
-      <Filter>Sounds</Filter>
+      <Filter>Resources\Sounds</Filter>
     </Media>
     <Media Include="assets\sounds\bgm_stage1.wav">
-      <Filter>Sounds</Filter>
+      <Filter>Resources\Sounds</Filter>
     </Media>
     <Media Include="assets\sounds\smb3_1-up.wav">
-      <Filter>Sounds</Filter>
+      <Filter>Resources\Sounds</Filter>
     </Media>
     <Media Include="assets\sounds\smb3_brick_break.wav">
-      <Filter>Sounds</Filter>
+      <Filter>Resources\Sounds</Filter>
     </Media>
     <Media Include="assets\sounds\smb3_bump.wav">
-      <Filter>Sounds</Filter>
+      <Filter>Resources\Sounds</Filter>
     </Media>
     <Media Include="assets\sounds\smb3_coin.wav">
-      <Filter>Sounds</Filter>
+      <Filter>Resources\Sounds</Filter>
     </Media>
     <Media Include="assets\sounds\smb3_inventory.wav">
-      <Filter>Sounds</Filter>
+      <Filter>Resources\Sounds</Filter>
     </Media>
     <Media Include="assets\sounds\smb3_jump.wav">
-      <Filter>Sounds</Filter>
+      <Filter>Resources\Sounds</Filter>
     </Media>
     <Media Include="assets\sounds\smb3_kick.wav">
-      <Filter>Sounds</Filter>
+      <Filter>Resources\Sounds</Filter>
     </Media>
     <Media Include="assets\sounds\smb3_level_clear.wav">
-      <Filter>Sounds</Filter>
+      <Filter>Resources\Sounds</Filter>
     </Media>
     <Media Include="assets\sounds\smb3_mushroom_appear.wav">
-      <Filter>Sounds</Filter>
+      <Filter>Resources\Sounds</Filter>
     </Media>
     <Media Include="assets\sounds\smb3_pipe.wav">
-      <Filter>Sounds</Filter>
+      <Filter>Resources\Sounds</Filter>
     </Media>
     <Media Include="assets\sounds\smb3_player_down.wav">
-      <Filter>Sounds</Filter>
+      <Filter>Resources\Sounds</Filter>
     </Media>
     <Media Include="assets\sounds\smb3_pmeter.wav">
-      <Filter>Sounds</Filter>
+      <Filter>Resources\Sounds</Filter>
     </Media>
     <Media Include="assets\sounds\smb3_power-up.wav">
-      <Filter>Sounds</Filter>
+      <Filter>Resources\Sounds</Filter>
     </Media>
     <Media Include="assets\sounds\smb3_raccoon_transform.wav">
-      <Filter>Sounds</Filter>
+      <Filter>Resources\Sounds</Filter>
     </Media>
     <Media Include="assets\sounds\smb3_skid.wav">
-      <Filter>Sounds</Filter>
+      <Filter>Resources\Sounds</Filter>
     </Media>
     <Media Include="assets\sounds\smb3_tail.wav">
-      <Filter>Sounds</Filter>
+      <Filter>Resources\Sounds</Filter>
     </Media>
   </ItemGroup>
 </Project>
