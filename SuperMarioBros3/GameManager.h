@@ -32,6 +32,7 @@ public:
 	void AddCoin(int coins = 1);
 	void AddScore(int points = 100);
 	void AddLife(int amount = 1);
+	void AddCard(int hudCardId);
 
 	void ResetTimer(DWORD start_time = 300000);
 

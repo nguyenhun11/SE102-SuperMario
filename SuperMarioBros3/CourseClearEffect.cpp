@@ -21,6 +21,13 @@ void CourseClearEffect::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
     {
         scene->AddObject(new YouGotCardText(x * 16 - 20, y * 16 + 20.0 - 60));
         scene->AddObject(new GoalCardEffect(x * 16 + 84.0f - 20, y * 16 + 20.0f - 60, card));
+		if (card == CardType::MUSHROOM)
+		    GameManager::GetInstance()->AddCard(ID_HUD_CARD_MUSHROOM);
+		else if (card == CardType::FLOWER)
+            GameManager::GetInstance()->AddCard(ID_HUD_CARD_FLOWER);
+		else if (card == CardType::STAR)
+            GameManager::GetInstance()->AddCard(ID_HUD_CARD_STAR);
+
         isSpawnedCardText = true;
         isSpawnedCardSprite = true;
     }
