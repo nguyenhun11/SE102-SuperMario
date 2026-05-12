@@ -54,6 +54,8 @@ void GameManager::AddCard(int hudCardId)
 		if (cards[i] == ID_HUD_CARD_NONE)
 		{
 			cards[i] = hudCardId;
+			newlyAddedCardIndex = i;
+			cardAddTimer = GetTickCount64();
 			break;
 		}
 	}
@@ -61,6 +63,8 @@ void GameManager::AddCard(int hudCardId)
 	// TODO: logic đủ 3 thẻ thì đổi thành 1 mạng và xóa trắng card
 	if (cards[0] != ID_HUD_CARD_NONE && cards[1] != ID_HUD_CARD_NONE && cards[2] != ID_HUD_CARD_NONE)
 	{
+		//if (cardAddTimer != 0 && GetTickCount() - cardAddTimer > 5000)
+		//{ }
 		AddLife(1);
 		for (int i = 0; i < 3; i++)
 		{
