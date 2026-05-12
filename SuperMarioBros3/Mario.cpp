@@ -293,7 +293,7 @@ void Mario::OnCollisionWithBrick(LPCOLLISIONEVENT e)
 			else
 			{
 				// Không có đồ, xét theo sức mạnh của Mario
-				if (this->GetCurrentForm() == MarioForm::SMALL)
+				if (this->GetCurrentForm() == MarioForm::SMALL/* || this->isSitting == true*/)
 				{
 					brick->SetState(BrickState::BOUNCING); // Yếu thì chỉ nảy
 				}
@@ -395,6 +395,7 @@ int Mario::GetAniIdBig()
 	int aniId = -1;
 	if (!isOnPlatform)
 	{
+		if (isSitting) return ID_ANI_MARIO_SUPER_SIT;
 		if (pmeter == MARIO_PMETER_MAX)
 		{
 			aniId = ID_ANI_MARIO_SUPER_JUMP_RUN;
@@ -446,6 +447,7 @@ int Mario::GetAniIdRacoon()
 	int aniId = -1;
 	if (!isOnPlatform)
 	{
+		if (isSitting) return ID_ANI_MARIO_RACOON_SIT;
 		if (isFlying) return ID_ANI_MARIO_RACOON_FLYING;
 		if (isFloating) return ID_ANI_MARIO_RACOON_FLOATING;
 
@@ -617,7 +619,7 @@ void Mario::SetState(MarioState state)
 	switch (state)
 	{
 	case MarioState::RUNNING:
-		if (isSitting) break;
+		if (isSitting && isOnPlatform) break;
 
 		if (!isOnPlatform)
 		{
@@ -643,12 +645,12 @@ void Mario::SetState(MarioState state)
 		}
 		break;
 	case MarioState::WALKING:
-		if (isSitting) break;
+		if (isSitting && isOnPlatform) break;
 		maxVx = MARIO_WALKING_SPEED * nx;
 		accelX = MARIO_ACCEL_WALK_X * nx;
 		break;
 	case MarioState::JUMP:
-		if (isSitting) break;
+		//if (isSitting) break;
 		if (isOnPlatform)	// ddungw duoi dat
 		{
 			if (pmeter == MARIO_PMETER_MAX)
@@ -717,8 +719,17 @@ void Mario::SetState(MarioState state)
 		{
 			isSitting = false;
 			state = MarioState::IDLE;
-			if(form != MarioForm::SMALL)
-				y -= MARIO_SIT_HEIGHT_ADJUST;
+			if (form != MarioForm::SMALL)
+			{
+				if (isOnPlatform)
+				{
+					y -= MARIO_SIT_HEIGHT_ADJUST;
+				}
+				else
+				{
+					y += MARIO_SIT_HEIGHT_ADJUST;
+				}
+			}
 		}
 		break;
 
@@ -1062,7 +1073,7 @@ void Mario::HandleSlope(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				float expectedY = slope->GetSurfaceY(marioCenterX);
 
 				// kéo mairo lên nếu chân < dốc
-				if (marioBottomY >= expectedY - 4.0f && vy >=0) 
+				if (marioBottomY >= expectedY - 8.0f && vy >=0) 
 				{
 					y = expectedY - bboxHeight / 2;
 					vy = 0;
@@ -1084,8 +1095,8 @@ void Mario::HandleSlopePhysics(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		if (isOnSlope)
 		{
 			int slideDirection = -slopeDirection;
-			accelX = (MARIO_ACCEL_RUN_X * 1.3f) * slideDirection;
-			maxVx = (MARIO_RUNNING_SPEED * 1.3f) * slideDirection;
+			accelX = (MARIO_ACCEL_RUN_X * 1.2f) * slideDirection;
+			maxVx = (MARIO_RUNNING_SPEED * 1.2f) * slideDirection;
 			nx = slideDirection;
 			isSliding = true;
 			if (vy >= 0)
