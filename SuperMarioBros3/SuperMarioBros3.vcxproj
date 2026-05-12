@@ -89,13 +89,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\2.Study\SE102.Game\SE102-SuperMario\SuperMarioBros3\Dependencies\irrKlang\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Dependencies\irrKlang\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>d3d10.lib;dxguid.lib;dinput8.lib;irrKlang.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\2.Study\SE102.Game\SE102-SuperMario\SuperMarioBros3\Dependencies\irrKlang\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>.\Dependencies\irrKlang\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -106,7 +106,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\2.Study\SE102.Game\SE102-SuperMario\SuperMarioBros3\Dependencies\irrKlang\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Dependencies\irrKlang\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -114,7 +114,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>d3d10.lib;dxguid.lib;dinput8.lib;irrKlang.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\2.Study\SE102.Game\SE102-SuperMario\SuperMarioBros3\Dependencies\irrKlang\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>.\Dependencies\irrKlang\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -123,13 +123,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\2.Study\SE102.Game\SE102-SuperMario\SuperMarioBros3\Dependencies\irrKlang\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Dependencies\irrKlang\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>d3d10.lib;dxguid.lib;dinput8.lib;irrKlang.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\2.Study\SE102.Game\SE102-SuperMario\SuperMarioBros3\Dependencies\irrKlang\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>.\Dependencies\irrKlang\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -140,7 +141,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\2.Study\SE102.Game\SE102-SuperMario\SuperMarioBros3\Dependencies\irrKlang\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Dependencies\irrKlang\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -148,7 +149,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>d3d10.lib;dxguid.lib;dinput8.lib;irrKlang.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\2.Study\SE102.Game\SE102-SuperMario\SuperMarioBros3\Dependencies\irrKlang\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>.\Dependencies\irrKlang\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -159,9 +160,12 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CourseClearEffect.cpp" />
+    <ClCompile Include="GoalBlock.cpp" />
     <ClCompile Include="InvisibleNode.cpp" />
     <ClCompile Include="MapMario.cpp" />
     <ClCompile Include="MapNode.cpp" />
+    <ClCompile Include="OneUpEffect.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="StageNode.cpp" />
     <ClCompile Include="WorldMapObject.cpp" />
@@ -188,8 +192,6 @@
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mario.cpp" />
-    <ClCompile Include="OneUpEffect.cpp" />
-    <ClCompile Include="OneUpEffect.h" />
     <ClCompile Include="OneUpMushroom.cpp" />
     <ClCompile Include="ScoreEffect.cpp" />
     <ClCompile Include="Slope.cpp" />
@@ -211,6 +213,7 @@
     <ClCompile Include="WorldSceneKeyHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CourseClearEffect.h" />
     <ClInclude Include="Dependencies\irrKlang\include\ik_ESoundEngineOptions.h" />
     <ClInclude Include="Dependencies\irrKlang\include\ik_ESoundOutputDrivers.h" />
     <ClInclude Include="Dependencies\irrKlang\include\ik_EStreamModes.h" />
@@ -232,9 +235,11 @@
     <ClInclude Include="Dependencies\irrKlang\include\ik_SAudioStreamFormat.h" />
     <ClInclude Include="Dependencies\irrKlang\include\ik_vec3d.h" />
     <ClInclude Include="Dependencies\irrKlang\include\irrKlang.h" />
+    <ClInclude Include="GoalBlock.h" />
     <ClInclude Include="InvisibleNode.h" />
     <ClInclude Include="MapMario.h" />
     <ClInclude Include="MapNode.h" />
+    <ClInclude Include="OneUpEffect.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="StageNode.h" />
     <ClInclude Include="WorldMapObject.h" />
@@ -294,6 +299,8 @@
     <Text Include="cloud.txt" />
     <Text Include="coin.txt" />
     <Text Include="game-data.txt" />
+    <Text Include="goal.txt" />
+    <Text Include="goalblock.txt" />
     <Text Include="goomba.txt" />
     <Text Include="koopa.txt" />
     <Text Include="HUD.txt" />
@@ -323,6 +330,7 @@
     <Image Include="textures\500_HUD.png" />
     <Image Include="textures\600_misc.png" />
     <Image Include="textures\700_WorldMaps.png" />
+    <Image Include="textures\800_Goal.png" />
     <Image Include="textures\bbox.png" />
     <Image Include="textures\enemies.png" />
     <Image Include="textures\EnemiesBosses_Bosses.png" />

@@ -11,10 +11,12 @@
 #include "Item.h"
 #include "ScoreEffect.h"
 #include "OneUpEffect.h"
+#include "CourseClearEffect.h"
 #include "Slope.h"
 
 #include "Portal.h"
 #include "QuestionBlock.h"
+#include "GoalBlock.h"
 
 #include "Collision.h"
 
@@ -191,6 +193,8 @@ void Mario::OnCollisionWith(LPCOLLISIONEVENT e)
 
 	if (dynamic_cast<Mushroom*>(e->obj))        
 		OnCollisionWithMushroom(e);
+	else if (dynamic_cast<GoalBlock*>(e->obj))
+		OnCollisionWithGoalBlock(e);
 	else if (dynamic_cast<Leaf*>(e->obj))      
 		OnCollisionWithLeaf(e);
 	else if (dynamic_cast<Coin*>(e->obj))    
@@ -203,6 +207,37 @@ void Mario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithBrick(e);
 	else if (dynamic_cast<Portal*>(e->obj))
 		OnCollisionWithPortal(e);
+
+}
+
+void Mario::OnCollisionWithGoalBlock(LPCOLLISIONEVENT e)
+{
+	GoalBlock* goal = dynamic_cast<GoalBlock*>(e->obj);
+
+	// Kiểm tra xem GoalBlock còn đang xoay không
+	if (goal->GetBlockState() == GoalBlockState::ROULETTE)
+	{
+		// chơi nhạc thắng
+		SoundManager::GetInstance()->StopAll();
+		SoundManager::GetInstance()->Play("level_clear");
+
+		goal->SetFinished();
+
+		// mario chạy đi luôn
+		this->nx = 1;
+		this->SetState(MarioState::WALKING);
+		this->accelX = MARIO_ACCEL_WALK_X;
+
+		// cutscene nhẹ nhẹ
+		//PlayScene* scene = dynamic_cast<PlayScene*>(SceneManager::GetInstance()->GetCurrentScene());
+
+		//// 
+		//CourseClearEffect* effect = new CourseClearEffect(this->x, this->y, goal->GetCardType());
+		//scene->AddObject(effect);
+
+		// hiệu ứng khác 
+		// âm thanh khác
+	}
 }
 
 void Mario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -235,7 +270,7 @@ void Mario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 	e->obj->Delete();
 	SoundManager::GetInstance()->Play("coin");
 	AddCoin();
-
+	AddScore(50);
 	// cộng điểm ở đây
 }
 

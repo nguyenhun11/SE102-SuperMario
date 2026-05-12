@@ -224,17 +224,18 @@
     <ClCompile Include="Slope.cpp">
       <Filter>Entities\Blocks</Filter>
     </ClCompile>
-    <ClCompile Include="OneUpEffect.h">
-      <Filter>Entities\Effects</Filter>
-    </ClCompile>
-    <ClCompile Include="OneUpEffect.cpp">
-      <Filter>Entities\Effects</Filter>
-    </ClCompile>
     <ClCompile Include="Scene.cpp">
       <Filter>Scenes</Filter>
     </ClCompile>
     <ClCompile Include="SoundManager.cpp">
       <Filter>CoreGame\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="GoalBlock.cpp">
+      <Filter>Entities\Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="CourseClearEffect.cpp" />
+    <ClCompile Include="OneUpEffect.cpp">
+      <Filter>Entities\Effects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -535,6 +536,12 @@
     <Text Include="map_2.txt">
       <Filter>Assets</Filter>
     </Text>
+    <Text Include="goalblock.txt">
+      <Filter>Assets</Filter>
+    </Text>
+    <Text Include="goal.txt">
+      <Filter>Assets</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Image Include="textures\100_Mario.png">
@@ -614,6 +621,9 @@
     </Image>
     <Image Include="textures\WorldMaps_MapPopups.png">
       <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="textures\800_Goal.png">
+      <Filter>Resources</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

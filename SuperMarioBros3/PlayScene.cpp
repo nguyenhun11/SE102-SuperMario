@@ -11,6 +11,7 @@
 #include "Koopa.h"
 #include "Platform.h"
 #include "QuestionBlock.h"
+#include "GoalBlock.h"
 #include "Ground.h"
 #include "Slope.h"
 #include "SemisolidPlatform.h"
@@ -18,6 +19,7 @@
 #include "VerticalPipe.h"
 #include "SolidBlock.h"
 #include "SoundManager.h"
+
 
 #include "PlaySceneKeyHandler.h"
 
@@ -35,6 +37,7 @@ PlayScene::PlayScene(int id, LPCWSTR filePath):
 #define SCENE_SECTION_ASSETS	1
 #define SCENE_SECTION_OBJECTS	2
 #define SCENE_SECTION_GRID_OBJECTS	3
+#define SCENE_SECTION_MAP_INFO	4
 
 #define ASSETS_SECTION_UNKNOWN -1
 #define ASSETS_SECTION_SPRITES 1
@@ -42,6 +45,15 @@ PlayScene::PlayScene(int id, LPCWSTR filePath):
 
 #define MAX_SCENE_LINE 1024
 #define TILE_SIZE 16.0f
+
+void PlayScene::_ParseSection_MAP_INFO(string line)
+{
+	vector<string> tokens = split(line);
+	if (tokens.size() < 2) return; // skip invalid lines
+	mapRight = (float)atof(tokens[0].c_str());
+	//mapTop = (float)atof(tokens[1].c_str());
+	//DebugOut(L"[INFO] Map right edge set to: %f\n", mapRight);
+}
 
 void PlayScene::_ParseSection_SPRITES(string line)
 {
@@ -226,6 +238,13 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 
 	}
 
+	case OBJECT_TYPE_GOAL_BLOCK:
+	{
+		obj = new GoalBlock(x, y);
+		break;
+
+	}
+
 	case OBJECT_TYPE_PORTAL:
 	{
 		float r = (float)atof(tokens[3].c_str());
@@ -379,6 +398,7 @@ void PlayScene::Load()
 		if (line == "[ASSETS]") { section = SCENE_SECTION_ASSETS; continue; };
 		if (line == "[OBJECTS]") { section = SCENE_SECTION_OBJECTS; continue; };
 		if (line == "[GRID_OBJECTS]") { section = SCENE_SECTION_GRID_OBJECTS; continue; };
+		if (line == "[MAP_INFO]") { section = SCENE_SECTION_MAP_INFO; continue; };
 		if (line[0] == '[') { section = SCENE_SECTION_UNKNOWN; continue; }	
 
 		//
@@ -389,6 +409,7 @@ void PlayScene::Load()
 			case SCENE_SECTION_ASSETS: _ParseSection_ASSETS(line); break;
 			case SCENE_SECTION_OBJECTS: _ParseSection_OBJECTS(line); break;
 			case SCENE_SECTION_GRID_OBJECTS: _ParseSection_OBJECTS(line, true); break;
+			case SCENE_SECTION_MAP_INFO: _ParseSection_MAP_INFO(line); break;
 		}
 	}
 	f.close();
@@ -423,9 +444,6 @@ void PlayScene::Update(DWORD dt)
 	float px, py;
 	player->GetPosition(px, py);
 
-	float mapLeft = -8.0f;	//Khoang trong bat dau map
-	float mapTop = -300.0f;    // Cho phép bầu trời cao lên đến tọa độ âm 300
-	float mapBottom = 240.0f;
 
 	if (px < mapLeft + 24.0f)
 	{
@@ -435,6 +453,28 @@ void PlayScene::Update(DWORD dt)
 		float pvx, pvy;
 		player-> GetSpeed(pvx, pvy);
 		player->SetSpeed(0.0f, pvy);
+	}
+	else if (px > this->mapRight * TILE_SIZE - 24.0f)			/// chặn phải
+	{
+		px = this->mapRight * TILE_SIZE - 24.0f;
+		player->SetPosition(px, py);
+		float pvx, pvy;
+		player->GetSpeed(pvx, pvy);
+		player->SetSpeed(0.0f, pvy); 
+	}
+	float playerCeiling = mapTop - 64.0f;
+
+	if (py < playerCeiling)
+	{
+		py = playerCeiling;
+		player->SetPosition(px, py); 
+
+		float pvx, pvy;
+		player->GetSpeed(pvx, pvy);
+		if (pvy < 0)
+		{
+			player->SetSpeed(pvx, 0.0f);
+		}
 	}
 	float deathZone = mapBottom + 48.0f; // Rot xuong 48px la die
 	if (py > deathZone)
@@ -461,6 +501,8 @@ void PlayScene::Update(DWORD dt)
 	if (cy < mapTop) cy = mapTop;
 	float max_cy = mapBottom - GameGlobal::GetHeight();
 	if (cy > max_cy) cy = max_cy;
+	float max_cx = this->mapRight * TILE_SIZE - GameGlobal::GetWidth();
+	if (cx > max_cx) cx = max_cx;
 
 	Camera::GetInstance()->SetCamPos(cx, cy);
 
