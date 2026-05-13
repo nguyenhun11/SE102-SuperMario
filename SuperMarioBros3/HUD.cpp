@@ -79,9 +79,35 @@ void HUD::Render()
 	DrawNumber(gm->timer / 1000, HUD_TIME_X, HUD_TIME_Y, 3);
 	DrawNumberFromRight(gm->coinNumber, HUD_COIN_X, HUD_COIN_Y, 2);
 
-	DrawHUD(gm->cards[0], HUD_CARD_1_X, HUD_CARD_Y);
-	DrawHUD(gm->cards[1], HUD_CARD_2_X, HUD_CARD_Y);
-	DrawHUD(gm->cards[2], HUD_CARD_3_X, HUD_CARD_Y);
+	float cardX[3] = { HUD_CARD_1_X, HUD_CARD_2_X, HUD_CARD_3_X };
+
+	for (int i = 0; i < 3; i++)
+	{
+		bool shouldDraw = true;
+		if (gm->newlyAddedCardIndex == i)
+		{
+			if (GetTickCount64() - gm->cardAddTimer < 2000)
+			{
+				if ((GetTickCount64() / 150) % 2 != 0)
+				{
+					shouldDraw = false;
+				}
+			}
+			else
+			{
+				gm->newlyAddedCardIndex = -1;
+			}
+		}
+
+		if (shouldDraw)
+		{
+			DrawHUD(gm->cards[i], cardX[i], HUD_CARD_Y);
+		}
+		else
+		{
+			DrawHUD(ID_HUD_CARD_NONE, cardX[i], HUD_CARD_Y);
+		}
+	}
 
 	Scene* currentScene = SceneManager::GetInstance()->GetCurrentScene();
 	if (dynamic_cast<PlayScene*>(currentScene))

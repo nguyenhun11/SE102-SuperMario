@@ -28,7 +28,7 @@ goalblock.txt
 
 # MARIO
 
-0 130 5
+0 150 5
 
 
 #GROUND
