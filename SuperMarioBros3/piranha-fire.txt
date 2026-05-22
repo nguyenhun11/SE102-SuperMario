@@ -1,35 +1,32 @@
 # id	left	top	right	bottom	texture_id
 [SPRITES]
 
-# Look DOWN - miệng há (frame 1)
-140161	212	196	228	212	200
-# Look DOWN - miệng ngậm (frame 2)
-140162	228	196	244	212	200
+# Look DOWN - frame 1 (miệng há)
+140161	208	192	224	224	200
+# Look DOWN - frame 2 (miệng ngậm)
+140162	224	192	240	224	200
 
-# Look UP - miệng há (frame 1)
-140171	260	196	276	212	200
-# Look UP - miệng ngậm (frame 2)  
-140172	276	196	292	212	200
+# Look UP - frame 1 (miệng há)
+140171	256	192	272	224	200
+# Look UP - frame 2 (miệng ngậm)
+140172	272	192	288	224	200
 
-# =============================================
-# Đạn lửa (Fire projectile) - 4 frames
-# =============================================
-141001	304	200	320	216	200
-141002	320	200	336	216	200
-141003	304	216	320	232	200
-141004	320	216	336	232	200
+141001	304	192	320	208	200
+141002	320	192	336	208	200
+141003	304	208	320	224	200
+141004	320	208	336	224	200
 
-# ani_id	sprite1_id	time1	sprite2_id	time2	...
+# ani_id	sprite1_id	time1	sprite2_id	time2 ...
 [ANIMATIONS]
 
-# 14016 = Piranha nhìn xuống (Mario ở thấp hơn)
+# 14016 = nhìn xuống (Mario ở thấp hơn)
 14016	140161	120	140162	120
 
-# 14017 = Piranha nhìn lên (Mario ở cao hơn)
+# 14017 = nhìn lên (Mario ở cao hơn)
 14017	140171	120	140172	120
 
-# 14018 = dự phòng (giống 14016)
+# 14018 = dự phòng
 14018	140161	120	140162	120
 
-# 14100 = Đạn lửa (4 frames, lặp liên tục)
+# 14100 = Đạn lửa
 14100	141001	80	141002	80	141003	80	141004	80

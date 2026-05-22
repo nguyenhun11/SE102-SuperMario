@@ -41,7 +41,7 @@ void PiranhaPlant::ShootFire(float marioX, float marioY)
 
 void PiranhaPlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	GameObject::Update(dt, coObjects);
+		GameObject::Update(dt, coObjects);
 
 	Mario* mario = (Mario*)((PlayScene*)SceneManager::GetInstance()
 		->GetCurrentScene())->GetPlayer();
