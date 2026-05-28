@@ -19,7 +19,7 @@
 #include "VerticalPipe.h"
 #include "SolidBlock.h"
 #include "SoundManager.h"
-
+#include "PiranhaPlant.h"
 
 #include "PlaySceneKeyHandler.h"
 
@@ -150,6 +150,7 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		break;
 	}
 	case OBJECT_TYPE_GOOMBA: obj = new Goomba(x,y); break;
+	case OBJECT_TYPE_PIRANHA_PLANT: obj = new PiranhaPlant(x, y); break;
 	case OBJECT_TYPE_BRICK:
 	{
 		int item_type = 0;
