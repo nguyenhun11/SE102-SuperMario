@@ -17,7 +17,6 @@ HUD.txt
 effect.txt
 goal.txt
 goalblock.txt
-piranha_plant.txt
 
 [MAP_INFO]
 175 
@@ -528,8 +527,6 @@ piranha_plant.txt
 600 183 0 69901
 600 183 11 69901
 
-# PIRANHA PLANT
-203	22	9
 
 #### ================== GOAL BLOCK ==================
 309 168 7
