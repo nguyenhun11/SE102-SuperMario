@@ -608,6 +608,11 @@ void Mario::Render()
 		}
 	}
 
+	if (aniId == ID_ANI_MARIO_RACOON_SIT || aniId == ID_ANI_MARIO_SUPER_SIT)
+	{
+		renderY -= 2.0f;
+	}
+
 	bool isFlip = (nx > 0);
 	bool shouldRender = true;
 	if (untouchable == 1 && isSuperTransforming == false)
@@ -1135,7 +1140,7 @@ void Mario::HandleSlope(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			if (marioCenterX >= sl && marioCenterX <= sr && marioBottomY >= st && marioBottomY <= sb)
 			{
 				float expectedY = slope->GetSurfaceY(marioCenterX);
-				float epsilon = max(4.0f, vy * dt);
+				float epsilon = max(4.0f, abs(vy) * dt);
 				// kéo mairo lên nếu chân < dốc
 				if (marioBottomY >= expectedY - epsilon && vy >=0) 
 				{

@@ -20,7 +20,7 @@ goalblock.txt
 piranha_plant.txt
 
 [MAP_INFO]
-175
+175 
 
 [GRID_OBJECTS]
 # type x y extra_settings per object type
@@ -29,7 +29,7 @@ piranha_plant.txt
 
 # MARIO
 
-0 150 5
+0 1 5
 
 
 #GROUND
