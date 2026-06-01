@@ -463,7 +463,7 @@ void PlayScene::Update(DWORD dt)
 
 
 
-	float max_player_x = this->mapRight * TILE_SIZE - 24.0f; 
+	float max_player_x = this->mapRight * TILE_SIZE - 8.0f; 
 	if(mario->IsGoalRunning())
 	{
 		max_player_x = 999 * TILE_SIZE;

@@ -806,6 +806,9 @@ void Mario::SetState(MarioState state)
 	case MarioState::GOAL:
 		isGoalRunning = true;
 		accelX = 0;
+		accelY = 0;
+		vx = 0;
+		vy = 0; 
 		nx = 1;
 		break;
 
