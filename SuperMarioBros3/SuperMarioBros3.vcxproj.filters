@@ -242,6 +242,12 @@
     <ClCompile Include="CourseClearEffect.cpp">
       <Filter>Entities\Effects</Filter>
     </ClCompile>
+    <ClCompile Include="Fire.cpp">
+      <Filter>Entities\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="PiranhaPlant.cpp">
+      <Filter>Entities\Enemies</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h">
@@ -487,6 +493,12 @@
     <ClInclude Include="GoalBlock.h">
       <Filter>Entities\Blocks</Filter>
     </ClInclude>
+    <ClInclude Include="Fire.h">
+      <Filter>Entities\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="PiranhaPlant.h">
+      <Filter>Entities\Enemies</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="brick.txt">
@@ -560,6 +572,9 @@
       <Filter>Assets</Filter>
     </Text>
     <Text Include="switch.txt">
+      <Filter>Assets</Filter>
+    </Text>
+    <Text Include="piranha-fire.txt">
       <Filter>Assets</Filter>
     </Text>
   </ItemGroup>

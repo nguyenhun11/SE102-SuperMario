@@ -19,6 +19,8 @@ public:
 	int coinNumber;
 	int life;
 	int cards[3] = { ID_HUD_CARD_NONE, ID_HUD_CARD_NONE, ID_HUD_CARD_NONE };
+	int newlyAddedCardIndex = -1;
+	ULONGLONG cardAddTimer = 0;  
 	DWORD timer;
 
 	bool isGamePaused;
@@ -32,6 +34,7 @@ public:
 	void AddCoin(int coins = 1);
 	void AddScore(int points = 100);
 	void AddLife(int amount = 1);
+	void AddCard(int hudCardId);
 
 	void ResetTimer(DWORD start_time = 300000);
 

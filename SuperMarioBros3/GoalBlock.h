@@ -1,3 +1,4 @@
+#pragma once
 #include "GameObject.h"
 
 #define GOALBLOCK_BBOX_WIDTH 16
@@ -44,7 +45,7 @@ public:
     void SetFinished() 
     {
         state = GoalBlockState::FINISHED;
-        vy = -0.05f;
+        vy = -0.08f;
     }
 
     void Render();

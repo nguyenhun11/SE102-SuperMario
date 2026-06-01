@@ -18,6 +18,7 @@ effect.txt
 goal.txt
 goalblock.txt
 switch.txt
+piranha_plant.txt
 
 [MAP_INFO]
 175
@@ -29,7 +30,7 @@ switch.txt
 
 # MARIO
 
-0 130 5
+0 150 5
 
 
 #GROUND
@@ -528,7 +529,8 @@ switch.txt
 600 183 0 69901
 600 183 11 69901
 
-
+# PIRANHA PLANT
+203	22	9
 
 #### ================== GOAL BLOCK ==================
 309 168 7
