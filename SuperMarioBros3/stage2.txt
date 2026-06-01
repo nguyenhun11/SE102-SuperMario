@@ -34,7 +34,7 @@ map_2.txt
 # See OBJECT_TYPE constants in AssetIDs.h
 
 # MARIO
-0 170 10
+0 1 10
 
 
 #GROUND
