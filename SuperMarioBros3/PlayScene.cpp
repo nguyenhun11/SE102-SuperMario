@@ -486,7 +486,7 @@ void PlayScene::Update(DWORD dt)
 		}
 	}
 	float deathZone = mapBottom + 48.0f; // Rot xuong 48px la die
-	if (py > deathZone)
+	if (!mario->IsGoalRunning() && py > deathZone)
 	{
 		/*GameManager::GetInstance()->AddLife(-1);
 		Mario* mario = dynamic_cast<Mario*>(player);

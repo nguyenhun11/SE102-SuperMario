@@ -30,7 +30,7 @@ map_2.txt
 # See OBJECT_TYPE constants in AssetIDs.h
 
 # MARIO
-0 150 6
+0 30 3
 
 
 #GROUND
@@ -226,7 +226,8 @@ map_2.txt
 600	37	11	60322
 
 ## collider của dốc xuống
-603  33.5  7.9375  120  114  -1
+603  32.9  7.55  100  100  -1
+603  36.9  11  32  16  -1
 
 ## đất của dốc xuống
 # Đắp đất dưới bề mặt dốc nghiêng cho đến Y=11
