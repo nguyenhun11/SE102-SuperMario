@@ -441,9 +441,17 @@ void PlayScene::Update(DWORD dt)
 	//--- PLAYER POSITION
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return; 
+	Mario* mario = static_cast<Mario*>(player);
+
 
 	float px, py;
 	player->GetPosition(px, py);
+
+	float max_player_x = this->mapRight * TILE_SIZE - 24.0f; 
+	if(mario->IsGoalRunning())
+	{
+		max_player_x = 999 * TILE_SIZE;
+	}
 
 
 	if (px < mapLeft + 24.0f)
@@ -455,9 +463,9 @@ void PlayScene::Update(DWORD dt)
 		player-> GetSpeed(pvx, pvy);
 		player->SetSpeed(0.0f, pvy);
 	}
-	else if (px > this->mapRight * TILE_SIZE - 24.0f)			/// chặn phải
+	else if (px > max_player_x)			/// chặn phải
 	{
-		px = this->mapRight * TILE_SIZE - 24.0f;
+		px = max_player_x;
 		player->SetPosition(px, py);
 		float pvx, pvy;
 		player->GetSpeed(pvx, pvy);
@@ -498,6 +506,8 @@ void PlayScene::Update(DWORD dt)
 	cy -= playableHeight / 2;
 
 
+	
+
 	if (cx < mapLeft) cx = mapLeft;
 	if (cy < mapTop) cy = mapTop;
 	float max_cy = mapBottom - GameGlobal::GetHeight();
@@ -505,7 +515,10 @@ void PlayScene::Update(DWORD dt)
 	float max_cx = this->mapRight * TILE_SIZE - GameGlobal::GetWidth();
 	if (cx > max_cx) cx = max_cx;
 
-	Camera::GetInstance()->SetCamPos(cx, cy);
+	if (!mario->IsGoalRunning())
+	{
+		Camera::GetInstance()->SetCamPos(cx, cy);
+	}
 
 	PurgeDeletedObjects();
 }

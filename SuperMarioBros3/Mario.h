@@ -193,6 +193,8 @@ class Mario : public GameObject
 	bool isPoofTransforming;
 	bool isSpinning;
 	bool isSliding;
+
+	bool isGoalRunning;
 	
 	// pmeter
 	int pmeter;
@@ -257,6 +259,8 @@ public:
 		isPoofTransforming = false;
 		isSpinning = false;
 		isSliding = false;
+
+		isGoalRunning = false;
 
 		untouchable = 0;
 		untouchable_start = -1;
@@ -331,10 +335,12 @@ public:
 	void HandlePMeter(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void HandleSlope(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void HandleSlopePhysics(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
+	void HandleGoalRunning(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 
 	// Getters & Setters
 	float GetX() { return x; }
 	float GetY() { return y; }
 	MarioForm GetCurrentForm() { return form; }
 	int GetPMeter() { return pmeter; }
+	bool IsGoalRunning() { return isGoalRunning; }
 };

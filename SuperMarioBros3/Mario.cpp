@@ -29,6 +29,13 @@ void Mario::AddScore(int amount)
 
 void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
+	if (isGoalRunning)
+	{
+		HandleGoalRunning(dt, coObjects);
+
+		return;
+	}
+
 	HandleDying(dt, coObjects);
 	HandleTakingDamage(dt, coObjects);
 	HandleTransform(dt, coObjects);
@@ -224,15 +231,13 @@ void Mario::OnCollisionWithGoalBlock(LPCOLLISIONEVENT e)
 		goal->SetFinished();
 
 		// mario chạy đi luôn
-		this->nx = 1;
-		this->SetState(MarioState::WALKING);
-		this->accelX = MARIO_ACCEL_WALK_X;
+		this->SetState(MarioState::GOAL);;
 
 		// cutscene nhẹ nhẹ
 		PlayScene* scene = dynamic_cast<PlayScene*>(SceneManager::GetInstance()->GetCurrentScene());
 
 		//// 
-		CourseClearEffect* effect = new CourseClearEffect(168, 7, goal->GetCardType());
+		CourseClearEffect* effect = new CourseClearEffect(goal->GetX(), goal->GetY(), goal->GetCardType());
 		scene->AddObject(effect);
 
 		// hiệu ứng khác 
@@ -798,6 +803,12 @@ void Mario::SetState(MarioState state)
 		accelX = 0.0f;
 		break;
 
+	case MarioState::GOAL:
+		isGoalRunning = true;
+		accelX = 0;
+		nx = 1;
+		break;
+
 	case MarioState::DIE:
 		die_start = GetTickCount64(); 
 		vx = 0;
@@ -812,7 +823,7 @@ void Mario::SetState(MarioState state)
 
 void Mario::SetDirection(int d)
 {
-	if (isTakingDamage || isSuperTransforming || isSuperTransforming) return;
+	if (isTakingDamage || isSuperTransforming || isSuperTransforming || isGoalRunning) return;
 	nx = d;
 }
 
@@ -1186,6 +1197,16 @@ void Mario::HandleSlopePhysics(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		isSliding = false;
 	}
+}
+
+void Mario::HandleGoalRunning(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+{	
+	vy += MARIO_GRAVITY * dt;
+	if (isOnPlatform)
+	{
+		vx = MARIO_WALKING_SPEED * nx;
+	}
+	Collision::GetInstance()->Process(this, dt, coObjects);
 }
 
 
