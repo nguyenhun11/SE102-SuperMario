@@ -159,14 +159,14 @@ enum class MarioForm
 #define GROUND_Y 160.0f
 
 // ------------------------- BOUNDING SHAPES -------------------------------- //
-#define MARIO_BIG_BBOX_WIDTH  14
+#define MARIO_BIG_BBOX_WIDTH  10
 #define MARIO_BIG_BBOX_HEIGHT 24
-#define MARIO_BIG_SITTING_BBOX_WIDTH  14
-#define MARIO_BIG_SITTING_BBOX_HEIGHT 16
+#define MARIO_BIG_SITTING_BBOX_WIDTH  10
+#define MARIO_BIG_SITTING_BBOX_HEIGHT 12
 
 #define MARIO_SIT_HEIGHT_ADJUST ((MARIO_BIG_BBOX_HEIGHT-MARIO_BIG_SITTING_BBOX_HEIGHT)/2)
 
-#define MARIO_SMALL_BBOX_WIDTH  13
+#define MARIO_SMALL_BBOX_WIDTH  10
 #define MARIO_SMALL_BBOX_HEIGHT 12
 
 
@@ -193,6 +193,8 @@ class Mario : public GameObject
 	bool isPoofTransforming;
 	bool isSpinning;
 	bool isSliding;
+
+	bool isGoalRunning;
 	
 	// pmeter
 	int pmeter;
@@ -257,6 +259,8 @@ public:
 		isPoofTransforming = false;
 		isSpinning = false;
 		isSliding = false;
+
+		isGoalRunning = false;
 
 		untouchable = 0;
 		untouchable_start = -1;
@@ -331,10 +335,12 @@ public:
 	void HandlePMeter(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void HandleSlope(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void HandleSlopePhysics(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
+	void HandleGoalRunning(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 
 	// Getters & Setters
 	float GetX() { return x; }
 	float GetY() { return y; }
 	MarioForm GetCurrentForm() { return form; }
 	int GetPMeter() { return pmeter; }
+	bool IsGoalRunning() { return isGoalRunning; }
 };

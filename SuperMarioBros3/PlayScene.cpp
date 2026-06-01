@@ -39,6 +39,7 @@ PlayScene::PlayScene(int id, LPCWSTR filePath):
 #define SCENE_SECTION_OBJECTS	2
 #define SCENE_SECTION_GRID_OBJECTS	3
 #define SCENE_SECTION_MAP_INFO	4
+#define SCENE_SECTION_CAMERA_ZONES 5
 
 #define ASSETS_SECTION_UNKNOWN -1
 #define ASSETS_SECTION_SPRITES 1
@@ -50,10 +51,20 @@ PlayScene::PlayScene(int id, LPCWSTR filePath):
 void PlayScene::_ParseSection_MAP_INFO(string line)
 {
 	vector<string> tokens = split(line);
-	if (tokens.size() < 2) return; // skip invalid lines
+	if (tokens.size() < 1) return;
 	mapRight = (float)atof(tokens[0].c_str());
-	//mapTop = (float)atof(tokens[1].c_str());
-	//DebugOut(L"[INFO] Map right edge set to: %f\n", mapRight);
+}
+
+void PlayScene::_ParseSection_CAMERA_ZONES(string line)
+{
+	vector<string> tokens = split(line);
+	if (tokens.size() < 4) return;
+	CameraZone zone;
+	zone.left = (float)atof(tokens[0].c_str());
+	zone.top = (float)atof(tokens[1].c_str());
+	zone.right = (float)atof(tokens[2].c_str());
+	zone.bottom = (float)atof(tokens[3].c_str());
+	cameraZones.push_back(zone);
 }
 
 void PlayScene::_ParseSection_SPRITES(string line)
@@ -141,6 +152,7 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		}
 		obj = new Mario(x,y); 
 		player = (Mario*)obj;  
+
 
 		DebugOut(L"[INFO] Player object has been created!\n");
 		break;
@@ -402,10 +414,11 @@ void PlayScene::Load()
 		string line(str);
 
 		if (line[0] == '#') continue;	// skip comment lines	
+		if (line == "[MAP_INFO]") { section = SCENE_SECTION_MAP_INFO; continue; };
+		if (line == "[CAMERA_ZONES]") { section = SCENE_SECTION_CAMERA_ZONES; continue; };
 		if (line == "[ASSETS]") { section = SCENE_SECTION_ASSETS; continue; };
 		if (line == "[OBJECTS]") { section = SCENE_SECTION_OBJECTS; continue; };
 		if (line == "[GRID_OBJECTS]") { section = SCENE_SECTION_GRID_OBJECTS; continue; };
-		if (line == "[MAP_INFO]") { section = SCENE_SECTION_MAP_INFO; continue; };
 		if (line[0] == '[') { section = SCENE_SECTION_UNKNOWN; continue; }	
 
 		//
@@ -413,10 +426,11 @@ void PlayScene::Load()
 		//
 		switch (section)
 		{ 
+			case SCENE_SECTION_MAP_INFO: _ParseSection_MAP_INFO(line); break;
+			case SCENE_SECTION_CAMERA_ZONES: _ParseSection_CAMERA_ZONES(line); break;
 			case SCENE_SECTION_ASSETS: _ParseSection_ASSETS(line); break;
 			case SCENE_SECTION_OBJECTS: _ParseSection_OBJECTS(line); break;
 			case SCENE_SECTION_GRID_OBJECTS: _ParseSection_OBJECTS(line, true); break;
-			case SCENE_SECTION_MAP_INFO: _ParseSection_MAP_INFO(line); break;
 		}
 	}
 	f.close();
@@ -447,23 +461,33 @@ void PlayScene::Update(DWORD dt)
 	//--- PLAYER POSITION
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return; 
+	Mario* mario = static_cast<Mario*>(player);
+
 
 	float px, py;
 	player->GetPosition(px, py);
 
 
-	if (px < mapLeft + 24.0f)
+
+	float max_player_x = this->mapRight * TILE_SIZE - 24.0f; 
+	if(mario->IsGoalRunning())
 	{
-		px = mapLeft + 24.0f;
+		max_player_x = 999 * TILE_SIZE;
+	}
+
+
+	if (px < mapLeft)
+	{
+		px = mapLeft;
 		player->SetPosition(px, py); // Khóa Y, ép X quay lại mép trái
 
 		float pvx, pvy;
 		player-> GetSpeed(pvx, pvy);
 		player->SetSpeed(0.0f, pvy);
 	}
-	else if (px > this->mapRight * TILE_SIZE - 24.0f)			/// chặn phải
+	else if (px > max_player_x)			/// chặn phải
 	{
-		px = this->mapRight * TILE_SIZE - 24.0f;
+		px = max_player_x;
 		player->SetPosition(px, py);
 		float pvx, pvy;
 		player->GetSpeed(pvx, pvy);
@@ -483,8 +507,8 @@ void PlayScene::Update(DWORD dt)
 			player->SetSpeed(pvx, 0.0f);
 		}
 	}
-	float deathZone = mapBottom + 48.0f; // Rot xuong 48px la die
-	if (py > deathZone)
+	float deathZone = mapBottom * TILE_SIZE + 48.0f; // Rot xuong 48px la die
+	if (!mario->IsGoalRunning() && py > deathZone)
 	{
 		/*GameManager::GetInstance()->AddLife(-1);
 		Mario* mario = dynamic_cast<Mario*>(player);
@@ -495,6 +519,19 @@ void PlayScene::Update(DWORD dt)
 
 	//--- FOLLOW CAMERA
 	float cx = px, cy = py;
+	CameraZone currentZone = GetZoneX(px);
+	if (prevCameraZone.left == defaultCameraZone.left && prevCameraZone.top == defaultCameraZone.top &&
+		prevCameraZone.right == defaultCameraZone.right && prevCameraZone.bottom == defaultCameraZone.bottom)
+	{
+		prevCameraZone = currentZone;
+	}
+	if (currentZone.left != prevCameraZone.left || currentZone.right != prevCameraZone.right)
+	{
+		prevCameraZone = currentZone;
+		isTransitioningCamera = true;
+		cameraTransitionTimer = 0.0f;
+		startCamY = currentCamY;
+	}
 
 	// HUD space
 	float hudHeight = HUD_HEIGHT;
@@ -504,14 +541,48 @@ void PlayScene::Update(DWORD dt)
 	cy -= playableHeight / 2;
 
 
-	if (cx < mapLeft) cx = mapLeft;
-	if (cy < mapTop) cy = mapTop;
-	float max_cy = mapBottom - GameGlobal::GetHeight();
-	if (cy > max_cy) cy = max_cy;
-	float max_cx = this->mapRight * TILE_SIZE - GameGlobal::GetWidth();
+	float max_cx = mapRight * TILE_SIZE - GameGlobal::GetWidth();
+	float min_cx = mapLeft * TILE_SIZE;
+	float min_cy = currentZone.top * TILE_SIZE;
+	float max_cy = currentZone.bottom * TILE_SIZE - GameGlobal::GetHeight();
+	if (cx < min_cx) cx = min_cx;
 	if (cx > max_cx) cx = max_cx;
 
-	Camera::GetInstance()->SetCamPos(cx, cy);
+	// Clamp cy theo zone
+	float targetCamY = cy;
+	if (currentCamY < 0.0f)
+	{
+		currentCamY = targetCamY;
+	}
+	if (targetCamY < min_cy) targetCamY = min_cy;
+	if (targetCamY > max_cy) targetCamY = max_cy;
+
+	// Lerp camera position
+	if (isTransitioningCamera)
+	{
+		cameraTransitionTimer += dt;
+		float t = cameraTransitionTimer / CAMERA_TRANSITION_TIME;
+		if (t >= 1.0f)
+		{
+			t = 1.0f;
+			isTransitioningCamera = false;
+		}
+		float smooth_t = t * t * (3.0f - 2.0f * t);
+		currentCamY = startCamY + (targetCamY - startCamY) * smooth_t;
+	}
+	else
+	{
+		currentCamY = targetCamY;
+	}
+
+	// Clamp currentCamY theo zone
+	if (currentCamY < min_cy) currentCamY = min_cy;
+	if (currentCamY > max_cy) currentCamY = max_cy;
+
+	if (!mario->IsGoalRunning())
+	{
+		Camera::GetInstance()->SetCamPos(cx, currentCamY);
+	}
 
 	if (isPSwitchActive)
 	{
@@ -676,4 +747,16 @@ void PlayScene::PurgeDeletedObjects()
 	objects.erase(
 		std::remove_if(objects.begin(), objects.end(), PlayScene::IsGameObjectDeleted),
 		objects.end());
+}
+
+CameraZone PlayScene::GetZoneX(float x)
+{
+	for (auto& zone : cameraZones)
+	{
+		if (x >= zone.left * TILE_SIZE && x <= zone.right * TILE_SIZE)
+		{
+			return zone;
+		}
+	}
+	return {mapLeft, mapTop, mapRight, mapBottom};
 }
