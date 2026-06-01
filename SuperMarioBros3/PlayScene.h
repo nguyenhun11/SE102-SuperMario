@@ -28,7 +28,7 @@ protected:
 
 	void LoadAssets(LPCWSTR assetFile);
 
-	float mapRight = 180;	// này tính theo tile (16 x 16)
+	float mapRight = 175;	// này tính theo tile (16 x 16)
 	// 3 cái dưới này tính theo pixel
 	float mapLeft = -8.0f;
 	float mapTop = -300.0f;    

@@ -19,7 +19,7 @@ goal.txt
 goalblock.txt
 
 [MAP_INFO]
-175
+175 
 
 [GRID_OBJECTS]
 # type x y extra_settings per object type
@@ -28,7 +28,7 @@ goalblock.txt
 
 # MARIO
 
-0 150 5
+0 1 5
 
 
 #GROUND

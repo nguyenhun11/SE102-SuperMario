@@ -19,7 +19,7 @@ public:
     void GetBoundingBox(float& l, float& t, float& r, float& b);
 
     int IsBlocking() { return 0; }
-    int IsCollidable() { return 1; }
+    int IsCollidable() { return 0; }
 
     // map tọa độ Y dựa trên x mario
     float GetSurfaceY(float marioX);

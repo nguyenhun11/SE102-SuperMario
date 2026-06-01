@@ -16,7 +16,7 @@ float Slope::GetSurfaceY(float marioX)
     float surfaceY = 0;
     if (direction == 1) // '/'
     {
-        surfaceY = y + (height / 2) - (percent * height);
+        surfaceY = (y + height / 2) - percent * height;
     }
     else if (direction == -1) // '\'
     {

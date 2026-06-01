@@ -49,7 +49,7 @@ PlayScene::PlayScene(int id, LPCWSTR filePath):
 void PlayScene::_ParseSection_MAP_INFO(string line)
 {
 	vector<string> tokens = split(line);
-	if (tokens.size() < 2) return; // skip invalid lines
+	if (tokens.size() < 1) return; // skip invalid lines
 	mapRight = (float)atof(tokens[0].c_str());
 	//mapTop = (float)atof(tokens[1].c_str());
 	//DebugOut(L"[INFO] Map right edge set to: %f\n", mapRight);
@@ -395,10 +395,10 @@ void PlayScene::Load()
 		string line(str);
 
 		if (line[0] == '#') continue;	// skip comment lines	
+		if (line == "[MAP_INFO]") { section = SCENE_SECTION_MAP_INFO; continue; };
 		if (line == "[ASSETS]") { section = SCENE_SECTION_ASSETS; continue; };
 		if (line == "[OBJECTS]") { section = SCENE_SECTION_OBJECTS; continue; };
 		if (line == "[GRID_OBJECTS]") { section = SCENE_SECTION_GRID_OBJECTS; continue; };
-		if (line == "[MAP_INFO]") { section = SCENE_SECTION_MAP_INFO; continue; };
 		if (line[0] == '[') { section = SCENE_SECTION_UNKNOWN; continue; }	
 
 		//
@@ -406,10 +406,10 @@ void PlayScene::Load()
 		//
 		switch (section)
 		{ 
+			case SCENE_SECTION_MAP_INFO: _ParseSection_MAP_INFO(line); break;
 			case SCENE_SECTION_ASSETS: _ParseSection_ASSETS(line); break;
 			case SCENE_SECTION_OBJECTS: _ParseSection_OBJECTS(line); break;
 			case SCENE_SECTION_GRID_OBJECTS: _ParseSection_OBJECTS(line, true); break;
-			case SCENE_SECTION_MAP_INFO: _ParseSection_MAP_INFO(line); break;
 		}
 	}
 	f.close();
