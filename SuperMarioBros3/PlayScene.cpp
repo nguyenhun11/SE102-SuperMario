@@ -152,6 +152,7 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		obj = new Mario(x,y); 
 		player = (Mario*)obj;  
 
+
 		DebugOut(L"[INFO] Player object has been created!\n");
 		break;
 	case OBJECT_TYPE_SOLID_BLOCK:
@@ -460,7 +461,7 @@ void PlayScene::Update(DWORD dt)
 	float px, py;
 	player->GetPosition(px, py);
 
-	CameraZone currentZone = GetZoneX(px);
+
 
 	float max_player_x = this->mapRight * TILE_SIZE - 24.0f; 
 	if(mario->IsGoalRunning())
@@ -512,6 +513,19 @@ void PlayScene::Update(DWORD dt)
 
 	//--- FOLLOW CAMERA
 	float cx = px, cy = py;
+	CameraZone currentZone = GetZoneX(px);
+	if (prevCameraZone.left == defaultCameraZone.left && prevCameraZone.top == defaultCameraZone.top &&
+		prevCameraZone.right == defaultCameraZone.right && prevCameraZone.bottom == defaultCameraZone.bottom)
+	{
+		prevCameraZone = currentZone;
+	}
+	if (currentZone.left != prevCameraZone.left || currentZone.right != prevCameraZone.right)
+	{
+		prevCameraZone = currentZone;
+		isTransitioningCamera = true;
+		cameraTransitionTimer = 0.0f;
+		startCamY = currentCamY;
+	}
 
 	// HUD space
 	float hudHeight = HUD_HEIGHT;
@@ -521,27 +535,47 @@ void PlayScene::Update(DWORD dt)
 	cy -= playableHeight / 2;
 
 
-	
-
 	float max_cx = mapRight * TILE_SIZE - GameGlobal::GetWidth();
 	float min_cx = mapLeft * TILE_SIZE;
 	float min_cy = currentZone.top * TILE_SIZE;
 	float max_cy = currentZone.bottom * TILE_SIZE - GameGlobal::GetHeight();
-
-	//if (cx < mapLeft) cx = mapLeft;
-	//if (cy < mapTop) cy = mapTop;
-	//float max_cy = mapBottom - GameGlobal::GetHeight();
-	//if (cy > max_cy) cy = max_cy;
 	if (cx < min_cx) cx = min_cx;
 	if (cx > max_cx) cx = max_cx;
 
 	// Clamp cy theo zone
-	if (cy < min_cy) cy = min_cy;
-	if (cy > max_cy) cy = max_cy;
+	float targetCamY = cy;
+	if (currentCamY < 0.0f)
+	{
+		currentCamY = targetCamY;
+	}
+	if (targetCamY < min_cy) targetCamY = min_cy;
+	if (targetCamY > max_cy) targetCamY = max_cy;
+
+	// Lerp camera position
+	if (isTransitioningCamera)
+	{
+		cameraTransitionTimer += dt;
+		float t = cameraTransitionTimer / CAMERA_TRANSITION_TIME;
+		if (t >= 1.0f)
+		{
+			t = 1.0f;
+			isTransitioningCamera = false;
+		}
+		float smooth_t = t * t * (3.0f - 2.0f * t);
+		currentCamY = startCamY + (targetCamY - startCamY) * smooth_t;
+	}
+	else
+	{
+		currentCamY = targetCamY;
+	}
+
+	// Clamp currentCamY theo zone
+	if (currentCamY < min_cy) currentCamY = min_cy;
+	if (currentCamY > max_cy) currentCamY = max_cy;
 
 	if (!mario->IsGoalRunning())
 	{
-		Camera::GetInstance()->SetCamPos(cx, cy);
+		Camera::GetInstance()->SetCamPos(cx, currentCamY);
 	}
 
 	PurgeDeletedObjects();
@@ -616,7 +650,7 @@ CameraZone PlayScene::GetZoneX(float x)
 {
 	for (auto& zone : cameraZones)
 	{
-		if (x >= zone.left && x <= zone.right)
+		if (x >= zone.left * TILE_SIZE && x <= zone.right * TILE_SIZE)
 		{
 			return zone;
 		}
