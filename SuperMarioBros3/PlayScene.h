@@ -10,6 +10,13 @@
 #include "GameManager.h"
 //#include "Koopas.h"
 
+#define CAMERA_TRANSITION_TIME 500
+
+struct CameraZone
+{
+	float left, top, right, bottom;
+};
+
 
 class PlayScene: public Scene
 {
@@ -18,8 +25,10 @@ protected:
 	LPGAMEOBJECT player;					
 
 	vector<LPGAMEOBJECT> objects;
+	vector<CameraZone> cameraZones;
 
 	void _ParseSection_MAP_INFO(string line);
+	void _ParseSection_CAMERA_ZONES(string line);
 	void _ParseSection_SPRITES(string line);
 	void _ParseSection_ANIMATIONS(string line);
 
@@ -28,11 +37,18 @@ protected:
 
 	void LoadAssets(LPCWSTR assetFile);
 
-	float mapRight = 175;	// này tính theo tile (16 x 16)
-	// 3 cái dưới này tính theo pixel
-	float mapLeft = -8.0f;
-	float mapTop = -300.0f;    
-	float mapBottom = 240.0f;
+	float mapRight = 200;	// này tính theo tile (16 x 16)
+	float mapLeft = -0.5f;
+	float mapTop = -500;    
+	float mapBottom = 15;
+
+	float startCamY = 0.0f;
+	float currentCamY = 0.0f;
+	CameraZone defaultCameraZone = { 0,0,0,0 };
+	CameraZone prevCameraZone = defaultCameraZone;
+	float cameraTransitionTimer = 0.0f;
+	bool isTransitioningCamera = false;
+
 	
 public: 
 	PlayScene(int id, LPCWSTR filePath);
@@ -51,6 +67,7 @@ public:
 
 	void Clear();
 	void PurgeDeletedObjects();
+	CameraZone GetZoneX(float x);
 
 	static bool IsGameObjectDeleted(const LPGAMEOBJECT& o);
 };
