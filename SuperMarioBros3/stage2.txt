@@ -34,7 +34,7 @@ map_2.txt
 # See OBJECT_TYPE constants in AssetIDs.h
 
 # MARIO
-0 125 10
+0 170 10
 
 
 #GROUND
@@ -185,6 +185,10 @@ map_2.txt
 ## đỉnh dốc
 601	26 5 16 16 4 1 60212 60212 60212 60222 60222 60223 60231 60231 60233
 
+## Horizontal PIPE
+# id x y, sprite size wh, tl tr ml mr
+703	26 3 16 16 4	70300 70301 70302 70310 70311 70312
+
 ## đất dưới đỉnh dốc
 # Đỉnh dốc nằm ở Y=5, ta đắp đất từ Y=6 đến Y=11 cho các cột từ 26 đến 29
 # Cột 26
@@ -291,6 +295,9 @@ map_2.txt
 601	80	13	16	16	49	1	60242 60242 60243 60241 60242 60242 60241 60241 60243
 
 # PIPE
+## Horizontal PIPE
+# id x y, sprite size wh, tl tr ml mr
+703	46 5 16 16 6	70300 70301 70302 70310 70311 70312
 # id x y, sprite size wh, tl tr ml mr
 702 48 7	16 16	5	70211 70212 70221 70222
 
@@ -701,6 +708,9 @@ map_2.txt
 
 ## đỉnh dốc
 601	150	8	16	16	3	1	60212 60212 60212 60241 60242 60242 60241 60241 60243
+## Horizontal PIPE
+# id x y, sprite size wh, tl tr ml mr
+703	150 6 16 16 3	70300 70301 70302 70310 70311 70312
 
 ## xuống dốc
 600 153 8 60321
@@ -748,7 +758,7 @@ map_2.txt
 
 # Khúc đứng 4x4: Tâm X = (146 + 149) / 2 = 147.5
 # Tâm Y = (8 + 11) / 2 - 0.125 = 9.375
-603  147.1  9.55  70  70  1
+603  147.1  9.55  68  68  1
 
 # --- Dốc xuống thoải dài (X: 153-160) ---
 # Đây là dốc 8x4 (Rộng 8 ô, Cao 4 dòng: 8, 9, 10, 11)

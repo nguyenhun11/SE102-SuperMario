@@ -1178,8 +1178,8 @@ void Mario::HandleSlopePhysics(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		if (isOnSlope)
 		{
 			int slideDirection = -slopeDirection;
-			accelX = (MARIO_ACCEL_RUN_X * 1.2f) * slideDirection;
-			maxVx = (MARIO_RUNNING_SPEED * 1.2f) * slideDirection;
+			accelX = (MARIO_ACCEL_RUN_X * 1.1f) * slideDirection;
+			maxVx = (MARIO_RUNNING_SPEED * 1.1f) * slideDirection;
 			nx = slideDirection;
 			isSliding = true;
 			if (vy >= 0)

@@ -17,6 +17,7 @@
 #include "SemisolidPlatform.h"
 #include "Decoration.h"
 #include "VerticalPipe.h"
+#include "HorizontalPipe.h"
 #include "SolidBlock.h"
 #include "SoundManager.h"
 #include "PiranhaPlant.h"
@@ -241,6 +242,25 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		obj = new VerticalPipe(x, y, cell_width, cell_height, rows,
 			idTopLeft, idTopRight, idBodyLeft, idBodyRight);
 
+		break;
+	}
+	case OBJECT_TYPE_HORIZOLTAL_PIPE:
+	{
+		float cell_width = (float)atof(tokens[3].c_str());
+		float cell_height = (float)atof(tokens[4].c_str());
+
+		int columns = atoi(tokens[5].c_str());
+
+		int idTopLeft = atoi(tokens[6].c_str());
+		int idTop = atoi(tokens[7].c_str());
+		int idTopRight = atoi(tokens[8].c_str());
+		int idBottomLeft = atoi(tokens[9].c_str());
+		int idBottom = atoi(tokens[10].c_str());
+		int idBottomRight = atoi(tokens[11].c_str());
+
+		obj = new HorizontalPipe(x, y, cell_width, cell_height, columns,
+			idTopLeft, idTop, idTopRight,
+			idBottomLeft, idBottom, idBottomRight);
 		break;
 	}
 	case OBJECT_TYPE_QUESTION_BLOCK:

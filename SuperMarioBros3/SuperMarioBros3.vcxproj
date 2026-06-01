@@ -165,6 +165,7 @@
     <ClCompile Include="CourseClearEffect.cpp" />
     <ClCompile Include="Fire.cpp" />
     <ClCompile Include="GoalBlock.cpp" />
+    <ClCompile Include="HorizontalPipe.cpp" />
     <ClCompile Include="InvisibleNode.cpp" />
     <ClCompile Include="MapMario.cpp" />
     <ClCompile Include="MapNode.cpp" />
@@ -242,6 +243,7 @@
     <ClInclude Include="Dependencies\irrKlang\include\irrKlang.h" />
     <ClInclude Include="Fire.h" />
     <ClInclude Include="GoalBlock.h" />
+    <ClInclude Include="HorizontalPipe.h" />
     <ClInclude Include="InvisibleNode.h" />
     <ClInclude Include="MapMario.h" />
     <ClInclude Include="MapNode.h" />

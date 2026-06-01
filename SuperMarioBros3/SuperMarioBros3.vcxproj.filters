@@ -248,6 +248,7 @@
     <ClCompile Include="PiranhaPlant.cpp">
       <Filter>Entities\Enemies</Filter>
     </ClCompile>
+    <ClCompile Include="HorizontalPipe.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h">
@@ -499,6 +500,7 @@
     <ClInclude Include="PiranhaPlant.h">
       <Filter>Entities\Enemies</Filter>
     </ClInclude>
+    <ClInclude Include="HorizontalPipe.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="brick.txt">
