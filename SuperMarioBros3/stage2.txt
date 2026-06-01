@@ -20,9 +20,13 @@ goal.txt
 goalblock.txt
 map_2.txt
 
-
 [MAP_INFO]
 187
+
+[CAMERA_ZONES]
+-1 -1 170 15
+170 5 999 15
+
 
 [GRID_OBJECTS]
 # type x y extra_settings per object type

@@ -10,6 +10,10 @@
 #include "GameManager.h"
 //#include "Koopas.h"
 
+struct CameraZone
+{
+	float left, top, right, bottom;
+};
 
 class PlayScene: public Scene
 {
@@ -18,8 +22,10 @@ protected:
 	LPGAMEOBJECT player;					
 
 	vector<LPGAMEOBJECT> objects;
+	vector<CameraZone> cameraZones;
 
 	void _ParseSection_MAP_INFO(string line);
+	void _ParseSection_CAMERA_ZONES(string line);
 	void _ParseSection_SPRITES(string line);
 	void _ParseSection_ANIMATIONS(string line);
 
@@ -30,9 +36,9 @@ protected:
 
 	float mapRight = 175;	// này tính theo tile (16 x 16)
 	// 3 cái dưới này tính theo pixel
-	float mapLeft = -8.0f;
-	float mapTop = -300.0f;    
-	float mapBottom = 240.0f;
+	float mapLeft = -0.5f;
+	float mapTop = -5.0f;    
+	float mapBottom = 15;
 	
 public: 
 	PlayScene(int id, LPCWSTR filePath);
@@ -51,6 +57,7 @@ public:
 
 	void Clear();
 	void PurgeDeletedObjects();
+	CameraZone GetZoneX(float x);
 
 	static bool IsGameObjectDeleted(const LPGAMEOBJECT& o);
 };
