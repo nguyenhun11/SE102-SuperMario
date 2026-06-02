@@ -24,6 +24,7 @@ Each ID for a type of object will BEGIN with:
 #define OBJECT_TYPE_SOLID_BLOCK		300
 #define OBJECT_TYPE_BRICK			301
 #define OBJECT_TYPE_QUESTION_BLOCK	302
+#define OBJECT_TYPE_NOTE_BLOCK		303
 #define OBJECT_TYPE_GOAL_BLOCK		309
 
 // Objects
@@ -42,7 +43,7 @@ Each ID for a type of object will BEGIN with:
 #define OBJECT_TYPE_PLATFORM			7
 #define OBJECT_TYPE_SEMISOLID_PLATFORM	701
 #define OBJECT_TYPE_VERTICAL_PIPE		702
-#define OBJECT_TYPE_HORIZOLTAL_PIPE		703 //Chua lam
+#define OBJECT_TYPE_HORIZOLTAL_PIPE		703
 
 //Worldmap
 #define WORLDMAP_MAP		800

@@ -228,6 +228,7 @@ class Mario : public GameObject
 	void OnCollisionWithMushroom(LPCOLLISIONEVENT e);
 	void OnCollisionWithLeaf(LPCOLLISIONEVENT e);
 	void OnCollisionWithBrick(LPCOLLISIONEVENT e);
+	void OnCollisionWithNoteBlock(LPCOLLISIONEVENT e);
 
 	int GetAniIdBig();
 	int GetAniIdSmall();

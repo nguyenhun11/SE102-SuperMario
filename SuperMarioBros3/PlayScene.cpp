@@ -11,12 +11,14 @@
 #include "Koopa.h"
 #include "Platform.h"
 #include "QuestionBlock.h"
+#include "NoteBlock.h"
 #include "GoalBlock.h"
 #include "Ground.h"
 #include "Slope.h"
 #include "SemisolidPlatform.h"
 #include "Decoration.h"
 #include "VerticalPipe.h"
+#include "HorizontalPipe.h"
 #include "SolidBlock.h"
 #include "SoundManager.h"
 #include "PiranhaPlant.h"
@@ -243,12 +245,45 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 
 		break;
 	}
+	case OBJECT_TYPE_HORIZOLTAL_PIPE:
+	{
+		float cell_width = (float)atof(tokens[3].c_str());
+		float cell_height = (float)atof(tokens[4].c_str());
+
+		int columns = atoi(tokens[5].c_str());
+
+		int idTopLeft = atoi(tokens[6].c_str());
+		int idTop = atoi(tokens[7].c_str());
+		int idTopRight = atoi(tokens[8].c_str());
+		int idBottomLeft = atoi(tokens[9].c_str());
+		int idBottom = atoi(tokens[10].c_str());
+		int idBottomRight = atoi(tokens[11].c_str());
+
+		obj = new HorizontalPipe(x, y, cell_width, cell_height, columns,
+			idTopLeft, idTop, idTopRight,
+			idBottomLeft, idBottom, idBottomRight);
+		break;
+	}
 	case OBJECT_TYPE_QUESTION_BLOCK:
 	{
 		int contained_item_id = atoi(tokens[3].c_str());
 		obj = new QuestionBlock(x, y, contained_item_id);
 		break;
 
+	}
+
+	case OBJECT_TYPE_NOTE_BLOCK:
+	{
+		int contained_item_id = 0;
+		int bounceCount = 1;
+		contained_item_id = atoi(tokens[3].c_str());
+		if (tokens.size() > 4)
+		{
+			bounceCount = atoi(tokens[4].c_str());
+		}
+
+		obj = new NoteBlock(x, y, contained_item_id, bounceCount);
+		break;
 	}
 
 	case OBJECT_TYPE_GOAL_BLOCK:
@@ -463,7 +498,7 @@ void PlayScene::Update(DWORD dt)
 
 
 
-	float max_player_x = this->mapRight * TILE_SIZE - 24.0f; 
+	float max_player_x = this->mapRight * TILE_SIZE - 8.0f; 
 	if(mario->IsGoalRunning())
 	{
 		max_player_x = 999 * TILE_SIZE;
