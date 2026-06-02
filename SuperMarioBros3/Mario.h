@@ -5,6 +5,8 @@
 #include "Animations.h"
 #include "GameManager.h"
 #include "debug.h"
+#include "VerticalPipe.h"
+#include "HorizontalPipe.h"
 
 // Moving Speed
 #define MARIO_WALKING_SPEED		0.1f
@@ -49,6 +51,10 @@
 // P-meter
 #define MARIO_PMETER_MAX 7
 #define MARIO_PMETER_CHARGE_TIME 200 
+
+// Piping
+#define MARIO_PIPE_TIME 2000
+#define MARIO_PIPE_SPEED 0.025f
 
 // ------------------------- MARIO STATE -------------------------------- //
 #pragma	region	MARIO_STATES & MARIO_FORMS
@@ -105,6 +111,8 @@ enum class MarioForm
 #define ID_ANI_MARIO_SUPER_SIT 1107
 #define ID_ANI_MARIO_SUPER_SLIDING 1108
 
+#define ID_ANI_MARIO_SUPER_PIPING 1109
+
 #define ID_ANI_MARIO_DIE 999
 
 // SMALL MARIO
@@ -117,6 +125,9 @@ enum class MarioForm
 
 #define ID_ANI_MARIO_SMALL_JUMP_WALK 1004
 #define ID_ANI_MARIO_SMALL_JUMP_RUN 1005
+
+#define ID_ANI_MARIO_SMALL_PIPING 1009
+
 
 // RACOON MARIO
 #define ID_ANI_MARIO_RACOON_IDLE 1200
@@ -136,6 +147,9 @@ enum class MarioForm
 
 #define ID_ANI_MARIO_RACOON_FLYING 1213
 #define ID_ANI_MARIO_RACOON_FLOATING 1214
+
+#define ID_ANI_MARIO_RACOON_PIPING 1209
+
 
 
 // ---- Other Game feel Stuff ----
@@ -193,6 +207,7 @@ class Mario : public GameObject
 	bool isPoofTransforming;
 	bool isSpinning;
 	bool isSliding;
+	bool isPiping;
 
 	bool isGoalRunning;
 	
@@ -212,12 +227,14 @@ class Mario : public GameObject
 	ULONGLONG spin_start;
 	ULONGLONG pmeter_start;
 	ULONGLONG pmeter_sound_start;
+	ULONGLONG piping_start;
 
 	MarioForm nextPoofForm;
 	BOOLEAN isOnPlatform;
 	BOOLEAN isOnSlope;
-	//int coin; 
-	//int score;
+	
+	VerticalPipe* standingPipe;
+
 
 	void OnCollisionWithGoalBlock(LPCOLLISIONEVENT e);
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
@@ -229,6 +246,7 @@ class Mario : public GameObject
 	void OnCollisionWithLeaf(LPCOLLISIONEVENT e);
 	void OnCollisionWithBrick(LPCOLLISIONEVENT e);
 	void OnCollisionWithNoteBlock(LPCOLLISIONEVENT e);
+	void OnCollisionWithVerticalPipe(LPCOLLISIONEVENT e);
 
 	int GetAniIdBig();
 	int GetAniIdSmall();
@@ -260,6 +278,7 @@ public:
 		isPoofTransforming = false;
 		isSpinning = false;
 		isSliding = false;
+		isPiping = false;
 
 		isGoalRunning = false;
 
@@ -273,6 +292,7 @@ public:
 		poof_start = -1;
 		spin_start = -1;
 		pmeter_start = -1;
+		piping_start = -1;
 
 		//coin = 0;
 		//score = 0;
@@ -300,7 +320,7 @@ public:
 
 	int IsCollidable()
 	{ 
-		return (state != static_cast<int>(MarioState::DIE));
+		return (state != static_cast<int>(MarioState::DIE) && state != static_cast<int>(MarioState::PIPING));
 	}
 
 	int IsBlocking()
@@ -327,6 +347,7 @@ public:
 	void Attack();
 	void TakeDamage();
 	void Reset();
+	void EnterPipe();
 
 	// Handle Update
 	void HandleDying(DWORD dt, vector<LPGAMEOBJECT>* coObjects); 
@@ -337,6 +358,7 @@ public:
 	void HandleSlope(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void HandleSlopePhysics(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void HandleGoalRunning(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
+	void HandlePiping(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 
 	// Getters & Setters
 	float GetX() { return x; }

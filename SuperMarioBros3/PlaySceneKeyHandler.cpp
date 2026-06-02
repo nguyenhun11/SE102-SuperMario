@@ -15,7 +15,8 @@ void PlaySceneKeyHandler::OnKeyDown(int KeyCode)
 	{
 	case DIK_DOWN:
 	case DIK_S:
-		mario->SetState(MarioState::SIT);
+		//mario->SetState(MarioState::SIT);
+		mario->EnterPipe();
 		break;
 	case DIK_Z:
 	case DIK_SPACE:

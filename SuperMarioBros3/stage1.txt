@@ -104,7 +104,7 @@ goalblock.txt
 
 # PIPE - HOA
 # id x y, sprite size wh, tl tr ml mr
-702 22 9	16 16	3	70211 70212 70221 70222
+702 22 9	16 16	3	70211 70212 70221 70222	8
 
 # CLOUD ABOVE PIPE
 600 20 4 6000321

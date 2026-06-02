@@ -240,8 +240,11 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		int idBodyLeft = atoi(tokens[8].c_str());
 		int idBodyRight = atoi(tokens[9].c_str());
 
+		int targetScene = -1;
+		if (tokens.size() > 10) targetScene = atoi(tokens[10].c_str());
+
 		obj = new VerticalPipe(x, y, cell_width, cell_height, rows,
-			idTopLeft, idTopRight, idBodyLeft, idBodyRight);
+			idTopLeft, idTopRight, idBodyLeft, idBodyRight, targetScene);
 
 		break;
 	}

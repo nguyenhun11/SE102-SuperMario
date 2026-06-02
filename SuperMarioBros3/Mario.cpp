@@ -37,6 +37,8 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		return;
 	}
 
+	HandlePiping(dt, coObjects);
+	if (isPiping) return;
 	HandleDying(dt, coObjects);
 	HandleTakingDamage(dt, coObjects);
 	HandleTransform(dt, coObjects);
@@ -198,6 +200,9 @@ void Mario::OnCollisionWith(LPCOLLISIONEVENT e)
 	{
 		vx = 0;
 	}
+
+	if (dynamic_cast<VerticalPipe*>(e->obj))
+		OnCollisionWithVerticalPipe(e);
 
 	if (dynamic_cast<Mushroom*>(e->obj))
 		OnCollisionWithMushroom(e);
@@ -386,6 +391,22 @@ void Mario::OnCollisionWithNoteBlock(LPCOLLISIONEVENT e)
 	}
 }
 
+void Mario::OnCollisionWithVerticalPipe(LPCOLLISIONEVENT e)
+{
+	if (dynamic_cast<VerticalPipe*>(e->obj))
+	{
+		VerticalPipe* pipe = dynamic_cast<VerticalPipe*>(e->obj);
+		if (e->ny > 0) // Mario từ dưới chui lên
+		{
+			standingPipe = pipe;
+		}
+		else if (e->ny < 0) // Mario từ phía trên chui xuống
+		{
+			standingPipe = pipe;
+		}
+	}
+}
+
 /// <summary>
 /// / NHỚ CẬP NHẬT
 /// </summary>
@@ -436,7 +457,12 @@ int Mario::GetAniIdSmall()
 		}
 	}
 	else		// mario dung tren mat đất
-		if (isSitting)
+		if (isPiping)
+		{
+			aniId = ID_ANI_MARIO_SMALL_PIPING;
+			return aniId;
+		}
+		else if (isSitting)
 		{
 			if (isSliding)
 				aniId = ID_ANI_MARIO_SMALL_SLIDING;
@@ -489,7 +515,12 @@ int Mario::GetAniIdBig()
 		}
 	}
 	else
-		if (isSitting)
+		if (isPiping)
+		{
+			aniId = ID_ANI_MARIO_SUPER_PIPING;
+			return aniId;
+		}
+		else if (isSitting)
 		{
 			if (isSliding)
 			{
@@ -544,7 +575,12 @@ int Mario::GetAniIdRacoon()
 		}
 	}
 	else
-		if (isSitting)
+		if (isPiping)
+		{
+			aniId = ID_ANI_MARIO_RACOON_PIPING;
+			return aniId;
+		}
+		else if (isSitting)
 		{
 			if (isSliding)
 			{
@@ -821,6 +857,13 @@ void Mario::SetState(MarioState state)
 		}
 		break;
 
+	case MarioState::PIPING:
+		vx = 0.0f;
+		accelX = 0;
+		accelY = 0;
+		piping_start = GetTickCount64();
+		break;
+
 	case MarioState::IDLE:
 		if (isSitting) break;
 		accelX = 0.0f;
@@ -849,7 +892,7 @@ void Mario::SetState(MarioState state)
 
 void Mario::SetDirection(int d)
 {
-	if (isTakingDamage || isSuperTransforming || isSuperTransforming || isGoalRunning) return;
+	if (isTakingDamage || isSuperTransforming || isPoofTransforming || isGoalRunning) return;
 	nx = d;
 }
 
@@ -921,6 +964,7 @@ void Mario::StartPoofTransform(MarioForm targetForm)
 }
 
 // ============================== BEHAVIOUR ===============================
+#pragma region BEHAVIOUR
 void Mario::Attack()
 {
 	if (form != MarioForm::RACOON || isSpinning == true) return;
@@ -987,6 +1031,27 @@ void Mario::Reset()
 
 	SetDirection(1);
 }
+
+void Mario::EnterPipe()
+{
+	if (standingPipe != NULL && standingPipe->isEntrance())
+	{
+		// play sound
+		SoundManager::GetInstance()->Play("pipe");
+		SetState(MarioState::PIPING);
+		isPiping = true;
+		float pl, pt, pr, pb;
+		standingPipe->GetBoundingBox(pl, pt, pr, pb);
+		this->x = pl + (pr - pl) / 2;
+	}
+	else
+	{
+		SetState(MarioState::SIT);
+	}
+}
+
+
+#pragma endregion
 
 // ============================== HANDLE UPDATE ===============================
 #pragma region HANDLE UPDATE
@@ -1233,6 +1298,21 @@ void Mario::HandleGoalRunning(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		vx = MARIO_WALKING_SPEED * nx;
 	}
 	Collision::GetInstance()->Process(this, dt, coObjects);
+}
+
+void Mario::HandlePiping(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+{
+	if (!isOnPlatform) standingPipe = NULL;
+	if (!isPiping) return;
+	vy = MARIO_PIPE_SPEED;
+	vx = 0.0;
+	y += vy * dt;
+
+	if (GetTickCount64() - piping_start > MARIO_PIPE_TIME)
+	{
+		isPiping = false;
+		SceneManager::GetInstance()->InitiateSwitchScene(standingPipe->GetTargetSceneId());
+	}
 }
 
 
