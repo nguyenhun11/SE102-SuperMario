@@ -30,7 +30,7 @@ public:
 		this->isBlock = isBlock;
 	}
 
-	bool isEntrance() { return targetSceneID != -1; }
+	bool isEntrance() { return targetSceneID != -1 && targetSceneID != 999; }
 	int IsBlocking() override { return isBlock; }
 
 	int GetTargetSceneId() { return targetSceneID; }

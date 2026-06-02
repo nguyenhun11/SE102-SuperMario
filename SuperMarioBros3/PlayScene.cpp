@@ -473,6 +473,7 @@ void PlayScene::Load()
 	f.close();
 
 
+	//  ĐÚNG: Gọi thông qua Instance duy nhất
 	GameManager* gm = GameManager::GetInstance();
 	if (gm->isGoingThroughPipe && player != NULL)
 	{

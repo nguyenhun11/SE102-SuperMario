@@ -1,9 +1,7 @@
 #pragma once
 #include "GameObject.h"
-
 #include "Animation.h"
 #include "Animations.h"
-#include "GameManager.h"
 #include "debug.h"
 #include "VerticalPipe.h"
 #include "HorizontalPipe.h"
@@ -53,7 +51,7 @@
 #define MARIO_PMETER_CHARGE_TIME 200 
 
 // Piping
-#define MARIO_PIPE_TIME 1250
+#define MARIO_PIPE_TIME 1400
 #define MARIO_PIPE_SPEED 0.02f
 
 // ------------------------- MARIO STATE -------------------------------- //
@@ -302,19 +300,17 @@ public:
 		//coin = 0;
 		//score = 0;
 
-		form = MarioForm::SMALL;
+		SetUp();
+		
 		currentState = MarioState::IDLE;
 		nextPoofForm = MarioForm::RACOON;
 
 		zIndex = 10;
 	}
 
-	void AddCoin(int amount = 1)
-	{
-		//coin += amount;
-		GameManager::GetInstance()->AddCoin(amount);
-		//DebugOut(L">>> CurrentCoin: %d\n", coin);
-	}
+	void SetUp();
+
+	void AddCoin(int amount = 1);
 
 	void AddScore(int amount = 100);
 

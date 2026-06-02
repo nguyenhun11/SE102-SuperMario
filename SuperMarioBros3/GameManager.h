@@ -2,6 +2,8 @@
 #include <Windows.h>
 #include "Singleton.h"
 #include "HUD.h"
+
+
 class GameManager : public Singleton<GameManager>
 {
 	friend class Singleton<GameManager>;
@@ -12,6 +14,8 @@ public:
 
 	float mapMarioPrevX = -1.0f;
 	float mapMarioPrevY = -1.0f;
+
+	int marioForm;
 
 	bool isReturningFromFail = false;
 	bool isGoingThroughPipe = false;

@@ -21,6 +21,18 @@
 #include "Collision.h"
 #include "NoteBlock.h"
 
+void Mario::SetUp()
+{
+	SetNewForm(static_cast<MarioForm>(GameManager::GetInstance()->marioForm));
+}
+
+void Mario::AddCoin(int amount)
+{
+	//coin += amount;
+	GameManager::GetInstance()->AddCoin(amount);
+	//DebugOut(L">>> CurrentCoin: %d\n", coin);
+}
+
 void Mario::AddScore(int amount)
 {
 	//SoundManager::GetInstance()->Play("score");
@@ -242,6 +254,7 @@ void Mario::OnCollisionWithGoalBlock(LPCOLLISIONEVENT e)
 		this->SetState(MarioState::GOAL);;
 
 		// cutscene nhẹ nhẹ
+		GameManager::GetInstance()->marioForm = static_cast<int>(this->form);
 		PlayScene* scene = dynamic_cast<PlayScene*>(SceneManager::GetInstance()->GetCurrentScene());
 
 		//// 
@@ -511,7 +524,7 @@ int Mario::GetAniIdBig()
 	{
 		if (isPipingUp)
 		{
-			aniId = ID_ANI_MARIO_SMALL_PIPING;
+			aniId = ID_ANI_MARIO_SUPER_PIPING;
 			return aniId;
 		}
 		if (isSitting) return ID_ANI_MARIO_SUPER_SIT;
@@ -573,7 +586,7 @@ int Mario::GetAniIdRacoon()
 	{
 		if (isPipingUp)
 		{
-			aniId = ID_ANI_MARIO_SMALL_PIPING;
+			aniId = ID_ANI_MARIO_SUPER_PIPING;
 			return aniId;
 		}
 		if (isSitting) return ID_ANI_MARIO_RACOON_SIT;
@@ -1025,6 +1038,9 @@ void Mario::Reset()
 
 	// Reset hình dáng
 	SetNewForm(MarioForm::SMALL);
+	this->form = MarioForm::SMALL;
+	GameManager::GetInstance()->marioForm = static_cast<int>(MarioForm::SMALL);
+
 	SetState(MarioState::IDLE);
 
 	vx = 0;
@@ -1053,6 +1069,7 @@ void Mario::EnterPipeDown()
 	if (isPiping) return;
 	if (pipeBelow != nullptr && pipeBelow->isEntrance())
 	{
+		GameManager::GetInstance()->marioForm = static_cast<int>(this->form);
 		SoundManager::GetInstance()->Play("pipe");
 		isPipingUp = false; 
 		isPiping = true;
@@ -1073,6 +1090,7 @@ void Mario::EnterPipeUp()
 	if (isPiping) return;
 	if (pipeAbove != nullptr && pipeAbove->isEntrance())
 	{
+		GameManager::GetInstance()->marioForm = static_cast<int>(this->form);
 		SoundManager::GetInstance()->Play("pipe");
 		isPipingUp = true;
 		isPiping = true;
@@ -1393,6 +1411,8 @@ void Mario::HandlePiping(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			this->vy = 0.0f;
 			this->accelX = 0.0f;
 			this->accelY = MARIO_GRAVITY; 
+
+			
 			GameObject::SetState(static_cast<int>(MarioState::IDLE));
 		}
 	}
