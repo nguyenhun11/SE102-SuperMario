@@ -275,8 +275,14 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 	case OBJECT_TYPE_NOTE_BLOCK:
 	{
 		int contained_item_id = 0;
+		int bounceCount = 1;
 		contained_item_id = atoi(tokens[3].c_str());
-		obj = new NoteBlock(x, y, contained_item_id);
+		if (tokens.size() > 4)
+		{
+			bounceCount = atoi(tokens[4].c_str());
+		}
+
+		obj = new NoteBlock(x, y, contained_item_id, bounceCount);
 		break;
 	}
 

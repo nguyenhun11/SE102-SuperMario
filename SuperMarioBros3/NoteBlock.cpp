@@ -101,15 +101,15 @@ void NoteBlock::MarioJumpDeflect()
     {
         float mvx, mvy;
         mario->GetSpeed(mvx, mvy);
-        mvx = mvx * 0.5f;
+        mvx = mvx * 0.6f;
 
         if (mario->IsHoldingJump) 
         {
-            mario->SetSpeed(mvx, -0.4f);
+            mario->SetSpeed(mvx, -0.36f);
         }
         else
         {
-            mario->SetSpeed(mvx, -0.25f);
+            mario->SetSpeed(mvx, -0.2f);
         }
     }
 }

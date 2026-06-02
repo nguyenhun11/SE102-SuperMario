@@ -380,6 +380,7 @@ void Mario::OnCollisionWithNoteBlock(LPCOLLISIONEVENT e)
 			else if (e->ny < 0) // Mario đẹp từ trên xuống
 			{
 				nb->SetState(NoteBlockState::BOUNCING_DOWN);
+				this->SetState(MarioState::JUMP);
 			}
 		}
 	}
