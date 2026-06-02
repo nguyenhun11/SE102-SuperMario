@@ -19,6 +19,7 @@
 #include "GoalBlock.h"
 
 #include "Collision.h"
+#include "NoteBlock.h"
 
 void Mario::AddScore(int amount)
 {
@@ -198,13 +199,13 @@ void Mario::OnCollisionWith(LPCOLLISIONEVENT e)
 		vx = 0;
 	}
 
-	if (dynamic_cast<Mushroom*>(e->obj))        
+	if (dynamic_cast<Mushroom*>(e->obj))
 		OnCollisionWithMushroom(e);
 	else if (dynamic_cast<GoalBlock*>(e->obj))
 		OnCollisionWithGoalBlock(e);
-	else if (dynamic_cast<Leaf*>(e->obj))      
+	else if (dynamic_cast<Leaf*>(e->obj))
 		OnCollisionWithLeaf(e);
-	else if (dynamic_cast<Coin*>(e->obj))    
+	else if (dynamic_cast<Coin*>(e->obj))
 		OnCollisionWithCoin(e);
 	else if (dynamic_cast<Goomba*>(e->obj))
 		OnCollisionWithGoomba(e);
@@ -214,6 +215,8 @@ void Mario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithBrick(e);
 	else if (dynamic_cast<Portal*>(e->obj))
 		OnCollisionWithPortal(e);
+	else if (dynamic_cast<NoteBlock*>(e->obj))
+		OnCollisionWithNoteBlock(e);
 
 }
 
@@ -358,6 +361,25 @@ void Mario::OnCollisionWithBrick(LPCOLLISIONEVENT e)
 					brick->Break(); // Mạnh (To, Đuôi, Lửa) thì đập vỡ
 					
 				}
+			}
+		}
+	}
+}
+
+void Mario::OnCollisionWithNoteBlock(LPCOLLISIONEVENT e)
+{
+	if (dynamic_cast<NoteBlock*>(e->obj))
+	{
+		NoteBlock* nb = dynamic_cast<NoteBlock*>(e->obj);
+		if (nb->GetNoteBlockState() == NoteBlockState::ACTIVE)
+		{
+			if (e->ny > 0) // Mario cụng đầu từ dưới lên
+			{
+				nb->SetState(NoteBlockState::BOUNCING_UP);
+			}
+			else if (e->ny < 0) // Mario đẹp từ trên xuống
+			{
+				nb->SetState(NoteBlockState::BOUNCING_DOWN);
 			}
 		}
 	}

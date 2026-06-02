@@ -10,6 +10,7 @@ koopa.txt
 cloud.txt
 stage1_assets.txt
 question_block.txt
+note_block.txt
 pipe.txt
 HUD.txt
 power_up.txt
@@ -32,7 +33,7 @@ goalblock.txt
 # See OBJECT_TYPE constants in AssetIDs.h
 
 # MARIO
-0 150 10
+0 1 10
 
 
 #GROUND

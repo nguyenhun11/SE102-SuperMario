@@ -11,6 +11,7 @@
 #include "Koopa.h"
 #include "Platform.h"
 #include "QuestionBlock.h"
+#include "NoteBlock.h"
 #include "GoalBlock.h"
 #include "Ground.h"
 #include "Slope.h"
@@ -269,6 +270,14 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		obj = new QuestionBlock(x, y, contained_item_id);
 		break;
 
+	}
+
+	case OBJECT_TYPE_NOTE_BLOCK:
+	{
+		int contained_item_id = 0;
+		contained_item_id = atoi(tokens[3].c_str());
+		obj = new NoteBlock(x, y, contained_item_id);
+		break;
 	}
 
 	case OBJECT_TYPE_GOAL_BLOCK:

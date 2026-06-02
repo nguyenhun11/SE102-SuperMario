@@ -169,6 +169,7 @@
     <ClCompile Include="InvisibleNode.cpp" />
     <ClCompile Include="MapMario.cpp" />
     <ClCompile Include="MapNode.cpp" />
+    <ClCompile Include="NoteBlock.cpp" />
     <ClCompile Include="OneUpEffect.cpp" />
     <ClCompile Include="PiranhaPlant.cpp" />
     <ClCompile Include="SoundManager.cpp" />
@@ -247,6 +248,7 @@
     <ClInclude Include="InvisibleNode.h" />
     <ClInclude Include="MapMario.h" />
     <ClInclude Include="MapNode.h" />
+    <ClInclude Include="NoteBlock.h" />
     <ClInclude Include="OneUpEffect.h" />
     <ClInclude Include="PiranhaPlant.h" />
     <ClInclude Include="SoundManager.h" />
@@ -315,6 +317,7 @@
     <Text Include="koopa.txt" />
     <Text Include="HUD.txt" />
     <Text Include="map_2.txt" />
+    <Text Include="note_block.txt" />
     <Text Include="piranha-fire.txt" />
     <Text Include="stage1_assets.txt" />
     <Text Include="mario.txt" />

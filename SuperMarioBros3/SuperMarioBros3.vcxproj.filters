@@ -249,6 +249,9 @@
       <Filter>Entities\Enemies</Filter>
     </ClCompile>
     <ClCompile Include="HorizontalPipe.cpp" />
+    <ClCompile Include="NoteBlock.cpp">
+      <Filter>Entities\Blocks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h">
@@ -501,6 +504,9 @@
       <Filter>Entities\Enemies</Filter>
     </ClInclude>
     <ClInclude Include="HorizontalPipe.h" />
+    <ClInclude Include="NoteBlock.h">
+      <Filter>Entities\Blocks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="brick.txt">
@@ -577,6 +583,9 @@
       <Filter>Assets</Filter>
     </Text>
     <Text Include="piranha-fire.txt">
+      <Filter>Assets</Filter>
+    </Text>
+    <Text Include="note_block.txt">
       <Filter>Assets</Filter>
     </Text>
   </ItemGroup>
