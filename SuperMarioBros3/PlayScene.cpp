@@ -239,9 +239,17 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		int idTopRight = atoi(tokens[7].c_str());
 		int idBodyLeft = atoi(tokens[8].c_str());
 		int idBodyRight = atoi(tokens[9].c_str());
+		int idBottomLeft = atoi(tokens[10].c_str());
+		int idBottomRight = atoi(tokens[11].c_str());
+
+		int isBlock = 1;
+		if(tokens.size() > 12) isBlock = atoi(tokens[12].c_str());
+
+		int targetScene = -1;
+		if (tokens.size() > 13) targetScene = atoi(tokens[13].c_str());
 
 		obj = new VerticalPipe(x, y, cell_width, cell_height, rows,
-			idTopLeft, idTopRight, idBodyLeft, idBodyRight);
+			idTopLeft, idTopRight, idBodyLeft, idBodyRight, idBottomLeft, idBottomRight, isBlock, targetScene);
 
 		break;
 	}
@@ -464,6 +472,41 @@ void PlayScene::Load()
 	}
 	f.close();
 
+
+	//  ĐÚNG: Gọi thông qua Instance duy nhất
+	GameManager* gm = GameManager::GetInstance();
+	if (gm->isGoingThroughPipe && player != NULL)
+	{
+		// 1. Tìm cái cống đầu tiên trong map được thiết kế làm "Cửa Ra"
+		VerticalPipe* exitPipe = NULL;
+		for (size_t i = 0; i < objects.size(); i++)
+		{
+			if (dynamic_cast<VerticalPipe*>(objects[i]))
+			{
+				VerticalPipe* pipe = dynamic_cast<VerticalPipe*>(objects[i]);
+				if (pipe->GetTargetSceneId() == 999)
+				{
+					exitPipe = pipe;
+					break;
+				}
+			}
+		}
+		if (exitPipe != NULL)
+		{
+			float pl, pt, pr, pb;
+			exitPipe->GetBoundingBox(pl, pt, pr, pb);
+
+			float spawnX = pl + (pr - pl) / 2;
+			float spawnY = pt + 16.0f;
+
+			player->SetPosition(spawnX, spawnY);
+
+			Mario* mario = static_cast<Mario*>(player);
+			mario->SetStartPiping();
+		}
+	}
+	gm->isGoingThroughPipe = false;
+
 	float screenHeight = GameGlobal::GetHeight();
 	HUD::GetInstance()->SetPosition(0.0f, screenHeight - HUD_HEIGHT);
 	GameManager::GetInstance()->ResetTimer(300000);
@@ -622,10 +665,10 @@ void PlayScene::Render()
 		if (objects[i]->GetZIndex() < 5) objects[i]->Render();
 
 	for (int i = 0; i < objects.size(); i++)
-		if (objects[i]->GetZIndex() >= 5 && objects[i]->GetZIndex() < 10)
+		if (objects[i]->GetZIndex() >= 5 && objects[i]->GetZIndex() < 15)
 			objects[i]->Render();
 
-	player->Render();
+	//player->Render();
 	HUD::GetInstance()->Render();
 }
 

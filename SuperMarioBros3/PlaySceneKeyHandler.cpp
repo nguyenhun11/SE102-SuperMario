@@ -15,12 +15,16 @@ void PlaySceneKeyHandler::OnKeyDown(int KeyCode)
 	{
 	case DIK_DOWN:
 	case DIK_S:
-		mario->SetState(MarioState::SIT);
+		//mario->SetState(MarioState::SIT);
+		mario->EnterPipeDown();
 		break;
 	case DIK_Z:
 	case DIK_SPACE:
 		mario->SetState(MarioState::JUMP);
 		mario->IsHoldingJump = true; // 
+		break;
+	case DIK_UP:
+		mario->EnterPipeUp();
 		break;
 	case DIK_W:
 	case DIK_X:
@@ -73,6 +77,17 @@ void PlaySceneKeyHandler::KeyState(BYTE *states)
 	InputManager* input = InputManager::GetInstance();
 	Mario* mario = (Mario*)((LPPLAYSCENE)SceneManager::GetInstance()->GetCurrentScene())->GetPlayer();
 	if (mario == NULL) return;
+
+	if (input->IsKeyDown(DIK_UP))
+	{
+		mario->EnterPipeUp();
+		return; 
+	}
+	else if (input->IsKeyDown(DIK_DOWN) || input->IsKeyDown(DIK_S))
+	{
+		mario->EnterPipeDown();
+		return;
+	}
 
 	if (input->IsKeyDown(DIK_RIGHT) || input->IsKeyDown(DIK_D))
 	{
