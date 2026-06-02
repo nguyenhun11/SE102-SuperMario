@@ -248,8 +248,10 @@
     <ClCompile Include="PiranhaPlant.cpp">
       <Filter>Entities\Enemies</Filter>
     </ClCompile>
-    <ClCompile Include="HorizontalPipe.cpp" />
     <ClCompile Include="NoteBlock.cpp">
+      <Filter>Entities\Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="HorizontalPipe.cpp">
       <Filter>Entities\Blocks</Filter>
     </ClCompile>
   </ItemGroup>
@@ -503,8 +505,10 @@
     <ClInclude Include="PiranhaPlant.h">
       <Filter>Entities\Enemies</Filter>
     </ClInclude>
-    <ClInclude Include="HorizontalPipe.h" />
     <ClInclude Include="NoteBlock.h">
+      <Filter>Entities\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="HorizontalPipe.h">
       <Filter>Entities\Blocks</Filter>
     </ClInclude>
   </ItemGroup>
@@ -570,7 +574,7 @@
     <Text Include="stage2.txt">
       <Filter>Scenes\Playscene</Filter>
     </Text>
-    <Text Include="map_2.txt">
+    <Text Include="stage2_assets.txt">
       <Filter>Assets</Filter>
     </Text>
     <Text Include="goalblock.txt">
@@ -587,6 +591,9 @@
     </Text>
     <Text Include="note_block.txt">
       <Filter>Assets</Filter>
+    </Text>
+    <Text Include="stage1_1.txt">
+      <Filter>Scenes\Playscene</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>

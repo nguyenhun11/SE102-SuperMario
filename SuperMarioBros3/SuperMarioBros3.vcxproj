@@ -316,9 +316,10 @@
     <Text Include="goomba.txt" />
     <Text Include="koopa.txt" />
     <Text Include="HUD.txt" />
-    <Text Include="map_2.txt" />
+    <Text Include="stage2_assets.txt" />
     <Text Include="note_block.txt" />
     <Text Include="piranha-fire.txt" />
+    <Text Include="stage1_1.txt" />
     <Text Include="stage1_assets.txt" />
     <Text Include="mario.txt" />
     <Text Include="power_up.txt" />

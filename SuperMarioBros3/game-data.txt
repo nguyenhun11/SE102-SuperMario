@@ -1,17 +1,19 @@
 [SETTINGS]
 # Start scene
-start	6
+start	11
 
 # id	type	file
 # type: 0: world, 1: play scene 
 [SCENES]
 0	0	world-scene.txt
-1	1	scene01.txt
-2	1	scene02.txt
-5	1	scene0005.txt
-6	1	stage1.txt
-7	1	scene_mario_dev.txt
-8	1	stage2.txt
+1	1	stage1.txt
+11	1	stage1_1.txt
+2	1	stage2.txt
+
+9	1	scene_mario_dev.txt
+#1	1	scene01.txt
+#2	1	scene02.txt
+#5	1	scene0005.txt
 
 # id	file 
 [TEXTURES]

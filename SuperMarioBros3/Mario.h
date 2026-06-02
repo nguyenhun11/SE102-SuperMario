@@ -53,8 +53,8 @@
 #define MARIO_PMETER_CHARGE_TIME 200 
 
 // Piping
-#define MARIO_PIPE_TIME 2000
-#define MARIO_PIPE_SPEED 0.025f
+#define MARIO_PIPE_TIME 1800
+#define MARIO_PIPE_SPEED 0.02f
 
 // ------------------------- MARIO STATE -------------------------------- //
 #pragma	region	MARIO_STATES & MARIO_FORMS

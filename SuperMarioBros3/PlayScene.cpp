@@ -239,12 +239,17 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		int idTopRight = atoi(tokens[7].c_str());
 		int idBodyLeft = atoi(tokens[8].c_str());
 		int idBodyRight = atoi(tokens[9].c_str());
+		int idBottomLeft = atoi(tokens[10].c_str());
+		int idBottomRight = atoi(tokens[11].c_str());
+
+		int isBlock = 1;
+		if(tokens.size() > 12) isBlock = atoi(tokens[12].c_str());
 
 		int targetScene = -1;
-		if (tokens.size() > 10) targetScene = atoi(tokens[10].c_str());
+		if (tokens.size() > 13) targetScene = atoi(tokens[13].c_str());
 
 		obj = new VerticalPipe(x, y, cell_width, cell_height, rows,
-			idTopLeft, idTopRight, idBodyLeft, idBodyRight, targetScene);
+			idTopLeft, idTopRight, idBodyLeft, idBodyRight, idBottomLeft, idBottomRight, isBlock, targetScene);
 
 		break;
 	}
@@ -625,10 +630,10 @@ void PlayScene::Render()
 		if (objects[i]->GetZIndex() < 5) objects[i]->Render();
 
 	for (int i = 0; i < objects.size(); i++)
-		if (objects[i]->GetZIndex() >= 5 && objects[i]->GetZIndex() < 10)
+		if (objects[i]->GetZIndex() >= 5 && objects[i]->GetZIndex() < 15)
 			objects[i]->Render();
 
-	player->Render();
+	//player->Render();
 	HUD::GetInstance()->Render();
 }
 
