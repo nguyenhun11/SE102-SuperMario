@@ -14,6 +14,7 @@ public:
 	float mapMarioPrevY = -1.0f;
 
 	bool isReturningFromFail = false;
+	bool isGoingThroughPipe = false;
 
 	int score;
 	int coinNumber;

@@ -472,6 +472,40 @@ void PlayScene::Load()
 	}
 	f.close();
 
+
+	GameManager* gm = GameManager::GetInstance();
+	if (gm->isGoingThroughPipe && player != NULL)
+	{
+		// 1. Tìm cái cống đầu tiên trong map được thiết kế làm "Cửa Ra"
+		VerticalPipe* exitPipe = NULL;
+		for (size_t i = 0; i < objects.size(); i++)
+		{
+			if (dynamic_cast<VerticalPipe*>(objects[i]))
+			{
+				VerticalPipe* pipe = dynamic_cast<VerticalPipe*>(objects[i]);
+				if (pipe->GetTargetSceneId() == 999)
+				{
+					exitPipe = pipe;
+					break;
+				}
+			}
+		}
+		if (exitPipe != NULL)
+		{
+			float pl, pt, pr, pb;
+			exitPipe->GetBoundingBox(pl, pt, pr, pb);
+
+			float spawnX = pl + (pr - pl) / 2;
+			float spawnY = pt + 16.0f;
+
+			player->SetPosition(spawnX, spawnY);
+
+			Mario* mario = static_cast<Mario*>(player);
+			mario->SetStartPiping();
+		}
+	}
+	gm->isGoingThroughPipe = false;
+
 	float screenHeight = GameGlobal::GetHeight();
 	HUD::GetInstance()->SetPosition(0.0f, screenHeight - HUD_HEIGHT);
 	GameManager::GetInstance()->ResetTimer(300000);

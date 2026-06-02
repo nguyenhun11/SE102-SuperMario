@@ -1084,6 +1084,15 @@ void Mario::EnterPipeUp()
 	}
 }
 
+void Mario::SetStartPiping()
+{
+	SoundManager::GetInstance()->Play("pipe");
+	isPiping = true;
+	isPipingUp = true;
+	piping_start = GetTickCount64();
+	SetState(MarioState::PIPING);
+}
+
 
 #pragma endregion
 
@@ -1369,14 +1378,22 @@ void Mario::HandlePiping(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			pipeAbove = nullptr;
 			pipeBelow = nullptr;
 
+			GameManager::GetInstance()->isGoingThroughPipe = true;
 			SceneManager::GetInstance()->InitiateSwitchScene(targetScene);
 		}
 		else
 		{
+			isPiping = false;
 			isPipingUp = false;
 			pipeAbove = nullptr;
 			pipeBelow = nullptr;
-			SetState(MarioState::IDLE);
+
+			this->isOnPlatform = true;
+			this->vx = 0.0f;
+			this->vy = 0.0f;
+			this->accelX = 0.0f;
+			this->accelY = MARIO_GRAVITY; 
+			GameObject::SetState(static_cast<int>(MarioState::IDLE));
 		}
 	}
 }

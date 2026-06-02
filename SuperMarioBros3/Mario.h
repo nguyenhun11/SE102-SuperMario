@@ -53,7 +53,7 @@
 #define MARIO_PMETER_CHARGE_TIME 200 
 
 // Piping
-#define MARIO_PIPE_TIME 1800
+#define MARIO_PIPE_TIME 1250
 #define MARIO_PIPE_SPEED 0.02f
 
 // ------------------------- MARIO STATE -------------------------------- //
@@ -354,6 +354,7 @@ public:
 	void Reset();
 	void EnterPipeDown();
 	void EnterPipeUp();
+	void SetStartPiping();
 
 	// Handle Update
 	void HandleDying(DWORD dt, vector<LPGAMEOBJECT>* coObjects); 
