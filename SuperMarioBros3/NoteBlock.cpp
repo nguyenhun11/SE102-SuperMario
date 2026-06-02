@@ -99,15 +99,17 @@ void NoteBlock::MarioJumpDeflect()
 
     if (mario != nullptr)
     {
-        //SoundManager::GetInstance()->Play("bump");
+        float mvx, mvy;
+        mario->GetSpeed(mvx, mvy);
+        mvx = mvx * 0.5f;
 
         if (mario->IsHoldingJump) 
         {
-            mario->SetSpeed(0, -0.45f);
+            mario->SetSpeed(mvx, -0.4f);
         }
         else
         {
-            mario->SetSpeed(0, -0.25f);
+            mario->SetSpeed(mvx, -0.25f);
         }
     }
 }
@@ -164,9 +166,11 @@ void NoteBlock::SetState(NoteBlockState state)
     {
         case NoteBlockState::BOUNCING_UP:
             vy = -NOTE_BLOCK_BOUNCE_SPEED;
+            SoundManager::GetInstance()->Play("bump");
             break;
         case NoteBlockState::BOUNCING_DOWN:
             vy = NOTE_BLOCK_BOUNCE_SPEED;
+            SoundManager::GetInstance()->Play("bump");
             break;
         case NoteBlockState::ACTIVE:
             break;
