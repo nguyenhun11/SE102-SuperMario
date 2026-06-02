@@ -233,7 +233,9 @@ class Mario : public GameObject
 	BOOLEAN isOnPlatform;
 	BOOLEAN isOnSlope;
 	
-	VerticalPipe* standingPipe;
+	VerticalPipe* pipeBelow;
+	VerticalPipe* pipeAbove;
+	bool isPipingUp = false;
 
 
 	void OnCollisionWithGoalBlock(LPCOLLISIONEVENT e);
@@ -279,6 +281,7 @@ public:
 		isSpinning = false;
 		isSliding = false;
 		isPiping = false;
+		isPipingUp = false;
 
 		isGoalRunning = false;
 
@@ -293,6 +296,8 @@ public:
 		spin_start = -1;
 		pmeter_start = -1;
 		piping_start = -1;
+
+		pipeBelow = NULL;
 
 		//coin = 0;
 		//score = 0;
@@ -347,7 +352,8 @@ public:
 	void Attack();
 	void TakeDamage();
 	void Reset();
-	void EnterPipe();
+	void EnterPipeDown();
+	void EnterPipeUp();
 
 	// Handle Update
 	void HandleDying(DWORD dt, vector<LPGAMEOBJECT>* coObjects); 

@@ -393,17 +393,18 @@ void Mario::OnCollisionWithNoteBlock(LPCOLLISIONEVENT e)
 
 void Mario::OnCollisionWithVerticalPipe(LPCOLLISIONEVENT e)
 {
-	if (dynamic_cast<VerticalPipe*>(e->obj))
+	if (isPiping) return; 
+
+	VerticalPipe* pipe = dynamic_cast<VerticalPipe*>(e->obj);
+	if (pipe == nullptr) return;
+
+	if (e->ny > 0) 
 	{
-		VerticalPipe* pipe = dynamic_cast<VerticalPipe*>(e->obj);
-		if (e->ny > 0) // Mario từ dưới chui lên
-		{
-			standingPipe = pipe;
-		}
-		else if (e->ny < 0) // Mario từ phía trên chui xuống
-		{
-			standingPipe = pipe;
-		}
+		pipeAbove = pipe;
+	}
+	else if (e->ny < 0)
+	{
+		pipeBelow = pipe;
 	}
 }
 
@@ -447,6 +448,11 @@ int Mario::GetAniIdSmall()
 	int aniId = -1;
 	if (!isOnPlatform)	// mario tren khong
 	{
+		if (isPipingUp)
+		{
+			aniId = ID_ANI_MARIO_SMALL_PIPING;
+			return aniId;
+		}
 		if (pmeter == MARIO_PMETER_MAX)
 		{
 			aniId = ID_ANI_MARIO_SMALL_JUMP_RUN;
@@ -503,6 +509,11 @@ int Mario::GetAniIdBig()
 	int aniId = -1;
 	if (!isOnPlatform)
 	{
+		if (isPipingUp)
+		{
+			aniId = ID_ANI_MARIO_SMALL_PIPING;
+			return aniId;
+		}
 		if (isSitting) return ID_ANI_MARIO_SUPER_SIT;
 		if (pmeter == MARIO_PMETER_MAX)
 		{
@@ -560,6 +571,11 @@ int Mario::GetAniIdRacoon()
 	int aniId = -1;
 	if (!isOnPlatform)
 	{
+		if (isPipingUp)
+		{
+			aniId = ID_ANI_MARIO_SMALL_PIPING;
+			return aniId;
+		}
 		if (isSitting) return ID_ANI_MARIO_RACOON_SIT;
 		if (isFlying) return ID_ANI_MARIO_RACOON_FLYING;
 		if (isFloating) return ID_ANI_MARIO_RACOON_FLOATING;
@@ -1032,21 +1048,39 @@ void Mario::Reset()
 	SetDirection(1);
 }
 
-void Mario::EnterPipe()
+void Mario::EnterPipeDown()
 {
-	if (standingPipe != NULL && standingPipe->isEntrance())
+	if (isPiping) return;
+	if (pipeBelow != nullptr && pipeBelow->isEntrance())
 	{
-		// play sound
 		SoundManager::GetInstance()->Play("pipe");
-		SetState(MarioState::PIPING);
+		isPipingUp = false; 
 		isPiping = true;
+		SetState(MarioState::PIPING);
+
 		float pl, pt, pr, pb;
-		standingPipe->GetBoundingBox(pl, pt, pr, pb);
+		pipeBelow->GetBoundingBox(pl, pt, pr, pb);
 		this->x = pl + (pr - pl) / 2;
 	}
 	else
 	{
 		SetState(MarioState::SIT);
+	}
+}
+
+void Mario::EnterPipeUp()
+{
+	if (isPiping) return;
+	if (pipeAbove != nullptr && pipeAbove->isEntrance())
+	{
+		SoundManager::GetInstance()->Play("pipe");
+		isPipingUp = true;
+		isPiping = true;
+		SetState(MarioState::PIPING);
+
+		float pl, pt, pr, pb;
+		pipeAbove->GetBoundingBox(pl, pt, pr, pb);
+		this->x = pl + (pr - pl) / 2;
 	}
 }
 
@@ -1302,19 +1336,50 @@ void Mario::HandleGoalRunning(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void Mario::HandlePiping(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	if (!isOnPlatform) standingPipe = NULL;
-	if (!isPiping) return;
-	vy = MARIO_PIPE_SPEED;
-	vx = 0.0;
+	if (!isPiping)
+	{
+		if (isOnPlatform)
+		{
+			pipeAbove = nullptr;
+		}
+		else if (vy > 0)
+		{
+			pipeBelow = nullptr;
+		}
+		return;
+	}
+
+	vy = isPipingUp ? -MARIO_PIPE_SPEED : MARIO_PIPE_SPEED;
+	vx = 0.0f;
+	accelX = 0.0f;
+	accelY = 0.0f;
 	y += vy * dt;
 
 	if (GetTickCount64() - piping_start > MARIO_PIPE_TIME)
 	{
 		isPiping = false;
-		SceneManager::GetInstance()->InitiateSwitchScene(standingPipe->GetTargetSceneId());
+
+		VerticalPipe* activePipe = isPipingUp ? pipeAbove : pipeBelow;
+
+		if (activePipe != nullptr)
+		{
+			int targetScene = activePipe->GetTargetSceneId();
+
+			isPipingUp = false;
+			pipeAbove = nullptr;
+			pipeBelow = nullptr;
+
+			SceneManager::GetInstance()->InitiateSwitchScene(targetScene);
+		}
+		else
+		{
+			isPipingUp = false;
+			pipeAbove = nullptr;
+			pipeBelow = nullptr;
+			SetState(MarioState::IDLE);
+		}
 	}
 }
-
 
 
 /// Note tính toán phép xử lý lên/xuống dốc
