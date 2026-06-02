@@ -109,7 +109,7 @@ void NoteBlock::MarioJumpDeflect()
         }
         else
         {
-            mario->SetSpeed(mvx, -0.2f);
+            mario->SetSpeed(mvx, -0.16f);
         }
     }
 }
