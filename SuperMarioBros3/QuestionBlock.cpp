@@ -5,6 +5,7 @@
 #include "Leaf.h"
 #include "OneUpMushroom.h"
 #include "debug.h"
+#include "SoundManager.h"
 
 QuestionBlock::QuestionBlock(float x, float y, int containedItem) : GameObject(x, y)
 {
@@ -21,8 +22,11 @@ QuestionBlock::QuestionBlock(float x, float y, int containedItem) : GameObject(x
 			break;
 		}
 		case static_cast<int>(ContainedItem::UP_MUSHROOM):
+		{
+
 			this->item = ContainedItem::UP_MUSHROOM;
 			break;
+		}
 		default:
 		{
 			this->item = ContainedItem::COIN;
@@ -73,6 +77,7 @@ void QuestionBlock::SpawnItem()
 	if (this->item == ContainedItem::COIN)
 	{
 		// thêm object vào scene đang chơi
+		SoundManager::GetInstance()->Play("coin");
 		Coin* coin = new Coin(x, y - 16); // trừ 16 đơn vị độ cao
 		coin->SetState(CoinState::BOUNCING);
 		playScene->AddObject(coin);
@@ -90,7 +95,7 @@ void QuestionBlock::SpawnItem()
 		else
 		{
 			// sinh đồ xịn honw nếu con mario đang ở trạng thái TO
-			Leaf* leaf = new Leaf(x, y - 16);
+			Leaf* leaf = new Leaf(x, y);
 			playScene->AddObject(leaf);
 		}
 	}

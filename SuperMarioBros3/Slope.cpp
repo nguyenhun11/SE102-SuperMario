@@ -16,11 +16,24 @@ float Slope::GetSurfaceY(float marioX)
     float surfaceY = 0;
     if (direction == 1) // '/'
     {
-        surfaceY = y + (height / 2) - (percent * height);
+        surfaceY = (y + height / 2) - percent * height;
     }
     else if (direction == -1) // '\'
     {
         surfaceY = y - (height / 2) + (percent * height);
     }
     return surfaceY;
+}
+
+void Slope::Render()
+{
+    RenderBoundingBox();
+}
+
+void Slope::GetBoundingBox(float& l, float& t, float& r, float& b)
+{
+    l = x - width / 2.0f;
+    t = y - height / 2.0f;
+    r = l + width;
+    b = t + height;
 }

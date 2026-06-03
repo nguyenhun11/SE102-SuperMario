@@ -2,11 +2,14 @@
 #include "Collision.h"
 #include "PlayScene.h"
 #include "Mario.h"
+#include "SoundManager.h"
+#include "Slope.h"
 
 Mushroom::Mushroom(float x, float y) : GameObject(x, y)
 {
 	this->startY = y;
 	SetState(MushroomState::SPAWNING);
+	SoundManager::GetInstance()->Play("mushroom_appear");
 	zIndex = 4;
 }
 
@@ -57,6 +60,8 @@ void Mushroom::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	vy += MUSHROOM_GRAVITY * dt;
 	Collision::GetInstance()->Process(this, dt, coObjects);
+
+	HandleSlope(dt, coObjects);
 }
 
 void Mushroom::Render()
@@ -91,4 +96,43 @@ void Mushroom::SetState(MushroomState newState)
 	}
 
 	GameObject::SetState(static_cast<int>(newState));
+}
+
+void Mushroom::HandleSlope(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+{
+	if (state == static_cast<int>(MushroomState::SPAWNING)) return;
+
+	float l, t, r, b;
+	GetBoundingBox(l, t, r, b);
+	float mushroomBottomY = b;     
+	float bboxHeight = b - t;
+
+	bool foundSlope = false;
+
+	for (size_t i = 0; i < coObjects->size(); i++)
+	{
+		LPGAMEOBJECT obj = coObjects->at(i);
+		if (dynamic_cast<Slope*>(obj)) // Kiểm tra nếu object là dốc
+		{
+			Slope* slope = dynamic_cast<Slope*>(obj);
+			float sl, st, sr, sb;
+			slope->GetBoundingBox(sl, st, sr, sb);
+
+			float mushroomCenterX = x; 
+
+			if (mushroomCenterX >= sl && mushroomCenterX <= sr && mushroomBottomY >= st && mushroomBottomY <= sb)
+			{
+				float expectedY = slope->GetSurfaceY(mushroomCenterX);
+				float epsilon = max(4.0f, vy * dt);
+				if (mushroomBottomY >= expectedY - epsilon && vy >= 0)
+				{
+					y = expectedY - bboxHeight / 2;
+					vy = 0;                        
+					foundSlope = true;
+				}
+			}
+		}
+	}
+
+	isOnSlope = foundSlope;
 }

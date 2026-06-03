@@ -1,21 +1,19 @@
 [SETTINGS]
 # Start scene
-start	8
-
-# Screen size
-width	320
-height	240
+start	1
 
 # id	type	file
-# type: 0: intro, 1: play scene 
+# type: 0: world, 1: play scene 
 [SCENES]
-0	0	intro.txt
-1	1	scene01.txt
-2	1	scene02.txt
-5	1	scene0005.txt
-6	1	stage1.txt
-7	1	scene_mario_dev.txt
-8	1	scene_mario_dev2.txt
+0	0	world-scene.txt
+1	1	stage1.txt
+11	1	stage1_1.txt
+2	1	stage2.txt
+
+9	1	scene_mario_dev.txt
+#1	1	scene01.txt
+#2	1	scene02.txt
+#5	1	scene0005.txt
 
 # id	file 
 [TEXTURES]
@@ -25,8 +23,11 @@ height	240
 20		textures\misc.png
 
 100		textures\100_Mario.png
+101		textures\101_Mario_Origin.png
 200		textures\200_Enemies.png
 300		textures\300_Tilesets_StageTiles.png
 400		textures\400_Items.png
 500		textures\500_HUD.png
 600		textures\600_misc.png
+700		textures\700_WorldMaps.png
+800		textures\800_Goal.png

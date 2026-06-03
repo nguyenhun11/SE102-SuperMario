@@ -14,6 +14,7 @@ GameObject::GameObject()
 	vx = vy = 0;
 	nx = 1;	
 	state = -1;
+	zIndex = 0;
 	isDeleted = false;
 }
 
@@ -35,7 +36,7 @@ void GameObject::RenderBoundingBox()
 	float cx, cy; 
 	Camera::GetInstance()->GetCamPos(cx, cy);
 
-	Game::GetInstance()->DrawOnCamera(x - cx, y - cy, bbox, &rect, BBOX_ALPHA);
+	Game::GetInstance()->Draw(x - cx, y - cy, bbox, &rect, BBOX_ALPHA);
 }
 
 GameObject::~GameObject()

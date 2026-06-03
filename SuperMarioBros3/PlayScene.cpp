@@ -11,11 +11,17 @@
 #include "Koopa.h"
 #include "Platform.h"
 #include "QuestionBlock.h"
+#include "NoteBlock.h"
+#include "GoalBlock.h"
 #include "Ground.h"
+#include "Slope.h"
 #include "SemisolidPlatform.h"
 #include "Decoration.h"
 #include "VerticalPipe.h"
+#include "HorizontalPipe.h"
 #include "SolidBlock.h"
+#include "SoundManager.h"
+#include "PiranhaPlant.h"
 
 #include "PlaySceneKeyHandler.h"
 
@@ -33,6 +39,8 @@ PlayScene::PlayScene(int id, LPCWSTR filePath):
 #define SCENE_SECTION_ASSETS	1
 #define SCENE_SECTION_OBJECTS	2
 #define SCENE_SECTION_GRID_OBJECTS	3
+#define SCENE_SECTION_MAP_INFO	4
+#define SCENE_SECTION_CAMERA_ZONES 5
 
 #define ASSETS_SECTION_UNKNOWN -1
 #define ASSETS_SECTION_SPRITES 1
@@ -40,7 +48,25 @@ PlayScene::PlayScene(int id, LPCWSTR filePath):
 
 #define MAX_SCENE_LINE 1024
 #define TILE_SIZE 16.0f
-#define HUD_HEIGHT 40.0f
+
+void PlayScene::_ParseSection_MAP_INFO(string line)
+{
+	vector<string> tokens = split(line);
+	if (tokens.size() < 1) return;
+	mapRight = (float)atof(tokens[0].c_str());
+}
+
+void PlayScene::_ParseSection_CAMERA_ZONES(string line)
+{
+	vector<string> tokens = split(line);
+	if (tokens.size() < 4) return;
+	CameraZone zone;
+	zone.left = (float)atof(tokens[0].c_str());
+	zone.top = (float)atof(tokens[1].c_str());
+	zone.right = (float)atof(tokens[2].c_str());
+	zone.bottom = (float)atof(tokens[3].c_str());
+	cameraZones.push_back(zone);
+}
 
 void PlayScene::_ParseSection_SPRITES(string line)
 {
@@ -128,6 +154,7 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		obj = new Mario(x,y); 
 		player = (Mario*)obj;  
 
+
 		DebugOut(L"[INFO] Player object has been created!\n");
 		break;
 	case OBJECT_TYPE_SOLID_BLOCK:
@@ -137,6 +164,7 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		break;
 	}
 	case OBJECT_TYPE_GOOMBA: obj = new Goomba(x,y); break;
+	case OBJECT_TYPE_PIRANHA_PLANT: obj = new PiranhaPlant(x, y); break;
 	case OBJECT_TYPE_BRICK:
 	{
 		int item_type = 0;
@@ -211,16 +239,64 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		int idTopRight = atoi(tokens[7].c_str());
 		int idBodyLeft = atoi(tokens[8].c_str());
 		int idBodyRight = atoi(tokens[9].c_str());
+		int idBottomLeft = atoi(tokens[10].c_str());
+		int idBottomRight = atoi(tokens[11].c_str());
+
+		int isBlock = 1;
+		if(tokens.size() > 12) isBlock = atoi(tokens[12].c_str());
+
+		int targetScene = -1;
+		if (tokens.size() > 13) targetScene = atoi(tokens[13].c_str());
 
 		obj = new VerticalPipe(x, y, cell_width, cell_height, rows,
-			idTopLeft, idTopRight, idBodyLeft, idBodyRight);
+			idTopLeft, idTopRight, idBodyLeft, idBodyRight, idBottomLeft, idBottomRight, isBlock, targetScene);
 
+		break;
+	}
+	case OBJECT_TYPE_HORIZOLTAL_PIPE:
+	{
+		float cell_width = (float)atof(tokens[3].c_str());
+		float cell_height = (float)atof(tokens[4].c_str());
+
+		int columns = atoi(tokens[5].c_str());
+
+		int idTopLeft = atoi(tokens[6].c_str());
+		int idTop = atoi(tokens[7].c_str());
+		int idTopRight = atoi(tokens[8].c_str());
+		int idBottomLeft = atoi(tokens[9].c_str());
+		int idBottom = atoi(tokens[10].c_str());
+		int idBottomRight = atoi(tokens[11].c_str());
+
+		obj = new HorizontalPipe(x, y, cell_width, cell_height, columns,
+			idTopLeft, idTop, idTopRight,
+			idBottomLeft, idBottom, idBottomRight);
 		break;
 	}
 	case OBJECT_TYPE_QUESTION_BLOCK:
 	{
 		int contained_item_id = atoi(tokens[3].c_str());
 		obj = new QuestionBlock(x, y, contained_item_id);
+		break;
+
+	}
+
+	case OBJECT_TYPE_NOTE_BLOCK:
+	{
+		int contained_item_id = 0;
+		int bounceCount = 1;
+		contained_item_id = atoi(tokens[3].c_str());
+		if (tokens.size() > 4)
+		{
+			bounceCount = atoi(tokens[4].c_str());
+		}
+
+		obj = new NoteBlock(x, y, contained_item_id, bounceCount);
+		break;
+	}
+
+	case OBJECT_TYPE_GOAL_BLOCK:
+	{
+		obj = new GoalBlock(x, y);
 		break;
 
 	}
@@ -252,6 +328,33 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 
 		break;
 	}
+	
+
+	/// Cái joke
+	case OBJECT_TYPE_SLOPE:
+	{
+		//float width = (float)atof(tokens[3].c_str());
+		//float height = (float)atof(tokens[4].c_str());
+		//int dir = atoi(tokens[5].c_str());
+
+		//float center_x = x + (width / 2.0f);
+		//float center_y = y + (height / 2.0f);
+
+		//obj = new Slope(center_x, center_y, width, height, dir);
+		//break;
+		float width = (float)atof(tokens[3].c_str());
+		float height = (float)atof(tokens[4].c_str());
+		int dir = atoi(tokens[5].c_str());
+
+		// LƯU Ý: Vì đọc từ [GRID_OBJECTS], x và y đã được nhân với TILE_SIZE (16) ở trên rồi.
+		// Công việc của bạn chỉ là Dịch tọa độ về TÂM cho khớp với hệ thống:
+		float center_x = x + (width / 2.0f);
+		float center_y = y + (height / 2.0f);
+
+		obj = new Slope(center_x, center_y, width, height, dir);
+		break;
+	}
+
 	case OBJECT_TYPE_DECORATION: {
 		obj = new Decoration(x, y, atoi(tokens[3].c_str()));
 		break;
@@ -301,6 +404,32 @@ void PlayScene::LoadAssets(LPCWSTR assetFile)
 		}
 	}
 
+	//// LOAD SFX & BGM
+	// Tại nơi khởi tạo game
+	SoundManager::GetInstance()->Init();
+
+	// Load các file âm thanh (đảm bảo file tồn tại trong thư mục assets)
+	SoundManager::GetInstance()->Load("bgm_stage1", "assets/sounds/bgm_stage1.wav");
+
+	SoundManager::GetInstance()->Load("1up", "assets/sounds/smb3_1-up.wav");
+	SoundManager::GetInstance()->Load("coin", "assets/sounds/smb3_coin.wav");
+	SoundManager::GetInstance()->Load("jump", "assets/sounds/smb3_jump.wav");
+	SoundManager::GetInstance()->Load("skid", "assets/sounds/smb3_skid.wav");
+	SoundManager::GetInstance()->Load("kick", "assets/sounds/smb3_kick.wav");
+	SoundManager::GetInstance()->Load("bump", "assets/sounds/smb3_bump.wav");
+	SoundManager::GetInstance()->Load("brick_break", "assets/sounds/smb3_brick_break.wav");
+	SoundManager::GetInstance()->Load("level_clear", "assets/sounds/smb3_level_clear.wav");
+	SoundManager::GetInstance()->Load("pipe", "assets/sounds/smb3_pipe.wav");
+	SoundManager::GetInstance()->Load("player_down", "assets/sounds/smb3_player_down.wav");
+	SoundManager::GetInstance()->Load("power_up", "assets/sounds/smb3_power-up.wav");
+	SoundManager::GetInstance()->Load("score", "assets/sounds/smb3_inventory.wav");
+	SoundManager::GetInstance()->Load("mushroom_appear", "assets/sounds/smb3_mushroom_appear.wav");
+	SoundManager::GetInstance()->Load("racoon", "assets/sounds/smb3_raccoon_transform.wav");
+	SoundManager::GetInstance()->Load("tail", "assets/sounds/smb3_tail.wav");
+	SoundManager::GetInstance()->Load("pmeter", "assets/sounds/smb3_pmeter.wav");
+	// Phát nhạc nền ngay khi vào màn chơi
+	SoundManager::GetInstance()->PlayBGM("bgm_stage1");
+
 	f.close();
 
 	DebugOut(L"[INFO] Done loading assets from %s\n", assetFile);
@@ -322,6 +451,8 @@ void PlayScene::Load()
 		string line(str);
 
 		if (line[0] == '#') continue;	// skip comment lines	
+		if (line == "[MAP_INFO]") { section = SCENE_SECTION_MAP_INFO; continue; };
+		if (line == "[CAMERA_ZONES]") { section = SCENE_SECTION_CAMERA_ZONES; continue; };
 		if (line == "[ASSETS]") { section = SCENE_SECTION_ASSETS; continue; };
 		if (line == "[OBJECTS]") { section = SCENE_SECTION_OBJECTS; continue; };
 		if (line == "[GRID_OBJECTS]") { section = SCENE_SECTION_GRID_OBJECTS; continue; };
@@ -332,12 +463,49 @@ void PlayScene::Load()
 		//
 		switch (section)
 		{ 
+			case SCENE_SECTION_MAP_INFO: _ParseSection_MAP_INFO(line); break;
+			case SCENE_SECTION_CAMERA_ZONES: _ParseSection_CAMERA_ZONES(line); break;
 			case SCENE_SECTION_ASSETS: _ParseSection_ASSETS(line); break;
 			case SCENE_SECTION_OBJECTS: _ParseSection_OBJECTS(line); break;
 			case SCENE_SECTION_GRID_OBJECTS: _ParseSection_OBJECTS(line, true); break;
 		}
 	}
 	f.close();
+
+
+	//  ĐÚNG: Gọi thông qua Instance duy nhất
+	GameManager* gm = GameManager::GetInstance();
+	if (gm->isGoingThroughPipe && player != NULL)
+	{
+		// 1. Tìm cái cống đầu tiên trong map được thiết kế làm "Cửa Ra"
+		VerticalPipe* exitPipe = NULL;
+		for (size_t i = 0; i < objects.size(); i++)
+		{
+			if (dynamic_cast<VerticalPipe*>(objects[i]))
+			{
+				VerticalPipe* pipe = dynamic_cast<VerticalPipe*>(objects[i]);
+				if (pipe->GetTargetSceneId() == 999)
+				{
+					exitPipe = pipe;
+					break;
+				}
+			}
+		}
+		if (exitPipe != NULL)
+		{
+			float pl, pt, pr, pb;
+			exitPipe->GetBoundingBox(pl, pt, pr, pb);
+
+			float spawnX = pl + (pr - pl) / 2;
+			float spawnY = pt + 16.0f;
+
+			player->SetPosition(spawnX, spawnY);
+
+			Mario* mario = static_cast<Mario*>(player);
+			mario->SetStartPiping();
+		}
+	}
+	gm->isGoingThroughPipe = false;
 
 	float screenHeight = GameGlobal::GetHeight();
 	HUD::GetInstance()->SetPosition(0.0f, screenHeight - HUD_HEIGHT);
@@ -365,33 +533,77 @@ void PlayScene::Update(DWORD dt)
 	//--- PLAYER POSITION
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return; 
+	Mario* mario = static_cast<Mario*>(player);
+
 
 	float px, py;
 	player->GetPosition(px, py);
 
-	float mapLeft = -8.0f;	//Khoang trong bat dau map
-	float mapTop = -100.0f;    // Cho phép bầu trời cao lên đến tọa độ âm 300
-	float mapBottom = 240.0f;
 
-	if (px < mapLeft + 24.0f)
+
+	float max_player_x = this->mapRight * TILE_SIZE - 8.0f; 
+	if(mario->IsGoalRunning())
 	{
-		px = mapLeft + 24.0f;
+		max_player_x = 999 * TILE_SIZE;
+	}
+
+
+	if (px < mapLeft)
+	{
+		px = mapLeft;
 		player->SetPosition(px, py); // Khóa Y, ép X quay lại mép trái
 
 		float pvx, pvy;
 		player-> GetSpeed(pvx, pvy);
 		player->SetSpeed(0.0f, pvy);
 	}
-	float deathZone = mapBottom + 48.0f; // Rot xuong 48px la die
-	if (py > deathZone)
+	else if (px > max_player_x)			/// chặn phải
 	{
-		GameManager::GetInstance()->AddLife(-1);
+		px = max_player_x;
+		player->SetPosition(px, py);
+		float pvx, pvy;
+		player->GetSpeed(pvx, pvy);
+		player->SetSpeed(0.0f, pvy); 
+	}
+	float playerCeiling = mapTop - 64.0f;
+
+	if (py < playerCeiling)
+	{
+		py = playerCeiling;
+		player->SetPosition(px, py); 
+
+		float pvx, pvy;
+		player->GetSpeed(pvx, pvy);
+		if (pvy < 0)
+		{
+			player->SetSpeed(pvx, 0.0f);
+		}
+	}
+	float deathZone = mapBottom * TILE_SIZE + 48.0f; // Rot xuong 48px la die
+	if (!mario->IsGoalRunning() && py > deathZone)
+	{
+		/*GameManager::GetInstance()->AddLife(-1);
 		Mario* mario = dynamic_cast<Mario*>(player);
-		mario->Reset();
+		mario->Reset();*/
+		GameManager::GetInstance()->LevelFailed();
+		SoundManager::GetInstance()->StopAll();
 	}
 
 	//--- FOLLOW CAMERA
 	float cx = px, cy = py;
+	CameraZone currentZone = GetZoneX(px);
+	if (prevCameraZone.left == defaultCameraZone.left && prevCameraZone.top == defaultCameraZone.top &&
+		prevCameraZone.right == defaultCameraZone.right && prevCameraZone.bottom == defaultCameraZone.bottom)
+	{
+		prevCameraZone = currentZone;
+	}
+	if (currentZone.left != prevCameraZone.left || currentZone.right != prevCameraZone.right)
+	{
+		prevCameraZone = currentZone;
+		isTransitioningCamera = true;
+		cameraTransitionTimer = 0.0f;
+		startCamY = currentCamY;
+	}
 
 	// HUD space
 	float hudHeight = HUD_HEIGHT;
@@ -401,12 +613,48 @@ void PlayScene::Update(DWORD dt)
 	cy -= playableHeight / 2;
 
 
-	if (cx < mapLeft) cx = mapLeft;
-	if (cy < mapTop) cy = mapTop;
-	float max_cy = mapBottom - GameGlobal::GetHeight();
-	if (cy > max_cy) cy = max_cy;
+	float max_cx = mapRight * TILE_SIZE - GameGlobal::GetWidth();
+	float min_cx = mapLeft * TILE_SIZE;
+	float min_cy = currentZone.top * TILE_SIZE;
+	float max_cy = currentZone.bottom * TILE_SIZE - GameGlobal::GetHeight();
+	if (cx < min_cx) cx = min_cx;
+	if (cx > max_cx) cx = max_cx;
 
-	Camera::GetInstance()->SetCamPos(cx, cy);
+	// Clamp cy theo zone
+	float targetCamY = cy;
+	if (currentCamY < 0.0f)
+	{
+		currentCamY = targetCamY;
+	}
+	if (targetCamY < min_cy) targetCamY = min_cy;
+	if (targetCamY > max_cy) targetCamY = max_cy;
+
+	// Lerp camera position
+	if (isTransitioningCamera)
+	{
+		cameraTransitionTimer += dt;
+		float t = cameraTransitionTimer / CAMERA_TRANSITION_TIME;
+		if (t >= 1.0f)
+		{
+			t = 1.0f;
+			isTransitioningCamera = false;
+		}
+		float smooth_t = t * t * (3.0f - 2.0f * t);
+		currentCamY = startCamY + (targetCamY - startCamY) * smooth_t;
+	}
+	else
+	{
+		currentCamY = targetCamY;
+	}
+
+	// Clamp currentCamY theo zone
+	if (currentCamY < min_cy) currentCamY = min_cy;
+	if (currentCamY > max_cy) currentCamY = max_cy;
+
+	if (!mario->IsGoalRunning())
+	{
+		Camera::GetInstance()->SetCamPos(cx, currentCamY);
+	}
 
 	PurgeDeletedObjects();
 }
@@ -417,10 +665,10 @@ void PlayScene::Render()
 		if (objects[i]->GetZIndex() < 5) objects[i]->Render();
 
 	for (int i = 0; i < objects.size(); i++)
-		if (objects[i]->GetZIndex() >= 5 && objects[i]->GetZIndex() < 10)
+		if (objects[i]->GetZIndex() >= 5 && objects[i]->GetZIndex() < 15)
 			objects[i]->Render();
 
-	player->Render();
+	//player->Render();
 	HUD::GetInstance()->Render();
 }
 
@@ -474,4 +722,16 @@ void PlayScene::PurgeDeletedObjects()
 	objects.erase(
 		std::remove_if(objects.begin(), objects.end(), PlayScene::IsGameObjectDeleted),
 		objects.end());
+}
+
+CameraZone PlayScene::GetZoneX(float x)
+{
+	for (auto& zone : cameraZones)
+	{
+		if (x >= zone.left * TILE_SIZE && x <= zone.right * TILE_SIZE)
+		{
+			return zone;
+		}
+	}
+	return {mapLeft, mapTop, mapRight, mapBottom};
 }

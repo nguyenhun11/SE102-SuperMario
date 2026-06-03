@@ -1,10 +1,10 @@
 #pragma once
 #include "GameObject.h"
-
 #include "Animation.h"
 #include "Animations.h"
-#include "GameManager.h"
 #include "debug.h"
+#include "VerticalPipe.h"
+#include "HorizontalPipe.h"
 
 // Moving Speed
 #define MARIO_WALKING_SPEED		0.1f
@@ -41,7 +41,7 @@
 #define MARIO_FLYING_TIME 4000    
 #define MARIO_FLOATING_TIME	250
 #define MARIO_SLOW_FALL_SPEED 0.01f 
-#define MARIO_FLYING_UP_FORCE 0.25f
+#define MARIO_FLYING_UP_FORCE 0.2f
 
 // Tail attack 
 #define MARIO_SPIN_TIME	240
@@ -49,6 +49,10 @@
 // P-meter
 #define MARIO_PMETER_MAX 7
 #define MARIO_PMETER_CHARGE_TIME 200 
+
+// Piping
+#define MARIO_PIPE_TIME 1400
+#define MARIO_PIPE_SPEED 0.02f
 
 // ------------------------- MARIO STATE -------------------------------- //
 #pragma	region	MARIO_STATES & MARIO_FORMS
@@ -93,6 +97,7 @@ enum class MarioForm
 // SUPER MARIO
 #define ID_ANI_MARIO_SUPER_IDLE 1100
 #define ID_ANI_MARIO_SUPER_SKIDDING 1103
+#define ID_ANI_MARIO_SUPER_SKIDDING 1103
 
 #define ID_ANI_MARIO_SUPER_WALKING 1101
 #define ID_ANI_MARIO_SUPER_RUNNING 1102
@@ -102,6 +107,9 @@ enum class MarioForm
 #define ID_ANI_MARIO_SUPER_FALLING	1106
 
 #define ID_ANI_MARIO_SUPER_SIT 1107
+#define ID_ANI_MARIO_SUPER_SLIDING 1108
+
+#define ID_ANI_MARIO_SUPER_PIPING 1109
 
 #define ID_ANI_MARIO_DIE 999
 
@@ -111,10 +119,13 @@ enum class MarioForm
 
 #define ID_ANI_MARIO_SMALL_WALKING 1001
 #define ID_ANI_MARIO_SMALL_RUNNING 1002
-
+#define ID_ANI_MARIO_SMALL_SLIDING 1008
 
 #define ID_ANI_MARIO_SMALL_JUMP_WALK 1004
 #define ID_ANI_MARIO_SMALL_JUMP_RUN 1005
+
+#define ID_ANI_MARIO_SMALL_PIPING 1009
+
 
 // RACOON MARIO
 #define ID_ANI_MARIO_RACOON_IDLE 1200
@@ -128,11 +139,15 @@ enum class MarioForm
 #define ID_ANI_MARIO_RACOON_FALLING	1206
 
 #define ID_ANI_MARIO_RACOON_SIT 1207
+#define ID_ANI_MARIO_RACOON_SLIDING 1208
 #define ID_ANI_MARIO_RACOON_SPIN 1215
 // NOTE NÈ: thiếu slow fall với flying
 
 #define ID_ANI_MARIO_RACOON_FLYING 1213
 #define ID_ANI_MARIO_RACOON_FLOATING 1214
+
+#define ID_ANI_MARIO_RACOON_PIPING 1209
+
 
 
 // ---- Other Game feel Stuff ----
@@ -146,7 +161,7 @@ enum class MarioForm
 #pragma endregion
 
 // Transform Animation
-#define MARIO_TRANSFORM_SUPER_TIME 1000
+#define MARIO_TRANSFORM_SUPER_TIME 900
 #define MARIO_TRANSFORM_TIME 500
 
 // Poof Transform
@@ -156,14 +171,14 @@ enum class MarioForm
 #define GROUND_Y 160.0f
 
 // ------------------------- BOUNDING SHAPES -------------------------------- //
-#define MARIO_BIG_BBOX_WIDTH  14
+#define MARIO_BIG_BBOX_WIDTH  10
 #define MARIO_BIG_BBOX_HEIGHT 24
-#define MARIO_BIG_SITTING_BBOX_WIDTH  14
-#define MARIO_BIG_SITTING_BBOX_HEIGHT 16
+#define MARIO_BIG_SITTING_BBOX_WIDTH  10
+#define MARIO_BIG_SITTING_BBOX_HEIGHT 12
 
 #define MARIO_SIT_HEIGHT_ADJUST ((MARIO_BIG_BBOX_HEIGHT-MARIO_BIG_SITTING_BBOX_HEIGHT)/2)
 
-#define MARIO_SMALL_BBOX_WIDTH  13
+#define MARIO_SMALL_BBOX_WIDTH  10
 #define MARIO_SMALL_BBOX_HEIGHT 12
 
 
@@ -179,19 +194,25 @@ class Mario : public GameObject
 	// original pos
 	float start_x;
 	float start_y;
+	float slopeDirection;
 	
 	bool isSuperTransforming;
 	bool isTakingDamage;
 	bool canFly;
+	bool wasSkidding;
 	bool isFlying;
 	bool isFloating;
 	bool isPoofTransforming;
 	bool isSpinning;
+	bool isSliding;
+	bool isPiping;
+
+	bool isGoalRunning;
 	
 	// pmeter
 	int pmeter;
 
-	MarioForm form; 
+	MarioForm form;
 	int untouchable; 
 
 	ULONGLONG die_start;
@@ -203,13 +224,19 @@ class Mario : public GameObject
 	ULONGLONG poof_start;
 	ULONGLONG spin_start;
 	ULONGLONG pmeter_start;
+	ULONGLONG pmeter_sound_start;
+	ULONGLONG piping_start;
 
 	MarioForm nextPoofForm;
 	BOOLEAN isOnPlatform;
 	BOOLEAN isOnSlope;
-	//int coin; 
-	//int score;
+	
+	VerticalPipe* pipeBelow;
+	VerticalPipe* pipeAbove;
+	bool isPipingUp = false;
 
+
+	void OnCollisionWithGoalBlock(LPCOLLISIONEVENT e);
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithCoin(LPCOLLISIONEVENT e);
 	void OnCollisionWithPortal(LPCOLLISIONEVENT e);
@@ -218,6 +245,8 @@ class Mario : public GameObject
 	void OnCollisionWithMushroom(LPCOLLISIONEVENT e);
 	void OnCollisionWithLeaf(LPCOLLISIONEVENT e);
 	void OnCollisionWithBrick(LPCOLLISIONEVENT e);
+	void OnCollisionWithNoteBlock(LPCOLLISIONEVENT e);
+	void OnCollisionWithVerticalPipe(LPCOLLISIONEVENT e);
 
 	int GetAniIdBig();
 	int GetAniIdSmall();
@@ -231,6 +260,7 @@ public:
 	{
 		start_x = x;
 		start_y = y;
+		slopeDirection = 1;
 		isSitting = false;
 		maxVx = 0.0f;
 		accelX = 0.0f;
@@ -242,10 +272,16 @@ public:
 		isSuperTransforming = false;
 		isTakingDamage = false;
 		canFly = false;
+		wasSkidding = false;
 		isFlying = false;
 		isFloating = false;
 		isPoofTransforming = false;
 		isSpinning = false;
+		isSliding = false;
+		isPiping = false;
+		isPipingUp = false;
+
+		isGoalRunning = false;
 
 		untouchable = 0;
 		untouchable_start = -1;
@@ -257,30 +293,26 @@ public:
 		poof_start = -1;
 		spin_start = -1;
 		pmeter_start = -1;
+		piping_start = -1;
+
+		pipeBelow = NULL;
 
 		//coin = 0;
 		//score = 0;
 
-		form = MarioForm::SMALL;
+		SetUp();
+		
 		currentState = MarioState::IDLE;
 		nextPoofForm = MarioForm::RACOON;
 
 		zIndex = 10;
 	}
 
-	void AddCoin(int amount = 1)
-	{
-		//coin += amount;
-		GameManager::GetInstance()->AddCoin(amount);
-		//DebugOut(L">>> CurrentCoin: %d\n", coin);
-	}
+	void SetUp();
 
-	void AddScore(int amount = 100)
-	{
-		//score += amount;
-		GameManager::GetInstance()->AddScore(amount);
-		//DebugOut(L">>> CurrentScore: %d\n", score);
-	}
+	void AddCoin(int amount = 1);
+
+	void AddScore(int amount = 100);
 
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();
@@ -289,7 +321,7 @@ public:
 
 	int IsCollidable()
 	{ 
-		return (state != static_cast<int>(MarioState::DIE));
+		return (state != static_cast<int>(MarioState::DIE) && state != static_cast<int>(MarioState::PIPING));
 	}
 
 	int IsBlocking()
@@ -316,6 +348,9 @@ public:
 	void Attack();
 	void TakeDamage();
 	void Reset();
+	void EnterPipeDown();
+	void EnterPipeUp();
+	void SetStartPiping();
 
 	// Handle Update
 	void HandleDying(DWORD dt, vector<LPGAMEOBJECT>* coObjects); 
@@ -324,10 +359,14 @@ public:
 	void HandleTransform(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void HandlePMeter(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void HandleSlope(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
+	void HandleSlopePhysics(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
+	void HandleGoalRunning(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
+	void HandlePiping(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 
 	// Getters & Setters
 	float GetX() { return x; }
 	float GetY() { return y; }
 	MarioForm GetCurrentForm() { return form; }
 	int GetPMeter() { return pmeter; }
+	bool IsGoalRunning() { return isGoalRunning; }
 };

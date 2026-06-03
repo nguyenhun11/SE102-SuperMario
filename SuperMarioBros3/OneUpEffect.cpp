@@ -1,11 +1,5 @@
 #include "OneUpEffect.h"
 
-OneUpEffect::OneUpEffect(float x, float y) : GameObject(x, y)
-{
-	effect_start = GetTickCount64();
-	vy = -0.07f;
-	vx = 0;
-}
 void OneUpEffect::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	y += vy * dt;

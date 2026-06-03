@@ -27,12 +27,13 @@ public:
 		float cell_width, float cell_height,
 		int columns, int rows,
 		int sprites[3][3],
-		bool top = true, bool bottom = true, bool left = true, bool right = true) : GameObject(x, y)
+		bool top = true, bool bottom = true, bool left = true, bool right = true, int z = 5) : GameObject(x, y)
 	{
 		this->cellWidth = cell_width;
 		this->cellHeight = cell_height;
 		this->columns = columns;
 		this->rows = rows;
+		this->zIndex = z;
 
 		if (sprites != NULL) {
 

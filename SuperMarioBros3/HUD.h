@@ -14,32 +14,34 @@
 //#define ID_UI_CLEAR 1004
 //#define ID_UI_YOU_GOT 1005
 
+#define HUD_HEIGHT 36.0f
+
 // Tọa độ tương đối của các thành phần trên HUD (so với góc trái trên của Panel)
 #define HUD_WORLD_X 48
-#define HUD_WORLD_Y 10
+#define HUD_WORLD_Y 8
 
 #define HUD_LIFE_X 48
-#define HUD_LIFE_Y 18
+#define HUD_LIFE_Y 16
 
 #define HUD_SCORE_X 64
-#define HUD_SCORE_Y 18
+#define HUD_SCORE_Y 16
 
 #define HUD_TIME_X 136
-#define HUD_TIME_Y 18
+#define HUD_TIME_Y 16
 
 #define HUD_COIN_X 152
-#define HUD_COIN_Y 10
+#define HUD_COIN_Y 8
 
 #define HUD_PMETER_X 64
-#define HUD_PMETER_Y 10
+#define HUD_PMETER_Y 8
 
 #define HUD_P_X 112
-#define HUD_P_Y 10
+#define HUD_P_Y 8
 
 #define HUD_CARD_1_X 176
 #define HUD_CARD_2_X 200
 #define HUD_CARD_3_X 224
-#define HUD_CARD_Y 10
+#define HUD_CARD_Y 8
 
 class HUD : public Singleton<HUD>
 {
