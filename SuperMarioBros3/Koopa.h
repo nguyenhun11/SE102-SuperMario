@@ -12,17 +12,19 @@
 #define KOOPA_BBOX_HEIGHT 24
 #define KOOPA_BBOX_HEIGHT_DIE 14
 
-#define KOOPA_DIE_TIMEOUT 500
-
-#define KOOPA_STATE_WALKING 100
-#define KOOPA_STATE_DIE 200
-#define KOOPA_STATE_SHELL 300
-#define KOOPA_STATE_SHELL_MOVING 400
-#define KOOPA_STATE_WING 500
-
+#define KOOPA_DIE_TIMEOUT 2000
 #define ID_ANI_KOOPA_WALKING 20210
-#define ID_ANI_KOOPA_DIE 20220
-#define ID_ANI_KOOPA_SHELL 20230
+//#define ID_ANI_KOOPA_DIE 20220
+#define ID_ANI_KOOPA_SHELL 20211
+
+enum class KoopaState
+{
+	WALKING = 0,
+	SHELL = 1,
+	SHELL_MOVING = 2,
+	WING = 3,
+	DIE = 99
+};
 
 struct SensorData
 {
@@ -65,7 +67,7 @@ protected:
 
 public:
 	Koopa(float x, float y);
-	virtual void SetState(int state);
+	virtual void SetState(KoopaState state);
 };
 
 
