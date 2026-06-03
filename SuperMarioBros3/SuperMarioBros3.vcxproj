@@ -327,6 +327,7 @@
     <Text Include="scene0005.txt" />
     <Text Include="scene01.txt" />
     <Text Include="scene02.txt" />
+    <Text Include="scene_mario_dev2.txt" />
     <Text Include="stage1.txt" />
     <Text Include="scene_mario_dev.txt" />
     <Text Include="pipe.txt" />

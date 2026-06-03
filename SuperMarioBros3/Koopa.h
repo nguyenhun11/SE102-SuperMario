@@ -9,8 +9,8 @@
 
 #define KOOPA_BBOX_WIDTH 15
 
-#define KOOPA_BBOX_HEIGHT 25
-#define KOOPA_BBOX_HEIGHT_DIE 15
+#define KOOPA_BBOX_HEIGHT 24
+#define KOOPA_BBOX_HEIGHT_DIE 14
 
 #define KOOPA_DIE_TIMEOUT 500
 
@@ -22,13 +22,35 @@
 
 #define ID_ANI_KOOPA_WALKING 20210
 #define ID_ANI_KOOPA_DIE 20220
+#define ID_ANI_KOOPA_SHELL 20230
+
+struct SensorData
+{
+	float x;
+	float y;
+	float width;
+	float height;
+	SensorData(float x = 0, float y = 0, float width = 0, float height = 0) : x(x), y(y), width(width), height(height) {}
+	bool IsNonCollidingWith(LPCOLLISIONEVENT e)
+	{
+		float left = x - width / 2;
+		float top = y - height / 2;
+		float right = left + width;
+		float bottom = top + height;
+		float objLeft, objTop, objRight, objBottom;
+		e->obj->GetBoundingBox(objLeft, objTop, objRight, objBottom);
+		return (right <= objLeft || left >= objRight || bottom <= objTop || top >= objBottom);
+	}
+
+};
 
 class Koopa : public GameObject
 {
 protected:
 	float ax;
 	float ay;
-
+	SensorData* sensorfront;
+	SensorData* sensorback;
 	ULONGLONG die_start;
 
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
@@ -45,6 +67,7 @@ public:
 	Koopa(float x, float y);
 	virtual void SetState(int state);
 };
+
 
 
 

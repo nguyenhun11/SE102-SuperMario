@@ -7,6 +7,10 @@ Koopa::Koopa(float x, float y) :GameObject(x, y)
 	this->ax = 0;
 	this->ay = KOOPA_GRAVITY;
 	die_start = -1;
+	this->sensorfront = new SensorData(x + KOOPA_BBOX_WIDTH / 2, y, 2, KOOPA_BBOX_HEIGHT);
+	this->sensorback = new SensorData(x - KOOPA_BBOX_WIDTH / 2, y, 2, KOOPA_BBOX_HEIGHT);
+    // mặc định đi sang trái
+	this->nx = -1;
 	SetState(KOOPA_STATE_WALKING);
 }
 
@@ -47,7 +51,10 @@ void Koopa::OnCollisionWith(LPCOLLISIONEVENT e)
 	}
 	else if (e->nx != 0)
 	{
-		vx = -vx;
+        vx = -vx;
+		// cập nhật hướng hiển thị
+		if (vx > 0) nx = 1;
+		else nx = -1;
 	}
 	
 	
@@ -55,6 +62,10 @@ void Koopa::OnCollisionWith(LPCOLLISIONEVENT e)
 
 void Koopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	// Giả sử hướng di chuyển là vx (dương là phải, âm là trái)
+	float sensorOffset = (vx > 0) ? KOOPA_BBOX_WIDTH / 2 : -KOOPA_BBOX_WIDTH / 2;
+
+	
 	vy += ay * dt;
 	vx += ax * dt;
 
@@ -77,7 +88,8 @@ void Koopa::Render()
 		aniId = ID_ANI_KOOPA_DIE;
 	}
 
-	Animations::GetInstance()->Get(aniId)->Render(x, y);
+	bool isFlip = (nx > 0);
+	Animations::GetInstance()->Get(aniId)->Render(x, y, isFlip);
 	//RenderBoundingBox();
 }
 
@@ -94,7 +106,8 @@ void Koopa::SetState(int state)
 		ay = 0;
 		break;
 	case KOOPA_STATE_WALKING:
-		vx = -KOOPA_WALKING_SPEED;
+      vx = -KOOPA_WALKING_SPEED;
+		nx = -1;
 		break;
 	}
 }
