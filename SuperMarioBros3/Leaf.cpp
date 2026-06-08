@@ -43,6 +43,7 @@ void Leaf::SetState(LeafState newState)
 		vx = 0;
 		break;
 	case LeafState::FALLING:
+		zIndex = 14;
 		vy = LEAF_FALLING_SPEED_Y;
 		break;
 	}

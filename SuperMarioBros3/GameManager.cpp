@@ -86,6 +86,7 @@ void GameManager::LevelFailed()
 {
 	AddLife(-1);
 	isReturningFromFail = true;
+	this->marioForm = static_cast<int>(MarioForm::SMALL);
 	SceneManager::GetInstance()->InitiateSwitchScene(0);
 }
 

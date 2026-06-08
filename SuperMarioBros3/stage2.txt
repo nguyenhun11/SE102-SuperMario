@@ -35,7 +35,7 @@ stage2_assets.txt
 # See OBJECT_TYPE constants in AssetIDs.h
 
 # MARIO
-0 135 10
+0 1 10
 
 303 5 9 0	5
 303 7 7 2

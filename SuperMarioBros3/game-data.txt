@@ -1,6 +1,6 @@
 [SETTINGS]
 # Start scene
-start	11
+start	1
 
 # id	type	file
 # type: 0: world, 1: play scene 

@@ -27,7 +27,7 @@ float Slope::GetSurfaceY(float marioX)
 
 void Slope::Render()
 {
-    RenderBoundingBox();
+    //RenderBoundingBox();
 }
 
 void Slope::GetBoundingBox(float& l, float& t, float& r, float& b)
