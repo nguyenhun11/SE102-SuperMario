@@ -662,10 +662,15 @@ void PlayScene::Update(DWORD dt)
 void PlayScene::Render()
 {
 	for (int i = 0; i < objects.size(); i++)
-		if (objects[i]->GetZIndex() < 5) objects[i]->Render();
+		if (objects[i]->GetZIndex() < 5) 
+			objects[i]->Render();
 
 	for (int i = 0; i < objects.size(); i++)
-		if (objects[i]->GetZIndex() >= 5 && objects[i]->GetZIndex() < 15)
+		if (objects[i]->GetZIndex() >= 5 && objects[i]->GetZIndex() < 10)
+			objects[i]->Render();
+
+	for (int i = 0; i < objects.size(); i++)
+		if (objects[i]->GetZIndex() >= 10 && objects[i]->GetZIndex() < 15)
 			objects[i]->Render();
 
 	//player->Render();

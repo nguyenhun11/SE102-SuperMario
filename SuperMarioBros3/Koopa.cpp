@@ -11,12 +11,12 @@ Koopa::Koopa(float x, float y) :GameObject(x, y)
 	this->sensorback = new SensorData(x - KOOPA_BBOX_WIDTH / 2, y, 2, KOOPA_BBOX_HEIGHT);
     // mặc định đi sang trái
 	this->nx = -1;
-	SetState(KOOPA_STATE_WALKING);
+	SetState(KoopaState::WALKING);
 }
 
 void Koopa::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
-	if (state == KOOPA_STATE_DIE)
+	if (state == static_cast<int>(KoopaState::SHELL))
 	{
 		left = x - KOOPA_BBOX_WIDTH / 2;
 		top = y - KOOPA_BBOX_HEIGHT_DIE / 2;
@@ -69,9 +69,9 @@ void Koopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	vy += ay * dt;
 	vx += ax * dt;
 
-	if ((state == KOOPA_STATE_DIE) && (GetTickCount64() - die_start > KOOPA_DIE_TIMEOUT))
+	if ((this->state == static_cast<int>(KoopaState::SHELL)) && (GetTickCount64() - die_start > KOOPA_DIE_TIMEOUT))
 	{
-		isDeleted = true;
+		SetState(KoopaState::WALKING);
 		return;
 	}
 
@@ -82,31 +82,41 @@ void Koopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void Koopa::Render()
 {
-	int aniId = ID_ANI_KOOPA_WALKING;
-	if (state == KOOPA_STATE_DIE)
+	int aniId = -1;
+	float renderX = x;
+	float renderY = y;
+	if (this->state == static_cast<int>(KoopaState::SHELL))
 	{
-		aniId = ID_ANI_KOOPA_DIE;
+		aniId = ID_ANI_KOOPA_SHELL;
+		renderY += 6;
+
+	}
+	else if (this->state == static_cast<int>(KoopaState::WALKING))
+	{
+		aniId = ID_ANI_KOOPA_WALKING;
 	}
 
+	if (aniId == -1) aniId = ID_ANI_KOOPA_WALKING;
+
 	bool isFlip = (nx > 0);
-	Animations::GetInstance()->Get(aniId)->Render(x, y, isFlip);
+	Animations::GetInstance()->Get(aniId)->Render(renderX, renderY, isFlip);
 	//RenderBoundingBox();
 }
 
-void Koopa::SetState(int state)
+void Koopa::SetState(KoopaState state)
 {
-	GameObject::SetState(state);
+	GameObject::SetState(static_cast<int>(state));
 	switch (state)
 	{
-	case KOOPA_STATE_DIE:
+	case KoopaState::SHELL:
 		die_start = GetTickCount64();
-		y += (KOOPA_BBOX_HEIGHT - KOOPA_BBOX_HEIGHT_DIE) / 2;
+		ay = 0;
 		vx = 0;
 		vy = 0;
-		ay = 0;
 		break;
-	case KOOPA_STATE_WALKING:
-      vx = -KOOPA_WALKING_SPEED;
+	case KoopaState::WALKING:
+		this->ay = KOOPA_GRAVITY;
+		vx = -KOOPA_WALKING_SPEED;
 		nx = -1;
 		break;
 	}

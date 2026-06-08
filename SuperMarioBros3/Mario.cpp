@@ -20,6 +20,7 @@
 
 #include "Collision.h"
 #include "NoteBlock.h"
+#include "Koopa.h"
 
 void Mario::SetUp()
 {
@@ -226,6 +227,8 @@ void Mario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithCoin(e);
 	else if (dynamic_cast<Goomba*>(e->obj))
 		OnCollisionWithGoomba(e);
+	else if (dynamic_cast<Koopa*>(e->obj))
+		OnCollisionWithKoopa(e);
 	else if (dynamic_cast<QuestionBlock*>(e->obj))
 		OnCollisionWithQuestionBlock(e);
 	else if (dynamic_cast<Brick*>(e->obj))
@@ -285,6 +288,31 @@ void Mario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 	else
 	{
 		if (goomba->GetState() != GOOMBA_STATE_DIE)
+		{
+			TakeDamage();
+		}
+	}
+}
+
+void Mario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
+{
+	Koopa* koopa = dynamic_cast<Koopa*>(e->obj);
+
+	if (e->ny < 0)
+	{
+		if (koopa->GetState() != static_cast<int>(KoopaState::SHELL))
+		{
+			koopa->SetState(KoopaState::SHELL);
+
+			if (IsHoldingJump)
+				vy = -MARIO_HIGH_JUMP_DEFLECT_SPEED;
+			else
+				vy = -MARIO_JUMP_DEFLECT_SPEED;
+		}
+	}
+	else
+	{
+		if (koopa->GetState() != static_cast<int>(KoopaState::SHELL))
 		{
 			TakeDamage();
 		}
@@ -1010,12 +1038,14 @@ void Mario::TakeDamage()
 	if (form == MarioForm::RACOON)
 	{
 		StartPoofTransform(MarioForm::SUPER);
+		SoundManager::GetInstance()->Play("bump");
 		StartUntouchable();
 	}
 	else if (form > MarioForm::SMALL)
 	{
 		isTakingDamage = true;
 		damage_start = GetTickCount64();
+		SoundManager::GetInstance()->Play("pipe");
 
 		vx = 0;
 		vy = 0;
@@ -1025,6 +1055,8 @@ void Mario::TakeDamage()
 	}
 	else
 	{
+		SoundManager::GetInstance()->StopAll();
+		SoundManager::GetInstance()->Play("player_down");
 		DebugOut(L">>> Mario DIE >>> \n");
 		SetState(MarioState::DIE);
 	}
@@ -1190,6 +1222,7 @@ void Mario::HandleDying(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	if (state == static_cast<int>(MarioState::DIE))
 	{
+		zIndex = 14;
 		// Kiểm tra xem đã hết thời gian timeout chưa
 		if (GetTickCount64() - die_start > MARIO_DIE_TIMEOUT && accelY == 0)
 		{
