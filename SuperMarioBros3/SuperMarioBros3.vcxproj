@@ -251,6 +251,7 @@
     <ClInclude Include="NoteBlock.h" />
     <ClInclude Include="OneUpEffect.h" />
     <ClInclude Include="PiranhaPlant.h" />
+    <ClInclude Include="Sensor.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="StageNode.h" />
     <ClInclude Include="Switch.h" />

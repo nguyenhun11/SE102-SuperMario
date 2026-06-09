@@ -298,6 +298,19 @@ void Mario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 {
 	Koopa* koopa = dynamic_cast<Koopa*>(e->obj);
 
+	if (koopa->GetState() == static_cast<int>(KoopaState::SHELL) || koopa->GetState() == static_cast<int>(KoopaState::SHAKING))
+	{
+		koopa->SetState(KoopaState::SHELL_MOVING);
+		if (nx > 0)	// mario đang di chuyển về bên phải
+		{
+			koopa->SetSpeed(MARIO_RUNNING_SPEED, 0);
+		}
+		else		// mario dang di chuyen ve ben trai
+		{
+			koopa->SetSpeed(-MARIO_RUNNING_SPEED, 0);
+		}
+		return;
+	}
 	if (e->ny < 0)
 	{
 		if (koopa->GetState() != static_cast<int>(KoopaState::SHELL))
