@@ -120,7 +120,7 @@ void RedKoopa::Render()
 
 	if (this->state == static_cast<int>(KoopaState::SHELL))
 	{
-		aniId = ID_ANI_KOOPA_SHELL;
+		aniId = ID_ANI_RED_KOOPA_SHELL;
 	}
 	else if (this->state == static_cast<int>(KoopaState::WALKING))
 	{
