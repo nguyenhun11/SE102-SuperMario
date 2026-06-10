@@ -22,6 +22,7 @@
 #include "SolidBlock.h"
 #include "SoundManager.h"
 #include "PiranhaPlant.h"
+#include "RedKoopa.h"
 
 #include "PlaySceneKeyHandler.h"
 
@@ -177,6 +178,7 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 	}
 	case OBJECT_TYPE_COIN: obj = new Coin(x, y); break;
 	case OBJECT_TYPE_KOOPA: obj = new Koopa(x, y); break;
+	case OBJECT_TYPE_RED_KOOPA: obj = new RedKoopa(x, y); break;
 
 	case OBJECT_TYPE_PLATFORM:
 	{

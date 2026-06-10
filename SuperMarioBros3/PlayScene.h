@@ -8,7 +8,8 @@
 #include "Goomba.h"
 #include "HUD.h"
 #include "GameManager.h"
-//#include "Koopas.h"
+
+// Forward declaration
 
 #define CAMERA_TRANSITION_TIME 500
 

@@ -167,11 +167,13 @@
     <ClCompile Include="GoalBlock.cpp" />
     <ClCompile Include="HorizontalPipe.cpp" />
     <ClCompile Include="InvisibleNode.cpp" />
+    <ClCompile Include="KoopaTroopa.cpp" />
     <ClCompile Include="MapMario.cpp" />
     <ClCompile Include="MapNode.cpp" />
     <ClCompile Include="NoteBlock.cpp" />
     <ClCompile Include="OneUpEffect.cpp" />
     <ClCompile Include="PiranhaPlant.cpp" />
+    <ClCompile Include="RedKoopa.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="StageNode.cpp" />
     <ClCompile Include="Switch.cpp" />
@@ -246,11 +248,13 @@
     <ClInclude Include="GoalBlock.h" />
     <ClInclude Include="HorizontalPipe.h" />
     <ClInclude Include="InvisibleNode.h" />
+    <ClInclude Include="KoopaTroopa.h" />
     <ClInclude Include="MapMario.h" />
     <ClInclude Include="MapNode.h" />
     <ClInclude Include="NoteBlock.h" />
     <ClInclude Include="OneUpEffect.h" />
     <ClInclude Include="PiranhaPlant.h" />
+    <ClInclude Include="RedKoopa.h" />
     <ClInclude Include="Sensor.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="StageNode.h" />

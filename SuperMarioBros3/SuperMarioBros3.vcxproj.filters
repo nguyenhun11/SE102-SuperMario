@@ -254,6 +254,12 @@
     <ClCompile Include="HorizontalPipe.cpp">
       <Filter>Entities\Blocks</Filter>
     </ClCompile>
+    <ClCompile Include="RedKoopa.cpp">
+      <Filter>Entities\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="KoopaTroopa.cpp">
+      <Filter>Entities\Enemies</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h">
@@ -512,6 +518,12 @@
       <Filter>Entities\Blocks</Filter>
     </ClInclude>
     <ClInclude Include="Sensor.h">
+      <Filter>Entities\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="RedKoopa.h">
+      <Filter>Entities\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="KoopaTroopa.h">
       <Filter>Entities\Enemies</Filter>
     </ClInclude>
   </ItemGroup>

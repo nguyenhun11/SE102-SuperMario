@@ -18,6 +18,7 @@ Each ID for a type of object will BEGIN with:
 #define OBJECT_TYPE_MARIO			0
 #define OBJECT_TYPE_GOOMBA			2
 #define OBJECT_TYPE_KOOPA			202
+#define OBJECT_TYPE_RED_KOOPA		212
 #define OBJECT_TYPE_PIRANHA_PLANT   203
 
 // Block
