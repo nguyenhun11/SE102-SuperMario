@@ -313,6 +313,15 @@ void Mario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 	}
 	if (e->ny < 0)
 	{
+		if (koopa->GetState() == static_cast<int>(KoopaState::WING))
+		{
+			koopa->SetState(KoopaState::WALKING);
+			if (IsHoldingJump)
+				vy = -MARIO_HIGH_JUMP_DEFLECT_SPEED;
+			else
+				vy = -MARIO_JUMP_DEFLECT_SPEED;
+			return;
+		}
 		if (koopa->GetState() != static_cast<int>(KoopaState::SHELL))
 		{
 			koopa->SetState(KoopaState::SHELL);

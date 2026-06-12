@@ -6,8 +6,9 @@
 
 #define KOOPA_GRAVITY 0.002f
 #define KOOPA_WALKING_SPEED 0.02f
-#define KOOPA_SHELL_SPEED 0.1f
+#define KOOPA_SHELL_SPEED 0.22f
 
+#define KOOPA_BBOX_OFFSET_Y 4
 
 #define KOOPA_BBOX_WIDTH 15
 
@@ -20,6 +21,7 @@
 #define ID_ANI_KOOPA_SHELL 20211
 #define ID_ANI_KOOPA_SHELL_SHAKING 20212
 #define ID_ANI_KOOPA_SHELL_MOVING 20213
+#define ID_ANI_KOOPA_WING 20214
 
 
 enum class KoopaState
@@ -39,6 +41,7 @@ class Koopa : public GameObject
 protected:
 	float ax;
 	float ay;
+	bool isFlipped; // Biến cờ để theo dõi trạng thái lật của sprite (điều khiển hướng render)
 	Sensor* sensorfront;
 	Sensor* sensorback;
 	

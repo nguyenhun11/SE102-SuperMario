@@ -7,7 +7,7 @@ Koopa::Koopa(float x, float y) : GameObject(x, y)
 	this->ax = 0;
 	this->ay = KOOPA_GRAVITY;
 	die_start = -1;
-
+	isFlipped = false;
 	// Khởi tạo một sensor duy nhất đi trước để dò đường
 	this->sensorfront = new Sensor(x, y);
 	this->sensorback = nullptr;
@@ -148,8 +148,8 @@ void Koopa::Render()
 	if (aniId == -1) aniId = ID_ANI_KOOPA_WALKING;
 
 	// Lật ảnh sprite (isFlip = true nếu đi sang phải)
-	bool isFlip = (nx > 0);
-	Animations::GetInstance()->Get(aniId)->Render(renderX, renderY, isFlip);
+	isFlipped = (nx > 0);
+	Animations::GetInstance()->Get(aniId)->Render(renderX, renderY, isFlipped);
 
 	// Chỉ Render Sensor để theo dõi trực quan khi đang đi bộ
 	if (state == static_cast<int>(KoopaState::WALKING) && sensorfront != nullptr)
@@ -187,7 +187,7 @@ void Koopa::SetState(KoopaState state)
 		this->ay = KOOPA_GRAVITY;
 		vx = nx * KOOPA_WALKING_SPEED;
 		vy = 0;
-
+		
 		// TRẢ LẠI Y VẬT LÝ KHI ĐỨNG LÊN: Đẩy tâm Y lên trên để tránh chân Koopa lún sâu vào gạch
 		if (oldState == KoopaState::SHELL || oldState == KoopaState::SHAKING || oldState == KoopaState::SHELL_MOVING)
 		{
