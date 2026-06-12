@@ -248,6 +248,18 @@
     <ClCompile Include="PiranhaPlant.cpp">
       <Filter>Entities\Enemies</Filter>
     </ClCompile>
+    <ClCompile Include="NoteBlock.cpp">
+      <Filter>Entities\Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="HorizontalPipe.cpp">
+      <Filter>Entities\Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="RedKoopa.cpp">
+      <Filter>Entities\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="KoopaTroopa.cpp">
+      <Filter>Entities\Enemies</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h">
@@ -499,6 +511,21 @@
     <ClInclude Include="PiranhaPlant.h">
       <Filter>Entities\Enemies</Filter>
     </ClInclude>
+    <ClInclude Include="NoteBlock.h">
+      <Filter>Entities\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="HorizontalPipe.h">
+      <Filter>Entities\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="Sensor.h">
+      <Filter>Entities\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="RedKoopa.h">
+      <Filter>Entities\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="KoopaTroopa.h">
+      <Filter>Entities\Enemies</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="brick.txt">
@@ -562,7 +589,7 @@
     <Text Include="stage2.txt">
       <Filter>Scenes\Playscene</Filter>
     </Text>
-    <Text Include="map_2.txt">
+    <Text Include="stage2_assets.txt">
       <Filter>Assets</Filter>
     </Text>
     <Text Include="goalblock.txt">
@@ -577,6 +604,13 @@
     <Text Include="piranha-fire.txt">
       <Filter>Assets</Filter>
     </Text>
+    <Text Include="note_block.txt">
+      <Filter>Assets</Filter>
+    </Text>
+    <Text Include="stage1_1.txt">
+      <Filter>Scenes\Playscene</Filter>
+    </Text>
+    <Text Include="scene_mario_dev2.txt" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="textures\100_Mario.png">

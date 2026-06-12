@@ -22,8 +22,11 @@ QuestionBlock::QuestionBlock(float x, float y, int containedItem) : GameObject(x
 			break;
 		}
 		case static_cast<int>(ContainedItem::UP_MUSHROOM):
+		{
+
 			this->item = ContainedItem::UP_MUSHROOM;
 			break;
+		}
 		default:
 		{
 			this->item = ContainedItem::COIN;
@@ -92,7 +95,7 @@ void QuestionBlock::SpawnItem()
 		else
 		{
 			// sinh đồ xịn honw nếu con mario đang ở trạng thái TO
-			Leaf* leaf = new Leaf(x, y - 16);
+			Leaf* leaf = new Leaf(x, y);
 			playScene->AddObject(leaf);
 		}
 	}

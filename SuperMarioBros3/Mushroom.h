@@ -21,7 +21,7 @@ class Mushroom : public GameObject
 {
 protected:
 	float startY;
-
+	bool isOnSlope = false;
 public:
 	Mushroom(float x, float y);
 
@@ -43,4 +43,5 @@ public:
 
 	float GetX() { return x; }
 	float GetY() { return y; }
+	void HandleSlope(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 };

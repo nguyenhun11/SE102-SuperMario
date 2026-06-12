@@ -5,7 +5,7 @@ Leaf::Leaf(float x, float y) : GameObject(x, y)
 	this->startX = x;
 	this->startY = y;
 	SetState(LeafState::SPAWNING);
-	zIndex = 5;
+	zIndex = 4;
 }
 
 void Leaf::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
@@ -43,6 +43,7 @@ void Leaf::SetState(LeafState newState)
 		vx = 0;
 		break;
 	case LeafState::FALLING:
+		zIndex = 14;
 		vy = LEAF_FALLING_SPEED_Y;
 		break;
 	}

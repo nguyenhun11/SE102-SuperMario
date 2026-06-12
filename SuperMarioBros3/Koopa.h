@@ -2,33 +2,50 @@
 #include "GameObject.h"
 #include "Animations.h"
 #include "Animation.h"
+#include "Sensor.h"
 
 #define KOOPA_GRAVITY 0.002f
 #define KOOPA_WALKING_SPEED 0.02f
+#define KOOPA_SHELL_SPEED 0.22f
 
+#define KOOPA_BBOX_OFFSET_Y 4
 
 #define KOOPA_BBOX_WIDTH 15
 
-#define KOOPA_BBOX_HEIGHT 25
-#define KOOPA_BBOX_HEIGHT_DIE 15
+#define KOOPA_BBOX_HEIGHT 24
+#define KOOPA_BBOX_HEIGHT_DIE 14
 
-#define KOOPA_DIE_TIMEOUT 500
-
-#define KOOPA_STATE_WALKING 100
-#define KOOPA_STATE_DIE 200
-#define KOOPA_STATE_SHELL 300
-#define KOOPA_STATE_SHELL_MOVING 400
-#define KOOPA_STATE_WING 500
-
+#define KOOPA_DIE_TIMEOUT 5000
 #define ID_ANI_KOOPA_WALKING 20210
-#define ID_ANI_KOOPA_DIE 20220
+//#define ID_ANI_KOOPA_DIE 20220
+#define ID_ANI_KOOPA_SHELL 20211
+#define ID_ANI_KOOPA_SHELL_SHAKING 20212
+#define ID_ANI_KOOPA_SHELL_MOVING 20213
+#define ID_ANI_KOOPA_WING 20214
+
+
+enum class KoopaState
+{
+	WALKING = 0,
+	SHELL = 1,
+	SHELL_MOVING = 2,
+	WING = 3,
+	SHAKING = 4,
+	DIE = 99
+};
+
+
 
 class Koopa : public GameObject
 {
 protected:
 	float ax;
 	float ay;
-
+	bool isFlipped; // Biến cờ để theo dõi trạng thái lật của sprite (điều khiển hướng render)
+	Sensor* sensorfront;
+	Sensor* sensorback;
+	
+	
 	ULONGLONG die_start;
 
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
@@ -43,7 +60,13 @@ protected:
 
 public:
 	Koopa(float x, float y);
-	virtual void SetState(int state);
+	virtual void SetState(KoopaState state);
+	void ChangeDirection()
+	{
+		vx = -vx;
+		if (vx > 0) nx = 1;
+		else nx = -1;
+	}
 };
 
 

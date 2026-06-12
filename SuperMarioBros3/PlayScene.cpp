@@ -11,16 +11,20 @@
 #include "Koopa.h"
 #include "Platform.h"
 #include "QuestionBlock.h"
+#include "NoteBlock.h"
 #include "GoalBlock.h"
 #include "Ground.h"
 #include "Slope.h"
 #include "SemisolidPlatform.h"
 #include "Decoration.h"
 #include "VerticalPipe.h"
+#include "HorizontalPipe.h"
 #include "SolidBlock.h"
 #include "SoundManager.h"
 #include "Switch.h"
 #include "PiranhaPlant.h"
+#include "RedKoopa.h"
+#include "KoopaTroopa.h"
 
 #include "PlaySceneKeyHandler.h"
 
@@ -182,6 +186,9 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 	}
 	case OBJECT_TYPE_COIN: obj = new Coin(x, y); break;	
 	case OBJECT_TYPE_KOOPA: obj = new Koopa(x, y); break;
+	case OBJECT_TYPE_RED_KOOPA: obj = new RedKoopa(x, y); break;
+	case OBJECT_TYPE_KOOPATROOPA: obj = new KoopaTroopa(x, y); break;
+
 	case OBJECT_TYPE_PLATFORM:
 	{
 
@@ -243,10 +250,37 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		int idTopRight = atoi(tokens[7].c_str());
 		int idBodyLeft = atoi(tokens[8].c_str());
 		int idBodyRight = atoi(tokens[9].c_str());
+		int idBottomLeft = atoi(tokens[10].c_str());
+		int idBottomRight = atoi(tokens[11].c_str());
+
+		int isBlock = 1;
+		if(tokens.size() > 12) isBlock = atoi(tokens[12].c_str());
+
+		int targetScene = -1;
+		if (tokens.size() > 13) targetScene = atoi(tokens[13].c_str());
 
 		obj = new VerticalPipe(x, y, cell_width, cell_height, rows,
-			idTopLeft, idTopRight, idBodyLeft, idBodyRight);
+			idTopLeft, idTopRight, idBodyLeft, idBodyRight, idBottomLeft, idBottomRight, isBlock, targetScene);
 
+		break;
+	}
+	case OBJECT_TYPE_HORIZOLTAL_PIPE:
+	{
+		float cell_width = (float)atof(tokens[3].c_str());
+		float cell_height = (float)atof(tokens[4].c_str());
+
+		int columns = atoi(tokens[5].c_str());
+
+		int idTopLeft = atoi(tokens[6].c_str());
+		int idTop = atoi(tokens[7].c_str());
+		int idTopRight = atoi(tokens[8].c_str());
+		int idBottomLeft = atoi(tokens[9].c_str());
+		int idBottom = atoi(tokens[10].c_str());
+		int idBottomRight = atoi(tokens[11].c_str());
+
+		obj = new HorizontalPipe(x, y, cell_width, cell_height, columns,
+			idTopLeft, idTop, idTopRight,
+			idBottomLeft, idBottom, idBottomRight);
 		break;
 	}
 	case OBJECT_TYPE_QUESTION_BLOCK:
@@ -255,6 +289,20 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		obj = new QuestionBlock(x, y, contained_item_id);
 		break;
 
+	}
+
+	case OBJECT_TYPE_NOTE_BLOCK:
+	{
+		int contained_item_id = 0;
+		int bounceCount = 1;
+		contained_item_id = atoi(tokens[3].c_str());
+		if (tokens.size() > 4)
+		{
+			bounceCount = atoi(tokens[4].c_str());
+		}
+
+		obj = new NoteBlock(x, y, contained_item_id, bounceCount);
+		break;
 	}
 
 	case OBJECT_TYPE_GOAL_BLOCK:
@@ -435,6 +483,41 @@ void PlayScene::Load()
 	}
 	f.close();
 
+
+	//  ĐÚNG: Gọi thông qua Instance duy nhất
+	GameManager* gm = GameManager::GetInstance();
+	if (gm->isGoingThroughPipe && player != NULL)
+	{
+		// 1. Tìm cái cống đầu tiên trong map được thiết kế làm "Cửa Ra"
+		VerticalPipe* exitPipe = NULL;
+		for (size_t i = 0; i < objects.size(); i++)
+		{
+			if (dynamic_cast<VerticalPipe*>(objects[i]))
+			{
+				VerticalPipe* pipe = dynamic_cast<VerticalPipe*>(objects[i]);
+				if (pipe->GetTargetSceneId() == 999)
+				{
+					exitPipe = pipe;
+					break;
+				}
+			}
+		}
+		if (exitPipe != NULL)
+		{
+			float pl, pt, pr, pb;
+			exitPipe->GetBoundingBox(pl, pt, pr, pb);
+
+			float spawnX = pl + (pr - pl) / 2;
+			float spawnY = pt + 16.0f;
+
+			player->SetPosition(spawnX, spawnY);
+
+			Mario* mario = static_cast<Mario*>(player);
+			mario->SetStartPiping();
+		}
+	}
+	gm->isGoingThroughPipe = false;
+
 	float screenHeight = GameGlobal::GetHeight();
 	HUD::GetInstance()->SetPosition(0.0f, screenHeight - HUD_HEIGHT);
 	GameManager::GetInstance()->ResetTimer(300000);
@@ -469,7 +552,7 @@ void PlayScene::Update(DWORD dt)
 
 
 
-	float max_player_x = this->mapRight * TILE_SIZE - 24.0f; 
+	float max_player_x = this->mapRight * TILE_SIZE - 8.0f; 
 	if(mario->IsGoalRunning())
 	{
 		max_player_x = 999 * TILE_SIZE;
@@ -601,13 +684,18 @@ void PlayScene::Update(DWORD dt)
 void PlayScene::Render()
 {
 	for (int i = 0; i < objects.size(); i++)
-		if (objects[i]->GetZIndex() < 5) objects[i]->Render();
+		if (objects[i]->GetZIndex() < 5) 
+			objects[i]->Render();
 
 	for (int i = 0; i < objects.size(); i++)
 		if (objects[i]->GetZIndex() >= 5 && objects[i]->GetZIndex() < 10)
 			objects[i]->Render();
 
-	player->Render();
+	for (int i = 0; i < objects.size(); i++)
+		if (objects[i]->GetZIndex() >= 10 && objects[i]->GetZIndex() < 15)
+			objects[i]->Render();
+
+	//player->Render();
 	HUD::GetInstance()->Render();
 }
 

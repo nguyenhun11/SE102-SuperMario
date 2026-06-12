@@ -1,6 +1,7 @@
 #include "GameManager.h"
 #include "PlayScene.h"
 #include "Game.h"
+#include "Mario.h"
 
 
 GameManager::GameManager()
@@ -14,6 +15,8 @@ GameManager::GameManager()
 	isGameOver = false;
 	isWinning = false;
 	displayWinningText = false;
+
+	this->marioForm = static_cast<int>(MarioForm::SMALL);
 }
 
 void GameManager::Update(DWORD dt)
@@ -83,6 +86,7 @@ void GameManager::LevelFailed()
 {
 	AddLife(-1);
 	isReturningFromFail = true;
+	this->marioForm = static_cast<int>(MarioForm::SMALL);
 	SceneManager::GetInstance()->InitiateSwitchScene(0);
 }
 

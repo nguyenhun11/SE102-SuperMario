@@ -9,7 +9,8 @@
 #include "HUD.h"
 #include "Switch.h"
 #include "GameManager.h"
-//#include "Koopas.h"
+
+// Forward declaration
 
 #define SWITCH_ACTIVATION_TIME 5000 // thời gian hiệu lực của switch
 #define CAMERA_TRANSITION_TIME 500
