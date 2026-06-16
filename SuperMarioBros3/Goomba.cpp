@@ -72,7 +72,7 @@ void Goomba::Render()
 	}
 
 	Animations::GetInstance()->Get(aniId)->Render(x,y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void Goomba::SetState(int state)

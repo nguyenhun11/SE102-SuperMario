@@ -37,7 +37,7 @@ piranha_plant.txt
 # MARIO
 0 10 10
 
-202 20 5
+2 20 5
 
 
 #GROUND
