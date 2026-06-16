@@ -35,6 +35,13 @@ protected:
 
 	virtual void OnCollisionWith(LPCOLLISIONEVENT e);
 
+	bool isActivated;
+	float activationBoundary;
+
+	void UpdateActivationBoundary();
+	bool IsInsideActivationBoundary();
+	void CheckActivationStatus();
+
 public: 	
 	Goomba(float x, float y);
 	virtual void SetState(int state);
