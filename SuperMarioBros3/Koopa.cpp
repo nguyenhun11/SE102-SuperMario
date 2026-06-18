@@ -2,7 +2,7 @@
 #include "Brick.h"
 #include "Goomba.h"
 
-Koopa::Koopa(float x, float y) : GameObject(x, y)
+Koopa::Koopa(float x, float y) : RespawnableEnemy(x, y)
 {
 	this->ax = 0;
 	this->ay = KOOPA_GRAVITY;
@@ -15,6 +15,38 @@ Koopa::Koopa(float x, float y) : GameObject(x, y)
 	// Mặc định ban đầu đi sang trái
 	this->nx = -1;
 	SetState(KoopaState::WALKING);
+	OnEnable();
+}
+
+void Koopa::OnEnable()
+{
+	SetState(KoopaState::WALKING);
+
+	PlayScene* scene = (PlayScene*)SceneManager::GetInstance()->GetCurrentScene();
+	Mario* mario = (Mario*)scene->GetPlayer();
+
+	if (mario != nullptr)
+	{
+		nx = (mario->GetX() > this->x) ? 1 : -1;
+		vx = nx * KOOPA_WALKING_SPEED;
+	}
+	else
+	{
+		nx = -1;
+		vx = -KOOPA_WALKING_SPEED;
+	}
+}
+
+void Koopa::OnExitCamera()
+{
+	if (state == (int)KoopaState::SHELL_MOVING)
+	{
+		this->Delete();
+	}
+	else
+	{
+		RespawnableEnemy::OnExitCamera();
+	}
 }
 
 void Koopa::GetBoundingBox(float& left, float& top, float& right, float& bottom)
@@ -108,7 +140,7 @@ void Koopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 
 	// Gọi cập nhật va chạm vật lý Swept AABB tiêu chuẩn cho Koopa
-	GameObject::Update(dt, coObjects);
+	RespawnableEnemy::Update(dt, coObjects);
 	Collision::GetInstance()->Process(this, dt, coObjects);
 }
 
