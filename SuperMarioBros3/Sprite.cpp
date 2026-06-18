@@ -25,7 +25,7 @@ void Sprite::Draw(float x, float y, float cx, float cy, bool isFlip, bool isFlip
 	}
 	else
 	{
-		this->sprite.TexCoord.x = this->left / texWidth;
+		this->sprite.TexCoord.x = (float)this->left / texWidth;
 		this->sprite.TexSize.x = (float)spriteWidth / texWidth;
 	}
 
@@ -57,14 +57,14 @@ Sprite::Sprite(int id, int left, int top, int right, int bottom, LPTEXTURE tex)
 	// Set the sprite’s shader resource view
 	sprite.pTexture = tex->getShaderResourceView();
 
-	sprite.TexCoord.x = this->left / texWidth;
-	sprite.TexCoord.y = this->top / texHeight;
+	sprite.TexCoord.x = (float)this->left / texWidth;
+	sprite.TexCoord.y = (float)this->top / texHeight;
 
 	int spriteWidth = (this->right - this->left + 1);
 	int spriteHeight = (this->bottom - this->top + 1);
 
-	sprite.TexSize.x = spriteWidth / texWidth;
-	sprite.TexSize.y = spriteHeight / texHeight;
+	sprite.TexSize.x = (float)spriteWidth / texWidth;
+	sprite.TexSize.y = (float)spriteHeight / texHeight;
 
 	sprite.ColorModulate = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	sprite.TextureIndex = 0;

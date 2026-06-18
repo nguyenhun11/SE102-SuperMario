@@ -1,11 +1,21 @@
 #include "Goomba.h"
+#include "Camera.h"
+#include "GameGlobal.h"
 
-Goomba::Goomba(float x, float y):GameObject(x, y)
+Goomba::Goomba(float x, float y) :GameObject(x, y)
 {
 	this->ax = 0;
 	this->ay = GOOMBA_GRAVITY;
+
 	die_start = -1;
-	SetState(GOOMBA_STATE_WALKING);
+
+	isActivated = false;
+	activationBoundary = 0;
+
+	vx = 0;
+	vy = 0;
+
+	state = GOOMBA_STATE_WALKING;
 }
 
 void Goomba::GetBoundingBox(float &left, float &top, float &right, float &bottom)
@@ -49,6 +59,11 @@ void Goomba::OnCollisionWith(LPCOLLISIONEVENT e)
 
 void Goomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
+	CheckActivationStatus();
+
+	if (!isActivated)
+		return;
+
 	vy += ay * dt;
 	vx += ax * dt;
 
@@ -72,7 +87,7 @@ void Goomba::Render()
 	}
 
 	Animations::GetInstance()->Get(aniId)->Render(x,y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void Goomba::SetState(int state)
@@ -87,8 +102,37 @@ void Goomba::SetState(int state)
 			vy = 0;
 			ay = 0; 
 			break;
-		case GOOMBA_STATE_WALKING: 
-			vx = -GOOMBA_WALKING_SPEED;
+		case GOOMBA_STATE_WALKING:
+			if (isActivated)
+				vx = -GOOMBA_WALKING_SPEED;
 			break;
+	}
+}
+
+void Goomba::UpdateActivationBoundary()
+{
+	float camX, camY;
+
+	Camera::GetInstance()->GetCamPos(camX, camY);
+
+	activationBoundary = camX + GameGlobal::GetWidth();
+}
+
+bool Goomba::IsInsideActivationBoundary()
+{
+	return x <= activationBoundary;
+}
+
+void Goomba::CheckActivationStatus()
+{
+	if (isActivated)
+		return;
+
+	UpdateActivationBoundary();
+
+	if (IsInsideActivationBoundary())
+	{
+		isActivated = true;
+		vx = -GOOMBA_WALKING_SPEED;
 	}
 }
