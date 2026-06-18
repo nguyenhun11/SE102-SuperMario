@@ -8,6 +8,7 @@ Koopa::Koopa(float x, float y) : GameObject(x, y)
 	this->ay = KOOPA_GRAVITY;
 	die_start = -1;
 	isFlipped = false;
+	isFlippedVertical = false;
 	// Khởi tạo một sensor duy nhất đi trước để dò đường
 	this->sensorfront = new Sensor(x, y);
 	this->sensorback = nullptr;
@@ -19,7 +20,7 @@ Koopa::Koopa(float x, float y) : GameObject(x, y)
 
 void Koopa::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
-	if (state == static_cast<int>(KoopaState::SHELL) || state == static_cast<int>(KoopaState::SHAKING) || state == static_cast<int>(KoopaState::SHELL_MOVING))
+	if (state == static_cast<int>(KoopaState::SHELL) || state == static_cast<int>(KoopaState::SHAKING) || state == static_cast<int>(KoopaState::SHELL_MOVING) || state == static_cast<int>(KoopaState::SHELL_UPWARD))
 	{
 		left = x - KOOPA_BBOX_WIDTH / 2;
 		top = y - KOOPA_BBOX_HEIGHT_DIE / 2;
@@ -49,6 +50,10 @@ void Koopa::OnCollisionWith(LPCOLLISIONEVENT e)
 	if (e->ny != 0)
 	{
 		vy = 0;
+		if (e->ny < 0 && state == static_cast<int>(KoopaState::SHELL_UPWARD))
+		{
+			SetState(KoopaState::SHELL); // Đưa về trạng thái mai rùa đứng yên (vx = 0, vy = 0)
+		}
 	}
 	else if (e->nx != 0)
 	{
@@ -97,7 +102,7 @@ void Koopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 
 	// Xử lý chuyển đổi trạng thái dựa trên thời gian (Mai rùa -> Rung lắc -> Sống lại)
-	if ((this->state == static_cast<int>(KoopaState::SHELL)) && (GetTickCount64() - die_start > KOOPA_DIE_TIMEOUT - 200)) // Rung lắc trước khi tỉnh lại 200ms
+	if ((this->state == static_cast<int>(KoopaState::SHELL) || this->state == static_cast<int>(KoopaState::SHELL_UPWARD)) && (GetTickCount64() - die_start > KOOPA_DIE_TIMEOUT - 200)) // Rung lắc trước khi tỉnh lại 200ms
 	{
 		SetState(KoopaState::SHAKING);
 	}
@@ -120,6 +125,11 @@ void Koopa::Render()
 
 	if (this->state == static_cast<int>(KoopaState::SHELL))
 	{
+		aniId = ID_ANI_KOOPA_SHELL;
+	}
+	else if (this->state == static_cast<int>(KoopaState::SHELL_UPWARD))
+	{
+		
 		aniId = ID_ANI_KOOPA_SHELL;
 	}
 	else if (this->state == static_cast<int>(KoopaState::WALKING))
@@ -149,7 +159,7 @@ void Koopa::Render()
 
 	// Lật ảnh sprite (isFlip = true nếu đi sang phải)
 	isFlipped = (nx > 0);
-	Animations::GetInstance()->Get(aniId)->Render(renderX, renderY, isFlipped);
+	Animations::GetInstance()->Get(aniId)->Render(renderX, renderY, isFlipped, isFlippedVertical);
 
 	// Chỉ Render Sensor để theo dõi trực quan khi đang đi bộ
 	if (state == static_cast<int>(KoopaState::WALKING) && sensorfront != nullptr)
@@ -172,7 +182,7 @@ void Koopa::SetState(KoopaState state)
 		vy = 0;
 
 		// DỊCH CHUYỂN Y VẬT LÝ XUỐNG DƯỚI: Hạ tâm Y xuống sát đất do BBox bị thu nhỏ lại
-		if (oldState == KoopaState::WALKING || oldState == KoopaState::SHAKING)
+		if (oldState == KoopaState::WALKING || oldState == KoopaState::SHAKING || oldState == KoopaState::SHELL_UPWARD)
 		{
 			y += (KOOPA_BBOX_HEIGHT - KOOPA_BBOX_HEIGHT_DIE) / 2;
 		}
@@ -187,9 +197,14 @@ void Koopa::SetState(KoopaState state)
 		this->ay = KOOPA_GRAVITY;
 		vx = nx * KOOPA_WALKING_SPEED;
 		vy = 0;
-		
+
+		if (isFlippedVertical)
+		{
+			isFlippedVertical = false;
+		}
+
 		// TRẢ LẠI Y VẬT LÝ KHI ĐỨNG LÊN: Đẩy tâm Y lên trên để tránh chân Koopa lún sâu vào gạch
-		if (oldState == KoopaState::SHELL || oldState == KoopaState::SHAKING || oldState == KoopaState::SHELL_MOVING)
+		if (oldState == KoopaState::SHELL || oldState == KoopaState::SHAKING || oldState == KoopaState::SHELL_MOVING || oldState == KoopaState::SHELL_UPWARD)
 		{
 			y -= (KOOPA_BBOX_HEIGHT - KOOPA_BBOX_HEIGHT_DIE) / 2;
 		}
@@ -219,5 +234,32 @@ void Koopa::SetState(KoopaState state)
 		vx = 0;
 		vy = 0;
 		break;
+
+	case KoopaState::SHELL_UPWARD:
+		die_start = GetTickCount64(); // Reset lại thời gian để không bị hồi sinh ngay lập tức
+
+		// 1. Phải giữ trọng lực hướng XUỐNG để kéo mai rùa tạo thành hình parabol (ném xiên)
+		this->ay = KOOPA_GRAVITY;
+
+		// 2. Cấp vận tốc ném xiên ban đầu
+		// nx lúc này phải được đồng bộ theo hướng Mario đá (ví dụ: Mario bên trái đá sang phải thì nx = 1)
+		this->vx = nx * KOOPA_WALKING_SPEED * 1.5f; // Chạy nhanh hơn đi bộ một chút, hoặc dùng KOOPA_SHELL_SPEED / 2
+		this->vy = -KOOPA_SHELL_SPEED * 2.f;       // Lực tung lên trên (vy âm). Chỉnh lại hệ số 0.4f để tăng/giảm độ cao tùy ý
+
+		isFlippedVertical = true;
+
+		// 3. Cập nhật BBox hạ thấp tâm Y vật lý giống như trạng thái SHELL thường để tránh lún gạch
+		if (oldState == KoopaState::WALKING || oldState == KoopaState::SHAKING)
+		{
+			y += (KOOPA_BBOX_HEIGHT - KOOPA_BBOX_HEIGHT_DIE) / 2;
+		}
+
+		if (sensorfront != nullptr) {
+			sensorfront->SetXY(x, y);
+			sensorfront->SetHasGround(true);
+		}
+		break;
 	}
+
+
 }

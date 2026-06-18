@@ -306,6 +306,16 @@ void Mario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 {
 	Koopa* koopa = dynamic_cast<Koopa*>(e->obj);
 
+	if (this->GetCurrentForm() == MarioForm::RACOON && GetTickCount64() - spin_start < MARIO_SPIN_TIME && (koopa->GetState() != static_cast<int>(KoopaState::SHELL) && koopa->GetState() != static_cast<int>(KoopaState::SHELL_UPWARD) && koopa->GetState() != static_cast<int>(KoopaState::SHAKING)))
+	{
+		DebugOut(L"Chuyen trang thai Koopa: Shell_upward\n");
+		koopa->SetNx((this->x < koopa->GetX()) ? 1 : -1);
+
+		// Gọi trạng thái văng lên
+		koopa->SetState(KoopaState::SHELL_UPWARD);
+		return;
+	}
+
 	if (koopa->GetState() == static_cast<int>(KoopaState::SHELL) || koopa->GetState() == static_cast<int>(KoopaState::SHAKING))
 	{
 		koopa->SetState(KoopaState::SHELL_MOVING);

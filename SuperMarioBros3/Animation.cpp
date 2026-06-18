@@ -14,7 +14,7 @@ void Animation::Add(int spriteId, DWORD time)
 	frames.push_back(frame);
 }
 
-void Animation::Render(float x, float y, bool isFlip)
+void Animation::Render(float x, float y, bool isFlip, bool isFlipVertical)
 {
 	ULONGLONG now = GetTickCount64();
 	if (currentFrame == -1)
@@ -34,6 +34,6 @@ void Animation::Render(float x, float y, bool isFlip)
 
 	}
 
-	frames[currentFrame]->GetSprite()->DrawOnCamera(x, y, isFlip);
+	frames[currentFrame]->GetSprite()->DrawOnCamera(x, y, isFlip, isFlipVertical);
 }
 

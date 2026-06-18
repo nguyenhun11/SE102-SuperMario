@@ -23,7 +23,6 @@
 #define ID_ANI_KOOPA_SHELL_MOVING 20213
 #define ID_ANI_KOOPA_WING 20214
 
-
 enum class KoopaState
 {
 	WALKING = 0,
@@ -31,6 +30,7 @@ enum class KoopaState
 	SHELL_MOVING = 2,
 	WING = 3,
 	SHAKING = 4,
+	SHELL_UPWARD = 5,
 	DIE = 99
 };
 
@@ -42,6 +42,7 @@ protected:
 	float ax;
 	float ay;
 	bool isFlipped; // Biến cờ để theo dõi trạng thái lật của sprite (điều khiển hướng render)
+	bool isFlippedVertical;
 	Sensor* sensorfront;
 	Sensor* sensorback;
 	
@@ -61,6 +62,7 @@ protected:
 public:
 	Koopa(float x, float y);
 	virtual void SetState(KoopaState state);
+	void SetNx(float nx) { this->nx = nx; };
 	void ChangeDirection()
 	{
 		vx = -vx;
