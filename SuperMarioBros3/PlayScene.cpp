@@ -259,8 +259,17 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		int targetScene = -1;
 		if (tokens.size() > 13) targetScene = atoi(tokens[13].c_str());
 
-		obj = new VerticalPipe(x, y, cell_width, cell_height, rows,
-			idTopLeft, idTopRight, idBodyLeft, idBodyRight, idBottomLeft, idBottomRight, isBlock, targetScene);
+		int contentType = 0;
+		if (tokens.size() > 14) contentType = atoi(tokens[14].c_str());
+
+		float contentHeight = 32.0f;
+		if (tokens.size() > 15) contentHeight = (float)atof(tokens[15].c_str());
+
+		VerticalPipe* pipe = new VerticalPipe(x, y, cell_width, cell_height, rows,
+			idTopLeft, idTopRight, idBodyLeft, idBodyRight, idBottomLeft, idBottomRight, isBlock, targetScene, contentType, contentHeight);
+		
+		pipe->SpawnContent();
+		obj = pipe;
 
 		break;
 	}

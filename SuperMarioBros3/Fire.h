@@ -25,8 +25,7 @@ public:
 	void GetBoundingBox(float& l, float& t, float& r, float& b);
 
 	virtual int IsCollidable() { return 1; }
-	virtual int IsBlocking() { return 0; }		
-	virtual void OnCollisionWith(LPCOLLISIONEVENT e);
+	virtual int IsBlocking() { return 0; }
 
 	void SetSpeed(float vx, float vy) { this->vx = vx; this->vy = vy; }
 };

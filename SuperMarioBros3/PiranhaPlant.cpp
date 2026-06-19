@@ -6,34 +6,40 @@
 void PiranhaPlant::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
 	l = x - PIRANHA_BBOX_WIDTH / 2;
-	t = y - PIRANHA_BBOX_HEIGHT / 2 + 5.0f;
+	t = y - PIRANHA_BBOX_HEIGHT / 2;
 	r = l + PIRANHA_BBOX_WIDTH;
 	b = t + PIRANHA_BBOX_HEIGHT;
 }
 
-void PiranhaPlant::OnNoCollision(DWORD dt) {}
-
-void PiranhaPlant::OnCollisionWith(LPCOLLISIONEVENT e)
-{
-	// Đụng Mario → Mario mất máu
-	Mario* mario = dynamic_cast<Mario*>(e->obj);
-	if (mario)
-	{
-		mario->TakeDamage();
-	}
-}
-
 void PiranhaPlant::ShootFire(float marioX, float marioY)
 {
+	float mouthY = y - 5.0f;
+
 	float dx = marioX - x;
-	float dy = marioY - y;
-	float dist = sqrt(dx * dx + dy * dy);
-	if (dist == 0) return;
+	float dy = (marioY - 8.0f) - mouthY;
 
-	float fireVx = FIRE_SPEED * dx / dist;
-	float fireVy = FIRE_SPEED * dy / dist;
+	float absDx = abs(dx);
 
-	Fire* fire = new Fire(x, y);
+	if (absDx < 0.0001f) absDx = 0.0001f;
+
+	float angle = atan2(dy, absDx);
+	float maxAngle = 30.0f * 3.14159f / 180.0f;
+
+	if (angle > maxAngle)
+	{
+		angle = maxAngle;
+	}
+	else if (angle < -maxAngle)
+	{
+		angle = -maxAngle; 
+	}
+
+	int dirX = (dx > 0) ? 1 : -1;
+
+	float fireVx = FIRE_SPEED * cos(angle) * dirX;
+	float fireVy = FIRE_SPEED * sin(angle);
+
+	Fire* fire = new Fire(x, mouthY);
 	fire->SetSpeed(fireVx, fireVy);
 
 	((PlayScene*)SceneManager::GetInstance()->GetCurrentScene())->AddObject(fire);
@@ -41,115 +47,105 @@ void PiranhaPlant::ShootFire(float marioX, float marioY)
 
 void PiranhaPlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-		GameObject::Update(dt, coObjects);
+	Mario* mario = (Mario*)((PlayScene*)SceneManager::GetInstance()->GetCurrentScene())->GetPlayer();
 
-	Mario* mario = (Mario*)((PlayScene*)SceneManager::GetInstance()
-		->GetCurrentScene())->GetPlayer();
+	if (mario == NULL) return;
 
 	float marioX, marioY;
 	mario->GetPosition(marioX, marioY);
 
-	// Lật mặt về phía Mario
 	nx = (marioX >= x) ? 1 : -1;
 
 	float dx = abs(marioX - x);
 	bool inRange = (dx <= 230.0f);
+	bool inSafeZone = (dx <= 24.0f); // Mario đứng sát miệng cống
 
-	if (inRange)
+	if (isWaiting)
 	{
-		if (isWaiting)
+		if (y == originalY)
 		{
-			if (GetTickCount64() - wait_start > PIRANHA_WAIT_TIME)
+			if (inSafeZone)
+			{
+				wait_start = GetTickCount64();
+				return;
+			}
+
+			if (inRange && GetTickCount64() - wait_start > PIRANHA_WAIT_TIME)
 			{
 				isWaiting = false;
-				isGoingUp = !isGoingUp;
-			}
-			return;
-		}
-		else {
-			if (dx < 24.0f)
-			{
-				if (y == originalY) return;
+				isGoingUp = true;
 			}
 		}
-
-		if (isGoingUp)
+		else // ĐANG TRÊN ĐỈNH ỐNG
 		{
-			y -= PIRANHA_ARISE_SPEED * dt;
-			if (y <= originalY - PIRANHA_HEIGHT)
+			ULONGLONG timeAtTop = GetTickCount64() - wait_start;
+			if (plantType == PIRANHA_TYPE_RED_FIRE || plantType == PIRANHA_TYPE_GREEN_FIRE)
 			{
-				y = originalY - PIRANHA_HEIGHT;
-
-				if (!isAtTop)
+				if (!hasShot && timeAtTop > (PIRANHA_TOP_WAIT / 2))
 				{
-					isAtTop = true;
-					top_start = GetTickCount64();
-					fire_timer = GetTickCount64(); // bắt đầu timer bắn lửa
-				}
-				else
-				{
-					// Bắn lửa theo interval khi đang ở trên đỉnh
-					if (GetTickCount64() - fire_timer >= PIRANHA_FIRE_INTERVAL)
-					{
-						ShootFire(marioX, marioY);
-						fire_timer = GetTickCount64();
-					}
-
-					if (GetTickCount64() - top_start >= PIRANHA_TOP_WAIT)
-					{
-						isWaiting = true;
-						wait_start = GetTickCount64();
-						isAtTop = false;
-					}
+					ShootFire(marioX, marioY);
+					hasShot = true;
 				}
 			}
-		}
-		else
-		{
-			y += PIRANHA_ARISE_SPEED * dt;
-			if (y >= originalY)
+
+			if (timeAtTop > PIRANHA_TOP_WAIT)
 			{
-				y = originalY;
-				isWaiting = true;
-				wait_start = GetTickCount64();
+				isWaiting = false;
+				isGoingUp = false;
 			}
+		}
+		return;
+	}
+
+	if (isGoingUp)
+	{
+		y -= PIRANHA_ARISE_SPEED * dt;
+		if (y <= originalY - ariseHeight)
+		{
+			y = originalY - ariseHeight;
+			isWaiting = true;
+			wait_start = GetTickCount64();
+			hasShot = false;
 		}
 	}
-	else
+	else // Đang chui xuống
 	{
-		// Mario ra ngoài tầm → rút xuống
 		y += PIRANHA_ARISE_SPEED * dt;
 		if (y >= originalY)
 		{
-			isGoingUp = false;
+			// Chạm đáy
 			y = originalY;
 			isWaiting = true;
 			wait_start = GetTickCount64();
-			isAtTop = false;
 		}
 	}
 
+	GameObject::Update(dt, coObjects);
 	Collision::GetInstance()->Process(this, dt, coObjects);
 }
 
 void PiranhaPlant::Render()
 {
-	Mario* mario = (Mario*)((PlayScene*)SceneManager::GetInstance()
-		->GetCurrentScene())->GetPlayer();
+	Mario* mario = (Mario*)((PlayScene*)SceneManager::GetInstance()->GetCurrentScene())->GetPlayer();
+	if (mario == NULL) return;
 
 	float marioX, marioY;
 	mario->GetPosition(marioX, marioY);
 
-	// Chọn animation: nhìn lên nếu Mario ở cao hơn hoa, nhìn xuống nếu ngược lại
-	int aniId;
-	if (marioY < y)
-		aniId = ID_ANI_PIRANHA_LOOK_UP;
-	else
-		aniId = ID_ANI_PIRANHA_LOOK_DOWN;
+	int aniId = -1;
+	if (plantType == PIRANHA_TYPE_GREEN_NORMAL)
+	{
+		aniId = ID_ANI_PIRANHA_GREEN_NORMAL;
+	}
+	else if (plantType == PIRANHA_TYPE_RED_FIRE)
+	{
+		aniId = (marioY < y) ? ID_ANI_PIRANHA_RED_FIRE_UP : ID_ANI_PIRANHA_RED_FIRE_DOWN;
+	}
+	else if (plantType == PIRANHA_TYPE_GREEN_FIRE)
+	{
+		aniId = (marioY < y) ? ID_ANI_PIRANHA_GREEN_FIRE_UP : ID_ANI_PIRANHA_GREEN_FIRE_DOWN;
+	}
 
-	// Lật ảnh theo hướng Mario (nx = -1 thì flip)
-	bool isFlip = (nx == -1);
+	bool isFlip = (nx > 0);
 	Animations::GetInstance()->Get(aniId)->Render(x, y, isFlip);
-
-	/*RenderBoundingBox();*/
 }

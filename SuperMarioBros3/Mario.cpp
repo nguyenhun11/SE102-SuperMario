@@ -7,6 +7,8 @@
 #include "SoundManager.h"
 
 #include "Goomba.h"
+#include "PiranhaPlant.h"
+#include "Fire.h"
 
 #include "Item.h"
 #include "ScoreEffect.h"
@@ -230,6 +232,10 @@ void Mario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithGoomba(e);
 	else if (dynamic_cast<Koopa*>(e->obj))
 		OnCollisionWithKoopa(e);
+	else if (dynamic_cast<PiranhaPlant*>(e->obj))
+		OnCollisionWithPiranhaPlant(e);
+	else if (dynamic_cast<Fire*>(e->obj))
+		OnCollisionWithFire(e);
 	else if (dynamic_cast<QuestionBlock*>(e->obj))
 		OnCollisionWithQuestionBlock(e);
 	else if (dynamic_cast<Brick*>(e->obj))
@@ -357,6 +363,21 @@ void Mario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 			TakeDamage();
 		}
 	}
+}
+
+void Mario::OnCollisionWithPiranhaPlant(LPCOLLISIONEVENT e)
+{
+	PiranhaPlant* plant = dynamic_cast<PiranhaPlant*>(e->obj);
+	if (!plant->GetIsWaiting()) // Nếu hoa không trốn kỹ dưới cống
+	{
+		TakeDamage();
+	}
+}
+
+void Mario::OnCollisionWithFire(LPCOLLISIONEVENT e)
+{
+	TakeDamage();
+	e->obj->Delete(); // Hủy viên đạn lửa đi
 }
 
 void Mario::OnCollisionWithCoin(LPCOLLISIONEVENT e)

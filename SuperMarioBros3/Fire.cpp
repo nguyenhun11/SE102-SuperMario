@@ -5,7 +5,6 @@
 void Fire::Render()
 {
 	Animations::GetInstance()->Get(ID_ANI_FIRE)->Render(x, y);
-	//RenderBoundingBox();
 }
 
 void Fire::GetBoundingBox(float& l, float& t, float& r, float& b)
@@ -14,17 +13,6 @@ void Fire::GetBoundingBox(float& l, float& t, float& r, float& b)
 	t = y - FIRE_BBOX_HEIGHT / 2;
 	r = l + FIRE_BBOX_WIDTH;
 	b = t + FIRE_BBOX_HEIGHT;
-}
-
-void Fire::OnCollisionWith(LPCOLLISIONEVENT e)
-{
-	// Đụng Mario → Mario mất máu, đạn lửa bị xóa
-	Mario* mario = dynamic_cast<Mario*>(e->obj);
-	if (mario)
-	{
-		mario->TakeDamage();
-		isDeleted = true;
-	}
 }
 
 void Fire::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)

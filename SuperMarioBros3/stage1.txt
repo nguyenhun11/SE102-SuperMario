@@ -19,7 +19,7 @@ effect.txt
 goal.txt
 goalblock.txt
 switch.txt
-piranha_plant.txt
+piranha-fire.txt
 
 [MAP_INFO]
 175 
@@ -35,7 +35,7 @@ piranha_plant.txt
 # See OBJECT_TYPE constants in AssetIDs.h
 
 # MARIO
-0 110 10
+0 120 10
 
 #GROUND
 601 0 12 16 16 39 6 60111 60112 60113 60121 60122 60123
@@ -108,7 +108,7 @@ piranha_plant.txt
 
 # PIPE - HOA
 # id x y, sprite size wh, tl tr ml mr
-702 22 9	16 16	3	70211 70212 70221 70222 70221 70222	1 11
+702 22 9	16 16	3	70211 70212 70221 70222 70221 70222	1 11 213 32
 
 # CLOUD ABOVE PIPE
 600 20 4 6000321
@@ -305,8 +305,8 @@ piranha_plant.txt
 
 # PIPE
 # id x y, sprite size wh, tl tr ml mr
-702 112 10	16 16	2	70211 70212 70221 70222 70221 70222
-702 116 9	16 16	3	70211 70212 70221 70222 70221 70222
+702 112 10	16 16	2	70211 70212 70221 70222 70221 70222 1 0 223 24
+702 116 9	16 16	3	70211 70212 70221 70222 70221 70222 1 0 233 24
 
 # TREE
 600 118 11 6000111
