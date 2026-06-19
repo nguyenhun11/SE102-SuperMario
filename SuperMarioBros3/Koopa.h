@@ -45,7 +45,6 @@ protected:
 	bool isFlipped; // Biến cờ để theo dõi trạng thái lật của sprite (điều khiển hướng render)
 	bool isFlippedVertical;
 	Sensor* sensorfront;
-	Sensor* sensorback;
 	
 	
 	ULONGLONG die_start;

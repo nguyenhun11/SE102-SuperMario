@@ -132,7 +132,7 @@ piranha-fire.txt
 2 33 11
 
 #KOOPA
-212 36 8
+202 36 8
 
 # QUESTION
 ### id_coin	x	y	contained_time_id

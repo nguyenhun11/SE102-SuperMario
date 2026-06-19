@@ -11,7 +11,6 @@ Koopa::Koopa(float x, float y) : RespawnableEnemy(x, y)
 	isFlippedVertical = false;
 	// Khởi tạo một sensor duy nhất đi trước để dò đường
 	this->sensorfront = new Sensor(x, y);
-	this->sensorback = nullptr;
 
 	// Mặc định ban đầu đi sang trái
 	this->nx = -1;
@@ -116,6 +115,7 @@ void Koopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			// CHỈ quay đầu nếu Koopa đang thực sự di chuyển (vx != 0)
 			if (vx != 0 && sensorfront->IsFalling())
 			{
+				DebugOut(L"Koopa roi!");
 				vx = -vx;
 				nx = -nx;
 
