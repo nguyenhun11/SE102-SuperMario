@@ -18,6 +18,43 @@ GameObject::GameObject()
 	isDeleted = false;
 }
 
+bool GameObject::IsOnCamera()
+{
+	float camX, camY;
+	Camera::GetInstance()->GetCamPos(camX, camY);
+
+	float camLeft = camX;
+	float camTop = camY;
+	float camRight = camLeft + GameGlobal::GetWidth();
+	float camBottom = camTop + GameGlobal::GetHeight();
+
+	float objLeft = 0, objTop = 0, objRight = 0, objBottom = 0;
+	GetBoundingBox(objLeft, objTop, objRight, objBottom);
+
+	if (objLeft == 0 && objTop == 0 && objRight == 0 && objBottom == 0)
+	{
+		float pad = 16.0f;
+		return (x >= camLeft - pad && x <= camRight + pad &&
+			y >= camTop - pad && y <= camBottom + pad);
+	}
+
+	return !(objRight < camLeft || objLeft > camRight || objBottom < camTop || objTop > camBottom);
+}
+
+void GameObject::CheckCameraStatus()
+{
+	bool currentlyOnCamera = IsOnCamera();
+
+	if (currentlyOnCamera && !wasOnCamera) {
+		OnEnterCamera();
+	}
+	else if (!currentlyOnCamera && wasOnCamera) {
+		OnExitCamera();
+	}
+
+	wasOnCamera = currentlyOnCamera;
+}
+
 void GameObject::RenderBoundingBox()
 {
 	D3DXVECTOR3 p(x, y, 0);

@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+#include "RespawnableEnemy.h"
 #include "Animations.h"
 #include "Animation.h"
 #include "Sensor.h"
@@ -36,11 +37,11 @@ enum class KoopaState
 
 
 
-class Koopa : public GameObject
+class Koopa : public RespawnableEnemy
 {
 protected:
-	float ax;
-	float ay;
+	//float ax;
+	//float ay;
 	bool isFlipped; // Biến cờ để theo dõi trạng thái lật của sprite (điều khiển hướng render)
 	bool isFlippedVertical;
 	Sensor* sensorfront;
@@ -69,6 +70,9 @@ public:
 		if (vx > 0) nx = 1;
 		else nx = -1;
 	}
+
+	virtual void OnEnable() override;
+	virtual void OnExitCamera() override;
 };
 
 

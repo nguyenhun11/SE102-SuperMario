@@ -30,7 +30,7 @@
 
 using namespace std;
 
-PlayScene::PlayScene(int id, LPCWSTR filePath):
+PlayScene::PlayScene(int id, LPCWSTR filePath) :
 	Scene(id, filePath)
 {
 	player = NULL;
@@ -88,7 +88,7 @@ void PlayScene::_ParseSection_SPRITES(string line)
 	if (tex == NULL)
 	{
 		DebugOut(L"[ERROR] Texture ID %d not found!\n", texID);
-		return; 
+		return;
 	}
 
 	Sprites::GetInstance()->Add(ID, l, t, r, b, tex);
@@ -101,7 +101,7 @@ void PlayScene::_ParseSection_ASSETS(string line)
 	if (tokens.size() < 1) return;
 
 	wstring path = ToWSTR(tokens[0]);
-	
+
 	LoadAssets(path.c_str());
 }
 
@@ -119,7 +119,7 @@ void PlayScene::_ParseSection_ANIMATIONS(string line)
 	for (int i = 1; i < tokens.size(); i += 2)	// why i+=2 ?  sprite_id | frame_time  
 	{
 		int sprite_id = atoi(tokens[i].c_str());
-		int frame_time = atoi(tokens[i+1].c_str());
+		int frame_time = atoi(tokens[i + 1].c_str());
 		ani->Add(sprite_id, frame_time);
 	}
 
@@ -127,7 +127,7 @@ void PlayScene::_ParseSection_ANIMATIONS(string line)
 }
 
 /*
-	Parse a line in section [OBJECTS] 
+	Parse a line in section [OBJECTS]
 */
 void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 {
@@ -144,18 +144,18 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 	float x = isGridCoordinate ? (raw_x * TILE_SIZE) : raw_x;
 	float y = isGridCoordinate ? (raw_y * TILE_SIZE) : raw_y;
 
-	GameObject *obj = NULL;
+	GameObject* obj = NULL;
 
 	switch (object_type)
 	{
 	case OBJECT_TYPE_MARIO:
-		if (player!=NULL) 
+		if (player != NULL)
 		{
 			DebugOut(L"[ERROR] MARIO object was created before!\n");
 			return;
 		}
-		obj = new Mario(x,y); 
-		player = (Mario*)obj;  
+		obj = new Mario(x, y);
+		player = (Mario*)obj;
 
 
 		DebugOut(L"[INFO] Player object has been created!\n");
@@ -166,7 +166,7 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		obj = new SolidBlock(x, y, sprite_id);
 		break;
 	}
-	case OBJECT_TYPE_GOOMBA: obj = new Goomba(x,y); break;
+	case OBJECT_TYPE_GOOMBA: obj = new Goomba(x, y); break;
 	case OBJECT_TYPE_PIRANHA_PLANT: obj = new PiranhaPlant(x, y); break;
 	case OBJECT_TYPE_BRICK:
 	{
@@ -184,7 +184,7 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		obj = new Brick(x, y, item_type, switch_type);
 		break;
 	}
-	case OBJECT_TYPE_COIN: obj = new Coin(x, y); break;	
+	case OBJECT_TYPE_COIN: obj = new Coin(x, y); break;
 	case OBJECT_TYPE_KOOPA: obj = new Koopa(x, y); break;
 	case OBJECT_TYPE_RED_KOOPA: obj = new RedKoopa(x, y); break;
 	case OBJECT_TYPE_KOOPATROOPA: obj = new KoopaTroopa(x, y); break;
@@ -254,7 +254,7 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		int idBottomRight = atoi(tokens[11].c_str());
 
 		int isBlock = 1;
-		if(tokens.size() > 12) isBlock = atoi(tokens[12].c_str());
+		if (tokens.size() > 12) isBlock = atoi(tokens[12].c_str());
 
 		int targetScene = -1;
 		if (tokens.size() > 13) targetScene = atoi(tokens[13].c_str());
@@ -339,9 +339,9 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 
 		break;
 	}
-	
 
-	/// Cái joke
+
+						   /// Cái joke
 	case OBJECT_TYPE_SLOPE:
 	{
 		//float width = (float)atof(tokens[3].c_str());
@@ -454,7 +454,7 @@ void PlayScene::Load()
 	f.open(sceneFilePath);
 
 	// current resource section flag
-	int section = SCENE_SECTION_UNKNOWN;					
+	int section = SCENE_SECTION_UNKNOWN;
 
 	char str[MAX_SCENE_LINE];
 	while (f.getline(str, MAX_SCENE_LINE))
@@ -467,18 +467,18 @@ void PlayScene::Load()
 		if (line == "[ASSETS]") { section = SCENE_SECTION_ASSETS; continue; };
 		if (line == "[OBJECTS]") { section = SCENE_SECTION_OBJECTS; continue; };
 		if (line == "[GRID_OBJECTS]") { section = SCENE_SECTION_GRID_OBJECTS; continue; };
-		if (line[0] == '[') { section = SCENE_SECTION_UNKNOWN; continue; }	
+		if (line[0] == '[') { section = SCENE_SECTION_UNKNOWN; continue; }
 
 		//
 		// data section
 		//
 		switch (section)
-		{ 
-			case SCENE_SECTION_MAP_INFO: _ParseSection_MAP_INFO(line); break;
-			case SCENE_SECTION_CAMERA_ZONES: _ParseSection_CAMERA_ZONES(line); break;
-			case SCENE_SECTION_ASSETS: _ParseSection_ASSETS(line); break;
-			case SCENE_SECTION_OBJECTS: _ParseSection_OBJECTS(line); break;
-			case SCENE_SECTION_GRID_OBJECTS: _ParseSection_OBJECTS(line, true); break;
+		{
+		case SCENE_SECTION_MAP_INFO: _ParseSection_MAP_INFO(line); break;
+		case SCENE_SECTION_CAMERA_ZONES: _ParseSection_CAMERA_ZONES(line); break;
+		case SCENE_SECTION_ASSETS: _ParseSection_ASSETS(line); break;
+		case SCENE_SECTION_OBJECTS: _ParseSection_OBJECTS(line); break;
+		case SCENE_SECTION_GRID_OBJECTS: _ParseSection_OBJECTS(line, true); break;
 		}
 	}
 	f.close();
@@ -527,23 +527,43 @@ void PlayScene::Load()
 
 void PlayScene::Update(DWORD dt)
 {
+	for (size_t i = 0; i < objects.size(); i++)
+	{
+		LPGAMEOBJECT obj = objects[i];
+		bool isOnCamera = obj->IsOnCamera();
+
+		if (isOnCamera && !obj->GetWasOnCamera())
+		{
+			obj->OnEnterCamera();
+		}
+		else if (!isOnCamera && obj->GetWasOnCamera())
+		{
+			obj->OnExitCamera();
+		}
+
+		obj->SetWasOnCamera(isOnCamera);
+	}
+
 	vector<LPGAMEOBJECT> coObjects;
 	for (size_t i = 0; i < objects.size(); i++)
 	{
-		if (objects[i] == player) continue;
+		if (objects[i] == player || !objects[i]->GetActive()) continue;
 		coObjects.push_back(objects[i]);
 	}
 
 	for (size_t i = 0; i < objects.size(); i++)
 	{
-		objects[i]->Update(dt, &coObjects);
+		if (objects[i]->GetActive())
+		{
+			objects[i]->Update(dt, &coObjects);
+		}
 	}
 
 	GameManager::GetInstance()->Update(dt);
 
 	//--- PLAYER POSITION
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
-	if (player == NULL) return; 
+	if (player == NULL) return;
 	Mario* mario = static_cast<Mario*>(player);
 
 
@@ -552,8 +572,8 @@ void PlayScene::Update(DWORD dt)
 
 
 
-	float max_player_x = this->mapRight * TILE_SIZE - 8.0f; 
-	if(mario->IsGoalRunning())
+	float max_player_x = this->mapRight * TILE_SIZE - 8.0f;
+	if (mario->IsGoalRunning())
 	{
 		max_player_x = 999 * TILE_SIZE;
 	}
@@ -565,7 +585,7 @@ void PlayScene::Update(DWORD dt)
 		player->SetPosition(px, py); // Khóa Y, ép X quay lại mép trái
 
 		float pvx, pvy;
-		player-> GetSpeed(pvx, pvy);
+		player->GetSpeed(pvx, pvy);
 		player->SetSpeed(0.0f, pvy);
 	}
 	else if (px > max_player_x)			/// chặn phải
@@ -574,14 +594,14 @@ void PlayScene::Update(DWORD dt)
 		player->SetPosition(px, py);
 		float pvx, pvy;
 		player->GetSpeed(pvx, pvy);
-		player->SetSpeed(0.0f, pvy); 
+		player->SetSpeed(0.0f, pvy);
 	}
 	float playerCeiling = mapTop - 64.0f;
 
 	if (py < playerCeiling)
 	{
 		py = playerCeiling;
-		player->SetPosition(px, py); 
+		player->SetPosition(px, py);
 
 		float pvx, pvy;
 		player->GetSpeed(pvx, pvy);
@@ -684,15 +704,20 @@ void PlayScene::Update(DWORD dt)
 void PlayScene::Render()
 {
 	for (int i = 0; i < objects.size(); i++)
-		if (objects[i]->GetZIndex() < 5) 
+		if (objects[i]->GetActive()
+			&& objects[i]->GetZIndex() < 5)
 			objects[i]->Render();
 
 	for (int i = 0; i < objects.size(); i++)
-		if (objects[i]->GetZIndex() >= 5 && objects[i]->GetZIndex() < 10)
+		if (objects[i]->GetActive()
+			&& objects[i]->GetZIndex() >= 5
+			&& objects[i]->GetZIndex() < 10)
 			objects[i]->Render();
 
 	for (int i = 0; i < objects.size(); i++)
-		if (objects[i]->GetZIndex() >= 10 && objects[i]->GetZIndex() < 15)
+		if (objects[i]->GetActive()
+			&& objects[i]->GetZIndex() >= 10
+			&& objects[i]->GetZIndex() < 15)
 			objects[i]->Render();
 
 	//player->Render();
@@ -715,7 +740,7 @@ void PlayScene::Clear()
 /*
 	Unload scene
 
-	TODO: Beside objects, we need to clean up sprites, animations and textures as well 
+	TODO: Beside objects, we need to clean up sprites, animations and textures as well
 
 */
 void PlayScene::Unload()
@@ -743,7 +768,7 @@ void PlayScene::ActivatePSwitch(SwitchType type)
 		LPGAMEOBJECT obj = objects[i];
 
 		if (type == SwitchType::BrickToCoin && dynamic_cast<Brick*>(obj)
-		&& ((Brick*)obj)->GetCurrentState() == BrickState::ACTIVE)
+			&& ((Brick*)obj)->GetCurrentState() == BrickState::ACTIVE)
 		{
 			// Xóa viên gạch
 			obj->Delete();
@@ -846,5 +871,5 @@ CameraZone PlayScene::GetZoneX(float x)
 			return zone;
 		}
 	}
-	return {mapLeft, mapTop, mapRight, mapBottom};
+	return { mapLeft, mapTop, mapRight, mapBottom };
 }

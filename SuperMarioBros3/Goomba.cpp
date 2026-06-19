@@ -1,36 +1,50 @@
 #include "Goomba.h"
 #include "Camera.h"
+#include "PlayScene.h"
 #include "GameGlobal.h"
 
-Goomba::Goomba(float x, float y) :GameObject(x, y)
+Goomba::Goomba(float x, float y) : RespawnableEnemy(x, y)
 {
 	this->ax = 0;
 	this->ay = GOOMBA_GRAVITY;
-
 	die_start = -1;
 
-	isActivated = false;
-	activationBoundary = 0;
-
-	vx = 0;
-	vy = 0;
-
-	state = GOOMBA_STATE_WALKING;
+	SetState(GOOMBA_STATE_WALKING);
+	OnEnable();
 }
 
-void Goomba::GetBoundingBox(float &left, float &top, float &right, float &bottom)
+void Goomba::OnEnable()
+{
+	SetState(GOOMBA_STATE_WALKING);
+
+	PlayScene* scene = (PlayScene*)SceneManager::GetInstance()->GetCurrentScene();
+	Mario* mario = (Mario*)scene->GetPlayer();
+
+	if (mario != nullptr)
+	{
+		nx = (mario->GetX() > this->x) ? 1 : -1;
+		vx = nx * GOOMBA_WALKING_SPEED;
+	}
+	else
+	{
+		nx = -1;
+		vx = -GOOMBA_WALKING_SPEED;
+	}
+}
+
+void Goomba::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
 	if (state == GOOMBA_STATE_DIE)
 	{
-		left = x - GOOMBA_BBOX_WIDTH/2;
-		top = y - GOOMBA_BBOX_HEIGHT_DIE/2;
+		left = x - GOOMBA_BBOX_WIDTH / 2;
+		top = y - GOOMBA_BBOX_HEIGHT_DIE / 2;
 		right = left + GOOMBA_BBOX_WIDTH;
 		bottom = top + GOOMBA_BBOX_HEIGHT_DIE;
 	}
 	else
-	{ 
-		left = x - GOOMBA_BBOX_WIDTH/2;
-		top = y - GOOMBA_BBOX_HEIGHT/2;
+	{
+		left = x - GOOMBA_BBOX_WIDTH / 2;
+		top = y - GOOMBA_BBOX_HEIGHT / 2;
 		right = left + GOOMBA_BBOX_WIDTH;
 		bottom = top + GOOMBA_BBOX_HEIGHT;
 	}
@@ -44,36 +58,38 @@ void Goomba::OnNoCollision(DWORD dt)
 
 void Goomba::OnCollisionWith(LPCOLLISIONEVENT e)
 {
-	if (!e->obj->IsBlocking()) return; 
-	if (dynamic_cast<Goomba*>(e->obj)) return; 
+	if (!e->obj->IsBlocking()) return;
+	if (dynamic_cast<Goomba*>(e->obj)) return;
 
-	if (e->ny != 0 )
+	if (e->ny != 0)
 	{
 		vy = 0;
 	}
 	else if (e->nx != 0)
 	{
 		vx = -vx;
+		nx = -nx;
 	}
 }
 
-void Goomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
+void Goomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	CheckActivationStatus();
-
-	if (!isActivated)
-		return;
-
-	vy += ay * dt;
-	vx += ax * dt;
-
-	if ( (state==GOOMBA_STATE_DIE) && (GetTickCount64() - die_start > GOOMBA_DIE_TIMEOUT) )
+	if (state == GOOMBA_STATE_DIE && die_start > 0)
 	{
-		isDeleted = true;
-		return;
+		if (GetTickCount64() - die_start > GOOMBA_DIE_TIMEOUT)
+		{
+			//Delete();
+			SetActive(false);
+			return;
+		}
+	}
+	else
+	{
+		vy += ay * dt;
+		vx += ax * dt;
 	}
 
-	GameObject::Update(dt, coObjects);
+	RespawnableEnemy::Update(dt, coObjects);
 	Collision::GetInstance()->Process(this, dt, coObjects);
 }
 
@@ -81,58 +97,57 @@ void Goomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 void Goomba::Render()
 {
 	int aniId = ID_ANI_GOOMBA_WALKING;
-	if (state == GOOMBA_STATE_DIE) 
+	if (state == GOOMBA_STATE_DIE)
 	{
 		aniId = ID_ANI_GOOMBA_DIE;
 	}
 
-	Animations::GetInstance()->Get(aniId)->Render(x,y);
-	//RenderBoundingBox();
+	Animations::GetInstance()->Get(aniId)->Render(x, y);
 }
 
 void Goomba::SetState(int state)
 {
-	GameObject::SetState(state);
+	RespawnableEnemy::SetState(state);
 	switch (state)
 	{
-		case GOOMBA_STATE_DIE:
-			die_start = GetTickCount64();
-			y += (GOOMBA_BBOX_HEIGHT - GOOMBA_BBOX_HEIGHT_DIE)/2;
-			vx = 0;
-			vy = 0;
-			ay = 0; 
-			break;
-		case GOOMBA_STATE_WALKING:
-			if (isActivated)
-				vx = -GOOMBA_WALKING_SPEED;
-			break;
+	case GOOMBA_STATE_DIE:
+		die_start = GetTickCount64();
+		y += (GOOMBA_BBOX_HEIGHT - GOOMBA_BBOX_HEIGHT_DIE) / 2;
+		vx = 0;
+		vy = 0;
+		ay = 0;
+		break;
+	case GOOMBA_STATE_WALKING:
+		ay = GOOMBA_GRAVITY;
+		vx = nx * GOOMBA_WALKING_SPEED;
+		break;
 	}
 }
-
-void Goomba::UpdateActivationBoundary()
-{
-	float camX, camY;
-
-	Camera::GetInstance()->GetCamPos(camX, camY);
-
-	activationBoundary = camX + GameGlobal::GetWidth();
-}
-
-bool Goomba::IsInsideActivationBoundary()
-{
-	return x <= activationBoundary;
-}
-
-void Goomba::CheckActivationStatus()
-{
-	if (isActivated)
-		return;
-
-	UpdateActivationBoundary();
-
-	if (IsInsideActivationBoundary())
-	{
-		isActivated = true;
-		vx = -GOOMBA_WALKING_SPEED;
-	}
-}
+//
+//void Goomba::UpdateActivationBoundary()
+//{
+//	float camX, camY;
+//
+//	Camera::GetInstance()->GetCamPos(camX, camY);
+//
+//	activationBoundary = camX + GameGlobal::GetWidth();
+//}
+//
+//bool Goomba::IsInsideActivationBoundary()
+//{
+//	return x <= activationBoundary;
+//}
+//
+//void Goomba::CheckActivationStatus()
+//{
+//	if (isActivated)
+//		return;
+//
+//	UpdateActivationBoundary();
+//
+//	if (IsInsideActivationBoundary())
+//	{
+//		isActivated = true;
+//		vx = -GOOMBA_WALKING_SPEED;
+//	}
+//}

@@ -260,6 +260,9 @@
     <ClCompile Include="KoopaTroopa.cpp">
       <Filter>Entities\Enemies</Filter>
     </ClCompile>
+    <ClCompile Include="RespawnableEnemy.cpp">
+      <Filter>Entities\Enemies</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h">
@@ -524,6 +527,9 @@
       <Filter>Entities\Enemies</Filter>
     </ClInclude>
     <ClInclude Include="KoopaTroopa.h">
+      <Filter>Entities\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="RespawnableEnemy.h">
       <Filter>Entities\Enemies</Filter>
     </ClInclude>
   </ItemGroup>

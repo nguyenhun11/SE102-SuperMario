@@ -174,6 +174,7 @@
     <ClCompile Include="OneUpEffect.cpp" />
     <ClCompile Include="PiranhaPlant.cpp" />
     <ClCompile Include="RedKoopa.cpp" />
+    <ClCompile Include="RespawnableEnemy.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="StageNode.cpp" />
     <ClCompile Include="Switch.cpp" />
@@ -255,6 +256,7 @@
     <ClInclude Include="OneUpEffect.h" />
     <ClInclude Include="PiranhaPlant.h" />
     <ClInclude Include="RedKoopa.h" />
+    <ClInclude Include="RespawnableEnemy.h" />
     <ClInclude Include="Sensor.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="StageNode.h" />
