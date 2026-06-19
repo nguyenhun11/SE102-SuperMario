@@ -36,4 +36,5 @@ public:
 	virtual void SetState(int state);
 
 	virtual void OnEnable() override;
+	virtual void OnExitCamera() override;
 };

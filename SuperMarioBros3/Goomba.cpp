@@ -8,6 +8,7 @@ Goomba::Goomba(float x, float y) : RespawnableEnemy(x, y)
 	this->ax = 0;
 	this->ay = GOOMBA_GRAVITY;
 	die_start = -1;
+	this->zIndex = 0;
 
 	SetState(GOOMBA_STATE_WALKING);
 	OnEnable();
@@ -29,6 +30,18 @@ void Goomba::OnEnable()
 	{
 		nx = -1;
 		vx = -GOOMBA_WALKING_SPEED;
+	}
+}
+
+void Goomba::OnExitCamera()
+{
+	if (isGenerated)
+	{
+		this->Delete();
+	}
+	else
+	{
+		RespawnableEnemy::OnExitCamera();
 	}
 }
 
@@ -74,6 +87,20 @@ void Goomba::OnCollisionWith(LPCOLLISIONEVENT e)
 
 void Goomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	if (isEmerging)
+	{
+		x += vx * dt;
+		y += vy * dt;
+
+		if ((nx > 0 && x >= emergeTargetX) || (nx < 0 && x <= emergeTargetX))
+		{
+			isEmerging = false;      // Tắt cờ chui cống
+			ay = GOOMBA_GRAVITY;     // MỞ LẠI TRỌNG LỰC!
+		}
+
+		return;
+	}
+
 	if (state == GOOMBA_STATE_DIE && die_start > 0)
 	{
 		if (GetTickCount64() - die_start > GOOMBA_DIE_TIMEOUT)

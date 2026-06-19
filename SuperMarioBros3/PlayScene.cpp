@@ -287,9 +287,25 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		int idBottom = atoi(tokens[10].c_str());
 		int idBottomRight = atoi(tokens[11].c_str());
 
-		obj = new HorizontalPipe(x, y, cell_width, cell_height, columns,
+		int isBlock = 1;
+		if (tokens.size() > 12) isBlock = atoi(tokens[12].c_str());
+
+		int targetScene = -1;
+		if (tokens.size() > 13) targetScene = atoi(tokens[13].c_str());
+
+		int contentType = 0;
+		if (tokens.size() > 14) contentType = atoi(tokens[14].c_str());
+
+		int spawnSide = -1;
+		if (tokens.size() > 15) spawnSide = atoi(tokens[15].c_str());
+
+		HorizontalPipe* pipe = new HorizontalPipe(x, y, cell_width, cell_height, columns,
 			idTopLeft, idTop, idTopRight,
-			idBottomLeft, idBottom, idBottomRight);
+			idBottomLeft, idBottom, idBottomRight,
+			isBlock, targetScene, contentType, spawnSide);
+
+		obj = pipe;
+
 		break;
 	}
 	case OBJECT_TYPE_QUESTION_BLOCK:

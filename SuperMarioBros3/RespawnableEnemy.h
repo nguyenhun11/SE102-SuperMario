@@ -9,8 +9,13 @@ class RespawnableEnemy : public GameObject
 protected:
 	float ax;
 	float ay;
+
 	bool IsOtherEnemyOrMario(LPGAMEOBJECT obj);
 public:
+	bool isEmerging = false;
+	float emergeTargetX = 0;
+	bool isGenerated = false;
+
 	RespawnableEnemy(float x, float y);
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) override;
 	void OnExitCamera() override;
@@ -18,6 +23,13 @@ public:
 	virtual void OnAttackedByTail(float direction);
 	virtual void SetState(int state) override;
 	bool RenderOnPaused() override { return false; }
+	void StartEmerging(float targetX)
+	{
+		isEmerging = true;
+		emergeTargetX = targetX;
+		ay = 0;
+		vy = 0;
+	}
 };
 
 class RespawnPoint : public GameObject {
