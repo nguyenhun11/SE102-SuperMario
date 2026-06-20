@@ -9,7 +9,7 @@ Goomba::Goomba(float x, float y) : RespawnableEnemy(x, y)
 	this->ax = 0;
 	this->ay = GOOMBA_GRAVITY;
 	die_start = -1;
-	this->zIndex = 0;
+	this->zIndex = 9;
 
 	SetState(GOOMBA_STATE_WALKING);
 	OnEnable();
@@ -126,13 +126,16 @@ void Goomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void Goomba::Render()
 {
+	float renderX = x;
+	float renderY = y;
 	int aniId = ID_ANI_GOOMBA_WALKING;
 	if (state == GOOMBA_STATE_DIE)
 	{
 		aniId = ID_ANI_GOOMBA_DIE;
+		renderY -= 2.0f;
 	}
 
-	Animations::GetInstance()->Get(aniId)->Render(x, y);
+	Animations::GetInstance()->Get(aniId)->Render(renderX, renderY);
 }
 
 void Goomba::SetState(int state)

@@ -286,9 +286,13 @@ void Mario::OnCollisionWithGoalBlock(LPCOLLISIONEVENT e)
 void Mario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 {
 	Goomba* goomba = dynamic_cast<Goomba*>(e->obj);
-
+	AddScore(100);
 	if (e->ny < 0)
 	{
+		// hiệu ứng điểm
+		PlayScene* scene = dynamic_cast<PlayScene*>(SceneManager::GetInstance()->GetCurrentScene());
+		ScoreEffect* scoreEff = new ScoreEffect(goomba->GetX(), goomba->GetY(), Score::ONE_HUNDRED);
+		scene->AddObject(scoreEff);
 		SoundManager::GetInstance()->Play("stomp");
 		if (goomba->GetState() != GOOMBA_STATE_DIE)
 		{
@@ -337,7 +341,13 @@ void Mario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 	}
 	if (e->ny < 0)
 	{
+		// hiệu ứng điểm
+		PlayScene* scene = dynamic_cast<PlayScene*>(SceneManager::GetInstance()->GetCurrentScene());
+		ScoreEffect* scoreEff = new ScoreEffect(koopa->GetX(), koopa->GetY(), Score::ONE_HUNDRED);
+		scene->AddObject(scoreEff);
 		SoundManager::GetInstance()->Play("stomp");
+
+		AddScore(100);
 		if (koopa->GetState() == static_cast<int>(KoopaState::WING))
 		{
 			koopa->SetState(KoopaState::WALKING);
@@ -377,6 +387,7 @@ void Mario::OnCollisionWithPiranhaPlant(LPCOLLISIONEVENT e)
 
 void Mario::OnCollisionWithFire(LPCOLLISIONEVENT e)
 {
+	if (isPoofTransforming || isSuperTransforming) return;
 	TakeDamage();
 	e->obj->Delete(); // Hủy viên đạn lửa đi
 }
@@ -386,7 +397,7 @@ void Mario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 	e->obj->Delete();
 	SoundManager::GetInstance()->Play("coin");
 	AddCoin();
-	AddScore(50);
+	AddScore(100);
 	// cộng điểm ở đây
 }
 
