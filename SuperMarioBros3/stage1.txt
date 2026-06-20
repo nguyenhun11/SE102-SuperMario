@@ -19,6 +19,7 @@ effect.txt
 goal.txt
 goalblock.txt
 switch.txt
+piranha-fire.txt
 
 
 [MAP_INFO]

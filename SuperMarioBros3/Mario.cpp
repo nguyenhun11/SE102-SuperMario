@@ -289,10 +289,10 @@ void Mario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 
 	if (e->ny < 0)
 	{
+		SoundManager::GetInstance()->Play("stomp");
 		if (goomba->GetState() != GOOMBA_STATE_DIE)
 		{
 			goomba->SetState(GOOMBA_STATE_DIE);
-
 			if (IsHoldingJump)
 				vy = -MARIO_HIGH_JUMP_DEFLECT_SPEED;
 			else
@@ -337,6 +337,7 @@ void Mario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 	}
 	if (e->ny < 0)
 	{
+		SoundManager::GetInstance()->Play("stomp");
 		if (koopa->GetState() == static_cast<int>(KoopaState::WING))
 		{
 			koopa->SetState(KoopaState::WALKING);
@@ -524,7 +525,6 @@ void Mario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
 	leaf->Delete();
 	if (form == MarioForm::SMALL)
 	{
-		
 		StartTransform();
 	}
 	else if (form != MarioForm::RACOON)
@@ -1292,10 +1292,11 @@ void Mario::HandleDying(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			accelY = MARIO_DIE_GRAVITY;
 		}
 
+		if (vy > 0) isDieBounce = true;
+
 		vy += accelY * dt;
 		y += vy * dt;
 		x += vx * dt;
-
 		return;
 	}
 }
@@ -1371,12 +1372,12 @@ void Mario::HandlePMeter(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void Mario::HandleSlope(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	if (isDieBounce) return;
 	float l, t, r, b;
 	GetBoundingBox(l, t, r, b);
 	float marioBottomY = b;
 	float bboxHeight = b - t;
 	//float marioBottomY = y + MARIO_BIG_BBOX_HEIGHT / 2; // tọa độ chân
-
 	bool foundSlope = false;
 
 	for (size_t i = 0; i < coObjects->size(); i++)

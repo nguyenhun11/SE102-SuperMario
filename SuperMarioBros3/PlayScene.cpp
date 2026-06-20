@@ -463,6 +463,7 @@ void PlayScene::LoadAssets(LPCWSTR assetFile)
 	SoundManager::GetInstance()->Load("racoon", "assets/sounds/smb3_raccoon_transform.wav");
 	SoundManager::GetInstance()->Load("tail", "assets/sounds/smb3_tail.wav");
 	SoundManager::GetInstance()->Load("pmeter", "assets/sounds/smb3_pmeter.wav");
+	SoundManager::GetInstance()->Load("stomp", "assets/sounds/smb3_stomp.wav");
 	// Phát nhạc nền ngay khi vào màn chơi
 	SoundManager::GetInstance()->PlayBGM("bgm_stage1");
 

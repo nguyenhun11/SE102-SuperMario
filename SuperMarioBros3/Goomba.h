@@ -19,6 +19,7 @@
 class Goomba : public RespawnableEnemy
 {
 protected:
+	bool isOnSlope = false;
 	ULONGLONG die_start;
 
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
@@ -37,4 +38,6 @@ public:
 
 	virtual void OnEnable() override;
 	virtual void OnExitCamera() override;
+
+	void HandleSlope(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 };
