@@ -206,6 +206,7 @@ class Mario : public GameObject
 	bool isSpinning;
 	bool isSliding;
 	bool isPiping;
+	bool isDieBounce;
 
 	bool isGoalRunning;
 	
@@ -283,6 +284,7 @@ public:
 		isSliding = false;
 		isPiping = false;
 		isPipingUp = false;
+		isDieBounce = false;
 
 		isGoalRunning = false;
 
