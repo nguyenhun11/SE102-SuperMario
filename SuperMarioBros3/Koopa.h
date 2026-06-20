@@ -54,13 +54,25 @@ protected:
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	virtual void Render();
 
-	virtual int IsCollidable() { return 1; };
-	virtual int IsBlocking() { return 0; }
+	//virtual int IsCollidable() { return 1; };
+	//virtual int IsBlocking() { return 0; }
+	int IsBlocking() override
+	{
+		if (state == static_cast<int>(KoopaState::DIE) || isHeld) return 0;
+		return 1;
+	}
+
+	int IsCollidable() override
+	{
+		if (state == static_cast<int>(KoopaState::DIE) || isHeld) return 0;
+		return 1;
+	}
 	virtual void OnNoCollision(DWORD dt);
 
 	virtual void OnCollisionWith(LPCOLLISIONEVENT e);
 
 public:
+	bool isHeld = false;
 	Koopa(float x, float y);
 	virtual void SetState(KoopaState state);
 	void SetNx(float nx) { this->nx = nx; };
@@ -73,6 +85,9 @@ public:
 
 	virtual void OnEnable() override;
 	virtual void OnExitCamera() override;
+
+	void SetDirection(int d);
+
 };
 
 

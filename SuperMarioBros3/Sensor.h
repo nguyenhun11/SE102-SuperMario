@@ -23,11 +23,11 @@ public:
     virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom)
     {
         // Tạo một chiếc hộp kiểm tra nhỏ (kích thước 2x4) thọc xuống dưới chân Koopa
-        left = x - 1;
+        left = x - 8;
         top = y;
-        right = left + 1;
+        right = left + 16;
         // tăng chiều sâu để tránh bỏ sót khi bề mặt mỏng
-        bottom = top + 6;
+        bottom = top + 10;
     }
 
     virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)

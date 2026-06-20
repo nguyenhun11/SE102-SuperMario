@@ -54,6 +54,8 @@
 #define MARIO_PIPE_TIME 1400
 #define MARIO_PIPE_SPEED 0.02f
 
+class Koopa;
+
 // ------------------------- MARIO STATE -------------------------------- //
 #pragma	region	MARIO_STATES & MARIO_FORMS
 enum class MarioState
@@ -125,6 +127,9 @@ enum class MarioForm
 #define ID_ANI_MARIO_SMALL_JUMP_RUN 1005
 
 #define ID_ANI_MARIO_SMALL_PIPING 1009
+
+#define ID_ANI_MARIO_SMALL_HOLDING_IDLE	1020
+#define ID_ANI_MARIO_SMALL_HOLDING_RUN	1021
 
 
 // RACOON MARIO
@@ -235,7 +240,6 @@ class Mario : public GameObject
 	VerticalPipe* pipeBelow;
 	VerticalPipe* pipeAbove;
 	bool isPipingUp = false;
-
 
 	void OnCollisionWithGoalBlock(LPCOLLISIONEVENT e);
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
@@ -367,6 +371,7 @@ public:
 	void HandleSlopePhysics(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void HandleGoalRunning(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void HandlePiping(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
+	void HandleHolding(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 
 	// Getters & Setters
 	float GetX() { return x; }
@@ -374,4 +379,8 @@ public:
 	MarioForm GetCurrentForm() { return form; }
 	int GetPMeter() { return pmeter; }
 	bool IsGoalRunning() { return isGoalRunning; }
+	int GetDirection() { return nx; }
+
+	bool isHolding = false;
+	Koopa* heldKoopa = NULL;
 };

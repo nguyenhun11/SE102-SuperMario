@@ -97,6 +97,26 @@ void Koopa::OnCollisionWith(LPCOLLISIONEVENT e)
 
 void Koopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	if (isHeld)
+	{
+		vx = 0.0f;
+		vy = 0.0f;
+		ax = 0.0f;
+		ay = 0.0f;
+
+		// đếm thời gian rung lắc và tỉnh dậy
+		if ((this->state == static_cast<int>(KoopaState::SHELL) || this->state == static_cast<int>(KoopaState::SHELL_UPWARD)) && (GetTickCount64() - die_start > KOOPA_DIE_TIMEOUT - 200))
+		{
+			SetState(KoopaState::SHAKING); 
+		}
+		if ((this->state == static_cast<int>(KoopaState::SHAKING)) && (GetTickCount64() - die_start > KOOPA_DIE_TIMEOUT))
+		{
+			SetState(KoopaState::WALKING); 
+				isHeld = false; 
+		}
+		return;
+	}
+
 	// Áp dụng trọng lực và gia tốc cho Koopa
 	vy += ay * dt;
 	vx += ax * dt;
@@ -294,4 +314,9 @@ void Koopa::SetState(KoopaState state)
 	}
 
 
+}
+
+void Koopa::SetDirection(int d)
+{
+	nx = d;
 }

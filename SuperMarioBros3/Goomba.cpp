@@ -9,7 +9,7 @@ Goomba::Goomba(float x, float y) : RespawnableEnemy(x, y)
 	this->ax = 0;
 	this->ay = GOOMBA_GRAVITY;
 	die_start = -1;
-	this->zIndex = 9;
+	this->zIndex = 8;
 
 	SetState(GOOMBA_STATE_WALKING);
 	OnEnable();

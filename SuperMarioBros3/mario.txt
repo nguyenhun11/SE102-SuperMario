@@ -4,7 +4,7 @@
 ###	1[MarioForm][MarioState][SpriteFrameNum]
 ##	MarioForm:	0 - SMALL, 1 - SUPER, 2 - RACOON, 3 - FIRE
 ##	MarioState:	00 - IDLE, 01 - WALKING, 02 - RUNNING, 03 - SKIDDING, 04 - JUMP WALK, 05 - JUMPP RUN, 
-##					06 - FALLING, 07 - CROUCH, 08 - SLIDING, 09 - PIPING, 10 - HOLDING
+##					06 - FALLING, 07 - CROUCH, 08 - SLIDING, 09 - PIPING, 20 - HOLDING
 ##					11 - KICKING, 12 - GOAL
 ##                  13 - FLYING, 14 - FLOATING, 15 - SPIN_TAIL, 16 - SHOOT_FIRE, 99 - DIE
 ##	SpriteFrameNum: 0, 1, 2, 3... (Thứ tự frame của animation đó)
@@ -43,6 +43,13 @@
 19801	433	1	448	16	100
 19802	451	1	466	16	100
 19803	469	1	484	16	100
+
+#HOLDING
+#idle
+10200	145	16	158	31	100
+#run
+10210	145	16	158	31	100
+10211	163	16	178	31	100
 
 # ------------------------------
 ############ --- SUPER FORM --- ################
@@ -202,6 +209,12 @@
 
 # PIPING
 1009 10090 100
+
+# HOLDING
+#idle
+1020	10200	100
+#run 
+1021	10210	100	10211	100
 
 ################### RACOON #################
 #IDLE

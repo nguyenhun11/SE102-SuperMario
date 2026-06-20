@@ -49,7 +49,6 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (isGoalRunning)
 	{
 		HandleGoalRunning(dt, coObjects);
-
 		return;
 	}
 
@@ -192,8 +191,17 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		untouchable = 0;
 	}
 
+	if (heldKoopa != NULL && isHolding)
+	{
+		float hx = this->x + this->nx * 10.0f;
+		float hy = this->y;
+		heldKoopa->SetPosition(hx, hy);
+	}
+
+
 	Collision::GetInstance()->Process(this, dt, coObjects);
 	HandleSlope(dt, coObjects);
+	HandleHolding(dt, coObjects);
 }
 
 #pragma region COLLISION
@@ -326,19 +334,38 @@ void Mario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 		return;
 	}
 
-	if (koopa->GetState() == static_cast<int>(KoopaState::SHELL) || koopa->GetState() == static_cast<int>(KoopaState::SHAKING))
+	//if (koopa->GetState() == static_cast<int>(KoopaState::SHELL) || koopa->GetState() == static_cast<int>(KoopaState::SHAKING))
+	//{
+	//	koopa->SetState(KoopaState::SHELL_MOVING);
+	//	if (nx > 0)	// mario đang di chuyển về bên phải
+	//	{
+	//		koopa->SetSpeed(MARIO_RUNNING_SPEED, 0);
+	//	}
+	//	else		// mario dang di chuyen ve ben trai
+	//	{
+	//		koopa->SetSpeed(-MARIO_RUNNING_SPEED, 0);
+	//	}
+	//	return;
+	//}
+
+	if (koopa->GetState() == static_cast<int>(KoopaState::SHELL) || koopa->GetState() == static_cast<int>(KoopaState::SHELL_UPWARD) || koopa->GetState() == static_cast<int>(KoopaState::SHAKING))
 	{
-		koopa->SetState(KoopaState::SHELL_MOVING);
-		if (nx > 0)	// mario đang di chuyển về bên phải
+		if (this->isHolding && this->heldKoopa == NULL)
 		{
-			koopa->SetSpeed(MARIO_RUNNING_SPEED, 0);
+			// Lượm 
+			this->heldKoopa = koopa;
+			koopa->isHeld = true;
 		}
-		else		// mario dang di chuyen ve ben trai
+		else
 		{
-			koopa->SetSpeed(-MARIO_RUNNING_SPEED, 0);
+			// Sút
+			koopa->SetState(KoopaState::SHELL_MOVING);
+			koopa->SetDirection(this->nx);
+			SoundManager::GetInstance()->Play("kick");
 		}
-		return;
+		return; 
 	}
+
 	if (e->ny < 0)
 	{
 		// hiệu ứng điểm
@@ -369,7 +396,7 @@ void Mario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 	}
 	else
 	{
-		if (koopa->GetState() != static_cast<int>(KoopaState::SHELL))
+		if (koopa->GetState() != static_cast<int>(KoopaState::SHELL) && koopa->GetState() != static_cast<int>(KoopaState::DIE))
 		{
 			TakeDamage();
 		}
@@ -559,6 +586,13 @@ void Mario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
 int Mario::GetAniIdSmall()
 {
 	int aniId = -1;
+	if (heldKoopa != NULL)
+	{
+		if (!isOnPlatform) aniId = ID_ANI_MARIO_SMALL_HOLDING_IDLE; // Đang bay trên không
+		else if (vx == 0) aniId = ID_ANI_MARIO_SMALL_HOLDING_IDLE;  // Đứng yên
+		else aniId = ID_ANI_MARIO_SMALL_HOLDING_RUN;            // Đang chạy/đi bộ
+		return aniId;
+	}
 	if (!isOnPlatform)	// mario tren khong
 	{
 		if (isPipingUp)
@@ -1520,6 +1554,36 @@ void Mario::HandlePiping(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 			
 			GameObject::SetState(static_cast<int>(MarioState::IDLE));
+		}
+	}
+}
+
+void Mario::HandleHolding(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+{
+	if (heldKoopa != NULL)
+	{
+		if (heldKoopa->GetState() == static_cast<int>(KoopaState::WALKING))
+		{
+			heldKoopa = NULL;
+			TakeDamage();
+		}
+		else if (isHolding)
+		{
+			heldKoopa->isHeld = true;
+			float hx = this->x + this->nx * 14.0f; 
+			float hy = this->y;
+
+			heldKoopa->SetPosition(hx, hy);
+			heldKoopa->SetDirection(this->nx);
+		}
+		else
+		{
+			heldKoopa->isHeld = false;
+			heldKoopa->SetState(KoopaState::SHELL_MOVING);
+			heldKoopa->SetDirection(this->nx);
+
+			SoundManager::GetInstance()->Play("kick");
+			heldKoopa = NULL;
 		}
 	}
 }

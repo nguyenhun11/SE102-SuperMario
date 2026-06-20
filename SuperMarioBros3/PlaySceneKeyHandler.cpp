@@ -93,17 +93,32 @@ void PlaySceneKeyHandler::KeyState(BYTE *states)
 	{
 		mario->SetDirection(1);
 		if (input->IsKeyDown(DIK_X) || input->IsKeyDown(DIK_W))
+		{
 			mario->SetState(MarioState::RUNNING);
+			mario->isHolding = true;
+		}
 		else
+		{
 			mario->SetState(MarioState::WALKING);
+			mario->isHolding = false;
+		}
 	}
 	else if (input->IsKeyDown(DIK_LEFT) || input->IsKeyDown(DIK_A))
 	{
 		mario->SetDirection(-1);
 		if (input->IsKeyDown(DIK_X) || input->IsKeyDown(DIK_W))
+		//	mario->SetState(MarioState::RUNNING);
+		//else
+		//	mario->SetState(MarioState::WALKING);
+		{
 			mario->SetState(MarioState::RUNNING);
+			mario->isHolding = true;
+		}
 		else
+		{
 			mario->SetState(MarioState::WALKING);
+			mario->isHolding = false;
+		}
 	}
 	else
 		mario->SetState(MarioState::IDLE);

@@ -592,6 +592,16 @@ void PlayScene::Update(DWORD dt)
 	if (player == NULL) return;
 	Mario* mario = static_cast<Mario*>(player);
 
+	// set vị trí mai rùa mà mario cầm, đoạn này code dơ, thông cảm thông cảm
+	if (mario != NULL && mario->heldKoopa != NULL && mario->isHolding)
+	{
+		Koopa* koopa = mario->heldKoopa;
+		koopa->isHeld = true;
+		float hx = mario->GetX() + mario->GetDirection() * 14.0f;
+		float hy = mario->GetY();
+		koopa->SetPosition(hx, hy);
+	}
+
 
 	float px, py;
 	player->GetPosition(px, py);
