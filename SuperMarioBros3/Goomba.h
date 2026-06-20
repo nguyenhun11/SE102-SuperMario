@@ -2,7 +2,7 @@
 #include "RespawnableEnemy.h"
 
 #define GOOMBA_GRAVITY 0.002f
-#define GOOMBA_WALKING_SPEED 0.05f
+#define GOOMBA_WALKING_SPEED 0.03f
 
 #define GOOMBA_BBOX_WIDTH 16
 #define GOOMBA_BBOX_HEIGHT 14
