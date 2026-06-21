@@ -86,6 +86,8 @@ protected:
 	virtual void OnNoCollision(DWORD dt);
 
 	virtual void OnCollisionWith(LPCOLLISIONEVENT e);
+	virtual void OnCollisionWithBrick(LPCOLLISIONEVENT e);
+	virtual void OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e);
 
 public:
 	bool isHeld = false;

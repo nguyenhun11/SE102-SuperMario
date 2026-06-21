@@ -285,8 +285,8 @@ void Mario::OnCollisionWithGoalBlock(LPCOLLISIONEVENT e)
 
 void Mario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 {
+	if (isPoofTransforming || isSuperTransforming) return;
 	Goomba* goomba = dynamic_cast<Goomba*>(e->obj);
-	AddScore(100);
 	if (e->ny < 0)
 	{
 		// hiệu ứng điểm
@@ -294,6 +294,7 @@ void Mario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 		ScoreEffect* scoreEff = new ScoreEffect(goomba->GetX(), goomba->GetY(), Score::ONE_HUNDRED);
 		scene->AddObject(scoreEff);
 		SoundManager::GetInstance()->Play("stomp");
+		AddScore(100);
 		if (goomba->GetState() != GOOMBA_STATE_DIE)
 		{
 			goomba->SetState(GOOMBA_STATE_DIE);
@@ -314,7 +315,9 @@ void Mario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 
 void Mario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 {
+	if (isPoofTransforming || isSuperTransforming) return;
 	Koopa* koopa = dynamic_cast<Koopa*>(e->obj);
+	if (heldKoopa == koopa) return;
 
 	if (this->GetCurrentForm() == MarioForm::RACOON && GetTickCount64() - spin_start < MARIO_SPIN_TIME && (koopa->GetState() != static_cast<int>(KoopaState::SHELL) && koopa->GetState() != static_cast<int>(KoopaState::SHELL_UPWARD) && koopa->GetState() != static_cast<int>(KoopaState::SHAKING)))
 	{

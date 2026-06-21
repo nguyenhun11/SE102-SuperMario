@@ -44,8 +44,6 @@ public:
 		this->isBlock = isBlock;
 		this->contentType = (PipeContentType)pipeContentType;
 		this->contentHeight = contentHeight;
-
-		zIndex = 9;
 	}
 
 	bool isEntrance() { return targetSceneID != -1 && targetSceneID != 999; }

@@ -23,9 +23,9 @@ public:
     virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom)
     {
         // Tạo một chiếc hộp kiểm tra nhỏ (kích thước 2x4) thọc xuống dưới chân Koopa
-        left = x - 8;
+        left = x - 4;
         top = y;
-        right = left + 16;
+        right = left + 8;
         // tăng chiều sâu để tránh bỏ sót khi bề mặt mỏng
         bottom = top + 10;
     }
