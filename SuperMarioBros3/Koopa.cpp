@@ -1,8 +1,11 @@
 #include "Koopa.h"
 #include "Brick.h"
 #include "Goomba.h"
+#include "SoundManager.h"
+#include "HitEffect.h"
+#include "ScoreEffect.h"
 
-Koopa::Koopa(float x, float y) : RespawnableEnemy(x, y)
+Koopa::Koopa(float x, float y, KoopaColor color) : RespawnableEnemy(x, y)
 {
 	this->ax = 0;
 	this->ay = KOOPA_GRAVITY;
@@ -13,41 +16,68 @@ Koopa::Koopa(float x, float y) : RespawnableEnemy(x, y)
 	this->sensorfront = new Sensor(x, y);
 	this->sensorback = nullptr;
 
+	this->color = color;
+
 	// Mặc định ban đầu đi sang trái
-	this->nx = -1;
+	PlayScene* scene = (PlayScene*)SceneManager::GetInstance()->GetCurrentScene();
+	Mario* mario = (Mario*)scene->GetPlayer();
+	if (mario != nullptr)
+	{
+		nx = (mario->GetX() > this->x) ? 1 : -1;
+	}
+	else
+	{
+		nx = -1;
+	}
 	SetState(KoopaState::WALKING);
 	OnEnable();
 }
 
 void Koopa::OnEnable()
 {
-	SetState(KoopaState::WALKING);
+	this->isFlippedVertical = false;
+	this->isHeld = false;
+	this->vy = 0;
+	this->state = static_cast<int>(KoopaState::WALKING);
+	this->ay = KOOPA_GRAVITY;
 
 	PlayScene* scene = (PlayScene*)SceneManager::GetInstance()->GetCurrentScene();
 	Mario* mario = (Mario*)scene->GetPlayer();
-
 	if (mario != nullptr)
 	{
-		nx = (mario->GetX() > this->x) ? 1 : -1;
-		vx = nx * KOOPA_WALKING_SPEED;
+		if (color == KoopaColor::GREEN)
+		{
+			nx = (mario->GetX() > this->x) ? 1 : -1;
+			vx = nx * KOOPA_WALKING_SPEED;
+		}
 	}
 	else
 	{
 		nx = -1;
 		vx = -KOOPA_WALKING_SPEED;
 	}
+
+	SetState(KoopaState::WALKING);
+	if (sensorfront != nullptr) {
+		float sensorOffsetX = nx * (KOOPA_BBOX_WIDTH / 2 + 2);
+		float sensorOffsetY = KOOPA_BBOX_HEIGHT / 2 + 1;
+		sensorfront->SetXY(x + sensorOffsetX, y + sensorOffsetY);
+		sensorfront->SetHasGround(true);
+	}
 }
 
 void Koopa::OnExitCamera()
 {
-	if (state == (int)KoopaState::SHELL_MOVING)
-	{
-		this->Delete();
-	}
-	else
-	{
-		RespawnableEnemy::OnExitCamera();
-	}
+	//if (state == (int)KoopaState::SHELL_MOVING)
+	//{
+	//	SetState(KoopaState::WALKING);
+	//	RespawnableEnemy::OnExitCamera();
+	//}
+	//else
+	//{
+	//	RespawnableEnemy::OnExitCamera();
+	//}
+	RespawnableEnemy::OnExitCamera();
 }
 
 void Koopa::GetBoundingBox(float& left, float& top, float& right, float& bottom)
@@ -61,9 +91,9 @@ void Koopa::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 	}
 	else
 	{
-		left = x - KOOPA_BBOX_WIDTH / 2;
+		left = x - KOOPA_BBOX_WIDTH / 2 + 1.0f;
 		top = y - KOOPA_BBOX_HEIGHT / 2;
-		right = left + KOOPA_BBOX_WIDTH;
+		right = left + KOOPA_BBOX_WIDTH - 2.0f;
 		bottom = top + KOOPA_BBOX_HEIGHT;
 	}
 }
@@ -76,27 +106,146 @@ void Koopa::OnNoCollision(DWORD dt)
 
 void Koopa::OnCollisionWith(LPCOLLISIONEVENT e)
 {
-	if (!e->obj->IsBlocking()) return;
-	if (dynamic_cast<Koopa*>(e->obj)) return;
+	//if (!e->obj->IsBlocking()) return;
+	//if (!e->obj->IsCollidable()) return;
+	if (e->obj == this) return;
 
 	if (e->ny != 0)
 	{
 		vy = 0;
 		if (e->ny < 0 && state == static_cast<int>(KoopaState::SHELL_UPWARD))
 		{
-			SetState(KoopaState::SHELL); // Đưa về trạng thái mai rùa đứng yên (vx = 0, vy = 0)
+			SetState(KoopaState::SHELL); 
 		}
 	}
 	else if (e->nx != 0)
 	{
-		// Va chạm tường đứng thì đổi hướng di chuyển ngược lại dựa vào hướng va chạm
 		nx = e->nx;
+
+		if (state == static_cast<int>(KoopaState::SHELL_MOVING))
+		{
+			if (dynamic_cast<Goomba*>(e->obj))
+			{
+				OnCollisionWithGoomba(e);
+				return;
+			}
+			else if (dynamic_cast<Koopa*>(e->obj))
+			{
+				OnCollisionWithKoopa(e);
+				return;
+			}
+			else if (dynamic_cast<Brick*>(e->obj))
+			{
+				OnCollisionWithBrick(e);
+			}
+			else if (dynamic_cast<QuestionBlock*>(e->obj))
+			{
+				OnCollisionWithQuestionBlock(e);
+			}
+		}
+		else if (state == static_cast<int>(KoopaState::WALKING))
+		{
+			if (dynamic_cast<Goomba*>(e->obj) || dynamic_cast<Koopa*>(e->obj))
+			{
+				nx = -nx;
+				vx = nx * KOOPA_WALKING_SPEED;
+			}
+		}
 		vx = nx * (state == static_cast<int>(KoopaState::SHELL_MOVING) ? KOOPA_SHELL_SPEED : KOOPA_WALKING_SPEED);
+	}
+
+	Koopa* koopa = dynamic_cast<Koopa*>(e->obj);
+	if (koopa != NULL && koopa != this) return;
+}
+
+void Koopa::OnCollisionWithBrick(LPCOLLISIONEVENT e)
+{
+	Brick* brick = dynamic_cast<Brick*>(e->obj);
+	if (brick == nullptr) return; 
+
+	if (brick->GetCurrentState() == BrickState::ACTIVE)
+	{
+		if (brick->GetContainedItem() != BrickItem::NONE)
+		{
+			brick->SetState(BrickState::BOUNCING);
+			SoundManager::GetInstance()->Play("bump");
+		}
+		else
+		{
+			brick->Break();
+		}
+	}
+}
+
+void Koopa::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
+{
+	QuestionBlock* qb = dynamic_cast<QuestionBlock*>(e->obj);
+	if (qb == nullptr) return; // Áo giáp chống crash
+
+	if (qb->GetCurrentState() == QuestionBlockState::ACTIVE)
+	{
+		// Khối chấm hỏi luôn nảy lên
+		qb->SetState(QuestionBlockState::BOUNCING);
+	}
+}
+
+void Koopa::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
+{
+	Goomba* goomba = dynamic_cast<Goomba*>(e->obj);
+	if (goomba == nullptr) return;
+
+	PlayScene* scene = dynamic_cast<PlayScene*>(SceneManager::GetInstance()->GetCurrentScene());
+	if (goomba->GetState() == static_cast<int>(GoombaState::WALKING))
+	{
+		goomba->SetState(GoombaState::BOUNCE);
+		HitEffect* effect = new HitEffect(goomba->GetX(), goomba->GetY());
+		scene->AddObject(effect);
+		ScoreEffect* scoreEff = new ScoreEffect(goomba->GetX(), goomba->GetY(), Score::ONE_HUNDRED);
+		scene->AddObject(scoreEff);
+		GameManager::GetInstance()->AddScore(100);
+	}
+}
+
+void Koopa::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
+{
+	Koopa* koopa = dynamic_cast<Koopa*>(e->obj);
+	if (koopa == nullptr) return;
+
+	PlayScene* scene = dynamic_cast<PlayScene*>(SceneManager::GetInstance()->GetCurrentScene());
+	if (koopa->GetState() != static_cast<int>(KoopaState::DIE) && koopa->GetState() != static_cast<int>(KoopaState::SHELL) && koopa->GetState() != static_cast<int>(KoopaState::SHAKING))
+	{
+		koopa->isFlippedVertical = true;
+		koopa->SetState(KoopaState::DIE);
+		HitEffect* effect = new HitEffect(koopa->GetX(), koopa->GetY());
+		scene->AddObject(effect);
+		ScoreEffect* scoreEff = new ScoreEffect(koopa->GetX(), koopa->GetY(), Score::ONE_HUNDRED);
+		scene->AddObject(scoreEff);
+		GameManager::GetInstance()->AddScore(100);
 	}
 }
 
 void Koopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	if (isHeld)
+	{
+		vx = 0.0f;
+		vy = 0.0f;
+		ax = 0.0f;
+		ay = 0.0f;
+
+		// đếm thời gian rung lắc và tỉnh dậy
+		if ((this->state == static_cast<int>(KoopaState::SHELL) || this->state == static_cast<int>(KoopaState::SHELL_UPWARD)) && (GetTickCount64() - die_start > KOOPA_DIE_TIMEOUT - 200))
+		{
+			SetState(KoopaState::SHAKING); 
+		}
+		if ((this->state == static_cast<int>(KoopaState::SHAKING)) && (GetTickCount64() - die_start > KOOPA_DIE_TIMEOUT))
+		{
+			SetState(KoopaState::WALKING); 
+				isHeld = false; 
+		}
+		return;
+	}
+
 	// Áp dụng trọng lực và gia tốc cho Koopa
 	vy += ay * dt;
 	vx += ax * dt;
@@ -104,24 +253,66 @@ void Koopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	// === XỬ LÝ SENSOR CHO TỪNG TRẠNG THÁI ===
 	if (sensorfront != nullptr)
 	{
+		//if (state == static_cast<int>(KoopaState::WALKING))
+		//{
+		//	// Đặt vị trí Sensor nhô ra phía trước chân của Koopa theo hướng di chuyển (nx)
+		//	float sensorOffsetX = nx * (KOOPA_BBOX_WIDTH / 2 + 2);
+		//	float sensorOffsetY = KOOPA_BBOX_HEIGHT / 2; // Nằm sát mép dưới chân
+
+		//	sensorfront->SetXY(x + sensorOffsetX, y + sensorOffsetY);
+		//	sensorfront->Update(dt, coObjects);
+
+		//	// CHỈ quay đầu nếu Koopa đang thực sự di chuyển (vx != 0) và là Koopa đỏ
+		//	if (this->color == KoopaColor::RED)
+		//	{
+		//		if (vx != 0 && sensorfront->IsFalling())
+		//		{
+		//			vx = -vx;
+		//			nx = -nx;
+
+		//			sensorOffsetX = nx * (KOOPA_BBOX_WIDTH / 2 + 2);
+		//			sensorfront->SetXY(x + sensorOffsetX, y + sensorOffsetY);
+		//		}
+		//	}
+		//}
 		if (state == static_cast<int>(KoopaState::WALKING))
 		{
-			// Đặt vị trí Sensor nhô ra phía trước chân của Koopa theo hướng di chuyển (nx)
-			float sensorOffsetX = nx * (KOOPA_BBOX_WIDTH / 2 + 2);
-			float sensorOffsetY = KOOPA_BBOX_HEIGHT / 2; // Nằm sát mép dưới chân
+			float checkX = x + nx * (KOOPA_BBOX_WIDTH / 2.0f - 2.0f);
+			float feetY = y + KOOPA_BBOX_HEIGHT / 2.0f;
 
-			sensorfront->SetXY(x + sensorOffsetX, y + sensorOffsetY);
-			sensorfront->Update(dt, coObjects);
-
-			// CHỈ quay đầu nếu Koopa đang thực sự di chuyển (vx != 0)
-			if (vx != 0 && sensorfront->IsFalling())
+			bool groundAhead = false;
+			for (auto obj : *coObjects)
 			{
-				vx = -vx;
-				nx = -nx;
+				if (!obj->IsBlocking()) continue;
 
-				// Cập nhật lại vị trí Sensor ngay sang rìa bên kia để tránh lặp logic ở frame kế tiếp
-				sensorOffsetX = nx * (KOOPA_BBOX_WIDTH / 2 + 2);
+				float ol, ot, or_, ob;
+				obj->GetBoundingBox(ol, ot, or_, ob);
+
+				if (checkX < ol || checkX > or_) continue;
+
+				if (ot <= feetY + 4.0f && ot >= feetY - 4.0f)
+				{
+					groundAhead = true;
+					break;
+				}
+			}
+
+			if (this->color == KoopaColor::RED)
+			{
+				if (vx != 0 && !groundAhead)
+				{
+					vx = -vx;
+					nx = -nx;
+				}
+			}
+
+			// Vẫn update sensor cho render debug
+			if (sensorfront != nullptr)
+			{
+				float sensorOffsetX = nx * (KOOPA_BBOX_WIDTH / 2 + 2);
+				float sensorOffsetY = KOOPA_BBOX_HEIGHT / 2;
 				sensorfront->SetXY(x + sensorOffsetX, y + sensorOffsetY);
+				sensorfront->Update(dt, coObjects);
 			}
 		}
 		else // Các trạng thái SHELL, SHAKING, SHELL_MOVING
@@ -134,7 +325,7 @@ void Koopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 
 	// Xử lý chuyển đổi trạng thái dựa trên thời gian (Mai rùa -> Rung lắc -> Sống lại)
-	if ((this->state == static_cast<int>(KoopaState::SHELL) || this->state == static_cast<int>(KoopaState::SHELL_UPWARD)) && (GetTickCount64() - die_start > KOOPA_DIE_TIMEOUT - 200)) // Rung lắc trước khi tỉnh lại 200ms
+	if ((this->state == static_cast<int>(KoopaState::SHELL) || this->state == static_cast<int>(KoopaState::SHELL_UPWARD)) && (GetTickCount64() - die_start > KOOPA_DIE_TIMEOUT - 1000)) // Rung lắc trước khi tỉnh lại 200ms
 	{
 		SetState(KoopaState::SHAKING);
 	}
@@ -155,26 +346,47 @@ void Koopa::Render()
 	float renderX = x;
 	float renderY = y; // Tọa độ y vật lý chuẩn chỉnh, không cần cộng bù trừ thủ công nữa
 
-	if (this->state == static_cast<int>(KoopaState::SHELL))
+	if (this->state == static_cast<int>(KoopaState::DIE))
 	{
-		aniId = ID_ANI_KOOPA_SHELL;
+		if (color == KoopaColor::GREEN)
+			aniId = ID_ANI_KOOPA_GREEN_SHELL;
+		else
+			aniId = ID_ANI_KOOPA_RED_SHELL;
+	}
+	else if (this->state == static_cast<int>(KoopaState::SHELL))
+	{
+		if (color == KoopaColor::GREEN)
+			aniId = ID_ANI_KOOPA_GREEN_SHELL;
+		else
+			aniId = ID_ANI_KOOPA_RED_SHELL;
 	}
 	else if (this->state == static_cast<int>(KoopaState::SHELL_UPWARD))
 	{
-		
-		aniId = ID_ANI_KOOPA_SHELL;
+		if (color == KoopaColor::GREEN)
+			aniId = ID_ANI_KOOPA_GREEN_SHELL;
+		else
+			aniId = ID_ANI_KOOPA_RED_SHELL;
 	}
 	else if (this->state == static_cast<int>(KoopaState::WALKING))
 	{
-		aniId = ID_ANI_KOOPA_WALKING;
+		if (color == KoopaColor::GREEN)
+			aniId = ID_ANI_KOOPA_GREEN_WALKING;
+		else
+			aniId = ID_ANI_KOOPA_RED_WALKING;
 	}
 	else if (this->state == static_cast<int>(KoopaState::SHELL_MOVING))
 	{
-		aniId = ID_ANI_KOOPA_SHELL_MOVING;
+		if (color == KoopaColor::GREEN)
+			aniId = ID_ANI_KOOPA_GREEN_SHELL_MOVING;
+		else
+			aniId = ID_ANI_KOOPA_RED_SHELL_MOVING;
 	}
 	else if (this->state == static_cast<int>(KoopaState::SHAKING))
 	{
-		aniId = ID_ANI_KOOPA_SHELL_SHAKING;
+		if (color == KoopaColor::GREEN)
+			aniId = ID_ANI_KOOPA_GREEN_SHELL_SHAKING;
+		else
+			aniId = ID_ANI_KOOPA_RED_SHELL_SHAKING;
 
 		// Hiệu ứng rung lắc nhẹ bằng toán tử Modulo thời gian
 		if ((GetTickCount64() / 50) % 2 == 0)
@@ -187,11 +399,25 @@ void Koopa::Render()
 		}
 	}
 
-	if (aniId == -1) aniId = ID_ANI_KOOPA_WALKING;
+	if (aniId == -1)
+	{
+		if (color == KoopaColor::GREEN)
+			aniId = ID_ANI_KOOPA_GREEN_WALKING;
+		else
+			aniId = ID_ANI_KOOPA_RED_WALKING;
+	}
 
 	// Lật ảnh sprite (isFlip = true nếu đi sang phải)
 	isFlipped = (nx > 0);
-	Animations::GetInstance()->Get(aniId)->Render(renderX, renderY, isFlipped, isFlippedVertical);
+
+	LPANIMATION ani = Animations::GetInstance()->Get(aniId);
+	if (ani == NULL)
+	{
+		DebugOut(L"[ERROR] Koopa khong tim thay Animation ID: %d \n", aniId);
+		return; // Bỏ qua render frame này để không bị văng game
+	}
+
+	ani->Render(renderX, renderY, isFlipped, isFlippedVertical);
 
 	// Chỉ Render Sensor để theo dõi trực quan khi đang đi bộ
 	if (state == static_cast<int>(KoopaState::WALKING) && sensorfront != nullptr)
@@ -207,6 +433,14 @@ void Koopa::SetState(KoopaState state)
 
 	switch (state)
 	{
+	case KoopaState::DIE:
+		this->ay = KOOPA_GRAVITY;
+		this->vy = -0.35f;
+		this->vx = this->nx * 0.05f;
+		this->isFlippedVertical = true;
+		// nếu đang bị Mario cầm thì tự động giải thoát cho rùa rơi tự do
+		this->isHeld = false;
+		break;
 	case KoopaState::SHELL:
 		die_start = GetTickCount64();
 		ay = KOOPA_GRAVITY;
@@ -270,17 +504,11 @@ void Koopa::SetState(KoopaState state)
 	case KoopaState::SHELL_UPWARD:
 		die_start = GetTickCount64(); // Reset lại thời gian để không bị hồi sinh ngay lập tức
 
-		// 1. Phải giữ trọng lực hướng XUỐNG để kéo mai rùa tạo thành hình parabol (ném xiên)
 		this->ay = KOOPA_GRAVITY;
-
-		// 2. Cấp vận tốc ném xiên ban đầu
-		// nx lúc này phải được đồng bộ theo hướng Mario đá (ví dụ: Mario bên trái đá sang phải thì nx = 1)
-		this->vx = nx * KOOPA_WALKING_SPEED * 1.5f; // Chạy nhanh hơn đi bộ một chút, hoặc dùng KOOPA_SHELL_SPEED / 2
-		this->vy = -KOOPA_SHELL_SPEED * 2.f;       // Lực tung lên trên (vy âm). Chỉnh lại hệ số 0.4f để tăng/giảm độ cao tùy ý
+		this->vx = nx * KOOPA_WALKING_SPEED * 1.5f; 
+		this->vy = -KOOPA_SHELL_SPEED * 2.f;      
 
 		isFlippedVertical = true;
-
-		// 3. Cập nhật BBox hạ thấp tâm Y vật lý giống như trạng thái SHELL thường để tránh lún gạch
 		if (oldState == KoopaState::WALKING || oldState == KoopaState::SHAKING)
 		{
 			y += (KOOPA_BBOX_HEIGHT - KOOPA_BBOX_HEIGHT_DIE) / 2;
@@ -294,4 +522,9 @@ void Koopa::SetState(KoopaState state)
 	}
 
 
+}
+
+void Koopa::SetDirection(int d)
+{
+	nx = d;
 }

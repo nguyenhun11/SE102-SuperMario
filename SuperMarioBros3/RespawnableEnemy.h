@@ -4,9 +4,9 @@
 class RespawnPoint;
 class RespawnableEnemy : public GameObject
 {
-	RespawnPoint* respawnPoint = nullptr;
 	int flyDirection = 1;
 protected:
+	RespawnPoint* respawnPoint = nullptr;
 	float ax;
 	float ay;
 
@@ -30,6 +30,8 @@ public:
 		ay = 0;
 		vy = 0;
 	}
+
+	RespawnPoint* GetRespawnPoint() { return respawnPoint; }
 };
 
 class RespawnPoint : public GameObject {

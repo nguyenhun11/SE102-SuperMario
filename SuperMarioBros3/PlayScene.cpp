@@ -23,7 +23,6 @@
 #include "SoundManager.h"
 #include "Switch.h"
 #include "PiranhaPlant.h"
-#include "RedKoopa.h"
 #include "KoopaTroopa.h"
 
 #include "PlaySceneKeyHandler.h"
@@ -185,9 +184,26 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		break;
 	}
 	case OBJECT_TYPE_COIN: obj = new Coin(x, y); break;
-	case OBJECT_TYPE_KOOPA: obj = new Koopa(x, y); break;
-	case OBJECT_TYPE_RED_KOOPA: obj = new RedKoopa(x, y); break;
-	case OBJECT_TYPE_KOOPATROOPA: obj = new KoopaTroopa(x, y); break;
+	case OBJECT_TYPE_KOOPA: 
+	{
+		int color = 0; // 0 là GREEN, 1 là RED
+		if (tokens.size() > 3)
+		{
+			color = atoi(tokens[3].c_str());
+		}
+		obj = new Koopa(x, y, static_cast<KoopaColor>(color));
+		break;
+	}
+	case OBJECT_TYPE_KOOPATROOPA:
+	{
+		int color = 0; // 0 là GREEN, 1 là RED
+		if (tokens.size() > 3)
+		{
+			color = atoi(tokens[3].c_str());
+		}
+		obj = new KoopaTroopa(x, y, static_cast<KoopaColor>(color));
+		break;
+	}
 
 	case OBJECT_TYPE_PLATFORM:
 	{
@@ -592,6 +608,16 @@ void PlayScene::Update(DWORD dt)
 	if (player == NULL) return;
 	Mario* mario = static_cast<Mario*>(player);
 
+	// set vị trí mai rùa mà mario cầm, đoạn này code dơ, thông cảm thông cảm
+	if (mario != NULL && mario->heldKoopa != NULL && mario->isHolding)
+	{
+		Koopa* koopa = mario->heldKoopa;
+		koopa->isHeld = true;
+		float hx = mario->GetX() + mario->GetDirection() * 12.0f;
+		float hy = mario->GetY() - 2.0f;
+		koopa->SetPosition(hx, hy);
+	}
+
 
 	float px, py;
 	player->GetPosition(px, py);
@@ -787,6 +813,7 @@ void PlayScene::ActivatePSwitch(SwitchType type)
 	isPSwitchActive = true;
 	currentSwitchType = type;
 	pSwitchTimer = GetTickCount64();
+	SoundManager::GetInstance()->Play("bump");
 	vector<LPGAMEOBJECT> newObjects;
 
 	for (size_t i = 0; i < objects.size(); i++)

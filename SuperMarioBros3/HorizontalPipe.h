@@ -22,7 +22,7 @@ public:
 		int targetSceneID = -1,
 		int pipeContentType = 0,
 		int spawnSide = -1)
-		: NineSliceBox(x, y, cell_width, cell_height, columns, 2, nullptr)
+		: NineSliceBox(x, y, cell_width, cell_height, columns, 2, nullptr, true, true, true, true, 11)
 	{
 		this->spriteIDs[0][0] = idTopLeft;
 		this->spriteIDs[0][1] = idTop;

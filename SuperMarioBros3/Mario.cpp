@@ -24,6 +24,7 @@
 #include "Collision.h"
 #include "NoteBlock.h"
 #include "Koopa.h"
+#include "HitEffect.h"
 
 void Mario::SetUp()
 {
@@ -49,7 +50,6 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (isGoalRunning)
 	{
 		HandleGoalRunning(dt, coObjects);
-
 		return;
 	}
 
@@ -59,6 +59,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	HandleTakingDamage(dt, coObjects);
 	HandleTransform(dt, coObjects);
 	HandleSpinning(dt, coObjects);
+	HandleKicking(dt, coObjects);
 
 	if (isOnPlatform && vy >= 0) // mario đang đứng trên platform
 	{
@@ -194,6 +195,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	Collision::GetInstance()->Process(this, dt, coObjects);
 	HandleSlope(dt, coObjects);
+	HandleHolding(dt, coObjects);
 }
 
 #pragma region COLLISION
@@ -285,18 +287,21 @@ void Mario::OnCollisionWithGoalBlock(LPCOLLISIONEVENT e)
 
 void Mario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 {
+	if (isPoofTransforming || isSuperTransforming) return;
 	Goomba* goomba = dynamic_cast<Goomba*>(e->obj);
-	AddScore(100);
+
 	if (e->ny < 0)
 	{
 		// hiệu ứng điểm
 		PlayScene* scene = dynamic_cast<PlayScene*>(SceneManager::GetInstance()->GetCurrentScene());
 		ScoreEffect* scoreEff = new ScoreEffect(goomba->GetX(), goomba->GetY(), Score::ONE_HUNDRED);
 		scene->AddObject(scoreEff);
+		AddScore(100);
 		SoundManager::GetInstance()->Play("stomp");
-		if (goomba->GetState() != GOOMBA_STATE_DIE)
+		AddScore(100);
+		if (goomba->GetState() != static_cast<int>(GoombaState::DIE))
 		{
-			goomba->SetState(GOOMBA_STATE_DIE);
+			goomba->SetState(GoombaState::DIE);
 			if (IsHoldingJump)
 				vy = -MARIO_HIGH_JUMP_DEFLECT_SPEED;
 			else
@@ -305,7 +310,7 @@ void Mario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 	}
 	else
 	{
-		if (goomba->GetState() != GOOMBA_STATE_DIE)
+		if (goomba->GetState() != static_cast<int>(GoombaState::BOUNCE) && goomba->GetState() != static_cast<int>(GoombaState::DIE))
 		{
 			TakeDamage();
 		}
@@ -314,7 +319,10 @@ void Mario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 
 void Mario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 {
+	if (isPoofTransforming || isSuperTransforming) return;
 	Koopa* koopa = dynamic_cast<Koopa*>(e->obj);
+	if (heldKoopa == koopa) return;
+	PlayScene* scene = dynamic_cast<PlayScene*>(SceneManager::GetInstance()->GetCurrentScene());
 
 	if (this->GetCurrentForm() == MarioForm::RACOON && GetTickCount64() - spin_start < MARIO_SPIN_TIME && (koopa->GetState() != static_cast<int>(KoopaState::SHELL) && koopa->GetState() != static_cast<int>(KoopaState::SHELL_UPWARD) && koopa->GetState() != static_cast<int>(KoopaState::SHAKING)))
 	{
@@ -322,23 +330,49 @@ void Mario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 		koopa->SetNx((this->x < koopa->GetX()) ? 1 : -1);
 
 		// Gọi trạng thái văng lên
+		HitEffect* effect = new HitEffect(koopa->GetX(), koopa->GetY());
+		scene->AddObject(effect);
+		ScoreEffect* scoreEff = new ScoreEffect(koopa->GetX(), koopa->GetY(), Score::ONE_HUNDRED);
+		scene->AddObject(scoreEff);
+		AddScore(100);
 		koopa->SetState(KoopaState::SHELL_UPWARD);
 		return;
 	}
 
-	if (koopa->GetState() == static_cast<int>(KoopaState::SHELL) || koopa->GetState() == static_cast<int>(KoopaState::SHAKING))
+	//if (koopa->GetState() == static_cast<int>(KoopaState::SHELL) || koopa->GetState() == static_cast<int>(KoopaState::SHAKING))
+	//{
+	//	koopa->SetState(KoopaState::SHELL_MOVING);
+	//	if (nx > 0)	// mario đang di chuyển về bên phải
+	//	{
+	//		koopa->SetSpeed(MARIO_RUNNING_SPEED, 0);
+	//	}
+	//	else		// mario dang di chuyen ve ben trai
+	//	{
+	//		koopa->SetSpeed(-MARIO_RUNNING_SPEED, 0);
+	//	}
+	//	return;
+	//}
+
+	if (koopa->GetState() == static_cast<int>(KoopaState::SHELL) || koopa->GetState() == static_cast<int>(KoopaState::SHELL_UPWARD) || koopa->GetState() == static_cast<int>(KoopaState::SHAKING))
 	{
-		koopa->SetState(KoopaState::SHELL_MOVING);
-		if (nx > 0)	// mario đang di chuyển về bên phải
+		if (this->isHolding && this->heldKoopa == NULL)
 		{
-			koopa->SetSpeed(MARIO_RUNNING_SPEED, 0);
+			// Lượm 
+			this->heldKoopa = koopa;
+			koopa->isHeld = true;
 		}
-		else		// mario dang di chuyen ve ben trai
+		else
 		{
-			koopa->SetSpeed(-MARIO_RUNNING_SPEED, 0);
+			// Sút
+			koopa->SetDirection(this->nx);
+			koopa->SetState(KoopaState::SHELL_MOVING);
+			SoundManager::GetInstance()->Play("kick");
+			isKicking = true;
+			kick_start = GetTickCount64();
 		}
-		return;
+		return; 
 	}
+
 	if (e->ny < 0)
 	{
 		// hiệu ứng điểm
@@ -369,7 +403,7 @@ void Mario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 	}
 	else
 	{
-		if (koopa->GetState() != static_cast<int>(KoopaState::SHELL))
+		if (koopa->GetState() != static_cast<int>(KoopaState::SHELL) && koopa->GetState() != static_cast<int>(KoopaState::DIE))
 		{
 			TakeDamage();
 		}
@@ -559,6 +593,18 @@ void Mario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
 int Mario::GetAniIdSmall()
 {
 	int aniId = -1;
+	if (heldKoopa != NULL)
+	{
+		if (!isOnPlatform) aniId = ID_ANI_MARIO_SMALL_HOLDING_JUMP; // Đang bay trên không
+		else if (vx == 0) aniId = ID_ANI_MARIO_SMALL_HOLDING_IDLE;  // Đứng yên
+		else aniId = ID_ANI_MARIO_SMALL_HOLDING_RUN;            // Đang chạy/đi bộ
+		return aniId;
+	}
+	if (isKicking)
+	{
+		aniId = ID_ANI_MARIO_SMALL_KICKING;
+		return aniId;
+	}
 	if (!isOnPlatform)	// mario tren khong
 	{
 		if (isPipingUp)
@@ -620,6 +666,18 @@ int Mario::GetAniIdSmall()
 int Mario::GetAniIdBig()
 {
 	int aniId = -1;
+	if (heldKoopa != NULL)
+	{
+		if (!isOnPlatform) aniId = ID_ANI_MARIO_SUPER_HOLDING_JUMP; // Đang bay trên không
+		else if (vx == 0) aniId = ID_ANI_MARIO_SUPER_HOLDING_IDLE;  // Đứng yên
+		else aniId = ID_ANI_MARIO_SUPER_HOLDING_RUN;            // Đang chạy/đi bộ
+		return aniId;
+	}
+	if (isKicking)
+	{
+		aniId = ID_ANI_MARIO_SUPER_KICKING;
+		return aniId;
+	}
 	if (!isOnPlatform)
 	{
 		if (isPipingUp)
@@ -682,6 +740,18 @@ int Mario::GetAniIdRacoon()
 {
 	if (isSpinning && !isSitting) return ID_ANI_MARIO_RACOON_SPIN;
 	int aniId = -1;
+	if (heldKoopa != NULL)
+	{
+		if (!isOnPlatform) aniId = ID_ANI_MARIO_RACOON_HOLDING_JUMP; // Đang bay trên không
+		else if (vx == 0) aniId = ID_ANI_MARIO_RACOON_HOLDING_IDLE;  // Đứng yên
+		else aniId = ID_ANI_MARIO_RACOON_HOLDING_RUN;            // Đang chạy/đi bộ
+		return aniId;
+	}
+	if (isKicking)
+	{
+		aniId = ID_ANI_MARIO_RACOON_KICKING;
+		return aniId;
+	}
 	if (!isOnPlatform)
 	{
 		if (isPipingUp)
@@ -1021,7 +1091,7 @@ void Mario::SetState(MarioState state)
 
 void Mario::SetDirection(int d)
 {
-	if (isTakingDamage || isSuperTransforming || isPoofTransforming || isGoalRunning) return;
+	if (isTakingDamage || isSuperTransforming || isPoofTransforming || isGoalRunning || isPiping || isPipingUp) return;
 	nx = d;
 }
 
@@ -1222,7 +1292,8 @@ void Mario::SetStartPiping()
 #pragma region HANDLE UPDATE
 void Mario::HandleSpinning(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	if (isSitting) return;
+	if (isSitting || isPiping || isPipingUp) return;
+	if (GetTickCount64() - piping_start <= MARIO_PIPE_TIME) return;
 	if (isSpinning)
 	{
 		
@@ -1247,10 +1318,16 @@ void Mario::HandleSpinning(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 						if (mr >= gl && ml <= gr && mb >= gt && mt <= gb)
 						{
 							Goomba* goomba = dynamic_cast<Goomba*>(obj);
-							if (goomba->GetState() != GOOMBA_STATE_DIE)
+							if (goomba->GetState() != static_cast<int>(GoombaState::DIE) && goomba->GetState() != static_cast<int>(GoombaState::BOUNCE))
 							{
+								PlayScene* scene = dynamic_cast<PlayScene*>(SceneManager::GetInstance()->GetCurrentScene());
+								HitEffect* effect = new HitEffect(goomba->GetX(), goomba->GetY());
+								scene->AddObject(effect);
+								ScoreEffect* scoreEff = new ScoreEffect(goomba->GetX(), goomba->GetY(), Score::ONE_HUNDRED);
+								scene->AddObject(scoreEff);
+								AddScore(100);
 								// Goomba bị quất đuôi sẽ văng ngược lên trời
-								goomba->SetState(GOOMBA_STATE_DIE);
+								goomba->SetState(GoombaState::BOUNCE);
 								//goomba->SetVy(-0.2f); // nhay len
 							}
 						}
@@ -1520,6 +1597,52 @@ void Mario::HandlePiping(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 			
 			GameObject::SetState(static_cast<int>(MarioState::IDLE));
+		}
+	}
+}
+
+void Mario::HandleHolding(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+{
+	if (heldKoopa != NULL)
+	{
+		if (heldKoopa->GetState() == static_cast<int>(KoopaState::WALKING))
+		{
+			heldKoopa = NULL;
+			TakeDamage();
+		}
+		else if (isHolding)
+		{
+			heldKoopa->isHeld = true;
+			float hx = this->x + this->nx * 12.0f; 
+			float hy = this->y - 2.0f;
+
+			heldKoopa->SetPosition(hx, hy);
+			heldKoopa->SetDirection(this->nx);
+		}
+		else
+		{
+			heldKoopa->isHeld = false;
+			heldKoopa->SetState(KoopaState::SHELL_MOVING);
+			heldKoopa->SetDirection(this->nx);
+
+			SoundManager::GetInstance()->Play("kick");
+
+			isKicking = true;
+			kick_start = GetTickCount64();
+
+			heldKoopa = NULL;
+		}
+	}
+}
+
+void Mario::HandleKicking(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+{
+	if (isKicking)
+	{
+		if (GetTickCount64() - kick_start > MARIO_KICK_TIME)
+		{
+			isKicking = false;
+			kick_start = -1;
 		}
 	}
 }
