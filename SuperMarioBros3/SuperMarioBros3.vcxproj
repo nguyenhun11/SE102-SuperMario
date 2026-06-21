@@ -165,6 +165,7 @@
     <ClCompile Include="CourseClearEffect.cpp" />
     <ClCompile Include="Fire.cpp" />
     <ClCompile Include="GoalBlock.cpp" />
+    <ClCompile Include="HitEffect.cpp" />
     <ClCompile Include="HorizontalPipe.cpp" />
     <ClCompile Include="InvisibleNode.cpp" />
     <ClCompile Include="KoopaTroopa.cpp" />
@@ -173,7 +174,6 @@
     <ClCompile Include="NoteBlock.cpp" />
     <ClCompile Include="OneUpEffect.cpp" />
     <ClCompile Include="PiranhaPlant.cpp" />
-    <ClCompile Include="RedKoopa.cpp" />
     <ClCompile Include="RespawnableEnemy.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="StageNode.cpp" />
@@ -247,6 +247,7 @@
     <ClInclude Include="Dependencies\irrKlang\include\irrKlang.h" />
     <ClInclude Include="Fire.h" />
     <ClInclude Include="GoalBlock.h" />
+    <ClInclude Include="HitEffect.h" />
     <ClInclude Include="HorizontalPipe.h" />
     <ClInclude Include="InvisibleNode.h" />
     <ClInclude Include="KoopaTroopa.h" />
@@ -255,7 +256,6 @@
     <ClInclude Include="NoteBlock.h" />
     <ClInclude Include="OneUpEffect.h" />
     <ClInclude Include="PiranhaPlant.h" />
-    <ClInclude Include="RedKoopa.h" />
     <ClInclude Include="RespawnableEnemy.h" />
     <ClInclude Include="Sensor.h" />
     <ClInclude Include="SoundManager.h" />

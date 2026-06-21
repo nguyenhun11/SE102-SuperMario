@@ -3,6 +3,7 @@
 #include "PlayScene.h"
 #include "GameGlobal.h"
 #include "Slope.h"
+#include "HitEffect.h"
 
 Goomba::Goomba(float x, float y) : RespawnableEnemy(x, y)
 {
@@ -11,14 +12,14 @@ Goomba::Goomba(float x, float y) : RespawnableEnemy(x, y)
 	die_start = -1;
 	this->zIndex = 8;
 
-	SetState(GOOMBA_STATE_WALKING);
+	SetState(GoombaState::WALKING);
 	OnEnable();
 }
 
 void Goomba::OnEnable()
 {
-	SetState(GOOMBA_STATE_WALKING);
-
+	SetState(GoombaState::WALKING);
+	isFlippedVertical = false;
 	PlayScene* scene = (PlayScene*)SceneManager::GetInstance()->GetCurrentScene();
 	Mario* mario = (Mario*)scene->GetPlayer();
 
@@ -49,7 +50,7 @@ void Goomba::OnExitCamera()
 
 void Goomba::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
-	if (state == GOOMBA_STATE_DIE)
+	if (state == static_cast<int>(GoombaState::DIE))
 	{
 		left = x - GOOMBA_BBOX_WIDTH / 2;
 		top = y - GOOMBA_BBOX_HEIGHT_DIE / 2;
@@ -103,7 +104,7 @@ void Goomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		return;
 	}
 
-	if (state == GOOMBA_STATE_DIE && die_start > 0)
+	if (state == static_cast<int>(GoombaState::DIE) && die_start > 0)
 	{
 		if (GetTickCount64() - die_start > GOOMBA_DIE_TIMEOUT)
 		{
@@ -130,28 +131,34 @@ void Goomba::Render()
 	float renderX = x;
 	float renderY = y;
 	int aniId = ID_ANI_GOOMBA_WALKING;
-	if (state == GOOMBA_STATE_DIE)
+	if (state == static_cast<int>(GoombaState::DIE))
 	{
 		aniId = ID_ANI_GOOMBA_DIE;
 		renderY -= 2.0f;
 	}
 
-	Animations::GetInstance()->Get(aniId)->Render(renderX, renderY);
+	Animations::GetInstance()->Get(aniId)->Render(renderX, renderY, false, isFlippedVertical);
 }
 
-void Goomba::SetState(int state)
+void Goomba::SetState(GoombaState state)
 {
-	RespawnableEnemy::SetState(state);
+	RespawnableEnemy::SetState(static_cast<int>(state));
 	switch (state)
 	{
-	case GOOMBA_STATE_DIE:
+	case GoombaState::DIE:
 		die_start = GetTickCount64();
 		y += (GOOMBA_BBOX_HEIGHT - GOOMBA_BBOX_HEIGHT_DIE) / 2;
 		vx = 0;
 		vy = 0;
 		ay = 0;
 		break;
-	case GOOMBA_STATE_WALKING:
+	case GoombaState::BOUNCE:
+		this->ay = GOOMBA_GRAVITY;
+		this->vy = -0.35f;
+		this->vx = this->nx * 0.05f;
+		this->isFlippedVertical = true;
+		break;
+	case GoombaState::WALKING:
 		ay = GOOMBA_GRAVITY;
 		vx = nx * GOOMBA_WALKING_SPEED;
 		break;

@@ -88,6 +88,8 @@ protected:
 	virtual void OnCollisionWith(LPCOLLISIONEVENT e);
 	virtual void OnCollisionWithBrick(LPCOLLISIONEVENT e);
 	virtual void OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e);
+	virtual void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
+	virtual void OnCollisionWithKoopa(LPCOLLISIONEVENT e);
 
 public:
 	bool isHeld = false;

@@ -24,6 +24,7 @@
 #include "Collision.h"
 #include "NoteBlock.h"
 #include "Koopa.h"
+#include "HitEffect.h"
 
 void Mario::SetUp()
 {
@@ -288,17 +289,19 @@ void Mario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 {
 	if (isPoofTransforming || isSuperTransforming) return;
 	Goomba* goomba = dynamic_cast<Goomba*>(e->obj);
+
 	if (e->ny < 0)
 	{
 		// hiệu ứng điểm
 		PlayScene* scene = dynamic_cast<PlayScene*>(SceneManager::GetInstance()->GetCurrentScene());
 		ScoreEffect* scoreEff = new ScoreEffect(goomba->GetX(), goomba->GetY(), Score::ONE_HUNDRED);
 		scene->AddObject(scoreEff);
+		AddScore(100);
 		SoundManager::GetInstance()->Play("stomp");
 		AddScore(100);
-		if (goomba->GetState() != GOOMBA_STATE_DIE)
+		if (goomba->GetState() != static_cast<int>(GoombaState::DIE))
 		{
-			goomba->SetState(GOOMBA_STATE_DIE);
+			goomba->SetState(GoombaState::DIE);
 			if (IsHoldingJump)
 				vy = -MARIO_HIGH_JUMP_DEFLECT_SPEED;
 			else
@@ -307,7 +310,7 @@ void Mario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 	}
 	else
 	{
-		if (goomba->GetState() != GOOMBA_STATE_DIE)
+		if (goomba->GetState() != static_cast<int>(GoombaState::BOUNCE) && goomba->GetState() != static_cast<int>(GoombaState::DIE))
 		{
 			TakeDamage();
 		}
@@ -319,6 +322,7 @@ void Mario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 	if (isPoofTransforming || isSuperTransforming) return;
 	Koopa* koopa = dynamic_cast<Koopa*>(e->obj);
 	if (heldKoopa == koopa) return;
+	PlayScene* scene = dynamic_cast<PlayScene*>(SceneManager::GetInstance()->GetCurrentScene());
 
 	if (this->GetCurrentForm() == MarioForm::RACOON && GetTickCount64() - spin_start < MARIO_SPIN_TIME && (koopa->GetState() != static_cast<int>(KoopaState::SHELL) && koopa->GetState() != static_cast<int>(KoopaState::SHELL_UPWARD) && koopa->GetState() != static_cast<int>(KoopaState::SHAKING)))
 	{
@@ -326,6 +330,11 @@ void Mario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 		koopa->SetNx((this->x < koopa->GetX()) ? 1 : -1);
 
 		// Gọi trạng thái văng lên
+		HitEffect* effect = new HitEffect(koopa->GetX(), koopa->GetY());
+		scene->AddObject(effect);
+		ScoreEffect* scoreEff = new ScoreEffect(koopa->GetX(), koopa->GetY(), Score::ONE_HUNDRED);
+		scene->AddObject(scoreEff);
+		AddScore(100);
 		koopa->SetState(KoopaState::SHELL_UPWARD);
 		return;
 	}
@@ -1309,10 +1318,16 @@ void Mario::HandleSpinning(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 						if (mr >= gl && ml <= gr && mb >= gt && mt <= gb)
 						{
 							Goomba* goomba = dynamic_cast<Goomba*>(obj);
-							if (goomba->GetState() != GOOMBA_STATE_DIE)
+							if (goomba->GetState() != static_cast<int>(GoombaState::DIE) && goomba->GetState() != static_cast<int>(GoombaState::BOUNCE))
 							{
+								PlayScene* scene = dynamic_cast<PlayScene*>(SceneManager::GetInstance()->GetCurrentScene());
+								HitEffect* effect = new HitEffect(goomba->GetX(), goomba->GetY());
+								scene->AddObject(effect);
+								ScoreEffect* scoreEff = new ScoreEffect(goomba->GetX(), goomba->GetY(), Score::ONE_HUNDRED);
+								scene->AddObject(scoreEff);
+								AddScore(100);
 								// Goomba bị quất đuôi sẽ văng ngược lên trời
-								goomba->SetState(GOOMBA_STATE_DIE);
+								goomba->SetState(GoombaState::BOUNCE);
 								//goomba->SetVy(-0.2f); // nhay len
 							}
 						}

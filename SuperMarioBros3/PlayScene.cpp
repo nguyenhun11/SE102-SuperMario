@@ -23,7 +23,6 @@
 #include "SoundManager.h"
 #include "Switch.h"
 #include "PiranhaPlant.h"
-#include "RedKoopa.h"
 #include "KoopaTroopa.h"
 
 #include "PlaySceneKeyHandler.h"
@@ -195,7 +194,6 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		obj = new Koopa(x, y, static_cast<KoopaColor>(color));
 		break;
 	}
-	case OBJECT_TYPE_RED_KOOPA: obj = new RedKoopa(x, y); break;
 	case OBJECT_TYPE_KOOPATROOPA: obj = new KoopaTroopa(x, y); break;
 
 	case OBJECT_TYPE_PLATFORM:
