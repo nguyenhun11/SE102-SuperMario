@@ -31,14 +31,14 @@ bool GameObject::IsOnCamera()
 	float objLeft = 0, objTop = 0, objRight = 0, objBottom = 0;
 	GetBoundingBox(objLeft, objTop, objRight, objBottom);
 
+	float pad = 160.0f;
 	if (objLeft == 0 && objTop == 0 && objRight == 0 && objBottom == 0)
 	{
-		float pad = 16.0f;
 		return (x >= camLeft - pad && x <= camRight + pad &&
 			y >= camTop - pad && y <= camBottom + pad);
 	}
 
-	return !(objRight < camLeft || objLeft > camRight || objBottom < camTop || objTop > camBottom);
+	return !(objRight < camLeft - pad || objLeft > camRight + pad || objBottom < camTop - pad || objTop > camBottom + pad);
 }
 
 void GameObject::CheckCameraStatus()

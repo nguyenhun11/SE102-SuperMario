@@ -22,16 +22,17 @@ void Goomba::OnEnable()
 	PlayScene* scene = (PlayScene*)SceneManager::GetInstance()->GetCurrentScene();
 	Mario* mario = (Mario*)scene->GetPlayer();
 
-	if (mario != nullptr)
-	{
-		nx = (mario->GetX() > this->x) ? 1 : -1;
-		vx = nx * GOOMBA_WALKING_SPEED;
-	}
-	else
-	{
+	//if (mario != nullptr)
+	//{
+	//	//nx = (mario->GetX() > this->x) ? 1 : -1;
+	//	nx = -1;
+	//	vx = nx * GOOMBA_WALKING_SPEED;
+	//}
+	//else
+	//{
 		nx = -1;
 		vx = -GOOMBA_WALKING_SPEED;
-	}
+	//}
 }
 
 void Goomba::OnExitCamera()

@@ -606,7 +606,7 @@ void PlayScene::Update(DWORD dt)
 	{
 		Koopa* koopa = mario->heldKoopa;
 		koopa->isHeld = true;
-		float hx = mario->GetX() + mario->GetDirection() * 16.0f;
+		float hx = mario->GetX() + mario->GetDirection() * 12.0f;
 		float hy = mario->GetY() - 2.0f;
 		koopa->SetPosition(hx, hy);
 	}

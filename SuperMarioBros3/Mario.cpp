@@ -1572,7 +1572,7 @@ void Mario::HandleHolding(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		else if (isHolding)
 		{
 			heldKoopa->isHeld = true;
-			float hx = this->x + this->nx * 16.0f; 
+			float hx = this->x + this->nx * 12.0f; 
 			float hy = this->y - 2.0f;
 
 			heldKoopa->SetPosition(hx, hy);

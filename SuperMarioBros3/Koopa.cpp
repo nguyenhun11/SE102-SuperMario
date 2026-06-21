@@ -64,9 +64,9 @@ void Koopa::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 	}
 	else
 	{
-		left = x - KOOPA_BBOX_WIDTH / 2;
+		left = x - KOOPA_BBOX_WIDTH / 2 + 0.5f;
 		top = y - KOOPA_BBOX_HEIGHT / 2;
-		right = left + KOOPA_BBOX_WIDTH;
+		right = left + KOOPA_BBOX_WIDTH - 1.0f;
 		bottom = top + KOOPA_BBOX_HEIGHT;
 	}
 }
@@ -167,7 +167,7 @@ void Koopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	vx += ax * dt;
 
 	// === XỬ LÝ SENSOR CHO TỪNG TRẠNG THÁI ===
-/*	if (sensorfront != nullptr)
+	if (sensorfront != nullptr)
 	{
 		//if (state == static_cast<int>(KoopaState::WALKING))
 		//{
@@ -193,7 +193,7 @@ void Koopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		//}
 		if (state == static_cast<int>(KoopaState::WALKING))
 		{
-			float checkX = x + nx * (KOOPA_BBOX_WIDTH / 2.0f + 2.0f);
+			float checkX = x + nx * (KOOPA_BBOX_WIDTH / 2.0f - 2.0f);
 			float feetY = y + KOOPA_BBOX_HEIGHT / 2.0f;
 
 			bool groundAhead = false;
@@ -238,7 +238,7 @@ void Koopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			sensorfront->SetHasGround(true); // Ép trạng thái có nền đất để tránh báo lỗi hụt chân sai vị trí
 			sensorfront->Update(dt, coObjects);
 		}
-	}*/
+	}
 
 	// Xử lý chuyển đổi trạng thái dựa trên thời gian (Mai rùa -> Rung lắc -> Sống lại)
 	if ((this->state == static_cast<int>(KoopaState::SHELL) || this->state == static_cast<int>(KoopaState::SHELL_UPWARD)) && (GetTickCount64() - die_start > KOOPA_DIE_TIMEOUT - 1000)) // Rung lắc trước khi tỉnh lại 200ms
