@@ -1,6 +1,6 @@
 #include "KoopaTroopa.h"
 #include "Koopa.h"
-KoopaTroopa::KoopaTroopa(float x, float y) : Koopa(x, y)
+KoopaTroopa::KoopaTroopa(float x, float y, KoopaColor color) : Koopa(x, y, color)
 {
 	//SetState(KoopaState::WALKING);
 	SetState(KoopaState::WING);
@@ -65,7 +65,7 @@ void KoopaTroopa::Render()
 	float renderY = y; // Tọa độ y vật lý chuẩn chỉnh, không cần cộng bù trừ thủ công nữa
 	if (state == static_cast<int>(KoopaState::WING))
 	{
-		aniId = ID_ANI_KOOPA_WING;
+		aniId = ID_ANI_KOOPA_GREEN_WING;
 		
 		Animations::GetInstance()->Get(aniId)->Render(renderX, renderY, isFlipped);
 		// RenderBoundingBox();

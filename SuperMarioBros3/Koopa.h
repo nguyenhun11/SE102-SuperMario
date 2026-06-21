@@ -17,12 +17,22 @@
 #define KOOPA_BBOX_HEIGHT_DIE 14
 
 #define KOOPA_DIE_TIMEOUT 5000
-#define ID_ANI_KOOPA_WALKING 20210
+
+// GREEN
+#define ID_ANI_KOOPA_GREEN_WALKING 20210
 //#define ID_ANI_KOOPA_DIE 20220
-#define ID_ANI_KOOPA_SHELL 20211
-#define ID_ANI_KOOPA_SHELL_SHAKING 20212
-#define ID_ANI_KOOPA_SHELL_MOVING 20213
-#define ID_ANI_KOOPA_WING 20214
+#define ID_ANI_KOOPA_GREEN_SHELL 20211
+#define ID_ANI_KOOPA_GREEN_SHELL_SHAKING 20212
+#define ID_ANI_KOOPA_GREEN_SHELL_MOVING 20213
+#define ID_ANI_KOOPA_GREEN_WING 20214
+
+// RED
+#define ID_ANI_KOOPA_RED_WALKING 21220
+//#define ID_ANI_KOOPA_DIE 20220
+#define ID_ANI_KOOPA_RED_SHELL 21221
+#define ID_ANI_KOOPA_RED_SHELL_SHAKING 21222
+#define ID_ANI_KOOPA_RED_SHELL_MOVING 21223
+#define ID_ANI_KOOPA_RED_WING 21224
 
 enum class KoopaState
 {
@@ -35,7 +45,11 @@ enum class KoopaState
 	DIE = 99
 };
 
-
+enum class KoopaColor
+{
+	GREEN = 0,
+	RED = 1
+};
 
 class Koopa : public RespawnableEnemy
 {
@@ -46,6 +60,8 @@ protected:
 	bool isFlippedVertical;
 	Sensor* sensorfront;
 	Sensor* sensorback;
+
+	KoopaColor color;
 	
 	
 	ULONGLONG die_start;
@@ -73,7 +89,7 @@ protected:
 
 public:
 	bool isHeld = false;
-	Koopa(float x, float y);
+	Koopa(float x, float y, KoopaColor color = KoopaColor::GREEN);
 	virtual void SetState(KoopaState state);
 	void SetNx(float nx) { this->nx = nx; };
 	void ChangeDirection()

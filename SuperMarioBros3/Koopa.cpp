@@ -2,7 +2,7 @@
 #include "Brick.h"
 #include "Goomba.h"
 
-Koopa::Koopa(float x, float y) : RespawnableEnemy(x, y)
+Koopa::Koopa(float x, float y, KoopaColor color) : RespawnableEnemy(x, y)
 {
 	this->ax = 0;
 	this->ay = KOOPA_GRAVITY;
@@ -12,6 +12,8 @@ Koopa::Koopa(float x, float y) : RespawnableEnemy(x, y)
 	// Khởi tạo một sensor duy nhất đi trước để dò đường
 	this->sensorfront = new Sensor(x, y);
 	this->sensorback = nullptr;
+
+	this->color = color;
 
 	// Mặc định ban đầu đi sang trái
 	this->nx = -1;
@@ -133,15 +135,17 @@ void Koopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			sensorfront->SetXY(x + sensorOffsetX, y + sensorOffsetY);
 			sensorfront->Update(dt, coObjects);
 
-			// CHỈ quay đầu nếu Koopa đang thực sự di chuyển (vx != 0)
-			if (vx != 0 && sensorfront->IsFalling())
+			// CHỈ quay đầu nếu Koopa đang thực sự di chuyển (vx != 0) và là Koopa đỏ
+			if (this->color == KoopaColor::RED)
 			{
-				vx = -vx;
-				nx = -nx;
+				if (vx != 0 && sensorfront->IsFalling())
+				{
+					vx = -vx;
+					nx = -nx;
 
-				// Cập nhật lại vị trí Sensor ngay sang rìa bên kia để tránh lặp logic ở frame kế tiếp
-				sensorOffsetX = nx * (KOOPA_BBOX_WIDTH / 2 + 2);
-				sensorfront->SetXY(x + sensorOffsetX, y + sensorOffsetY);
+					sensorOffsetX = nx * (KOOPA_BBOX_WIDTH / 2 + 2);
+					sensorfront->SetXY(x + sensorOffsetX, y + sensorOffsetY);
+				}
 			}
 		}
 		else // Các trạng thái SHELL, SHAKING, SHELL_MOVING
@@ -177,24 +181,38 @@ void Koopa::Render()
 
 	if (this->state == static_cast<int>(KoopaState::SHELL))
 	{
-		aniId = ID_ANI_KOOPA_SHELL;
+		if (color == KoopaColor::GREEN)
+			aniId = ID_ANI_KOOPA_GREEN_SHELL;
+		else
+			aniId = ID_ANI_KOOPA_RED_SHELL;
 	}
 	else if (this->state == static_cast<int>(KoopaState::SHELL_UPWARD))
 	{
-		
-		aniId = ID_ANI_KOOPA_SHELL;
+		if (color == KoopaColor::GREEN)
+			aniId = ID_ANI_KOOPA_GREEN_SHELL;
+		else
+			aniId = ID_ANI_KOOPA_RED_SHELL;
 	}
 	else if (this->state == static_cast<int>(KoopaState::WALKING))
 	{
-		aniId = ID_ANI_KOOPA_WALKING;
+		if (color == KoopaColor::GREEN)
+			aniId = ID_ANI_KOOPA_GREEN_WALKING;
+		else
+			aniId = ID_ANI_KOOPA_RED_WALKING;
 	}
 	else if (this->state == static_cast<int>(KoopaState::SHELL_MOVING))
 	{
-		aniId = ID_ANI_KOOPA_SHELL_MOVING;
+		if (color == KoopaColor::GREEN)
+			aniId = ID_ANI_KOOPA_GREEN_SHELL_MOVING;
+		else
+			aniId = ID_ANI_KOOPA_RED_SHELL_MOVING;
 	}
 	else if (this->state == static_cast<int>(KoopaState::SHAKING))
 	{
-		aniId = ID_ANI_KOOPA_SHELL_SHAKING;
+		if (color == KoopaColor::GREEN)
+			aniId = ID_ANI_KOOPA_GREEN_SHELL_SHAKING;
+		else
+			aniId = ID_ANI_KOOPA_RED_SHELL_SHAKING;
 
 		// Hiệu ứng rung lắc nhẹ bằng toán tử Modulo thời gian
 		if ((GetTickCount64() / 50) % 2 == 0)
@@ -207,11 +225,25 @@ void Koopa::Render()
 		}
 	}
 
-	if (aniId == -1) aniId = ID_ANI_KOOPA_WALKING;
+	if (aniId == -1)
+	{
+		if (color == KoopaColor::GREEN)
+			aniId = ID_ANI_KOOPA_GREEN_WALKING;
+		else
+			aniId = ID_ANI_KOOPA_RED_WALKING;
+	}
 
 	// Lật ảnh sprite (isFlip = true nếu đi sang phải)
 	isFlipped = (nx > 0);
-	Animations::GetInstance()->Get(aniId)->Render(renderX, renderY, isFlipped, isFlippedVertical);
+
+	LPANIMATION ani = Animations::GetInstance()->Get(aniId);
+	if (ani == NULL)
+	{
+		DebugOut(L"[ERROR] Koopa khong tim thay Animation ID: %d \n", aniId);
+		return; // Bỏ qua render frame này để không bị văng game
+	}
+
+	ani->Render(renderX, renderY, isFlipped, isFlippedVertical);
 
 	// Chỉ Render Sensor để theo dõi trực quan khi đang đi bộ
 	if (state == static_cast<int>(KoopaState::WALKING) && sensorfront != nullptr)

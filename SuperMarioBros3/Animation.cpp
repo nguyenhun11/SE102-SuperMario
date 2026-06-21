@@ -16,6 +16,7 @@ void Animation::Add(int spriteId, DWORD time)
 
 void Animation::Render(float x, float y, bool isFlip, bool isFlipVertical)
 {
+	if (frames.size() == 0) return;
 	ULONGLONG now = GetTickCount64();
 	if (currentFrame == -1)
 	{
@@ -34,6 +35,15 @@ void Animation::Render(float x, float y, bool isFlip, bool isFlipVertical)
 
 	}
 
-	frames[currentFrame]->GetSprite()->DrawOnCamera(x, y, isFlip, isFlipVertical);
+	//frames[currentFrame]->GetSprite()->DrawOnCamera(x, y, isFlip, isFlipVertical);
+	LPSPRITE currentSprite = frames[currentFrame]->GetSprite();
+	if (currentSprite != NULL)
+	{
+		currentSprite->DrawOnCamera(x, y, isFlip, isFlipVertical);
+	}
+	else
+	{
+		DebugOut(L"[ERROR] Frame thu %d bi rỗng Sprite! \n", currentFrame);
+	}
 }
 

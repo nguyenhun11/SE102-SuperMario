@@ -72,7 +72,7 @@ void PlaySceneKeyHandler::OnKeyUp(int KeyCode)
 	}
 }
 
-void PlaySceneKeyHandler::KeyState(BYTE *states)
+void PlaySceneKeyHandler::KeyState(BYTE* states)
 {
 	InputManager* input = InputManager::GetInstance();
 	Mario* mario = (Mario*)((LPPLAYSCENE)SceneManager::GetInstance()->GetCurrentScene())->GetPlayer();
@@ -81,12 +81,21 @@ void PlaySceneKeyHandler::KeyState(BYTE *states)
 	if (input->IsKeyDown(DIK_UP))
 	{
 		mario->EnterPipeUp();
-		return; 
+		return;
 	}
 	else if (input->IsKeyDown(DIK_DOWN) || input->IsKeyDown(DIK_S))
 	{
 		mario->EnterPipeDown();
 		return;
+	}
+
+	if (input->IsKeyDown(DIK_X))
+	{
+		mario->isHolding = true;
+	}
+	else
+	{
+		mario->isHolding = false;
 	}
 
 	if (input->IsKeyDown(DIK_RIGHT) || input->IsKeyDown(DIK_D))
@@ -95,12 +104,10 @@ void PlaySceneKeyHandler::KeyState(BYTE *states)
 		if (input->IsKeyDown(DIK_X) || input->IsKeyDown(DIK_W))
 		{
 			mario->SetState(MarioState::RUNNING);
-			mario->isHolding = true;
 		}
 		else
 		{
 			mario->SetState(MarioState::WALKING);
-			mario->isHolding = false;
 		}
 	}
 	else if (input->IsKeyDown(DIK_LEFT) || input->IsKeyDown(DIK_A))
@@ -112,12 +119,10 @@ void PlaySceneKeyHandler::KeyState(BYTE *states)
 		//	mario->SetState(MarioState::WALKING);
 		{
 			mario->SetState(MarioState::RUNNING);
-			mario->isHolding = true;
 		}
 		else
 		{
 			mario->SetState(MarioState::WALKING);
-			mario->isHolding = false;
 		}
 	}
 	else

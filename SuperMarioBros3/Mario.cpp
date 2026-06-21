@@ -191,14 +191,6 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		untouchable = 0;
 	}
 
-	if (heldKoopa != NULL && isHolding)
-	{
-		float hx = this->x + this->nx * 10.0f;
-		float hy = this->y;
-		heldKoopa->SetPosition(hx, hy);
-	}
-
-
 	Collision::GetInstance()->Process(this, dt, coObjects);
 	HandleSlope(dt, coObjects);
 	HandleHolding(dt, coObjects);
@@ -654,6 +646,13 @@ int Mario::GetAniIdSmall()
 int Mario::GetAniIdBig()
 {
 	int aniId = -1;
+	if (heldKoopa != NULL)
+	{
+		if (!isOnPlatform) aniId = ID_ANI_MARIO_SUPER_HOLDING_IDLE; // Đang bay trên không
+		else if (vx == 0) aniId = ID_ANI_MARIO_SUPER_HOLDING_IDLE;  // Đứng yên
+		else aniId = ID_ANI_MARIO_SUPER_HOLDING_RUN;            // Đang chạy/đi bộ
+		return aniId;
+	}
 	if (!isOnPlatform)
 	{
 		if (isPipingUp)
@@ -1570,8 +1569,8 @@ void Mario::HandleHolding(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		else if (isHolding)
 		{
 			heldKoopa->isHeld = true;
-			float hx = this->x + this->nx * 14.0f; 
-			float hy = this->y;
+			float hx = this->x + this->nx * 16.0f; 
+			float hy = this->y - 2.0f;
 
 			heldKoopa->SetPosition(hx, hy);
 			heldKoopa->SetDirection(this->nx);
