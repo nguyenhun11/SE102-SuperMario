@@ -806,6 +806,7 @@ void PlayScene::ActivatePSwitch(SwitchType type)
 	isPSwitchActive = true;
 	currentSwitchType = type;
 	pSwitchTimer = GetTickCount64();
+	SoundManager::GetInstance()->Play("bump");
 	vector<LPGAMEOBJECT> newObjects;
 
 	for (size_t i = 0; i < objects.size(); i++)

@@ -54,6 +54,9 @@
 #define MARIO_PIPE_TIME 1400
 #define MARIO_PIPE_SPEED 0.02f
 
+// Kicking
+#define MARIO_KICK_TIME 200
+
 class Koopa;
 
 // ------------------------- MARIO STATE -------------------------------- //
@@ -96,6 +99,25 @@ enum class MarioForm
 // ------------------------- MARIO ANIMATION -------------------------------- //
 #pragma region ANIMATION_ID
 
+// SMALL MARIO
+#define ID_ANI_MARIO_SMALL_IDLE 1000
+#define ID_ANI_MARIO_SMALL_SKIDDING 1003
+
+#define ID_ANI_MARIO_SMALL_WALKING 1001
+#define ID_ANI_MARIO_SMALL_RUNNING 1002
+#define ID_ANI_MARIO_SMALL_SLIDING 1008
+
+#define ID_ANI_MARIO_SMALL_JUMP_WALK 1004
+#define ID_ANI_MARIO_SMALL_JUMP_RUN 1005
+
+#define ID_ANI_MARIO_SMALL_PIPING 1009
+
+#define ID_ANI_MARIO_SMALL_HOLDING_IDLE	1020
+#define ID_ANI_MARIO_SMALL_HOLDING_RUN	1021
+#define ID_ANI_MARIO_SMALL_HOLDING_JUMP	1022
+
+#define ID_ANI_MARIO_SMALL_KICKING	1011
+
 // SUPER MARIO
 #define ID_ANI_MARIO_SUPER_IDLE 1100
 #define ID_ANI_MARIO_SUPER_SKIDDING 1103
@@ -117,23 +139,9 @@ enum class MarioForm
 
 #define ID_ANI_MARIO_SUPER_HOLDING_IDLE	1120
 #define ID_ANI_MARIO_SUPER_HOLDING_RUN	1121
+#define ID_ANI_MARIO_SUPER_HOLDING_JUMP	1122
 
-// SMALL MARIO
-#define ID_ANI_MARIO_SMALL_IDLE 1000
-#define ID_ANI_MARIO_SMALL_SKIDDING 1003
-
-#define ID_ANI_MARIO_SMALL_WALKING 1001
-#define ID_ANI_MARIO_SMALL_RUNNING 1002
-#define ID_ANI_MARIO_SMALL_SLIDING 1008
-
-#define ID_ANI_MARIO_SMALL_JUMP_WALK 1004
-#define ID_ANI_MARIO_SMALL_JUMP_RUN 1005
-
-#define ID_ANI_MARIO_SMALL_PIPING 1009
-
-#define ID_ANI_MARIO_SMALL_HOLDING_IDLE	1020
-#define ID_ANI_MARIO_SMALL_HOLDING_RUN	1021
-
+#define ID_ANI_MARIO_SUPER_KICKING	1111
 
 // RACOON MARIO
 #define ID_ANI_MARIO_RACOON_IDLE 1200
@@ -149,14 +157,17 @@ enum class MarioForm
 #define ID_ANI_MARIO_RACOON_SIT 1207
 #define ID_ANI_MARIO_RACOON_SLIDING 1208
 #define ID_ANI_MARIO_RACOON_SPIN 1215
-// NOTE NÈ: thiếu slow fall với flying
 
 #define ID_ANI_MARIO_RACOON_FLYING 1213
 #define ID_ANI_MARIO_RACOON_FLOATING 1214
 
 #define ID_ANI_MARIO_RACOON_PIPING 1209
 
+#define ID_ANI_MARIO_RACOON_HOLDING_IDLE	1220
+#define ID_ANI_MARIO_RACOON_HOLDING_RUN	1221
+#define ID_ANI_MARIO_RACOON_HOLDING_JUMP	1222
 
+#define ID_ANI_MARIO_RACOON_KICKING	1211
 
 // ---- Other Game feel Stuff ----
 // Die Animation
@@ -214,6 +225,7 @@ class Mario : public GameObject
 	bool isSpinning;
 	bool isSliding;
 	bool isPiping;
+	bool isKicking;
 	bool isDieBounce;
 
 	bool isGoalRunning;
@@ -235,6 +247,7 @@ class Mario : public GameObject
 	ULONGLONG pmeter_start;
 	ULONGLONG pmeter_sound_start;
 	ULONGLONG piping_start;
+	ULONGLONG kick_start;
 
 	MarioForm nextPoofForm;
 	BOOLEAN isOnPlatform;
@@ -291,6 +304,7 @@ public:
 		isSliding = false;
 		isPiping = false;
 		isPipingUp = false;
+		isKicking = false;
 		isDieBounce = false;
 
 		isGoalRunning = false;
@@ -306,6 +320,7 @@ public:
 		spin_start = -1;
 		pmeter_start = -1;
 		piping_start = -1;
+		kick_start = -1;
 
 		pipeBelow = NULL;
 
@@ -375,6 +390,7 @@ public:
 	void HandleGoalRunning(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void HandlePiping(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void HandleHolding(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
+	void HandleKicking(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 
 	// Getters & Setters
 	float GetX() { return x; }

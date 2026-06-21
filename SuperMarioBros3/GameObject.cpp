@@ -31,7 +31,7 @@ bool GameObject::IsOnCamera()
 	float objLeft = 0, objTop = 0, objRight = 0, objBottom = 0;
 	GetBoundingBox(objLeft, objTop, objRight, objBottom);
 
-	float pad = 160.0f;
+	float pad = 80.0f;
 	if (objLeft == 0 && objTop == 0 && objRight == 0 && objBottom == 0)
 	{
 		return (x >= camLeft - pad && x <= camRight + pad &&

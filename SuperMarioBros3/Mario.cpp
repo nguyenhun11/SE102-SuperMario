@@ -58,6 +58,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	HandleTakingDamage(dt, coObjects);
 	HandleTransform(dt, coObjects);
 	HandleSpinning(dt, coObjects);
+	HandleKicking(dt, coObjects);
 
 	if (isOnPlatform && vy >= 0) // mario đang đứng trên platform
 	{
@@ -354,9 +355,11 @@ void Mario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 		else
 		{
 			// Sút
-			koopa->SetState(KoopaState::SHELL_MOVING);
 			koopa->SetDirection(this->nx);
+			koopa->SetState(KoopaState::SHELL_MOVING);
 			SoundManager::GetInstance()->Play("kick");
+			isKicking = true;
+			kick_start = GetTickCount64();
 		}
 		return; 
 	}
@@ -583,9 +586,14 @@ int Mario::GetAniIdSmall()
 	int aniId = -1;
 	if (heldKoopa != NULL)
 	{
-		if (!isOnPlatform) aniId = ID_ANI_MARIO_SMALL_HOLDING_IDLE; // Đang bay trên không
+		if (!isOnPlatform) aniId = ID_ANI_MARIO_SMALL_HOLDING_JUMP; // Đang bay trên không
 		else if (vx == 0) aniId = ID_ANI_MARIO_SMALL_HOLDING_IDLE;  // Đứng yên
 		else aniId = ID_ANI_MARIO_SMALL_HOLDING_RUN;            // Đang chạy/đi bộ
+		return aniId;
+	}
+	if (isKicking)
+	{
+		aniId = ID_ANI_MARIO_SMALL_KICKING;
 		return aniId;
 	}
 	if (!isOnPlatform)	// mario tren khong
@@ -651,9 +659,14 @@ int Mario::GetAniIdBig()
 	int aniId = -1;
 	if (heldKoopa != NULL)
 	{
-		if (!isOnPlatform) aniId = ID_ANI_MARIO_SUPER_HOLDING_IDLE; // Đang bay trên không
+		if (!isOnPlatform) aniId = ID_ANI_MARIO_SUPER_HOLDING_JUMP; // Đang bay trên không
 		else if (vx == 0) aniId = ID_ANI_MARIO_SUPER_HOLDING_IDLE;  // Đứng yên
 		else aniId = ID_ANI_MARIO_SUPER_HOLDING_RUN;            // Đang chạy/đi bộ
+		return aniId;
+	}
+	if (isKicking)
+	{
+		aniId = ID_ANI_MARIO_SUPER_KICKING;
 		return aniId;
 	}
 	if (!isOnPlatform)
@@ -718,6 +731,18 @@ int Mario::GetAniIdRacoon()
 {
 	if (isSpinning && !isSitting) return ID_ANI_MARIO_RACOON_SPIN;
 	int aniId = -1;
+	if (heldKoopa != NULL)
+	{
+		if (!isOnPlatform) aniId = ID_ANI_MARIO_RACOON_HOLDING_JUMP; // Đang bay trên không
+		else if (vx == 0) aniId = ID_ANI_MARIO_RACOON_HOLDING_IDLE;  // Đứng yên
+		else aniId = ID_ANI_MARIO_RACOON_HOLDING_RUN;            // Đang chạy/đi bộ
+		return aniId;
+	}
+	if (isKicking)
+	{
+		aniId = ID_ANI_MARIO_RACOON_KICKING;
+		return aniId;
+	}
 	if (!isOnPlatform)
 	{
 		if (isPipingUp)
@@ -1057,7 +1082,7 @@ void Mario::SetState(MarioState state)
 
 void Mario::SetDirection(int d)
 {
-	if (isTakingDamage || isSuperTransforming || isPoofTransforming || isGoalRunning) return;
+	if (isTakingDamage || isSuperTransforming || isPoofTransforming || isGoalRunning || isPiping || isPipingUp) return;
 	nx = d;
 }
 
@@ -1258,7 +1283,8 @@ void Mario::SetStartPiping()
 #pragma region HANDLE UPDATE
 void Mario::HandleSpinning(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	if (isSitting) return;
+	if (isSitting || isPiping || isPipingUp) return;
+	if (GetTickCount64() - piping_start <= MARIO_PIPE_TIME) return;
 	if (isSpinning)
 	{
 		
@@ -1585,7 +1611,23 @@ void Mario::HandleHolding(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			heldKoopa->SetDirection(this->nx);
 
 			SoundManager::GetInstance()->Play("kick");
+
+			isKicking = true;
+			kick_start = GetTickCount64();
+
 			heldKoopa = NULL;
+		}
+	}
+}
+
+void Mario::HandleKicking(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+{
+	if (isKicking)
+	{
+		if (GetTickCount64() - kick_start > MARIO_KICK_TIME)
+		{
+			isKicking = false;
+			kick_start = -1;
 		}
 	}
 }

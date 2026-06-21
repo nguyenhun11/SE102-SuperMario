@@ -24,21 +24,25 @@ Koopa::Koopa(float x, float y, KoopaColor color) : RespawnableEnemy(x, y)
 
 void Koopa::OnEnable()
 {
-	SetState(KoopaState::WALKING);
-
 	PlayScene* scene = (PlayScene*)SceneManager::GetInstance()->GetCurrentScene();
 	Mario* mario = (Mario*)scene->GetPlayer();
-
 	if (mario != nullptr)
 	{
-		nx = (mario->GetX() > this->x) ? 1 : -1;
-		vx = nx * KOOPA_WALKING_SPEED;
+		if (color == KoopaColor::GREEN)
+		{
+			nx = (mario->GetX() > this->x) ? 1 : -1;
+			vx = nx * KOOPA_WALKING_SPEED;
+		}
 	}
 	else
 	{
 		nx = -1;
 		vx = -KOOPA_WALKING_SPEED;
 	}
+
+	SetState(KoopaState::WALKING);
+
+
 }
 
 void Koopa::OnExitCamera()
@@ -64,9 +68,9 @@ void Koopa::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 	}
 	else
 	{
-		left = x - KOOPA_BBOX_WIDTH / 2 + 0.5f;
+		left = x - KOOPA_BBOX_WIDTH / 2 + 1.0f;
 		top = y - KOOPA_BBOX_HEIGHT / 2;
-		right = left + KOOPA_BBOX_WIDTH - 1.0f;
+		right = left + KOOPA_BBOX_WIDTH - 2.0f;
 		bottom = top + KOOPA_BBOX_HEIGHT;
 	}
 }
@@ -80,7 +84,6 @@ void Koopa::OnNoCollision(DWORD dt)
 void Koopa::OnCollisionWith(LPCOLLISIONEVENT e)
 {
 	if (!e->obj->IsBlocking()) return;
-	if (dynamic_cast<Koopa*>(e->obj)) return;
 
 	if (e->ny != 0)
 	{
@@ -107,6 +110,9 @@ void Koopa::OnCollisionWith(LPCOLLISIONEVENT e)
 			}
 		}
 	}
+
+	Koopa* koopa = dynamic_cast<Koopa*>(e->obj);
+	if (koopa != NULL && koopa != this) return;
 }
 
 void Koopa::OnCollisionWithBrick(LPCOLLISIONEVENT e)

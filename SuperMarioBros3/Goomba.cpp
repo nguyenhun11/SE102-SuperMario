@@ -22,17 +22,17 @@ void Goomba::OnEnable()
 	PlayScene* scene = (PlayScene*)SceneManager::GetInstance()->GetCurrentScene();
 	Mario* mario = (Mario*)scene->GetPlayer();
 
-	//if (mario != nullptr)
-	//{
-	//	//nx = (mario->GetX() > this->x) ? 1 : -1;
-	//	nx = -1;
-	//	vx = nx * GOOMBA_WALKING_SPEED;
-	//}
-	//else
-	//{
+	if (mario != nullptr)
+	{
+		nx = (mario->GetX() > this->x) ? 1 : -1;
+		//nx = -1;
+		vx = nx * GOOMBA_WALKING_SPEED;
+	}
+	else
+	{
 		nx = -1;
 		vx = -GOOMBA_WALKING_SPEED;
-	//}
+	}
 }
 
 void Goomba::OnExitCamera()
@@ -58,9 +58,9 @@ void Goomba::GetBoundingBox(float& left, float& top, float& right, float& bottom
 	}
 	else
 	{
-		left = x - GOOMBA_BBOX_WIDTH / 2;
+		left = x - GOOMBA_BBOX_WIDTH / 2 + 0.5f;
 		top = y - GOOMBA_BBOX_HEIGHT / 2;
-		right = left + GOOMBA_BBOX_WIDTH;
+		right = left + GOOMBA_BBOX_WIDTH - 1.0f;
 		bottom = top + GOOMBA_BBOX_HEIGHT;
 	}
 }
