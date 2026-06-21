@@ -17,6 +17,7 @@ private:
 
 
 	void OnCollisionWith(LPCOLLISIONEVENT e) override;
+	virtual void OnEnable() override;
 
 public:
 	KoopaTroopa(float x, float y, KoopaColor color = KoopaColor::GREEN);

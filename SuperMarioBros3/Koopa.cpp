@@ -19,13 +19,28 @@ Koopa::Koopa(float x, float y, KoopaColor color) : RespawnableEnemy(x, y)
 	this->color = color;
 
 	// Mặc định ban đầu đi sang trái
-	this->nx = -1;
+	PlayScene* scene = (PlayScene*)SceneManager::GetInstance()->GetCurrentScene();
+	Mario* mario = (Mario*)scene->GetPlayer();
+	if (mario != nullptr)
+	{
+		nx = (mario->GetX() > this->x) ? 1 : -1;
+	}
+	else
+	{
+		nx = -1;
+	}
 	SetState(KoopaState::WALKING);
 	OnEnable();
 }
 
 void Koopa::OnEnable()
 {
+	this->isFlippedVertical = false;
+	this->isHeld = false;
+	this->vy = 0;
+	this->state = static_cast<int>(KoopaState::WALKING);
+	this->ay = KOOPA_GRAVITY;
+
 	PlayScene* scene = (PlayScene*)SceneManager::GetInstance()->GetCurrentScene();
 	Mario* mario = (Mario*)scene->GetPlayer();
 	if (mario != nullptr)
@@ -43,20 +58,26 @@ void Koopa::OnEnable()
 	}
 
 	SetState(KoopaState::WALKING);
-
-
+	if (sensorfront != nullptr) {
+		float sensorOffsetX = nx * (KOOPA_BBOX_WIDTH / 2 + 2);
+		float sensorOffsetY = KOOPA_BBOX_HEIGHT / 2 + 1;
+		sensorfront->SetXY(x + sensorOffsetX, y + sensorOffsetY);
+		sensorfront->SetHasGround(true);
+	}
 }
 
 void Koopa::OnExitCamera()
 {
-	if (state == (int)KoopaState::SHELL_MOVING)
-	{
-		this->Delete();
-	}
-	else
-	{
-		RespawnableEnemy::OnExitCamera();
-	}
+	//if (state == (int)KoopaState::SHELL_MOVING)
+	//{
+	//	SetState(KoopaState::WALKING);
+	//	RespawnableEnemy::OnExitCamera();
+	//}
+	//else
+	//{
+	//	RespawnableEnemy::OnExitCamera();
+	//}
+	RespawnableEnemy::OnExitCamera();
 }
 
 void Koopa::GetBoundingBox(float& left, float& top, float& right, float& bottom)

@@ -194,7 +194,16 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		obj = new Koopa(x, y, static_cast<KoopaColor>(color));
 		break;
 	}
-	case OBJECT_TYPE_KOOPATROOPA: obj = new KoopaTroopa(x, y); break;
+	case OBJECT_TYPE_KOOPATROOPA:
+	{
+		int color = 0; // 0 là GREEN, 1 là RED
+		if (tokens.size() > 3)
+		{
+			color = atoi(tokens[3].c_str());
+		}
+		obj = new KoopaTroopa(x, y, static_cast<KoopaColor>(color));
+		break;
+	}
 
 	case OBJECT_TYPE_PLATFORM:
 	{
