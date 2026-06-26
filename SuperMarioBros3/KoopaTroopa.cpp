@@ -1,9 +1,10 @@
 #include "KoopaTroopa.h"
 #include "Koopa.h"
-KoopaTroopa::KoopaTroopa(float x, float y) : Koopa(x, y)
+KoopaTroopa::KoopaTroopa(float x, float y, KoopaColor color) : Koopa(x, y, color)
 {
 	//SetState(KoopaState::WALKING);
 	SetState(KoopaState::WING);
+
 }
 
 void KoopaTroopa::GetBoundingBox(float& left, float& top, float& right, float& bottom)
@@ -11,9 +12,9 @@ void KoopaTroopa::GetBoundingBox(float& left, float& top, float& right, float& b
 	if (state == static_cast<int>(KoopaState::WING)) 
 	{
 		left = x - KOOPATROOPA_BBOX_WIDTH / 2;
-		top = y - KOOPATROOPA_BBOX_HEIGHT / 2 + KOOPA_BBOX_OFFSET_Y;
+		top = y - KOOPATROOPA_BBOX_HEIGHT / 2;
 		right = left + KOOPATROOPA_BBOX_WIDTH;
-		bottom = top + KOOPATROOPA_BBOX_HEIGHT - 10;
+		bottom = top + KOOPATROOPA_BBOX_HEIGHT - 4;
 		
 	}
 	else 
@@ -24,26 +25,124 @@ void KoopaTroopa::GetBoundingBox(float& left, float& top, float& right, float& b
 
 
 
+
 void KoopaTroopa::OnCollisionWith(LPCOLLISIONEVENT e)
 {
 	Koopa::OnCollisionWith(e);
-	if (e->ny < 0 && state == static_cast<int>(KoopaState::WING)) 
+
+	if (state == static_cast<int>(KoopaState::WING))
 	{
-		DebugOut(L"Collision\n");
-		vy = -KOOPA_PARATROOPA_BASE_FLYING_SPEED;
-		DebugOut(L"vy = %f\n", vy);
+		if (e->ny < 0 && e->obj->IsBlocking())
+		{
+			if (this->color == KoopaColor::GREEN)
+			{
+				vy = -0.35f;
+			}
+		}
 	}
 }
 
+//void KoopaTroopa::OnCollisionWith(LPCOLLISIONEVENT e)
+//{
+//	if (state == static_cast<int>(KoopaState::WING))
+//	{
+//		if (e->ny < 0 && (dynamic_cast<Koopa*>(e->obj) != nullptr || dynamic_cast<Goomba*>(e->obj) != nullptr))
+//		{
+//			return; 
+//		}
+//	}
+//
+//	Koopa::OnCollisionWith(e);
+//
+//	if (state == static_cast<int>(KoopaState::WING))
+//	{
+//		if (e->ny < 0 && e->obj->IsBlocking())
+//		{
+//			if (this->color == KoopaColor::GREEN)
+//			{
+//				vy = -0.35f; // Nảy lên
+//			}
+//		}
+//	}
+//}
+
+void KoopaTroopa::OnEnable()
+{
+	//this->state = static_cast<int>(KoopaState::WING);
+	SetState(KoopaState::WING);
+	this->isHeld = false;
+	this->isFlippedVertical = false;
+
+	if (this->color == KoopaColor::GREEN)
+	{
+		ay = KOOPA_GRAVITY;
+		vx = nx * KOOPA_WALKING_SPEED;
+		vy = -0.15f;
+	}
+	else if (this->color == KoopaColor::RED)
+	{
+		ay = 0;
+		vx = 0;
+		vy = -0.04f;
+	}
+
+	PlayScene* scene = (PlayScene*)SceneManager::GetInstance()->GetCurrentScene();
+	Mario* mario = (Mario*)scene->GetPlayer();
+	if (mario != nullptr)
+	{
+		if (color == KoopaColor::GREEN)
+		{
+			nx = (mario->GetX() > this->x) ? 1 : -1;
+			vx = nx * KOOPA_WALKING_SPEED;
+		}
+	}
+	else
+	{
+		nx = -1;
+		vx = -KOOPA_WALKING_SPEED;
+	}
+}
+
+
 void KoopaTroopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	// Áp dụng trọng lực và gia tốc cho Koopa
+	if (isHeld)
+	{
+		Koopa::Update(dt, coObjects);
+		return;
+	}
+
 	vy += ay * dt;
 	vx += ax * dt;
 
 
-	// Xử lý chuyển đổi trạng thái dựa trên thời gian (Mai rùa -> Rung lắc -> Sống lại)
-	if ((this->state == static_cast<int>(KoopaState::SHELL)) && (GetTickCount64() - die_start > KOOPA_DIE_TIMEOUT - 200)) // Rung lắc trước khi tỉnh lại 200ms
+	if (state == static_cast<int>(KoopaState::WING))
+	{
+		if (this->color == KoopaColor::RED)
+		{
+			ay = 0;
+			vx = 0; 
+			float startX, startY;
+			respawnPoint->GetPosition(startX, startY);
+
+			float limitTop = startY - 40.0f;
+			float limitBottom = startY + 40.0f;
+
+			if (y <= limitTop)
+			{
+				y = limitTop;
+				vy = 0.04f; 
+			}
+			else if (y >= limitBottom)
+			{
+				y = limitBottom;
+				vy = -0.04f; 
+			}
+		}
+	}
+
+	
+	if ((this->state == static_cast<int>(KoopaState::SHELL)) && (GetTickCount64() - die_start > KOOPA_DIE_TIMEOUT - 200))
 	{
 		SetState(KoopaState::SHAKING);
 	}
@@ -53,51 +152,58 @@ void KoopaTroopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		return;
 	}
 
-	// Gọi cập nhật va chạm vật lý Swept AABB tiêu chuẩn cho Koopa
 	GameObject::Update(dt, coObjects);
 	Collision::GetInstance()->Process(this, dt, coObjects);
 }
+
 
 void KoopaTroopa::Render()
 {
 	int aniId = -1;
 	float renderX = x;
-	float renderY = y; // Tọa độ y vật lý chuẩn chỉnh, không cần cộng bù trừ thủ công nữa
+	float renderY = y;
+
 	if (state == static_cast<int>(KoopaState::WING))
 	{
-		aniId = ID_ANI_KOOPA_WING;
-		
+		if (this->color == KoopaColor::GREEN)
+			aniId = ID_ANI_KOOPA_GREEN_WING;
+		else
+			aniId = ID_ANI_KOOPA_RED_WING;
+
+		isFlipped = (nx > 0);
+
 		Animations::GetInstance()->Get(aniId)->Render(renderX, renderY, isFlipped);
-		// RenderBoundingBox();
 		return;
 	}
 	else
 		Koopa::Render();
 }
 
+
 void KoopaTroopa::SetState(KoopaState state)
 {
-	// Remember previous state so we can react to transitions (e.g., losing wings)
 	KoopaState oldState = static_cast<KoopaState>(this->state);
-
 	Koopa::SetState(state);
 
-	// If we just transitioned from WING to WALKING, make the Koopa drop and lose its wings
 	if (oldState == KoopaState::WING && this->state == static_cast<int>(KoopaState::WALKING))
 	{
-		// Start falling: ensure normal gravity and give an initial downward velocity
 		ay = KOOPA_GRAVITY;
-		vy = KOOPA_PARATROOPA_BASE_FLYING_SPEED; // positive = fall down
-		DebugOut(L"KoopaTroopa::SetState: lost wings, start falling\n");
+		vy = 0;
 	}
 
-	// Entering wing state: set upward velocity and slightly reduce gravity for floaty effect
-	if (this->state == static_cast<int>(KoopaState::WING)) {
-		DebugOut(L"KoopaParatroopa::SetState: state = KOOPA_PARATROOPA_STATE_FLYING\n");
-		vy = -KOOPA_PARATROOPA_BASE_FLYING_SPEED;
-		ay = KOOPA_GRAVITY / 1.4f;
+	if (this->state == static_cast<int>(KoopaState::WING))
+	{
+		if (this->color == KoopaColor::GREEN)
+		{
+			ay = KOOPA_FLYING_GRAVITY;
+			vx = nx * KOOPA_FLYING_SPEED;
+			vy = -0.15f;
+		}
+		else if (this->color == KoopaColor::RED)
+		{
+			ay = 0; 
+			vx = 0;
+			vy = -0.04f; 
+		}
 	}
 }
-
-
-

@@ -254,14 +254,14 @@
     <ClCompile Include="HorizontalPipe.cpp">
       <Filter>Entities\Blocks</Filter>
     </ClCompile>
-    <ClCompile Include="RedKoopa.cpp">
-      <Filter>Entities\Enemies</Filter>
-    </ClCompile>
     <ClCompile Include="KoopaTroopa.cpp">
       <Filter>Entities\Enemies</Filter>
     </ClCompile>
     <ClCompile Include="RespawnableEnemy.cpp">
       <Filter>Entities\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="HitEffect.cpp">
+      <Filter>Entities\Effects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -523,14 +523,14 @@
     <ClInclude Include="Sensor.h">
       <Filter>Entities\Enemies</Filter>
     </ClInclude>
-    <ClInclude Include="RedKoopa.h">
-      <Filter>Entities\Enemies</Filter>
-    </ClInclude>
     <ClInclude Include="KoopaTroopa.h">
       <Filter>Entities\Enemies</Filter>
     </ClInclude>
     <ClInclude Include="RespawnableEnemy.h">
       <Filter>Entities\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="HitEffect.h">
+      <Filter>Entities\Effects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -617,6 +617,12 @@
       <Filter>Scenes\Playscene</Filter>
     </Text>
     <Text Include="scene_mario_dev2.txt" />
+    <Text Include="stage3_assets.txt">
+      <Filter>Assets</Filter>
+    </Text>
+    <Text Include="stage3.txt">
+      <Filter>Scenes\Playscene</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Image Include="textures\100_Mario.png">

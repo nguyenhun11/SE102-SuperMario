@@ -23,7 +23,6 @@
 #include "SoundManager.h"
 #include "Switch.h"
 #include "PiranhaPlant.h"
-#include "RedKoopa.h"
 #include "KoopaTroopa.h"
 
 #include "PlaySceneKeyHandler.h"
@@ -185,9 +184,26 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		break;
 	}
 	case OBJECT_TYPE_COIN: obj = new Coin(x, y); break;
-	case OBJECT_TYPE_KOOPA: obj = new Koopa(x, y); break;
-	case OBJECT_TYPE_RED_KOOPA: obj = new RedKoopa(x, y); break;
-	case OBJECT_TYPE_KOOPATROOPA: obj = new KoopaTroopa(x, y); break;
+	case OBJECT_TYPE_KOOPA: 
+	{
+		int color = 0; // 0 là GREEN, 1 là RED
+		if (tokens.size() > 3)
+		{
+			color = atoi(tokens[3].c_str());
+		}
+		obj = new Koopa(x, y, static_cast<KoopaColor>(color));
+		break;
+	}
+	case OBJECT_TYPE_KOOPATROOPA:
+	{
+		int color = 0; // 0 là GREEN, 1 là RED
+		if (tokens.size() > 3)
+		{
+			color = atoi(tokens[3].c_str());
+		}
+		obj = new KoopaTroopa(x, y, static_cast<KoopaColor>(color));
+		break;
+	}
 
 	case OBJECT_TYPE_PLATFORM:
 	{
@@ -287,9 +303,25 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		int idBottom = atoi(tokens[10].c_str());
 		int idBottomRight = atoi(tokens[11].c_str());
 
-		obj = new HorizontalPipe(x, y, cell_width, cell_height, columns,
+		int isBlock = 1;
+		if (tokens.size() > 12) isBlock = atoi(tokens[12].c_str());
+
+		int targetScene = -1;
+		if (tokens.size() > 13) targetScene = atoi(tokens[13].c_str());
+
+		int contentType = 0;
+		if (tokens.size() > 14) contentType = atoi(tokens[14].c_str());
+
+		int spawnSide = -1;
+		if (tokens.size() > 15) spawnSide = atoi(tokens[15].c_str());
+
+		HorizontalPipe* pipe = new HorizontalPipe(x, y, cell_width, cell_height, columns,
 			idTopLeft, idTop, idTopRight,
-			idBottomLeft, idBottom, idBottomRight);
+			idBottomLeft, idBottom, idBottomRight,
+			isBlock, targetScene, contentType, spawnSide);
+
+		obj = pipe;
+
 		break;
 	}
 	case OBJECT_TYPE_QUESTION_BLOCK:
@@ -447,6 +479,7 @@ void PlayScene::LoadAssets(LPCWSTR assetFile)
 	SoundManager::GetInstance()->Load("racoon", "assets/sounds/smb3_raccoon_transform.wav");
 	SoundManager::GetInstance()->Load("tail", "assets/sounds/smb3_tail.wav");
 	SoundManager::GetInstance()->Load("pmeter", "assets/sounds/smb3_pmeter.wav");
+	SoundManager::GetInstance()->Load("stomp", "assets/sounds/smb3_stomp.wav");
 	// Phát nhạc nền ngay khi vào màn chơi
 	SoundManager::GetInstance()->PlayBGM("bgm_stage1");
 
@@ -574,6 +607,16 @@ void PlayScene::Update(DWORD dt)
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return;
 	Mario* mario = static_cast<Mario*>(player);
+
+	// set vị trí mai rùa mà mario cầm, đoạn này code dơ, thông cảm thông cảm
+	if (mario != NULL && mario->heldKoopa != NULL && mario->isHolding)
+	{
+		Koopa* koopa = mario->heldKoopa;
+		koopa->isHeld = true;
+		float hx = mario->GetX() + mario->GetDirection() * 12.0f;
+		float hy = mario->GetY() - 2.0f;
+		koopa->SetPosition(hx, hy);
+	}
 
 
 	float px, py;
@@ -770,6 +813,7 @@ void PlayScene::ActivatePSwitch(SwitchType type)
 	isPSwitchActive = true;
 	currentSwitchType = type;
 	pSwitchTimer = GetTickCount64();
+	SoundManager::GetInstance()->Play("bump");
 	vector<LPGAMEOBJECT> newObjects;
 
 	for (size_t i = 0; i < objects.size(); i++)
