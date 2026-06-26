@@ -1,0 +1,71 @@
+# id	left	top	right	bottom	texture_id
+# list of object assets to load in this scene
+[ASSETS]
+mario.txt
+brick.txt
+coin.txt
+mushroom.txt
+leaf.txt
+goomba.txt
+koopa.txt
+cloud.txt
+stage1_assets.txt
+question_block.txt
+note_block.txt
+pipe.txt
+HUD.txt
+power_up.txt
+HUD.txt
+effect.txt
+goal.txt
+goalblock.txt
+stage2_assets.txt
+piranha-fire.txt
+stage3_assets.txt
+
+[MAP_INFO]
+100
+
+[CAMERA_ZONES]
+-1 1 165 14.5
+165 5 999 14.5
+
+
+[GRID_OBJECTS]
+# type x y extra_settings per object type
+# type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopas
+# See OBJECT_TYPE constants in AssetIDs.h
+
+# MARIO
+0 1 10
+
+#GROUND
+601 0 12 16 16 79 9 60111 60112 60113 60121 60122 60123
+
+601 80 12 16 16 9 3 60111 60112 60113 60121 60122 60123
+
+601 90 12 16 16 79 9 60111 60112 60113 60121 60122 60123
+
+# SEMI-SOLID PLATFORM
+# id, x y, sprite_w_h, cellsize_x y, tl tc tr ml mc mr bl bc br, st sm sb
+701	16 9	16 16	5 2		7010041	7010042	7010043 701000 701000 701000 701000 701000 701000			701000 701000 701000	# bottom shadow for blue block
+701	16 7	16 16	4 2		7010211 7010212 7010213 7010221 7010222 7010223 7010231 7010232 7010233		7010014 7010024 7010024	
+701	13 10	16 16	4 2		7010111 7010112 7010113 7010121 7010122 7010123 7010131 7010132 7010133		7010014 7010024 7010024
+
+# SMALL TREE 1
+600 5 11 6000200
+600	6 11 6000200
+600 7 11 6000200
+600 8 11 6000200
+
+
+# CLOUD 60003
+600 7 4 6000311
+600 7 3 6000312
+600 8 4 6000313
+600 8 3 6000321
+600 9 4 6000322
+600 9 3 6000323
+
+
+
