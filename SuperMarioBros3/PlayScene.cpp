@@ -247,11 +247,28 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		int shadow_mid = atoi(tokens[17].c_str());
 		int shadow_bot = atoi(tokens[18].c_str());
 
+		int shadow_topB, shadow_midB, shadow_botB;
+
+		if (tokens.size() > 19)
+		{
+			int shadow_topB = atoi(tokens[19].c_str());
+			int shadow_midB = atoi(tokens[20].c_str());
+			int shadow_botB = atoi(tokens[21].c_str());
+			obj = new SemisolidPlatform(x, y, cell_width, cell_height, columns, rows,
+				spriteID_tl, spriteID_tm, spriteID_tr,
+				spriteID_ml, spriteID_mm, spriteID_mr,
+				spriteID_bl, spriteID_bm, spriteID_br,
+				shadow_top, shadow_mid, shadow_bot,
+				shadow_topB, shadow_midB, shadow_botB);
+		}
+		else
+		{
 		obj = new SemisolidPlatform(x, y, cell_width, cell_height, columns, rows,
 			spriteID_tl, spriteID_tm, spriteID_tr,
 			spriteID_ml, spriteID_mm, spriteID_mr,
 			spriteID_bl, spriteID_bm, spriteID_br,
 			shadow_top, shadow_mid, shadow_bot);
+		}
 
 		break;
 	}

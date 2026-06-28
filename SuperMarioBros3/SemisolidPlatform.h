@@ -3,6 +3,7 @@
 class SemisolidPlatform : public NineSliceBox
 {
 	int shadowTop, shadowMid, shadowBot;
+	int shadowTop_Bottom = 0, shadowMid_Bottom = 0, shadowBot_Bottom = 0;
 public:
 	SemisolidPlatform(float x, float y, float cell_width, float cell_height, int columns, int rows,
 		int stl, int stm, int str,
@@ -25,6 +26,30 @@ public:
 		zIndex = 1;
 	}
 
+	SemisolidPlatform(float x, float y, float cell_width, float cell_height, int columns, int rows,
+		int stl, int stm, int str,
+		int sml, int smm, int smr,
+		int sbl, int sbm, int sbr,
+		int shadow_top, int shadow_mid, int shadow_bot, int shadow_topB, int shadow_midB, int shadow_botB)
+		: NineSliceBox(x, y, cell_width, cell_height, columns, rows, nullptr)
+	{
+		this->spriteIDs[0][0] = stl; this->spriteIDs[0][1] = stm; this->spriteIDs[0][2] = str;
+		this->spriteIDs[1][0] = sml; this->spriteIDs[1][1] = smm; this->spriteIDs[1][2] = smr;
+		this->spriteIDs[2][0] = sbl; this->spriteIDs[2][1] = sbm; this->spriteIDs[2][2] = sbr;
+
+		this->hasTop = true; this->hasBottom = true;
+		this->hasLeft = true; this->hasRight = true;
+
+		this->shadowTop = shadow_top;
+		this->shadowMid = shadow_mid;
+		this->shadowBot = shadow_bot;
+
+		this->shadowTop_Bottom = shadow_topB;
+		this->shadowMid_Bottom = shadow_midB;
+		this->shadowBot_Bottom = shadow_botB;
+
+		zIndex = 1;
+	}
 	int IsBlocking() override { return 1; }
 
 	int IsDirectionColliable(float nx, float ny) override
