@@ -106,7 +106,7 @@ stage3_assets.txt
 600 97 7 6000523
 
 # SEMI-SOLID PLATFORM
-# id, x y, sprite_w_h, cellsize_x y, tl tc tr ml mc mr bl bc br, st sm sb
+# id, x y, sprite_w_h, cellsize_x y, tl tc tr ml mc mr bl bc br, st sm sb	st_b sm_b sb_b (nếu cần)
 #701	16 9	16 16	5 2		7010041	7010042	7010043 701000 701000 701000 701000 701000 701000			701000 701000 701000	# bottom shadow for blue block
 #1
 701	16 7	16 16	4 2		7010211 7010212 7010213 7010221 7010222 7010223 7010231 7010232 7010233		7010014 7010024 7010024	7010041	7010042	7010043
