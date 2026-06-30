@@ -25,6 +25,8 @@
 #include "NoteBlock.h"
 #include "Koopa.h"
 #include "HitEffect.h"
+#include "BoomerangBro.h"
+#include "Boomerang.h"
 
 void Mario::SetUp()
 {
@@ -240,6 +242,10 @@ void Mario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithFire(e);
 	else if (dynamic_cast<QuestionBlock*>(e->obj))
 		OnCollisionWithQuestionBlock(e);
+	else if (dynamic_cast<BoomerangBro*>(e->obj))
+		OnCollisionWithBoomerangBro(e);
+	else if (dynamic_cast<Boomerang*>(e->obj))
+		OnCollisionWithBoomerang(e);
 	else if (dynamic_cast<Brick*>(e->obj))
 		OnCollisionWithBrick(e);
 	else if (dynamic_cast<Portal*>(e->obj))
@@ -424,6 +430,52 @@ void Mario::OnCollisionWithFire(LPCOLLISIONEVENT e)
 	if (isPoofTransforming || isSuperTransforming) return;
 	TakeDamage();
 	e->obj->Delete(); // Hủy viên đạn lửa đi
+}
+
+void Mario::OnCollisionWithBoomerangBro(LPCOLLISIONEVENT e)
+{
+	if (isPoofTransforming || isSuperTransforming) return; // Đang biến hình thì bất tử
+	BoomerangBro* bro = dynamic_cast<BoomerangBro*>(e->obj);
+
+	if (e->ny < 0) // Mario đạp từ trên xuống đỉnh đầu
+	{
+		// 1. Tạo hiệu ứng điểm số 100
+		PlayScene* scene = dynamic_cast<PlayScene*>(SceneManager::GetInstance()->GetCurrentScene());
+		ScoreEffect* scoreEff = new ScoreEffect(bro->GetX(), bro->GetY(), Score::ONE_HUNDRED);
+		scene->AddObject(scoreEff);
+		AddScore(100);
+
+		// 2. Phát âm thanh đạp
+		SoundManager::GetInstance()->Play("stomp");
+
+		// 3. Xử lý cái chết của Boomerang Bro
+		if (bro->GetState() != static_cast<int>(BroState::DIE))
+		{
+			bro->SetState(static_cast<int>(BroState::DIE)); // Đổi state để quái lật ngược rớt xuống
+
+			// Nảy Mario lên
+			if (IsHoldingJump)
+				vy = -MARIO_HIGH_JUMP_DEFLECT_SPEED;
+			else
+				vy = -MARIO_JUMP_DEFLECT_SPEED;
+		}
+	}
+	else // Mario tông ngang hoặc đụng từ dưới lên
+	{
+		// Nếu con quái chưa chết thì Mario mất máu
+		if (bro->GetState() != static_cast<int>(BroState::DIE))
+		{
+			TakeDamage(); // Hàm gọi tụt cấp / nhấp nháy bất tử có sẵn của ông
+		}
+	}
+}
+
+void Mario::OnCollisionWithBoomerang(LPCOLLISIONEVENT e)
+{
+	if (isPoofTransforming || isSuperTransforming) return;
+
+	Boomerang* wpn = dynamic_cast<Boomerang*>(e->obj);
+	TakeDamage();
 }
 
 void Mario::OnCollisionWithCoin(LPCOLLISIONEVENT e)

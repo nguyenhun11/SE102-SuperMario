@@ -24,6 +24,7 @@
 #include "Switch.h"
 #include "PiranhaPlant.h"
 #include "KoopaTroopa.h"
+#include "BoomerangBro.h"
 
 #include "PlaySceneKeyHandler.h"
 
@@ -166,6 +167,9 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		break;
 	}
 	case OBJECT_TYPE_GOOMBA: obj = new Goomba(x, y); break;
+	case OBJECT_TYPE_BOOMERANG_BRO:
+		obj = new BoomerangBro(x, y);
+		break;
 	case OBJECT_TYPE_PIRANHA_PLANT: obj = new PiranhaPlant(x, y); break;
 	case OBJECT_TYPE_BRICK:
 	{

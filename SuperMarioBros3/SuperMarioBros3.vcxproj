@@ -162,6 +162,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Boomerang.cpp" />
+    <ClCompile Include="BoomerangBro.cpp" />
     <ClCompile Include="CourseClearEffect.cpp" />
     <ClCompile Include="Fire.cpp" />
     <ClCompile Include="GoalBlock.cpp" />
@@ -223,6 +225,8 @@
     <ClCompile Include="WorldSceneKeyHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Boomerang.h" />
+    <ClInclude Include="BoomerangBro.h" />
     <ClInclude Include="CourseClearEffect.h" />
     <ClInclude Include="Dependencies\irrKlang\include\ik_ESoundEngineOptions.h" />
     <ClInclude Include="Dependencies\irrKlang\include\ik_ESoundOutputDrivers.h" />
@@ -314,6 +318,7 @@
     <ClInclude Include="WorldSceneKeyHandler.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="boomerang-bro.txt" />
     <Text Include="brick.txt" />
     <Text Include="cloud.txt" />
     <Text Include="coin.txt" />
@@ -351,6 +356,7 @@
     <Image Include="textures\100_Mario.png" />
     <Image Include="textures\101_Mario_Origin.png" />
     <Image Include="textures\200_Enemies.png" />
+    <Image Include="textures\201_Enemies_Origin.png" />
     <Image Include="textures\300_Tilesets_StageTiles.png" />
     <Image Include="textures\400_Items.png" />
     <Image Include="textures\500_HUD.png" />
