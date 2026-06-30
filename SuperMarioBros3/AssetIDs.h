@@ -20,6 +20,7 @@ Each ID for a type of object will BEGIN with:
 #define OBJECT_TYPE_KOOPA			202
 #define OBJECT_TYPE_KOOPATROOPA		213
 #define OBJECT_TYPE_PIRANHA_PLANT   203 //213 223 233
+#define OBJECT_TYPE_BOOMERANG_BRO	204
 
 // Block
 #define OBJECT_TYPE_SOLID_BLOCK		300

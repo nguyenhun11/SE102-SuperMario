@@ -22,6 +22,7 @@ goalblock.txt
 stage2_assets.txt
 piranha-fire.txt
 stage3_assets.txt
+boomerang-bro.txt
 
 [MAP_INFO]
 161.5
@@ -45,6 +46,9 @@ stage3_assets.txt
 601 86 12 16 16 9 3 60111 60112 60113 60121 60122 60123
 
 601 96 12 16 16 66 9 60111 60112 60113 60121 60122 60123
+
+# Boomerang
+204 27 10
 
 # CLOUD 60005
 #1
