@@ -43,7 +43,7 @@ void InvisibleBlock::Trigger()
 
 	if (type == InvisibleType::NOTE_BLOCK)
 	{
-		newBlock = new NoteBlock(x, y);
+		newBlock = new NoteBlock(x, y, true);
 	}
 	else if (type == InvisibleType::QUESTION_BLOCK)
 	{
