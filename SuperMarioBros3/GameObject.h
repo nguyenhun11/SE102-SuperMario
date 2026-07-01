@@ -108,6 +108,7 @@ public:
 	float GetY() { return y; }
 
 	void SetNx(int n) { nx = n; }
+	int GetNx() { return nx; }
 	float GetVy() { return vy; }
 
 	bool GetWasOnCamera() { return wasOnCamera; }

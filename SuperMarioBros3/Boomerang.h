@@ -1,12 +1,15 @@
 #pragma once
 #include "GameObject.h"
 
-#define BOOMERANG_SPEED_X 0.15f
+#define BOOMERANG_SPEED_X 0.1f
 #define BOOMERANG_GRAVITY 0.00001f    
 #define BOOMERANG_MAX_DISTANCE 128.0f // Quãg đường bay = 8 ô
+#define BOOMERANG_MAX_HEIGHT   24.0f  // Độ cao Parabol muốn đạt tới
 #define BOOMERANG_RETURN_TIME 1200.0f // Thời gian bay về
+#define BOOMERANG_DELAY_TIME 200.0f   // Thời gian trễ trước khi bay
 
 #define ID_ANI_BOOMERANG 20402
+#define ID_ANI_BOOMERANG_IDLE 2040201
 
 class BoomerangBro;
 
@@ -19,6 +22,9 @@ protected:
 	bool isReturning;
 	float returnTimer;
 	BoomerangBro* owner;
+
+	bool isDelayed;
+	float delayTimer;
 
 public:
 	Boomerang(float x, float y, int nx, BoomerangBro* owner);

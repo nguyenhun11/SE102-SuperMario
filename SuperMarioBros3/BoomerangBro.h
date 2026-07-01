@@ -1,9 +1,10 @@
 #pragma once
 #include "RespawnableEnemy.h"
 
-#define BOOMERANG_BRO_GRAVITY           0.002f
+#define BOOMERANG_BRO_GRAVITY           0.0015f
 #define BOOMERANG_BRO_WALKING_SPEED     0.03f
 #define BOOMERANG_BRO_DEFLECT_SPEED     0.35f
+#define BOOMERANG_BRO_JUMP_SPEED        0.25f
 
 #define BOOMERANG_BRO_BBOX_WIDTH        16.0f
 #define BOOMERANG_BRO_BBOX_HEIGHT       22.0f
@@ -34,6 +35,10 @@ protected:
 
 	bool isIdleAtEdge;
 	ULONGLONG idleStart;
+
+	bool isOnGround;
+	ULONGLONG jumpStart;
+	DWORD jumpCooldown;
 
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	virtual void Render();

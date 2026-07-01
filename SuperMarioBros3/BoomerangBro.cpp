@@ -21,6 +21,9 @@ void BoomerangBro::OnEnable()
 	this->throwStart = GetTickCount64();
 	this->isThrowing = false;
 
+	this->jumpCooldown = 3000; // Sinh ra sau 3 giây mới nhảy phát đầu
+	this->jumpStart = GetTickCount64();
+
 	// Hướng mặt ban đầu
 	PlayScene* scene = (PlayScene*)SceneManager::GetInstance()->GetCurrentScene();
 	Mario* mario = (Mario*)scene->GetPlayer();
@@ -123,13 +126,21 @@ void BoomerangBro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		isThrowing = false;
 	}
 
+	if (isOnGround && (now - jumpStart > jumpCooldown))
+	{
+		vy = -BOOMERANG_BRO_JUMP_SPEED;
+		isOnGround = false;
+		jumpStart = now;
+
+		jumpCooldown = 2000 + rand() % 2000;
+	}
+
 	if (isIdleAtEdge)
 	{
 		vx = 0; // Đứng yên
 		if (now - idleStart > 500) // Dừng 0.5 giây ở biên
 		{
 			isIdleAtEdge = false; // Hết giờ nghỉ, đi tiếp
-			// Đổi hướng: nếu đang ở biên trái (x <= startX - PATROL_RANGE) thì đi phải (vx > 0)
 			vx = (x < startX) ? BOOMERANG_BRO_WALKING_SPEED : -BOOMERANG_BRO_WALKING_SPEED;
 		}
 	}
@@ -167,7 +178,7 @@ void BoomerangBro::OnCollisionWith(LPCOLLISIONEVENT e)
 	if (e->ny != 0)
 	{
 		vy = 0;
-		// if (e->ny < 0) isOnGround = true;
+		if (e->ny < 0) isOnGround = true;
 	}
 	else if (e->nx != 0)
 	{
