@@ -7,7 +7,7 @@
 #define NOTE_BLOCK_BBOX_WIDTH 16
 #define NOTE_BLOCK_BBOX_HEIGHT 16
 
-#define NOTE_BLOCK_BOUNCE_SPEED 0.15f
+#define NOTE_BLOCK_BOUNCE_SPEED 0.1f
 #define NOTE_BLOCK_BOUNCE_HEIGHT 8.0f
 
 enum class NoteBlockState 
@@ -25,6 +25,7 @@ private:
     ContainedItem item;
     NoteBlockState currentState;
 	int bounceCount;
+    bool wantsHighJump;
 
 public:
     NoteBlock(float x, float y, int containedItem = 0, int count = 1);

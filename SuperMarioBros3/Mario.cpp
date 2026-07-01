@@ -48,7 +48,7 @@ void Mario::AddScore(int amount)
 	//DebugOut(L">>> CurrentScore: %d\n", score);
 }
 
-void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
+void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	if (isGoalRunning)
 	{
@@ -190,7 +190,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	//}
 
 	// reset untouchable timer if untouchable time has passed
-	if ( GetTickCount64() - untouchable_start > MARIO_UNTOUCHABLE_TIME) 
+	if (GetTickCount64() - untouchable_start > MARIO_UNTOUCHABLE_TIME)
 	{
 		untouchable_start = 0;
 		untouchable = 0;
@@ -381,7 +381,7 @@ void Mario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 			isKicking = true;
 			kick_start = GetTickCount64();
 		}
-		return; 
+		return;
 	}
 
 	if (e->ny < 0)
@@ -606,7 +606,7 @@ void Mario::OnCollisionWithBrick(LPCOLLISIONEVENT e)
 				else
 				{
 					brick->Break(); // Mạnh (To, Đuôi, Lửa) thì đập vỡ
-					
+
 				}
 			}
 		}
@@ -624,10 +624,15 @@ void Mario::OnCollisionWithNoteBlock(LPCOLLISIONEVENT e)
 			{
 				nb->SetState(NoteBlockState::BOUNCING_UP);
 			}
-			else if (e->ny < 0) // Mario đẹp từ trên xuống
+			else if (e->ny < 0)
 			{
 				nb->SetState(NoteBlockState::BOUNCING_DOWN);
-				this->SetState(MarioState::JUMP);
+
+				this->SetIsOnPlatform(false);
+
+				float vx, vy;
+				this->GetSpeed(vx, vy);
+				this->SetSpeed(vx, 0.0f);
 			}
 		}
 	}
@@ -635,12 +640,12 @@ void Mario::OnCollisionWithNoteBlock(LPCOLLISIONEVENT e)
 
 void Mario::OnCollisionWithVerticalPipe(LPCOLLISIONEVENT e)
 {
-	if (isPiping) return; 
+	if (isPiping) return;
 
 	VerticalPipe* pipe = dynamic_cast<VerticalPipe*>(e->obj);
 	if (pipe == nullptr) return;
 
-	if (e->ny > 0) 
+	if (e->ny > 0)
 	{
 		pipeAbove = pipe;
 	}
@@ -668,7 +673,7 @@ void Mario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
 	}
 	else if (form != MarioForm::RACOON)
 	{
-		
+
 		// NOTE để nhớ làm hiệu ứng boom
 		StartPoofTransform(MarioForm::RACOON);
 	}
@@ -987,7 +992,7 @@ void Mario::Render()
 	}
 	if (isSliding)
 	{
-		if(form != MarioForm::SMALL)
+		if (form != MarioForm::SMALL)
 			renderY -= 4.0f;
 	}
 	if (aniId == ID_ANI_MARIO_RACOON_SPIN)
@@ -1021,7 +1026,7 @@ void Mario::Render()
 	}
 
 	//RenderBoundingBox();
-	
+
 	DebugOutTitle(L"Pmeter: %d", pmeter);
 }
 
@@ -1126,7 +1131,7 @@ void Mario::SetState(MarioState state)
 			if (form == MarioForm::SMALL && !isOnSlope) break;
 			isSitting = true;
 
-			if(form != MarioForm::SMALL)
+			if (form != MarioForm::SMALL)
 				y += MARIO_SIT_HEIGHT_ADJUST;
 		}
 		break;
@@ -1167,16 +1172,16 @@ void Mario::SetState(MarioState state)
 		accelX = 0;
 		accelY = 0;
 		vx = 0;
-		vy = 0; 
+		vy = 0;
 		nx = 1;
 		break;
 
 	case MarioState::DIE:
-		die_start = GetTickCount64(); 
+		die_start = GetTickCount64();
 		vx = 0;
-		vy = 0;     
+		vy = 0;
 		accelX = 0;
-		accelY = 0;  
+		accelY = 0;
 		break;
 	}
 
@@ -1189,9 +1194,9 @@ void Mario::SetDirection(int d)
 	nx = d;
 }
 
-void Mario::GetBoundingBox(float &left, float &top, float &right, float &bottom)
+void Mario::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
-	if (form== MarioForm::SUPER || form == MarioForm::RACOON)
+	if (form == MarioForm::SUPER || form == MarioForm::RACOON)
 	{
 		if (isSitting)
 		{
@@ -1200,18 +1205,18 @@ void Mario::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 			right = left + MARIO_BIG_SITTING_BBOX_WIDTH;
 			bottom = top + MARIO_BIG_SITTING_BBOX_HEIGHT;
 		}
-		else 
+		else
 		{
-			left = x - MARIO_BIG_BBOX_WIDTH/2;
-			top = y - MARIO_BIG_BBOX_HEIGHT/2;
+			left = x - MARIO_BIG_BBOX_WIDTH / 2;
+			top = y - MARIO_BIG_BBOX_HEIGHT / 2;
 			right = left + MARIO_BIG_BBOX_WIDTH;
 			bottom = top + MARIO_BIG_BBOX_HEIGHT;
 		}
 	}
 	else
 	{
-		left = x - MARIO_SMALL_BBOX_WIDTH/2;
-		top = y - MARIO_SMALL_BBOX_HEIGHT/2;
+		left = x - MARIO_SMALL_BBOX_WIDTH / 2;
+		top = y - MARIO_SMALL_BBOX_HEIGHT / 2;
 		right = left + MARIO_SMALL_BBOX_WIDTH;
 		bottom = top + MARIO_SMALL_BBOX_HEIGHT;
 	}
@@ -1339,7 +1344,7 @@ void Mario::EnterPipeDown()
 	{
 		GameManager::GetInstance()->marioForm = static_cast<int>(this->form);
 		SoundManager::GetInstance()->Play("pipe");
-		isPipingUp = false; 
+		isPipingUp = false;
 		isPiping = true;
 		SetState(MarioState::PIPING);
 
@@ -1390,7 +1395,7 @@ void Mario::HandleSpinning(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (GetTickCount64() - piping_start <= MARIO_PIPE_TIME) return;
 	if (isSpinning)
 	{
-		
+
 		if (GetTickCount64() - spin_start > MARIO_SPIN_TIME)
 			isSpinning = false;
 		else
@@ -1582,7 +1587,7 @@ void Mario::HandleSlope(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				float expectedY = slope->GetSurfaceY(marioCenterX);
 				float epsilon = max(4.0f, abs(vy) * dt);
 				// kéo mairo lên nếu chân < dốc
-				if (marioBottomY >= expectedY - epsilon && vy >=0) 
+				if (marioBottomY >= expectedY - epsilon && vy >= 0)
 				{
 					y = expectedY - bboxHeight / 2;
 					vy = 0;
@@ -1617,7 +1622,7 @@ void Mario::HandleSlopePhysics(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		else
 		{
 			accelX = 0.0f;
-			if(abs(vx) < 0.05f) 
+			if (abs(vx) < 0.05f)
 				isSliding = false;
 
 		}
@@ -1629,7 +1634,7 @@ void Mario::HandleSlopePhysics(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 }
 
 void Mario::HandleGoalRunning(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
-{	
+{
 	vy += MARIO_GRAVITY * dt;
 	if (isOnPlatform)
 	{
@@ -1687,9 +1692,9 @@ void Mario::HandlePiping(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			this->vx = 0.0f;
 			this->vy = 0.0f;
 			this->accelX = 0.0f;
-			this->accelY = MARIO_GRAVITY; 
+			this->accelY = MARIO_GRAVITY;
 
-			
+
 			GameObject::SetState(static_cast<int>(MarioState::IDLE));
 		}
 	}
@@ -1707,7 +1712,7 @@ void Mario::HandleHolding(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		else if (isHolding)
 		{
 			heldKoopa->isHeld = true;
-			float hx = this->x + this->nx * 12.0f; 
+			float hx = this->x + this->nx * 12.0f;
 			float hy = this->y - 2.0f;
 
 			heldKoopa->SetPosition(hx, hy);

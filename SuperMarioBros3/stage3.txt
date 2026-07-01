@@ -38,7 +38,7 @@ boomerang-bro.txt
 # See OBJECT_TYPE constants in AssetIDs.h
 
 # MARIO
-0 2 4
+0 20 4
 
 # GROUND
 601 0 12 16 16 79 9 60111 60112 60113 60121 60122 60123
@@ -46,7 +46,7 @@ boomerang-bro.txt
 601 92 12 16 16 67 9 60111 60112 60113 60121 60122 60123
 
 # Boomerang bro
-204 22 10
+#204 22 10
 204 86 10
 
 # Green koopa

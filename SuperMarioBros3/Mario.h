@@ -214,7 +214,7 @@ class Mario : public GameObject
 	float start_x;
 	float start_y;
 	float slopeDirection;
-	
+
 	bool isSuperTransforming;
 	bool isTakingDamage;
 	bool canFly;
@@ -229,12 +229,12 @@ class Mario : public GameObject
 	bool isDieBounce;
 
 	bool isGoalRunning;
-	
+
 	// pmeter
 	int pmeter;
 
 	MarioForm form;
-	int untouchable; 
+	int untouchable;
 
 	ULONGLONG die_start;
 	ULONGLONG damage_start;
@@ -252,7 +252,7 @@ class Mario : public GameObject
 	MarioForm nextPoofForm;
 	BOOLEAN isOnPlatform;
 	BOOLEAN isOnSlope;
-	
+
 	VerticalPipe* pipeBelow;
 	VerticalPipe* pipeAbove;
 	bool isPipingUp = false;
@@ -292,7 +292,7 @@ public:
 		isSitting = false;
 		maxVx = 0.0f;
 		accelX = 0.0f;
-		accelY = MARIO_GRAVITY; 
+		accelY = MARIO_GRAVITY;
 		pmeter = 0;
 
 		isOnPlatform = false;
@@ -332,7 +332,7 @@ public:
 		//score = 0;
 
 		SetUp();
-		
+
 		currentState = MarioState::IDLE;
 		nextPoofForm = MarioForm::RACOON;
 
@@ -351,7 +351,7 @@ public:
 	void SetDirection(int d);
 
 	int IsCollidable()
-	{ 
+	{
 		return (state != static_cast<int>(MarioState::DIE) && state != static_cast<int>(MarioState::PIPING));
 	}
 
@@ -364,7 +364,7 @@ public:
 
 	void OnNoCollision(DWORD dt);
 	void OnCollisionWith(LPCOLLISIONEVENT e);
-	
+
 
 	void SetNewForm(MarioForm form);
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }
@@ -384,7 +384,7 @@ public:
 	void SetStartPiping();
 
 	// Handle Update
-	void HandleDying(DWORD dt, vector<LPGAMEOBJECT>* coObjects); 
+	void HandleDying(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void HandleTakingDamage(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void HandleSpinning(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void HandleTransform(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
@@ -403,6 +403,8 @@ public:
 	int GetPMeter() { return pmeter; }
 	bool IsGoalRunning() { return isGoalRunning; }
 	int GetDirection() { return nx; }
+	bool IsOnPlatform() { return isOnPlatform; }
+	void SetIsOnPlatform(bool on) { isOnPlatform = on; }
 
 	bool isHolding = false;
 	Koopa* heldKoopa = NULL;
