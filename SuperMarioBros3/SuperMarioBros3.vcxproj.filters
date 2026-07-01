@@ -269,6 +269,9 @@
     <ClCompile Include="Boomerang.cpp">
       <Filter>Entities\Enemies</Filter>
     </ClCompile>
+    <ClCompile Include="WoodBlock.cpp">
+      <Filter>Entities\Blocks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h">
@@ -543,6 +546,9 @@
     </ClInclude>
     <ClInclude Include="Boomerang.h">
       <Filter>Entities\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="WoodBlock.h">
+      <Filter>Entities\Blocks</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

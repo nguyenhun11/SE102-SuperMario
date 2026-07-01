@@ -25,6 +25,7 @@
 #include "PiranhaPlant.h"
 #include "KoopaTroopa.h"
 #include "BoomerangBro.h"
+#include "WoodBlock.h"
 
 #include "PlaySceneKeyHandler.h"
 
@@ -364,6 +365,12 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		}
 
 		obj = new NoteBlock(x, y, contained_item_id, bounceCount);
+		break;
+	}
+
+	case OBJECT_TYPE_WOOD_BLOCK: {
+		int contained_item_id = atoi(tokens[3].c_str());
+		obj = new WoodBlock(x, y, contained_item_id);
 		break;
 	}
 

@@ -2,7 +2,7 @@
 #include "GameObject.h"
 
 #define BOOMERANG_SPEED_X 0.15f
-#define BOOMERANG_GRAVITY 0.0001f    
+#define BOOMERANG_GRAVITY 0.00001f    
 #define BOOMERANG_MAX_DISTANCE 128.0f // Quãg đường bay = 8 ô
 #define BOOMERANG_RETURN_TIME 1200.0f // Thời gian bay về
 

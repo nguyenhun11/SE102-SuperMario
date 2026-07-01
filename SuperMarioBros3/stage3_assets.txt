@@ -6,3 +6,6 @@
 # id	left	top	right	bottom	texture_id
 # EMPTY SEMI-SOLID
 701000	0	0	0	0	300
+
+# Empty wood block
+3000101 842 145 857 160 300

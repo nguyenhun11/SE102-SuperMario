@@ -20,6 +20,7 @@
 #include "QuestionBlock.h"
 #include "GoalBlock.h"
 #include "Switch.h"
+#include "WoodBlock.h"
 
 #include "Collision.h"
 #include "NoteBlock.h"
@@ -242,6 +243,10 @@ void Mario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithFire(e);
 	else if (dynamic_cast<QuestionBlock*>(e->obj))
 		OnCollisionWithQuestionBlock(e);
+	else if (dynamic_cast<WoodBlock*>(e->obj))
+		OnCollisionWithWoodBlock(e);
+	else if (dynamic_cast<WoodBlockSensor*>(e->obj))
+		OnCollisionWithWoodBlockSensor(e);
 	else if (dynamic_cast<BoomerangBro*>(e->obj))
 		OnCollisionWithBoomerangBro(e);
 	else if (dynamic_cast<Boomerang*>(e->obj))
@@ -502,6 +507,43 @@ void Mario::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 		{
 			qb->SetState(QuestionBlockState::BOUNCING);
 		}
+	}
+}
+
+void Mario::OnCollisionWithWoodBlock(LPCOLLISIONEVENT e)
+{
+	WoodBlock* wood = dynamic_cast<WoodBlock*>(e->obj);
+	if (wood->GetCurrentState() == WoodBlockState::BOUNCING) return;
+
+	if (e->nx != 0)
+	{
+		wood->HitHorizontally(e->nx);
+		this->vx = e->nx * 0.05f;
+		SoundManager::GetInstance()->Play("bump");
+	}
+	else if (e->ny > 0)
+	{
+		wood->HitVertically();
+		SoundManager::GetInstance()->Play("bump");
+	}
+}
+
+void Mario::OnCollisionWithWoodBlockSensor(LPCOLLISIONEVENT e)
+{
+	WoodBlockSensor* sensor = dynamic_cast<WoodBlockSensor*>(e->obj);
+	WoodBlock* wood = sensor->GetParent();
+
+	if (wood->GetCurrentState() == WoodBlockState::BOUNCING) return;
+
+	if (e->ny > 0)
+	{
+		float dir = sensor->GetDirection();
+
+		wood->HitHorizontally(dir);
+
+		this->vx = dir * 0.05f;
+
+		SoundManager::GetInstance()->Play("bump");
 	}
 }
 
