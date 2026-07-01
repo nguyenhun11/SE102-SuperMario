@@ -8,7 +8,7 @@
 #define WOODBLOCK_BBOX_HEIGHT     16
 #define WOODBLOCK_BOUNCE_WIDTH    8.0f // Biên độ nảy ngang
 
-#define WOODBLOCK_BOUNCE_SPEED    0.15f
+#define WOODBLOCK_BOUNCE_SPEED    0.1f
 #define WOODBLOCK_BOUNCE_HEIGHT   8.0f
 
 enum class WoodBlockItem {

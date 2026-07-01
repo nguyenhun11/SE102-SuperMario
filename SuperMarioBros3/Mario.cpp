@@ -518,7 +518,7 @@ void Mario::OnCollisionWithWoodBlock(LPCOLLISIONEVENT e)
 	if (e->nx != 0)
 	{
 		wood->HitHorizontally(e->nx);
-		this->vx = e->nx * 0.05f;
+		this->vx = e->nx * 0.07f;
 		SoundManager::GetInstance()->Play("bump");
 	}
 	else if (e->ny > 0)
@@ -541,7 +541,7 @@ void Mario::OnCollisionWithWoodBlockSensor(LPCOLLISIONEVENT e)
 
 		wood->HitHorizontally(dir);
 
-		this->vx = dir * 0.05f;
+		this->vx = dir * 0.07f;
 
 		SoundManager::GetInstance()->Play("bump");
 	}
