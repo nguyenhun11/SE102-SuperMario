@@ -28,6 +28,7 @@
 #include "HitEffect.h"
 #include "BoomerangBro.h"
 #include "Boomerang.h"
+#include "InvisibleBlock.h"
 
 void Mario::SetUp()
 {
@@ -247,6 +248,8 @@ void Mario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithWoodBlock(e);
 	else if (dynamic_cast<WoodBlockSensor*>(e->obj))
 		OnCollisionWithWoodBlockSensor(e);
+	else if (dynamic_cast<InvisibleBlock*>(e->obj))
+		OnCollisionWithInvisibleBlock(e);
 	else if (dynamic_cast<BoomerangBro*>(e->obj))
 		OnCollisionWithBoomerangBro(e);
 	else if (dynamic_cast<Boomerang*>(e->obj))
@@ -525,6 +528,23 @@ void Mario::OnCollisionWithWoodBlock(LPCOLLISIONEVENT e)
 	{
 		wood->HitVertically();
 		SoundManager::GetInstance()->Play("bump");
+	}
+}
+
+void Mario::OnCollisionWithInvisibleBlock(LPCOLLISIONEVENT e)
+{
+	InvisibleBlock* ib = dynamic_cast<InvisibleBlock*>(e->obj);
+	if (ib == nullptr || ib->IsTriggered()) return;
+
+	if (e->ny > 0)
+	{
+		ib->Trigger();
+
+		this->SetIsOnPlatform(false);
+
+		float vx, vy;
+		this->GetSpeed(vx, vy);
+		this->SetSpeed(vx, 0.0f);
 	}
 }
 

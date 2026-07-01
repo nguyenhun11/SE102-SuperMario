@@ -268,6 +268,7 @@ class Mario : public GameObject
 	void OnCollisionWithPortal(LPCOLLISIONEVENT e);
 	void OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e);
 	void OnCollisionWithWoodBlock(LPCOLLISIONEVENT e);
+	void OnCollisionWithInvisibleBlock(LPCOLLISIONEVENT e);
 	void OnCollisionWithWoodBlockSensor(LPCOLLISIONEVENT e);
 	void OnCollisionWithOneUpMushroom(LPCOLLISIONEVENT e);
 	void OnCollisionWithMushroom(LPCOLLISIONEVENT e);

@@ -28,6 +28,7 @@ Each ID for a type of object will BEGIN with:
 #define OBJECT_TYPE_QUESTION_BLOCK	302
 #define OBJECT_TYPE_NOTE_BLOCK		303
 #define OBJECT_TYPE_WOOD_BLOCK		304
+#define OBJECT_TYPE_INVISIBLE_BLOCK	305
 #define OBJECT_TYPE_GOAL_BLOCK		309
 
 // Objects

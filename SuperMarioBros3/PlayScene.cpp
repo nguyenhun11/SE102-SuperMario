@@ -26,6 +26,7 @@
 #include "KoopaTroopa.h"
 #include "BoomerangBro.h"
 #include "WoodBlock.h"
+#include "InvisibleBlock.h"
 
 #include "PlaySceneKeyHandler.h"
 
@@ -371,6 +372,12 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 	case OBJECT_TYPE_WOOD_BLOCK: {
 		int contained_item_id = atoi(tokens[3].c_str());
 		obj = new WoodBlock(x, y, contained_item_id);
+		break;
+	}
+
+	case OBJECT_TYPE_INVISIBLE_BLOCK: {
+		InvisibleType type = static_cast<InvisibleType>(atoi(tokens[3].c_str()));
+		obj = new InvisibleBlock(x, y, type);
 		break;
 	}
 

@@ -169,6 +169,7 @@
     <ClCompile Include="GoalBlock.cpp" />
     <ClCompile Include="HitEffect.cpp" />
     <ClCompile Include="HorizontalPipe.cpp" />
+    <ClCompile Include="InvisibleBlock.cpp" />
     <ClCompile Include="InvisibleNode.cpp" />
     <ClCompile Include="KoopaTroopa.cpp" />
     <ClCompile Include="MapMario.cpp" />
@@ -254,6 +255,7 @@
     <ClInclude Include="GoalBlock.h" />
     <ClInclude Include="HitEffect.h" />
     <ClInclude Include="HorizontalPipe.h" />
+    <ClInclude Include="InvisibleBlock.h" />
     <ClInclude Include="InvisibleNode.h" />
     <ClInclude Include="KoopaTroopa.h" />
     <ClInclude Include="MapMario.h" />

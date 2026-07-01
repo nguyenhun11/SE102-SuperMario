@@ -272,6 +272,9 @@
     <ClCompile Include="WoodBlock.cpp">
       <Filter>Entities\Blocks</Filter>
     </ClCompile>
+    <ClCompile Include="InvisibleBlock.cpp">
+      <Filter>Entities\Blocks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h">
@@ -548,6 +551,9 @@
       <Filter>Entities\Enemies</Filter>
     </ClInclude>
     <ClInclude Include="WoodBlock.h">
+      <Filter>Entities\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="InvisibleBlock.h">
       <Filter>Entities\Blocks</Filter>
     </ClInclude>
   </ItemGroup>
