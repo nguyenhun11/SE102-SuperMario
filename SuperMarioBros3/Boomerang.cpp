@@ -26,12 +26,11 @@ void Boomerang::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	if (!isReturning)
 	{
-		// PHASE 1: BAY RA XA 
+		// PHASE 1: BAY RA XA (Quỹ đạo ngang Parabol)
 		vy += ay * dt;
 		x += vx * dt;
 		y += vy * dt;
 
-		// Vượt quá tầm xa thì bắt đầu chu kỳ quay về
 		if (abs(x - startX) >= BOOMERANG_MAX_DISTANCE)
 		{
 			isReturning = true;
@@ -40,25 +39,24 @@ void Boomerang::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 	else
 	{
-		// PHASE 2: BAY VỀ VỚI QUỸ ĐẠO CONG (Kinematic Parabolic Homing)
+		// PHASE 2: BAY VỀ THEO ĐƯỜNG THẲNG (Linear Homing)
 		if (owner != nullptr && owner->GetState() != 4) // 4 là BroState::DIE
 		{
-			returnTimer -= (float)dt; // Trừ dần thời gian
-			if (returnTimer <= 0) returnTimer = 1.0f; // Chống lỗi chia cho 0 khi sát nút
+			returnTimer -= (float)dt;
+			if (returnTimer <= 0) returnTimer = 1.0f;
 
-			// Tọa độ mục tiêu (bàn tay Bro)
 			float targetX = owner->GetX();
-			float targetY = owner->GetY() - 4.0f;
+			float targetY = owner->GetY();
 
-			// Quãng đường cần bay (S)
+			// Tính quãng đường thẳng
 			float dx = targetX - x;
 			float dy = targetY - y;
 
-			// ÁP DỤNG CÔNG THỨC: v0 = S/t - 0.5*a*t
+			// THUẬT TOÁN ĐƯỜNG THẲNG: vx = S/t (Hoàn toàn triệt tiêu gia tốc ay)
 			vx = dx / returnTimer;
-			vy = (dy / returnTimer) + 0.5f * BOOMERANG_GRAVITY * returnTimer;
+			vy = dy / returnTimer;
 
-			// Áp dụng tọa độ (Không cần vy += ay * dt nữa vì vy đã tính toán sẵn gia tốc ở trên)
+			// Cập nhật tọa độ
 			x += vx * dt;
 			y += vy * dt;
 
@@ -76,9 +74,9 @@ void Boomerang::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 		else
 		{
-			// PHASE 3: MẤT CHỦ (Chủ chết) -> Trở về trạng thái rơi tự do
+			// PHASE 3: MẤT CHỦ -> Rơi tự do (Bật lại gia tốc)
 			vy += ay * dt;
-			x += vx * dt; // vx giữ nguyên dư âm của frame cuối cùng
+			x += vx * dt;
 			y += vy * dt;
 		}
 	}
@@ -89,7 +87,6 @@ void Boomerang::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		this->Delete();
 	}
 }
-
 void Boomerang::Render()
 {
 	Animations::GetInstance()->Get(ID_ANI_BOOMERANG)->Render(x, y);

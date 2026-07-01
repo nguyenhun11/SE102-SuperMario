@@ -7,29 +7,32 @@ BoomerangBro::BoomerangBro(float x, float y) : RespawnableEnemy(x, y)
 {
 	this->startX = x;
 	this->ay = BOOMERANG_BRO_GRAVITY;
-
-	SetState(static_cast<int>(BroState::WALKING));
-	OnEnable(); // Tái sử dụng hàm OnEnable làm khởi tạo
+	OnEnable();
 }
 
-// =================== LOGIC HỒI SINH VÀ DỌN RÁC ===================
 void BoomerangBro::OnEnable()
 {
 	this->isFlippedVertical = false;
-	this->isOnGround = false;
 	this->ay = BOOMERANG_BRO_GRAVITY;
-	this->action_start = GetTickCount64();
-	this->jump_start = GetTickCount64();
 
-	SetState(static_cast<int>(BroState::WALKING));
+	// Reset logic ném
+	this->throwCount = 0;
+	this->throwCooldown = 2000; // Sinh ra sau 2 giây mới ném phát đầu
+	this->throwStart = GetTickCount64();
+	this->isThrowing = false;
 
+	// Hướng mặt ban đầu
 	PlayScene* scene = (PlayScene*)SceneManager::GetInstance()->GetCurrentScene();
 	Mario* mario = (Mario*)scene->GetPlayer();
-	if (mario != nullptr)
-	{
+	if (mario != nullptr) {
 		nx = (mario->GetX() > this->x) ? 1 : -1;
-		vx = (nx > 0) ? BOOMERANG_BRO_WALKING_SPEED : -BOOMERANG_BRO_WALKING_SPEED;
 	}
+	else {
+		nx = -1;
+	}
+
+	this->vx = BOOMERANG_BRO_WALKING_SPEED;
+	SetState(static_cast<int>(BroState::ALIVE));
 }
 
 void BoomerangBro::OnExitCamera()
@@ -38,7 +41,6 @@ void BoomerangBro::OnExitCamera()
 	else RespawnableEnemy::OnExitCamera();
 }
 
-// =================================================================
 
 void BoomerangBro::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
@@ -62,12 +64,13 @@ void BoomerangBro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		vy += ay * dt;
 		x += vx * dt;
 		y += vy * dt;
-		RespawnableEnemy::Update(dt, coObjects); // Đẩy cập nhật camera cho class cha
+		RespawnableEnemy::Update(dt, coObjects);
 		return;
 	}
 
+	// 1. LUÔN NHÌN VỀ PHÍA MARIO
 	Mario* mario = (Mario*)((PlayScene*)SceneManager::GetInstance()->GetCurrentScene())->GetPlayer();
-	if (mario != NULL && state == static_cast<int>(BroState::WALKING))
+	if (mario != NULL)
 	{
 		float mx, my;
 		mario->GetPosition(mx, my);
@@ -75,50 +78,76 @@ void BoomerangBro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 
 	vy += ay * dt;
-	isOnGround = false;
+	ULONGLONG now = GetTickCount64();
 
-	if (state == static_cast<int>(BroState::WALKING))
+	// -------------------------------------------------------------
+	// HỆ THỐNG 1: DI CHUYỂN PING-PONG (Không phụ thuộc Animation)
+	// -------------------------------------------------------------
+	if (x <= startX - PATROL_RANGE)
 	{
-		if (x <= startX - PATROL_DISTANCE) vx = BOOMERANG_BRO_WALKING_SPEED;
-		else if (x >= startX + PATROL_DISTANCE) vx = -BOOMERANG_BRO_WALKING_SPEED;
+		x = startX - PATROL_RANGE; // Ép biên chống trôi
+		vx = BOOMERANG_BRO_WALKING_SPEED;
+	}
+	else if (x >= startX + PATROL_RANGE)
+	{
+		x = startX + PATROL_RANGE;
+		vx = -BOOMERANG_BRO_WALKING_SPEED;
+	}
+
+	// -------------------------------------------------------------
+	// HỆ THỐNG 2: CHU KỲ NÉM 2 NHỊP (Asynchronous)
+	// -------------------------------------------------------------
+	if (now - throwStart > throwCooldown)
+	{
+		ThrowBoomerang();
+		isThrowing = true;
+		throwAniStart = now;
+
+		if (throwCount == 0) // Vừa ném phát 1 xong
+		{
+			throwCount = 1;
+			throwCooldown = 1500; // Đợi 1.5 giây ném phát 2
+		}
+		else // Vừa ném phát 2 xong
+		{
+			throwCount = 0;
+			throwCooldown = 3000; // Đợi 3 giây để nạp lại chu kỳ mới
+		}
+
+		throwStart = now;
+	}
+
+	// Trả lại hình dáng đi bộ sau khi giơ tay 0.3s
+	if (isThrowing && now - throwAniStart > 300)
+	{
+		isThrowing = false;
+	}
+
+	if (isIdleAtEdge)
+	{
+		vx = 0; // Đứng yên
+		if (now - idleStart > 500) // Dừng 0.5 giây ở biên
+		{
+			isIdleAtEdge = false; // Hết giờ nghỉ, đi tiếp
+			// Đổi hướng: nếu đang ở biên trái (x <= startX - PATROL_RANGE) thì đi phải (vx > 0)
+			vx = (x < startX) ? BOOMERANG_BRO_WALKING_SPEED : -BOOMERANG_BRO_WALKING_SPEED;
+		}
 	}
 	else
 	{
-		vx = 0;
-	}
-
-	ULONGLONG now = GetTickCount64();
-	switch (state)
-	{
-	case static_cast<int>(BroState::WALKING):
-		if (now - action_start > 2500) SetState(static_cast<int>(BroState::WIND_UP_1));
-		break;
-	case static_cast<int>(BroState::WIND_UP_1):
-		if (now - action_start > 300)
+		// Đang đi bộ
+		if (x <= startX - PATROL_RANGE)
 		{
-			ThrowBoomerang();
-			SetState(static_cast<int>(BroState::WAIT_THROW_2));
+			x = startX - PATROL_RANGE;
+			isIdleAtEdge = true; // Bắt đầu dừng
+			idleStart = now;
 		}
-		break;
-	case static_cast<int>(BroState::WAIT_THROW_2):
-		if (now - action_start > 1000) SetState(static_cast<int>(BroState::WIND_UP_2));
-		break;
-	case static_cast<int>(BroState::WIND_UP_2):
-		if (now - action_start > 300)
+		else if (x >= startX + PATROL_RANGE)
 		{
-			ThrowBoomerang();
-			SetState(static_cast<int>(BroState::WALKING));
+			x = startX + PATROL_RANGE;
+			isIdleAtEdge = true; // Bắt đầu dừng
+			idleStart = now;
 		}
-		break;
-	}
-
-	if (now - jump_start > 3000)
-	{
-		if (isOnGround && state == static_cast<int>(BroState::WALKING))
-		{
-			vy = -BOOMERANG_BRO_JUMP_SPEED;
-		}
-		jump_start = now;
 	}
 
 	RespawnableEnemy::Update(dt, coObjects);
@@ -138,7 +167,7 @@ void BoomerangBro::OnCollisionWith(LPCOLLISIONEVENT e)
 	if (e->ny != 0)
 	{
 		vy = 0;
-		if (e->ny < 0) isOnGround = true;
+		// if (e->ny < 0) isOnGround = true;
 	}
 	else if (e->nx != 0)
 	{
@@ -155,37 +184,20 @@ int BoomerangBro::IsCollidable()
 void BoomerangBro::SetState(int state)
 {
 	RespawnableEnemy::SetState(state);
-	switch (state)
+	if (state == static_cast<int>(BroState::DIE))
 	{
-	case static_cast<int>(BroState::WALKING):
-		vx = (nx > 0) ? BOOMERANG_BRO_WALKING_SPEED : -BOOMERANG_BRO_WALKING_SPEED;
-		action_start = GetTickCount64();
-		break;
-	case static_cast<int>(BroState::WIND_UP_1):
-	case static_cast<int>(BroState::WAIT_THROW_2):
-	case static_cast<int>(BroState::WIND_UP_2):
-		vx = 0;
-		action_start = GetTickCount64();
-		break;
-	case static_cast<int>(BroState::DIE):
 		vy = -BOOMERANG_BRO_DEFLECT_SPEED;
 		vx = (nx > 0) ? -0.05f : 0.05f;
 		ay = BOOMERANG_BRO_GRAVITY;
 		isFlippedVertical = true;
-		break;
 	}
 }
 
 void BoomerangBro::Render()
 {
-	int aniId = ID_ANI_BOOMERANG_BRO_WALKING;
-
-	if (state == static_cast<int>(BroState::WIND_UP_1) || state == static_cast<int>(BroState::WIND_UP_2))
-	{
-		aniId = ID_ANI_BOOMERANG_BRO_THROWING;
-	}
-
+	int aniId = isThrowing ? ID_ANI_BOOMERANG_BRO_THROWING : ID_ANI_BOOMERANG_BRO_WALKING;
 	bool isFlippedHorizontal = (nx > 0);
+
 	float renderY = y + 4.5f;
 	Animations::GetInstance()->Get(aniId)->Render(x, renderY, isFlippedHorizontal, isFlippedVertical);
 }

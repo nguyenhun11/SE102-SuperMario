@@ -884,7 +884,7 @@ void PlayScene::DeactivatePSwitch(SwitchType type)
 	{
 		LPGAMEOBJECT obj = objects[i];
 
-		// Chỉ thao tác trên những Object có cờ "Hàng giả"
+		// Chỉ thao tác những Object có cờ "Hàng giả"
 		if (obj->isCreatedBySwitch)
 		{
 			fakeCount++; // Đã tìm thấy 1 món!
