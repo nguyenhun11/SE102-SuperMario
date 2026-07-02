@@ -27,7 +27,7 @@ piranha-fire.txt
 
 [CAMERA_ZONES]
 -1 1 165 14.5
-165 5 999 14.5
+165 0 999 14.5
 
 
 [GRID_OBJECTS]
@@ -501,6 +501,7 @@ piranha-fire.txt
 ### 2 woods above 2 bricks
 300 85 6 30001
 300 86 6 30001
+
 # PIPE
 # id x y, sprite size wh, tl tr ml mr
 702 85 4	16 16	2	70211 70212 70221 70222 70221 70222 1 21 233 32

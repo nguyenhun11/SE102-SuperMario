@@ -58,7 +58,15 @@ void PlayScene::_ParseSection_MAP_INFO(string line)
 {
 	vector<string> tokens = split(line);
 	if (tokens.size() < 1) return;
-	mapRight = (float)atof(tokens[0].c_str());
+	if (tokens.size() >= 2)
+	{
+		mapLeft = (float)atof(tokens[0].c_str());
+		mapRight = (float)atof(tokens[1].c_str());
+	}
+	else
+	{
+		mapRight = (float)atof(tokens[0].c_str());
+	}
 }
 
 void PlayScene::_ParseSection_CAMERA_ZONES(string line)
@@ -190,7 +198,7 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		break;
 	}
 	case OBJECT_TYPE_COIN: obj = new Coin(x, y); break;
-	case OBJECT_TYPE_KOOPA: 
+	case OBJECT_TYPE_KOOPA:
 	{
 		int color = 0; // 0 là GREEN, 1 là RED
 		if (tokens.size() > 3)
@@ -269,11 +277,11 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		}
 		else
 		{
-		obj = new SemisolidPlatform(x, y, cell_width, cell_height, columns, rows,
-			spriteID_tl, spriteID_tm, spriteID_tr,
-			spriteID_ml, spriteID_mm, spriteID_mr,
-			spriteID_bl, spriteID_bm, spriteID_br,
-			shadow_top, shadow_mid, shadow_bot);
+			obj = new SemisolidPlatform(x, y, cell_width, cell_height, columns, rows,
+				spriteID_tl, spriteID_tm, spriteID_tr,
+				spriteID_ml, spriteID_mm, spriteID_mr,
+				spriteID_bl, spriteID_bm, spriteID_br,
+				shadow_top, shadow_mid, shadow_bot);
 		}
 
 		break;
@@ -306,7 +314,7 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 
 		VerticalPipe* pipe = new VerticalPipe(x, y, cell_width, cell_height, rows,
 			idTopLeft, idTopRight, idBodyLeft, idBodyRight, idBottomLeft, idBottomRight, isBlock, targetScene, contentType, contentHeight);
-		
+
 		pipe->SpawnContent();
 		obj = pipe;
 
@@ -687,7 +695,10 @@ void PlayScene::Update(DWORD dt)
 		player->GetSpeed(pvx, pvy);
 		player->SetSpeed(0.0f, pvy);
 	}
-	float playerCeiling = mapTop - 64.0f;
+
+	CameraZone currentZone = GetCurrentZone(px, py);
+
+	float playerCeiling = currentZone.top * TILE_SIZE - 64.0f;
 
 	if (!mario->isFlyingToHeaven && py < playerCeiling)
 	{
@@ -701,7 +712,7 @@ void PlayScene::Update(DWORD dt)
 			player->SetSpeed(pvx, 0.0f);
 		}
 	}
-	float deathZone = mapBottom * TILE_SIZE + 48.0f; // Rot xuong 48px la die
+	float deathZone = currentZone.bottom * TILE_SIZE + 48.0f; // Rot xuong 48px la die
 	if (!mario->IsGoalRunning() && py > deathZone)
 	{
 		/*GameManager::GetInstance()->AddLife(-1);
@@ -713,7 +724,6 @@ void PlayScene::Update(DWORD dt)
 
 	//--- FOLLOW CAMERA
 	float cx = px, cy = py;
-	CameraZone currentZone = GetZoneX(px);
 	if (prevCameraZone.left == defaultCameraZone.left && prevCameraZone.top == defaultCameraZone.top &&
 		prevCameraZone.right == defaultCameraZone.right && prevCameraZone.bottom == defaultCameraZone.bottom)
 	{
@@ -737,19 +747,40 @@ void PlayScene::Update(DWORD dt)
 
 	float max_cx = mapRight * TILE_SIZE - GameGlobal::GetWidth();
 	float min_cx = mapLeft * TILE_SIZE;
-	float min_cy = currentZone.top * TILE_SIZE;
-	float max_cy = currentZone.bottom * TILE_SIZE - GameGlobal::GetHeight();
+
+	float zoneHeight = (currentZone.bottom - currentZone.top) * TILE_SIZE;
+	float screenHeight = GameGlobal::GetHeight();
+	float min_cy, max_cy;
+	if (zoneHeight <= screenHeight)
+	{
+		min_cy = currentZone.top * TILE_SIZE;
+		max_cy = currentZone.top * TILE_SIZE;
+	}
+	else
+	{
+		min_cy = currentZone.top * TILE_SIZE;
+		max_cy = currentZone.bottom * TILE_SIZE - screenHeight;
+	}
+	
 	if (cx < min_cx) cx = min_cx;
 	if (cx > max_cx) cx = max_cx;
 
 	// Clamp cy theo zone
-	float targetCamY = cy;
-	if (currentCamY < 0.0f)
+	// 1. Mặc định luôn ép Camera bám sát mặt đất (max_cy) thay vì đi theo cy
+	float targetCamY = max_cy;
+
+	// 2. Tính xem nếu giữ Mario ở giữa màn hình thì Camera nằm ở đâu (idealCamY)
+	float idealCamY = py - (playableHeight / 2);
+
+	// 3. Nếu Mario nhảy đủ cao để vượt qua giữa màn hình (idealCamY < max_cy)
+	// thì Camera mới bắt đầu trượt lên theo. Nếu nhảy lùn thì Camera đứng im!
+	if (idealCamY < max_cy)
 	{
-		currentCamY = targetCamY;
+		targetCamY = idealCamY;
 	}
+
+	// 4. Không cho Camera trượt lố khỏi trần nhà
 	if (targetCamY < min_cy) targetCamY = min_cy;
-	if (targetCamY > max_cy) targetCamY = max_cy;
 
 	// Lerp camera position
 	if (isTransitioningCamera)
@@ -954,14 +985,24 @@ void PlayScene::PurgeDeletedObjects()
 		objects.end());
 }
 
-CameraZone PlayScene::GetZoneX(float x)
+CameraZone PlayScene::GetCurrentZone(float x, float y)
 {
+	CameraZone* matchedZone = nullptr;
+
 	for (auto& zone : cameraZones)
 	{
 		if (x >= zone.left * TILE_SIZE && x <= zone.right * TILE_SIZE)
 		{
-			return zone;
+			if (y >= zone.top * TILE_SIZE && y <= zone.bottom * TILE_SIZE)
+			{
+				return zone;
+			}
+			matchedZone = &zone;
 		}
+	}
+	if (matchedZone != nullptr)
+	{
+		return *matchedZone;
 	}
 	return { mapLeft, mapTop, mapRight, mapBottom };
 }

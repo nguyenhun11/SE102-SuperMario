@@ -74,7 +74,7 @@ public:
 
 	void Clear();
 	void PurgeDeletedObjects();
-	CameraZone GetZoneX(float x);
+	CameraZone GetCurrentZone(float x, float y);
 
 	static bool IsGameObjectDeleted(const LPGAMEOBJECT& o);
 
