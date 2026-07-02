@@ -226,6 +226,8 @@ void Mario::OnCollisionWith(LPCOLLISIONEVENT e)
 
 	if (dynamic_cast<VerticalPipe*>(e->obj))
 		OnCollisionWithVerticalPipe(e);
+	else if (dynamic_cast<HorizontalPipe*>(e->obj))
+		OnCollisionWithHorizontalPipe(e);
 
 	if (dynamic_cast<Mushroom*>(e->obj))
 		OnCollisionWithMushroom(e);
@@ -676,6 +678,26 @@ void Mario::OnCollisionWithVerticalPipe(LPCOLLISIONEVENT e)
 	}
 }
 
+void Mario::OnCollisionWithHorizontalPipe(LPCOLLISIONEVENT e)
+{
+	if (isPiping) return; // Đang chui rồi thì không xét va chạm nữa
+
+	HorizontalPipe* pipe = dynamic_cast<HorizontalPipe*>(e->obj);
+	if (pipe == nullptr) return;
+
+	if (e->nx != 0 && pipe->isEntrance())
+	{
+		isPiping = true;
+		isPipingHorizontal = true;
+		pipingDirectionX = (e->nx < 0) ? 1 : -1;
+		this->nx = pipingDirectionX;
+
+		activeHorizontalPipe = pipe;
+		piping_start = GetTickCount64();
+		// this->y = pipe->GetY() + ...; 
+	}
+}
+
 /// <summary>
 /// / NHỚ CẬP NHẬT
 /// </summary>
@@ -727,7 +749,7 @@ int Mario::GetAniIdSmall()
 	}
 	if (!isOnPlatform)	// mario tren khong
 	{
-		if (isPipingUp)
+		if (isPipingUp && !isPipingHorizontal)
 		{
 			aniId = ID_ANI_MARIO_SMALL_PIPING;
 			return aniId;
@@ -742,7 +764,7 @@ int Mario::GetAniIdSmall()
 		}
 	}
 	else		// mario dung tren mat đất
-		if (isPiping)
+		if (isPiping && !isPipingHorizontal)
 		{
 			aniId = ID_ANI_MARIO_SMALL_PIPING;
 			return aniId;
@@ -800,7 +822,7 @@ int Mario::GetAniIdBig()
 	}
 	if (!isOnPlatform)
 	{
-		if (isPipingUp)
+		if (isPipingUp && !isPipingHorizontal)
 		{
 			aniId = ID_ANI_MARIO_SUPER_PIPING;
 			return aniId;
@@ -817,7 +839,7 @@ int Mario::GetAniIdBig()
 		}
 	}
 	else
-		if (isPiping)
+		if (isPiping && !isPipingHorizontal)
 		{
 			aniId = ID_ANI_MARIO_SUPER_PIPING;
 			return aniId;
@@ -874,7 +896,7 @@ int Mario::GetAniIdRacoon()
 	}
 	if (!isOnPlatform)
 	{
-		if (isPipingUp)
+		if (isPipingUp && !isPipingHorizontal)
 		{
 			aniId = ID_ANI_MARIO_SUPER_PIPING;
 			return aniId;
@@ -894,7 +916,7 @@ int Mario::GetAniIdRacoon()
 		}
 	}
 	else
-		if (isPiping)
+		if (isPiping && !isPipingHorizontal)
 		{
 			aniId = ID_ANI_MARIO_RACOON_PIPING;
 			return aniId;
@@ -1679,25 +1701,43 @@ void Mario::HandlePiping(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		return;
 	}
 
-	vy = isPipingUp ? -MARIO_PIPE_SPEED : MARIO_PIPE_SPEED;
-	vx = 0.0f;
 	accelX = 0.0f;
 	accelY = 0.0f;
-	y += vy * dt;
+	if (isPipingHorizontal)
+	{
+		vx = pipingDirectionX * MARIO_PIPE_SPEED;
+		vy = 0.0f;
+		x += vx * dt; // Trượt ngang
+	}
+	else
+	{
+		vy = isPipingUp ? -MARIO_PIPE_SPEED : MARIO_PIPE_SPEED;
+		vx = 0.0f;
+		y += vy * dt; // Trượt dọc
+	}
 
 	if (GetTickCount64() - piping_start > MARIO_PIPE_TIME)
 	{
-		isPiping = false;
+		int targetScene = -1;
 
-		VerticalPipe* activePipe = isPipingUp ? pipeAbove : pipeBelow;
-
-		if (activePipe != nullptr)
+		if (isPipingHorizontal && activeHorizontalPipe != nullptr)
 		{
-			int targetScene = activePipe->GetTargetSceneId();
+			targetScene = activeHorizontalPipe->GetTargetSceneId();
+		}
+		else // Ống dọc
+		{
+			VerticalPipe* activePipe = isPipingUp ? pipeAbove : pipeBelow;
+			if (activePipe != nullptr) targetScene = activePipe->GetTargetSceneId();
+		}
 
+		if (targetScene != -1 && targetScene != 999)
+		{
+			isPiping = false;
+			isPipingHorizontal = false;
 			isPipingUp = false;
 			pipeAbove = nullptr;
 			pipeBelow = nullptr;
+			activeHorizontalPipe = nullptr;
 
 			GameManager::GetInstance()->isGoingThroughPipe = true;
 			SceneManager::GetInstance()->InitiateSwitchScene(targetScene);
@@ -1705,16 +1745,17 @@ void Mario::HandlePiping(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		else
 		{
 			isPiping = false;
+			isPipingHorizontal = false;
 			isPipingUp = false;
 			pipeAbove = nullptr;
 			pipeBelow = nullptr;
+			activeHorizontalPipe = nullptr;
 
 			this->isOnPlatform = true;
 			this->vx = 0.0f;
-			this->vy = 0.0f;
+			this->vy = 0.0f; // Bóp phanh trục Y
 			this->accelX = 0.0f;
-			this->accelY = MARIO_GRAVITY;
-
+			this->accelY = MARIO_GRAVITY; // Bật lại trọng lực
 
 			GameObject::SetState(static_cast<int>(MarioState::IDLE));
 		}

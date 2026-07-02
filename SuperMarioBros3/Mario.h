@@ -256,6 +256,9 @@ class Mario : public GameObject
 	VerticalPipe* pipeBelow;
 	VerticalPipe* pipeAbove;
 	bool isPipingUp = false;
+	bool isPipingHorizontal = false;
+	int pipingDirectionX = 0; // 1: chui qua phải, -1: chui qua trái
+	HorizontalPipe* activeHorizontalPipe = nullptr;
 
 	void OnCollisionWithGoalBlock(LPCOLLISIONEVENT e);
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
@@ -276,6 +279,7 @@ class Mario : public GameObject
 	void OnCollisionWithBrick(LPCOLLISIONEVENT e);
 	void OnCollisionWithNoteBlock(LPCOLLISIONEVENT e);
 	void OnCollisionWithVerticalPipe(LPCOLLISIONEVENT e);
+	void OnCollisionWithHorizontalPipe(LPCOLLISIONEVENT e);
 
 	int GetAniIdBig();
 	int GetAniIdSmall();
@@ -287,6 +291,7 @@ class Mario : public GameObject
 public:
 	bool isFlyingToHeaven;
 	int heavenSceneID;
+
 
 	Mario(float x, float y) : GameObject(x, y)
 	{
