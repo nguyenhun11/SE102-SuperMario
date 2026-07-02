@@ -58,14 +58,26 @@ void PlayScene::_ParseSection_MAP_INFO(string line)
 {
 	vector<string> tokens = split(line);
 	if (tokens.size() < 1) return;
-	if (tokens.size() >= 2)
+
+	if (tokens.size() == 1)
+	{
+		mapRight = (float)atof(tokens[0].c_str());
+		isAutoScroll = false;
+		autoScrollSpeed = 0.0f;
+	}
+	else if (tokens.size() == 2)
 	{
 		mapLeft = (float)atof(tokens[0].c_str());
 		mapRight = (float)atof(tokens[1].c_str());
+		isAutoScroll = false;
+		autoScrollSpeed = 0.0f;
 	}
-	else
+	else if (tokens.size() >= 3)
 	{
-		mapRight = (float)atof(tokens[0].c_str());
+		mapLeft = (float)atof(tokens[0].c_str());
+		mapRight = (float)atof(tokens[1].c_str());
+		autoScrollSpeed = (float)atof(tokens[2].c_str());
+		isAutoScroll = (autoScrollSpeed > 0.0f);
 	}
 }
 
@@ -682,15 +694,37 @@ void PlayScene::Update(DWORD dt)
 		max_player_x = 999 * TILE_SIZE;
 	}
 
-
-	if (px < mapLeft)
+	if (isAutoScroll)
 	{
-		px = mapLeft;
-		player->SetPosition(px, py); // Khóa Y, ép X quay lại mép trái
+		float currentCamX = Camera::GetInstance()->GetCamX();
+		float screenRightEdge = currentCamX + GameGlobal::GetWidth() - 16.0f;
+
+		if (max_player_x > screenRightEdge)
+		{
+			max_player_x = screenRightEdge;
+		}
+	}
+
+	float camX = Camera::GetInstance()->GetCamX();
+	float limitLeft = ((camX > mapLeft) ? camX : mapLeft) + 16.0f;
+
+	if (px <= limitLeft)
+	{
+		px = limitLeft;
+		player->SetPosition(px, py);
 
 		float pvx, pvy;
 		player->GetSpeed(pvx, pvy);
-		player->SetSpeed(0.0f, pvy);
+
+		if (isAutoScroll)
+		{
+			player->SetSpeed(autoScrollSpeed, pvy);
+			mario->SetNx(1);
+		}
+		else
+		{
+			player->SetSpeed(0.0f, pvy);
+		}
 	}
 	else if (px > max_player_x)			/// chặn phải
 	{
@@ -746,7 +780,14 @@ void PlayScene::Update(DWORD dt)
 	float hudHeight = HUD_HEIGHT;
 	float playableHeight = GameGlobal::GetHeight() - hudHeight;
 
-	cx -= GameGlobal::GetWidth() / 2;
+	if (isAutoScroll)
+	{
+		cx = Camera::GetInstance()->GetCamX() + autoScrollSpeed * dt;
+	}
+	else
+	{
+		cx = px - GameGlobal::GetWidth() / 2;
+	}
 	cy -= playableHeight / 2;
 
 
@@ -766,10 +807,13 @@ void PlayScene::Update(DWORD dt)
 		min_cy = currentZone.top * TILE_SIZE;
 		max_cy = currentZone.bottom * TILE_SIZE - screenHeight;
 	}
-	
-	if (cx < min_cx) cx = min_cx;
-	if (cx > max_cx) cx = max_cx;
 
+	if (cx < min_cx) cx = min_cx;
+	if (cx >= max_cx)
+	{
+		cx = max_cx;
+		isAutoScroll = false;
+	}
 	// Clamp cy theo zone
 	// 1. Mặc định luôn ép Camera bám sát mặt đất (max_cy) thay vì đi theo cy
 	float targetCamY = max_cy;
@@ -818,7 +862,7 @@ void PlayScene::Update(DWORD dt)
 	{
 		if (GetTickCount64() - GameManager::GetInstance()->pSwitchTimer > SWITCH_ACTIVATION_TIME)
 		{
-			DeactivatePSwitch(); 
+			DeactivatePSwitch();
 			GameManager::GetInstance()->isPSwitchActive = false;
 		}
 	}

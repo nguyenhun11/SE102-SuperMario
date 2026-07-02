@@ -160,6 +160,7 @@
     <None Include="GameObjectDocument.md" />
     <None Include="irrKlang.dll" />
     <None Include="packages.config" />
+    <None Include="stage4_assets.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Boomerang.cpp" />
@@ -350,6 +351,7 @@
     <Text Include="pipe.txt" />
     <Text Include="stage3.txt" />
     <Text Include="stage3_assets.txt" />
+    <Text Include="stage4.txt" />
     <Text Include="switch.txt" />
     <Text Include="world-scene-assets.txt" />
     <Text Include="world-scene.txt" />

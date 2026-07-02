@@ -25,6 +25,9 @@ class PlayScene: public Scene
 {
 private: 
 	SwitchType currentSwitchType = SwitchType::BrickToCoin;
+
+	bool isAutoScroll = false;
+	float autoScrollSpeed = 0.0f;
 protected: 
 	// A play scene has to have player, right? 
 	LPGAMEOBJECT player;					
