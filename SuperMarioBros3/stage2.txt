@@ -36,7 +36,7 @@ piranha-fire.txt
 # See OBJECT_TYPE constants in AssetIDs.h
 
 # MARIO
-0 1 10
+0 80 10
 
 303 5 9 0	5
 303 7 7 2
@@ -409,7 +409,7 @@ piranha-fire.txt
 # Cột 60, 61 bề mặt ở Y=11 (sát đáy) nên không đắp đất
 # PIPE
 # id x y, sprite size wh, tl tr ml mr
-702 68 7	16 16	4	70211 70212 70221 70222 70221 70222
+702 68 7	16 16	4	70211 70212 70221 70222 70221 70222 1	999
 
 # Cột 62, 63
 600 62 11 60222
@@ -503,7 +503,12 @@ piranha-fire.txt
 300 86 6 30001
 # PIPE
 # id x y, sprite size wh, tl tr ml mr
-702 85 4	16 16	2	70211 70212 70221 70222 70221 70222 1 -1 233 24
+702 85 4	16 16	2	70211 70212 70221 70222 70221 70222 1 21 233 32
+
+# TEMP BRICK TO TEST
+300 88 8 30001
+300 89 7 30001
+300 90 6 30001
 
 
 ### COIN

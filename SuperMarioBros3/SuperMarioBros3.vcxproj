@@ -332,6 +332,7 @@
     <Text Include="goomba.txt" />
     <Text Include="koopa.txt" />
     <Text Include="HUD.txt" />
+    <Text Include="stage2_1.txt" />
     <Text Include="stage2_assets.txt" />
     <Text Include="note_block.txt" />
     <Text Include="piranha-fire.txt" />
