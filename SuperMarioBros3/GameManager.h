@@ -33,6 +33,8 @@ public:
 	bool isWinning;
 	bool displayWinningText;
 
+	bool isPSwitchActive = false;
+	ULONGLONG pSwitchTimer = 0;
 
 	void Update(DWORD dt);
 

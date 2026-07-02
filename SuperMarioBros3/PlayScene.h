@@ -12,7 +12,7 @@
 
 // Forward declaration
 
-#define SWITCH_ACTIVATION_TIME 5000 // thời gian hiệu lực của switch
+#define SWITCH_ACTIVATION_TIME 10000 // thời gian hiệu lực của switch
 #define CAMERA_TRANSITION_TIME 500
 
 struct CameraZone
@@ -25,6 +25,9 @@ class PlayScene: public Scene
 {
 private: 
 	SwitchType currentSwitchType = SwitchType::BrickToCoin;
+
+	bool isAutoScroll = false;
+	float autoScrollSpeed = 0.0f;
 protected: 
 	// A play scene has to have player, right? 
 	LPGAMEOBJECT player;					
@@ -42,8 +45,6 @@ protected:
 
 	void LoadAssets(LPCWSTR assetFile);
 
-	ULONGLONG pSwitchTimer = 0;
-	bool isPSwitchActive = false;
 	float mapRight = 200;	// này tính theo tile (16 x 16)
 	float mapLeft = -0.5f;
 	float mapTop = -500;    
@@ -74,12 +75,12 @@ public:
 
 	void Clear();
 	void PurgeDeletedObjects();
-	CameraZone GetZoneX(float x);
+	CameraZone GetCurrentZone(float x, float y);
 
 	static bool IsGameObjectDeleted(const LPGAMEOBJECT& o);
 
-	void ActivatePSwitch(SwitchType type);
-	void DeactivatePSwitch(SwitchType type);
+	void ActivatePSwitch(bool isFromLoad);
+	void DeactivatePSwitch();
 };
 
 typedef PlayScene* LPPLAYSCENE;
