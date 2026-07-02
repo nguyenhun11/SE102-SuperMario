@@ -65,7 +65,7 @@ public:
 
     virtual void Render()
     {
-        RenderBoundingBox();
+        //RenderBoundingBox();
     }
 
     // Các hàm thuần ảo bắt buộc của GameObject nhưng không dùng logic vật lý Swept AABB cho Sensor
