@@ -377,7 +377,11 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 
 	case OBJECT_TYPE_INVISIBLE_BLOCK: {
 		InvisibleType type = static_cast<InvisibleType>(atoi(tokens[3].c_str()));
-		obj = new InvisibleBlock(x, y, type);
+		int sceneID = -1;
+		if (tokens.size() > 4) {
+			sceneID = atoi(tokens[4].c_str());
+		}
+		obj = new InvisibleBlock(x, y, type, sceneID);
 		break;
 	}
 
@@ -685,7 +689,7 @@ void PlayScene::Update(DWORD dt)
 	}
 	float playerCeiling = mapTop - 64.0f;
 
-	if (py < playerCeiling)
+	if (!mario->isFlyingToHeaven && py < playerCeiling)
 	{
 		py = playerCeiling;
 		player->SetPosition(px, py);

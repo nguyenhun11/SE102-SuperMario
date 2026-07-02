@@ -11,7 +11,7 @@
 #define NOTE_BLOCK_BOUNCE_SPEED 0.1f
 #define NOTE_BLOCK_BOUNCE_HEIGHT 8.0f
 
-#define NOTE_BLOCK_FLY_SPEED 0.1f
+#define NOTE_BLOCK_FLY_SPEED 0.7f
 
 enum class NoteBlockState
 {
@@ -30,11 +30,13 @@ private:
 	NoteBlockState currentState;
 	int bounceCount;
 	bool wantsHighJump;
+
 	bool isRedBlock;
+	int targetSceneID;
 
 public:
 	NoteBlock(float x, float y, int containedItem = 0, int count = 1);
-	NoteBlock(float x, float y, bool isRed);
+	NoteBlock(float x, float y, bool isRed, int targetSceneID);
 
 	virtual void Render();
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);

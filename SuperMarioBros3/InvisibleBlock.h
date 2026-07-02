@@ -12,8 +12,10 @@ class InvisibleBlock : public GameObject
 	InvisibleType type;
 	bool isTriggered;
 
+	int noteBlockSceneID; // Chỉ sử dụng khi type là NOTE_BLOCK
+
 public:
-	InvisibleBlock(float x, float y, InvisibleType type);
+	InvisibleBlock(float x, float y, InvisibleType type, int sceneID = -1);
 
 	virtual void Render();
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);

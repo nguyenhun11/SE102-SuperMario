@@ -58,6 +58,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 
 	HandlePiping(dt, coObjects);
+	HandleFlyingToHeaven(dt, coObjects);
 	if (isPiping) return;
 	HandleDying(dt, coObjects);
 	HandleTakingDamage(dt, coObjects);
@@ -1762,6 +1763,33 @@ void Mario::HandleKicking(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			isKicking = false;
 			kick_start = -1;
+		}
+	}
+}
+
+void Mario::StartFlyingToHeaven(int sceneID)
+{
+	isFlyingToHeaven = true;
+	heavenSceneID = sceneID;
+	// SoundManager::GetInstance()->Play("power_jump");
+}
+
+void Mario::HandleFlyingToHeaven(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+{
+	if (!isFlyingToHeaven) return;
+
+	float triggerY = -100.0f;
+
+	if (this->y < triggerY)
+	{
+		isFlyingToHeaven = false;
+		SetSpeed(0.0f, 0.0f);
+
+		GameManager::GetInstance()->isGoingThroughPipe = true;
+
+		if (heavenSceneID != -1)
+		{
+			SceneManager::GetInstance()->InitiateSwitchScene(heavenSceneID);
 		}
 	}
 }

@@ -285,6 +285,9 @@ class Mario : public GameObject
 
 
 public:
+	bool isFlyingToHeaven;
+	int heavenSceneID;
+
 	Mario(float x, float y) : GameObject(x, y)
 	{
 		start_x = x;
@@ -313,6 +316,8 @@ public:
 		isDieBounce = false;
 
 		isGoalRunning = false;
+		isFlyingToHeaven = false;
+		heavenSceneID = -1;
 
 		untouchable = 0;
 		untouchable_start = -1;
@@ -406,6 +411,8 @@ public:
 	int GetDirection() { return nx; }
 	bool IsOnPlatform() { return isOnPlatform; }
 	void SetIsOnPlatform(bool on) { isOnPlatform = on; }
+	void StartFlyingToHeaven(int sceneID);
+	void HandleFlyingToHeaven(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 
 	bool isHolding = false;
 	Koopa* heldKoopa = NULL;

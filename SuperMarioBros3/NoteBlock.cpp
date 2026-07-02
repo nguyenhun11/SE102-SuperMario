@@ -39,9 +39,10 @@ NoteBlock::NoteBlock(float x, float y, int containedItem, int cnt) : GameObject(
     zIndex = 5;
 }
 
-NoteBlock::NoteBlock(float x, float y, bool isRed) : NoteBlock(x, y, 0, 0)
+NoteBlock::NoteBlock(float x, float y, bool isRed, int targetSceneID) : NoteBlock(x, y, 0, 0)
 {
     this->isRedBlock = isRed;
+    this->targetSceneID = targetSceneID;
 }
 
 void NoteBlock::GetBoundingBox(float& l, float& t, float& r, float& b)
@@ -152,11 +153,11 @@ void NoteBlock::MarioJumpDeflect()
         {
             mario->SetState(MarioState::JUMP);
             mario->IsHoldingJump = true;
+
             if (this->isRedBlock)
             {
-                mario->SetSpeed(0.0f, -0.8f);
-                mario->SetState(MarioState::PIPING);
-                //SoundManager::GetInstance()->Play("power_jump");
+                mario->SetSpeed(0.0f, -NOTE_BLOCK_FLY_SPEED); // Bắn lên trời
+                mario->StartFlyingToHeaven(this->targetSceneID);
             }
             else
             {

@@ -3,10 +3,11 @@
 #include "QuestionBlock.h"
 #include "PlayScene.h" // Để lấy Scene hiện tại và thêm Block mới vào danh sách
 
-InvisibleBlock::InvisibleBlock(float x, float y, InvisibleType type) : GameObject(x, y)
+InvisibleBlock::InvisibleBlock(float x, float y, InvisibleType type, int sceneID) : GameObject(x, y)
 {
 	this->type = type;
 	this->isTriggered = false;
+	this->noteBlockSceneID = sceneID; // Sử dụng scene ID được truyền vào
 }
 
 void InvisibleBlock::GetBoundingBox(float& l, float& t, float& r, float& b)
@@ -43,7 +44,7 @@ void InvisibleBlock::Trigger()
 
 	if (type == InvisibleType::NOTE_BLOCK)
 	{
-		newBlock = new NoteBlock(x, y, true);
+		newBlock = new NoteBlock(x, y, true, noteBlockSceneID);
 	}
 	else if (type == InvisibleType::QUESTION_BLOCK)
 	{
