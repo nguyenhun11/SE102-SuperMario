@@ -610,6 +610,11 @@ void PlayScene::Load()
 	float screenHeight = GameGlobal::GetHeight();
 	HUD::GetInstance()->SetPosition(0.0f, screenHeight - HUD_HEIGHT);
 	GameManager::GetInstance()->ResetTimer(300000);
+	if (GameManager::GetInstance()->isPSwitchActive)
+	{
+		// Nếu P-Switch đang bật từ map trước, lập tức Swap toàn bộ map mới!
+		ActivatePSwitch(true);
+	}
 
 	DebugOut(L"[INFO] Done loading scene  %s\n", sceneFilePath);
 }
@@ -809,15 +814,13 @@ void PlayScene::Update(DWORD dt)
 		Camera::GetInstance()->SetCamPos(cx, currentCamY);
 	}
 
-	if (isPSwitchActive)
+	if (GameManager::GetInstance()->isPSwitchActive)
 	{
-		if (GetTickCount64() - pSwitchTimer > SWITCH_ACTIVATION_TIME)
+		if (GetTickCount64() - GameManager::GetInstance()->pSwitchTimer > SWITCH_ACTIVATION_TIME)
 		{
-			//DebugOut(L"[PSWITCH] ---> ĐÃ HẾT GIỜ! Gọi DeactivatePSwitch()\n");
-			DeactivatePSwitch(currentSwitchType);
+			DeactivatePSwitch(); 
+			GameManager::GetInstance()->isPSwitchActive = false;
 		}
-
-		//DebugOut(L"[INFO] P-Switch active for %lld ms\n", GetTickCount64() - pSwitchTimer);
 	}
 
 	PurgeDeletedObjects();
@@ -878,91 +881,78 @@ void PlayScene::Unload()
 
 bool PlayScene::IsGameObjectDeleted(const LPGAMEOBJECT& o) { return o == NULL; }
 
-void PlayScene::ActivatePSwitch(SwitchType type)
+void PlayScene::ActivatePSwitch(bool isFromLoad)
 {
-	isPSwitchActive = true;
-	currentSwitchType = type;
-	pSwitchTimer = GetTickCount64();
 	SoundManager::GetInstance()->Play("bump");
 	vector<LPGAMEOBJECT> newObjects;
+
+	// Chỉ reset lại đồng hồ nếu là do Mario tự đạp vào nút (không phải do Load map)
+	if (!isFromLoad)
+	{
+		GameManager::GetInstance()->isPSwitchActive = true;
+		GameManager::GetInstance()->pSwitchTimer = GetTickCount64();
+	}
 
 	for (size_t i = 0; i < objects.size(); i++)
 	{
 		LPGAMEOBJECT obj = objects[i];
 
-		if (type == SwitchType::BrickToCoin && dynamic_cast<Brick*>(obj)
-			&& ((Brick*)obj)->GetCurrentState() == BrickState::ACTIVE)
+		// 1. Chuyển TẤT CẢ GẠCH THÀNH TIỀN
+		if (dynamic_cast<Brick*>(obj) && ((Brick*)obj)->GetCurrentState() == BrickState::ACTIVE)
 		{
-			// Xóa viên gạch
 			obj->Delete();
-
-			// Sinh ra đồng tiền tại vị trí đó
 			Coin* c = new Coin(obj->GetX(), obj->GetY());
-			c->isCreatedBySwitch = true; // Đánh dấu đây là đồ giả
+			c->isCreatedBySwitch = true; // Tiền giả
 			newObjects.push_back(c);
 		}
-		else if (type == SwitchType::CoinToBrick && dynamic_cast<Coin*>(obj))
+		// 2. Chuyển TẤT CẢ TIỀN THÀNH GẠCH
+		// Điều kiện !isCreatedBySwitch để đảm bảo nó không biến luôn cái đồng tiền vừa tạo ra ở trên thành gạch lại
+		else if (dynamic_cast<Coin*>(obj) && !((Coin*)obj)->isCreatedBySwitch)
 		{
-			// Xóa đồng tiền
 			obj->Delete();
-
-			// Sinh ra viên gạch
 			Brick* b = new Brick(obj->GetX(), obj->GetY());
-			b->isCreatedBySwitch = true;
+			b->isCreatedBySwitch = true; // Gạch giả
 			newObjects.push_back(b);
 		}
 	}
 
-	// Đổ các object mới tạo vào danh sách chính
 	for (auto newObj : newObjects) {
 		objects.push_back(newObj);
 	}
 }
 
-void PlayScene::DeactivatePSwitch(SwitchType type)
+void PlayScene::DeactivatePSwitch()
 {
-	isPSwitchActive = false;
+	GameManager::GetInstance()->isPSwitchActive = false;
 	vector<LPGAMEOBJECT> newObjects;
-
-	int fakeCount = 0;     // Đếm số lượng "hàng giả" tìm thấy
-	int deletedCount = 0;  // Đếm số lượng đã xóa và biến đổi thành công
-
-	DebugOut(L"[DeactivatePSwitch] Bat dau quet %d objects...\n", objects.size());
 
 	for (size_t i = 0; i < objects.size(); i++)
 	{
 		LPGAMEOBJECT obj = objects[i];
 
-		// Chỉ thao tác những Object có cờ "Hàng giả"
-		if (obj->isCreatedBySwitch)
-		{
-			fakeCount++; // Đã tìm thấy 1 món!
+		// Chỉ thao tác với "Hàng giả" (được sinh ra từ P-Switch)
+		if (!obj->isCreatedBySwitch) continue;
 
-			// Thay currentSwitchType bằng biến 'type' được truyền vào cho an toàn tuyệt đối
-			if (type == SwitchType::BrickToCoin && dynamic_cast<Coin*>(obj))
-			{
-				obj->Delete();
-				Brick* b = new Brick(obj->GetX(), obj->GetY());
-				b->SetState(BrickState::ACTIVE); // MỘT SỐ ENGINE CẦN DÒNG NÀY (VD: BRICK_STATE_ACTIVE) ĐỂ GẠCH HIỆN LÊN
-				newObjects.push_back(b);
-				deletedCount++;
-			}
-			else if (type == SwitchType::CoinToBrick && dynamic_cast<Brick*>(obj))
-			{
-				obj->Delete();
-				Coin* c = new Coin(obj->GetX(), obj->GetY());
-				newObjects.push_back(c);
-				deletedCount++;
-			}
+		if (dynamic_cast<Coin*>(obj))
+		{
+			obj->Delete();
+			Brick* b = new Brick(obj->GetX(), obj->GetY());
+			b->SetState(BrickState::ACTIVE);
+			newObjects.push_back(b);
+		}
+		else if (dynamic_cast<Brick*>(obj))
+		{
+			obj->Delete();
+			Coin* c = new Coin(obj->GetX(), obj->GetY());
+			newObjects.push_back(c);
 		}
 	}
 
-	for (auto newObj : newObjects) {
+	// Đổ các object vừa được phục hồi vào danh sách chính
+	for (auto newObj : newObjects)
+	{
 		objects.push_back(newObj);
 	}
-
-	// DÒNG KẾT LUẬN QUAN TRỌNG NHẤT
-	DebugOut(L"[DeactivatePSwitch] Tim thay %d hang gia | Da bien doi %d mon\n", fakeCount, deletedCount);
 }
 
 void PlayScene::PurgeDeletedObjects()

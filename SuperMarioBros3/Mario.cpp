@@ -263,9 +263,12 @@ void Mario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithPortal(e);
 	else if (dynamic_cast<Switch*>(e->obj)) {
 		Switch* p = dynamic_cast<Switch*>(e->obj);
-		if (/*e->ny < 0 &&*/ !p->IsPressed()) {
+		if (e->ny < 0 && !p->IsPressed()) {
 			p->SetPressed();
-			((PlayScene*)SceneManager::GetInstance()->GetCurrentScene())->ActivatePSwitch(p->GetType());
+
+			((PlayScene*)SceneManager::GetInstance()->GetCurrentScene())->ActivatePSwitch(false);
+
+			this->vy = -0.2f;
 		}
 	}
 	else if (dynamic_cast<NoteBlock*>(e->obj))

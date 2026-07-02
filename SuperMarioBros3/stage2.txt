@@ -21,6 +21,7 @@ goal.txt
 goalblock.txt
 stage2_assets.txt
 piranha-fire.txt
+switch.txt
 
 [MAP_INFO]
 187
@@ -495,7 +496,7 @@ piranha-fire.txt
 600 84 10 6000312
 
 ### 2 bricks below 2 woods
-301	85 10 0
+301	85 10 1 1
 301	86 10 0
 
 ### 2 woods above 2 bricks
@@ -505,12 +506,6 @@ piranha-fire.txt
 # PIPE
 # id x y, sprite size wh, tl tr ml mr
 702 85 4	16 16	2	70211 70212 70221 70222 70221 70222 1 21 233 32
-
-# TEMP BRICK TO TEST
-300 88 8 30001
-300 89 7 30001
-300 90 6 30001
-
 
 ### COIN
 401	79	8
