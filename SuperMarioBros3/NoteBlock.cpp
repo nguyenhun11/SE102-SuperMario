@@ -13,6 +13,8 @@ NoteBlock::NoteBlock(float x, float y, int containedItem, int cnt) : GameObject(
     this->state = static_cast<int>(NoteBlockState::ACTIVE);
     this->vy = 0;
 	this->bounceCount = cnt;
+	this->isRedBlock = false;
+    wantsHighJump = false;
 
     switch (containedItem)
     {
@@ -37,6 +39,12 @@ NoteBlock::NoteBlock(float x, float y, int containedItem, int cnt) : GameObject(
     zIndex = 5;
 }
 
+NoteBlock::NoteBlock(float x, float y, bool isRed, int targetSceneID) : NoteBlock(x, y, 0, 0)
+{
+    this->isRedBlock = isRed;
+    this->targetSceneID = targetSceneID;
+}
+
 void NoteBlock::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
     l = x - NOTE_BLOCK_BBOX_WIDTH / 2;
@@ -49,7 +57,6 @@ void NoteBlock::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
     y += vy * dt;
 
-    // Logic nảy 
     if (currentState == NoteBlockState::BOUNCING_UP)
     {
         if (startY - y >= NOTE_BLOCK_BOUNCE_HEIGHT && vy < 0)
@@ -62,35 +69,72 @@ void NoteBlock::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
             vy = 0;
             if (bounceCount > 0)
             {
-                if (item != ContainedItem::COIN) // Nếu có item kích hoạt
-                {
-                    SpawnItem();
-                }
-                else 
-                {
-                    SpawnItem(); // Coin ăn liên tục
-                }
+                SpawnItem();
             }
             bounceCount--;
             SetState(NoteBlockState::ACTIVE);
         }
     }
-    // Logic lún
+
     else if (currentState == NoteBlockState::BOUNCING_DOWN)
     {
-        if (y - startY >= NOTE_BLOCK_BOUNCE_HEIGHT && vy > 0)
+        PlayScene* playScene = (PlayScene*)SceneManager::GetInstance()->GetCurrentScene();
+        Mario* mario = (Mario*)playScene->GetPlayer();
+
+        InputManager* input = InputManager::GetInstance();
+        if (input->IsKeyDown(DIK_SPACE) || input->IsKeyDown(DIK_Z))
         {
-            vy = -NOTE_BLOCK_BOUNCE_SPEED;
-            MarioJumpDeflect(); // Đẩy Mario bắn lên ngay lúc hộp bắt đầu nảy ngược lại
+            this->wantsHighJump = true;
         }
-        else if (y <= startY && vy < 0)
+
+        if (mario != nullptr)
         {
-            y = startY;
-            vy = 0;
-            SetState(NoteBlockState::ACTIVE);
+            float mx, my;
+            mario->GetPosition(mx, my);
+
+            mario->SetPosition(mx, this->y - 16.0f);
+
+            float mvx, mvy;
+            mario->GetSpeed(mvx, mvy);
+            mario->SetSpeed(mvx, 0.0f);
+
+            mario->SetIsOnPlatform(false);
+        }
+
+        if (vy > 0)
+        {
+            if (y - startY >= NOTE_BLOCK_BOUNCE_HEIGHT)
+            {
+                y = startY + NOTE_BLOCK_BOUNCE_HEIGHT;
+                vy = -NOTE_BLOCK_BOUNCE_SPEED;
+            }
+        }
+        else if (vy < 0)
+        {
+            if (y <= startY)
+            {
+                y = startY;
+                vy = 0;
+                SetState(NoteBlockState::ACTIVE);
+
+                if (mario != nullptr)
+                {
+                    MarioJumpDeflect();
+                }
+            }
+        }
+    }
+    else if (currentState == NoteBlockState::FLYING_TO_SKY)
+    {
+        vy = -NOTE_BLOCK_FLY_SPEED;
+
+        if (y < -500.0f)
+        {
+            this->isDeleted = true; // Delete khỏi list
         }
     }
 }
+
 
 void NoteBlock::MarioJumpDeflect()
 {
@@ -103,14 +147,30 @@ void NoteBlock::MarioJumpDeflect()
         mario->GetSpeed(mvx, mvy);
         mvx = mvx * 0.6f;
 
-        if (mario->IsHoldingJump) 
+        mario->SetIsOnPlatform(false);
+
+        if (this->wantsHighJump)
         {
-            mario->SetSpeed(mvx, -0.36f);
+            mario->SetState(MarioState::JUMP);
+            mario->IsHoldingJump = true;
+
+            if (this->isRedBlock)
+            {
+                mario->SetSpeed(0.0f, -NOTE_BLOCK_FLY_SPEED); // Bắn lên trời
+                mario->StartFlyingToHeaven(this->targetSceneID);
+            }
+            else
+            {
+                mario->SetSpeed(mvx, -0.36f);
+            }
         }
         else
         {
             mario->SetSpeed(mvx, -0.16f);
+            mario->IsHoldingJump = false;
         }
+
+        this->wantsHighJump = false;
     }
 }
 
@@ -154,6 +214,10 @@ void NoteBlock::Render()
     if (currentState == NoteBlockState::EMPTY)
     {
         //aniId = ID_ANI_NOTE_BLOCK_EMPTY;
+    }
+    if (isRedBlock)
+    {
+        aniId = ID_ANI_NOTE_BLOCK_RED;
     }
 
     Animations::GetInstance()->Get(aniId)->Render(x, y);

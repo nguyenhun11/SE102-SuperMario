@@ -162,11 +162,14 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Boomerang.cpp" />
+    <ClCompile Include="BoomerangBro.cpp" />
     <ClCompile Include="CourseClearEffect.cpp" />
     <ClCompile Include="Fire.cpp" />
     <ClCompile Include="GoalBlock.cpp" />
     <ClCompile Include="HitEffect.cpp" />
     <ClCompile Include="HorizontalPipe.cpp" />
+    <ClCompile Include="InvisibleBlock.cpp" />
     <ClCompile Include="InvisibleNode.cpp" />
     <ClCompile Include="KoopaTroopa.cpp" />
     <ClCompile Include="MapMario.cpp" />
@@ -178,6 +181,7 @@
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="StageNode.cpp" />
     <ClCompile Include="Switch.cpp" />
+    <ClCompile Include="WoodBlock.cpp" />
     <ClCompile Include="WorldMapObject.cpp" />
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Animations.cpp" />
@@ -223,6 +227,8 @@
     <ClCompile Include="WorldSceneKeyHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Boomerang.h" />
+    <ClInclude Include="BoomerangBro.h" />
     <ClInclude Include="CourseClearEffect.h" />
     <ClInclude Include="Dependencies\irrKlang\include\ik_ESoundEngineOptions.h" />
     <ClInclude Include="Dependencies\irrKlang\include\ik_ESoundOutputDrivers.h" />
@@ -249,6 +255,7 @@
     <ClInclude Include="GoalBlock.h" />
     <ClInclude Include="HitEffect.h" />
     <ClInclude Include="HorizontalPipe.h" />
+    <ClInclude Include="InvisibleBlock.h" />
     <ClInclude Include="InvisibleNode.h" />
     <ClInclude Include="KoopaTroopa.h" />
     <ClInclude Include="MapMario.h" />
@@ -261,6 +268,7 @@
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="StageNode.h" />
     <ClInclude Include="Switch.h" />
+    <ClInclude Include="WoodBlock.h" />
     <ClInclude Include="WorldMapObject.h" />
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AnimationFrame.h" />
@@ -314,6 +322,7 @@
     <ClInclude Include="WorldSceneKeyHandler.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="boomerang-bro.txt" />
     <Text Include="brick.txt" />
     <Text Include="cloud.txt" />
     <Text Include="coin.txt" />
@@ -352,6 +361,7 @@
     <Image Include="textures\100_Mario.png" />
     <Image Include="textures\101_Mario_Origin.png" />
     <Image Include="textures\200_Enemies.png" />
+    <Image Include="textures\201_Enemies_Origin.png" />
     <Image Include="textures\300_Tilesets_StageTiles.png" />
     <Image Include="textures\400_Items.png" />
     <Image Include="textures\500_HUD.png" />

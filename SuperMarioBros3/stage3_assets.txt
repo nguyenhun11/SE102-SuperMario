@@ -23,3 +23,6 @@
 6000613 1664 473 1679 488	300 # Canh bo 1/4 hoa phai tren
 6000614 1646 491 1661 506	300 # Canh bo 1/4 hoa trai duoi
 6000615 1664 491 1679 506	300 # Canh bo 1/4 hoa phai duoi
+
+# Empty wood block
+3000101 842 145 857 160 300

@@ -214,7 +214,7 @@ class Mario : public GameObject
 	float start_x;
 	float start_y;
 	float slopeDirection;
-	
+
 	bool isSuperTransforming;
 	bool isTakingDamage;
 	bool canFly;
@@ -229,12 +229,12 @@ class Mario : public GameObject
 	bool isDieBounce;
 
 	bool isGoalRunning;
-	
+
 	// pmeter
 	int pmeter;
 
 	MarioForm form;
-	int untouchable; 
+	int untouchable;
 
 	ULONGLONG die_start;
 	ULONGLONG damage_start;
@@ -252,7 +252,7 @@ class Mario : public GameObject
 	MarioForm nextPoofForm;
 	BOOLEAN isOnPlatform;
 	BOOLEAN isOnSlope;
-	
+
 	VerticalPipe* pipeBelow;
 	VerticalPipe* pipeAbove;
 	bool isPipingUp = false;
@@ -262,9 +262,14 @@ class Mario : public GameObject
 	void OnCollisionWithKoopa(LPCOLLISIONEVENT e);
 	void OnCollisionWithPiranhaPlant(LPCOLLISIONEVENT e);
 	void OnCollisionWithFire(LPCOLLISIONEVENT e);
+	void OnCollisionWithBoomerangBro(LPCOLLISIONEVENT e);
+	void OnCollisionWithBoomerang(LPCOLLISIONEVENT e);
 	void OnCollisionWithCoin(LPCOLLISIONEVENT e);
 	void OnCollisionWithPortal(LPCOLLISIONEVENT e);
 	void OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e);
+	void OnCollisionWithWoodBlock(LPCOLLISIONEVENT e);
+	void OnCollisionWithInvisibleBlock(LPCOLLISIONEVENT e);
+	void OnCollisionWithWoodBlockSensor(LPCOLLISIONEVENT e);
 	void OnCollisionWithOneUpMushroom(LPCOLLISIONEVENT e);
 	void OnCollisionWithMushroom(LPCOLLISIONEVENT e);
 	void OnCollisionWithLeaf(LPCOLLISIONEVENT e);
@@ -280,6 +285,9 @@ class Mario : public GameObject
 
 
 public:
+	bool isFlyingToHeaven;
+	int heavenSceneID;
+
 	Mario(float x, float y) : GameObject(x, y)
 	{
 		start_x = x;
@@ -288,7 +296,7 @@ public:
 		isSitting = false;
 		maxVx = 0.0f;
 		accelX = 0.0f;
-		accelY = MARIO_GRAVITY; 
+		accelY = MARIO_GRAVITY;
 		pmeter = 0;
 
 		isOnPlatform = false;
@@ -308,6 +316,8 @@ public:
 		isDieBounce = false;
 
 		isGoalRunning = false;
+		isFlyingToHeaven = false;
+		heavenSceneID = -1;
 
 		untouchable = 0;
 		untouchable_start = -1;
@@ -328,7 +338,7 @@ public:
 		//score = 0;
 
 		SetUp();
-		
+
 		currentState = MarioState::IDLE;
 		nextPoofForm = MarioForm::RACOON;
 
@@ -347,7 +357,7 @@ public:
 	void SetDirection(int d);
 
 	int IsCollidable()
-	{ 
+	{
 		return (state != static_cast<int>(MarioState::DIE) && state != static_cast<int>(MarioState::PIPING));
 	}
 
@@ -360,7 +370,7 @@ public:
 
 	void OnNoCollision(DWORD dt);
 	void OnCollisionWith(LPCOLLISIONEVENT e);
-	
+
 
 	void SetNewForm(MarioForm form);
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }
@@ -380,7 +390,7 @@ public:
 	void SetStartPiping();
 
 	// Handle Update
-	void HandleDying(DWORD dt, vector<LPGAMEOBJECT>* coObjects); 
+	void HandleDying(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void HandleTakingDamage(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void HandleSpinning(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void HandleTransform(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
@@ -399,6 +409,10 @@ public:
 	int GetPMeter() { return pmeter; }
 	bool IsGoalRunning() { return isGoalRunning; }
 	int GetDirection() { return nx; }
+	bool IsOnPlatform() { return isOnPlatform; }
+	void SetIsOnPlatform(bool on) { isOnPlatform = on; }
+	void StartFlyingToHeaven(int sceneID);
+	void HandleFlyingToHeaven(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 
 	bool isHolding = false;
 	Koopa* heldKoopa = NULL;

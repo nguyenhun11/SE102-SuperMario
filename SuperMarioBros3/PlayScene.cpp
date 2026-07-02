@@ -24,6 +24,9 @@
 #include "Switch.h"
 #include "PiranhaPlant.h"
 #include "KoopaTroopa.h"
+#include "BoomerangBro.h"
+#include "WoodBlock.h"
+#include "InvisibleBlock.h"
 
 #include "PlaySceneKeyHandler.h"
 
@@ -166,6 +169,9 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		break;
 	}
 	case OBJECT_TYPE_GOOMBA: obj = new Goomba(x, y); break;
+	case OBJECT_TYPE_BOOMERANG_BRO:
+		obj = new BoomerangBro(x, y);
+		break;
 	case OBJECT_TYPE_PIRANHA_PLANT: obj = new PiranhaPlant(x, y); break;
 	case OBJECT_TYPE_BRICK:
 	{
@@ -360,6 +366,22 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		}
 
 		obj = new NoteBlock(x, y, contained_item_id, bounceCount);
+		break;
+	}
+
+	case OBJECT_TYPE_WOOD_BLOCK: {
+		int contained_item_id = atoi(tokens[3].c_str());
+		obj = new WoodBlock(x, y, contained_item_id);
+		break;
+	}
+
+	case OBJECT_TYPE_INVISIBLE_BLOCK: {
+		InvisibleType type = static_cast<InvisibleType>(atoi(tokens[3].c_str()));
+		int sceneID = -1;
+		if (tokens.size() > 4) {
+			sceneID = atoi(tokens[4].c_str());
+		}
+		obj = new InvisibleBlock(x, y, type, sceneID);
 		break;
 	}
 
@@ -667,7 +689,7 @@ void PlayScene::Update(DWORD dt)
 	}
 	float playerCeiling = mapTop - 64.0f;
 
-	if (py < playerCeiling)
+	if (!mario->isFlyingToHeaven && py < playerCeiling)
 	{
 		py = playerCeiling;
 		player->SetPosition(px, py);
@@ -880,7 +902,7 @@ void PlayScene::DeactivatePSwitch(SwitchType type)
 	{
 		LPGAMEOBJECT obj = objects[i];
 
-		// Chỉ thao tác trên những Object có cờ "Hàng giả"
+		// Chỉ thao tác những Object có cờ "Hàng giả"
 		if (obj->isCreatedBySwitch)
 		{
 			fakeCount++; // Đã tìm thấy 1 món!

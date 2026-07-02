@@ -263,6 +263,18 @@
     <ClCompile Include="HitEffect.cpp">
       <Filter>Entities\Effects</Filter>
     </ClCompile>
+    <ClCompile Include="BoomerangBro.cpp">
+      <Filter>Entities\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="Boomerang.cpp">
+      <Filter>Entities\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="WoodBlock.cpp">
+      <Filter>Entities\Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="InvisibleBlock.cpp">
+      <Filter>Entities\Blocks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h">
@@ -532,6 +544,18 @@
     <ClInclude Include="HitEffect.h">
       <Filter>Entities\Effects</Filter>
     </ClInclude>
+    <ClInclude Include="BoomerangBro.h">
+      <Filter>Entities\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="Boomerang.h">
+      <Filter>Entities\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="WoodBlock.h">
+      <Filter>Entities\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="InvisibleBlock.h">
+      <Filter>Entities\Blocks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="brick.txt">
@@ -623,8 +647,11 @@
     <Text Include="stage3.txt">
       <Filter>Scenes\Playscene</Filter>
     </Text>
-    <Text Include="stage3_1.txt">
-      <Filter>Scenes\Playscene</Filter>
+	  <Text Include="stage3_1.txt">
+		  <Filter>Scenes\Playscene</Filter>
+	  </Text>
+    <Text Include="boomerang-bro.txt">
+      <Filter>Assets</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>
@@ -708,6 +735,9 @@
     </Image>
     <Image Include="textures\800_Goal.png">
       <Filter>Resources</Filter>
+    </Image>
+    <Image Include="textures\201_Enemies_Origin.png">
+      <Filter>Resources\Textures</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
