@@ -13,6 +13,7 @@ start	4
 3	1	stage3.txt
 31	1	stage3_1.txt
 4	1	stage4.txt
+41	1	stage4_1.txt
 
 9	1	scene_mario_dev.txt
 #1	1	scene01.txt

@@ -255,9 +255,6 @@ class Mario : public GameObject
 
 	VerticalPipe* pipeBelow;
 	VerticalPipe* pipeAbove;
-	bool isPipingUp = false;
-	bool isPipingHorizontal = false;
-	int pipingDirectionX = 0; // 1: chui qua phải, -1: chui qua trái
 	HorizontalPipe* activeHorizontalPipe = nullptr;
 
 	void OnCollisionWithGoalBlock(LPCOLLISIONEVENT e);
@@ -293,7 +290,9 @@ class Mario : public GameObject
 public:
 	bool isFlyingToHeaven;
 	int heavenSceneID;
-
+	bool isPipingUp = false;
+	bool isPipingHorizontal = false;
+	int pipingDirectionX = 0; // 1: chui qua phải, -1: chui qua trái
 
 	Mario(float x, float y) : GameObject(x, y)
 	{
@@ -415,6 +414,7 @@ public:
 	MarioForm GetCurrentForm() { return form; }
 	int GetPMeter() { return pmeter; }
 	bool IsGoalRunning() { return isGoalRunning; }
+	bool IsPiping() { return isPiping; }
 	int GetDirection() { return nx; }
 	bool IsOnPlatform() { return isOnPlatform; }
 	void SetIsOnPlatform(bool on) { isOnPlatform = on; }

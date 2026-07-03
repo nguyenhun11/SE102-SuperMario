@@ -1,0 +1,57 @@
+# id	left	top	right	bottom	texture_id
+# list of object assets to load in this scene
+[ASSETS]
+mario.txt
+cloud.txt
+stage1_assets.txt
+pipe.txt
+HUD.txt
+power_up.txt
+HUD.txt
+effect.txt
+goal.txt
+goalblock.txt
+
+[MAP_INFO]
+60
+
+[CAMERA_ZONES]
+-1 1.5 60 14.5
+
+[GRID_OBJECTS]
+# type x y extra_settings per object type
+# type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopas
+# See OBJECT_TYPE constants in AssetIDs.h
+
+# MARIO
+0 1 10
+
+#GROUND
+601 0 12 16 16 39 6 60111 60112 60113 60121 60122 60123
+
+# SMALL TREE
+600 1 11 6000200
+600 2 11 6000200
+
+# TREE
+600 3 11 6000111
+600 4 11 6000132
+600 4 10 6000121
+600 4 9 6000111
+600 5 11 6000100
+600 5 10 6000131
+600 5 9 6000112
+600 6 11 6000122
+600 6 10 6000112
+
+# CLOUD
+600 3 5 6000321
+600 3 4 6000311
+600 4 5 6000322
+600 4 4 6000312
+600 5 5 6000323
+600 5 4 6000313
+
+# PIPE
+702 8 10	16 16	2	70211 70212 70221 70222 70221 70222 1 999
+

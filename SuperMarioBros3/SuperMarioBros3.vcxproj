@@ -355,6 +355,7 @@
     <Text Include="stage3_1.txt" />
     <Text Include="stage3_assets.txt" />
     <Text Include="stage4.txt" />
+    <Text Include="stage4_1.txt" />
     <Text Include="switch.txt" />
     <Text Include="world-scene-assets.txt" />
     <Text Include="world-scene.txt" />

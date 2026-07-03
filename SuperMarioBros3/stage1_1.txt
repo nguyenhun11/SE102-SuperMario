@@ -31,7 +31,7 @@ goalblock.txt
 # See OBJECT_TYPE constants in AssetIDs.h
 
 # MARIO
-0 8.5 0
+0 8.5 5
 
 #GROUND
 601 0 0	16	16	8	11	60200 60200 60200 60200 60200 60200

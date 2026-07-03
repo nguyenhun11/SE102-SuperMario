@@ -597,12 +597,9 @@ void PlayScene::Load()
 	}
 	f.close();
 
-
-	//  ĐÚNG: Gọi thông qua Instance duy nhất
 	GameManager* gm = GameManager::GetInstance();
 	if (gm->isGoingThroughPipe && player != NULL)
 	{
-		// 1. Tìm cái cống đầu tiên trong map được thiết kế làm "Cửa Ra"
 		VerticalPipe* exitPipe = NULL;
 		for (size_t i = 0; i < objects.size(); i++)
 		{
@@ -616,20 +613,51 @@ void PlayScene::Load()
 				}
 			}
 		}
+
+		Mario* mario = static_cast<Mario*>(player);
+		float spawnX, spawnY;
+
 		if (exitPipe != NULL)
 		{
 			float pl, pt, pr, pb;
 			exitPipe->GetBoundingBox(pl, pt, pr, pb);
 
-			float spawnX = pl + (pr - pl) / 2;
-			float spawnY = pt + 16.0f;
+			spawnX = pl + (pr - pl) / 2;
+
+			if (mario->GetCurrentForm() == MarioForm::SMALL)
+			{
+				spawnY = pt + 23.0f; // 24 là đẹp, nhưng stage 41 bị lọt
+			}
+			else
+			{
+				spawnY = pt + 16.0f;
+			}
 
 			player->SetPosition(spawnX, spawnY);
 
-			Mario* mario = static_cast<Mario*>(player);
+			// CHỈ KÍCH HOẠT CHUI ỐNG KHI CÓ ỐNG
 			mario->SetStartPiping();
+			mario->isPipingUp = true;
+			mario->isPipingHorizontal = false;
 		}
+		else
+		{
+			player->GetPosition(spawnX, spawnY);
+
+			mario->SetState(MarioState::IDLE);
+		}
+		float cx = spawnX - GameGlobal::GetWidth() / 2;
+		float cy = spawnY - GameGlobal::GetHeight() / 2;
+
+		float min_cx = mapLeft * TILE_SIZE;
+		float max_cx = mapRight * TILE_SIZE - GameGlobal::GetWidth();
+
+		if (cx < min_cx) cx = min_cx;
+		if (cx > max_cx) cx = max_cx;
+
+		Camera::GetInstance()->SetCamPos(cx, cy);
 	}
+
 	gm->isGoingThroughPipe = false;
 
 	float screenHeight = GameGlobal::GetHeight();
@@ -695,11 +723,8 @@ void PlayScene::Update(DWORD dt)
 		koopa->SetPosition(hx, hy);
 	}
 
-
 	float px, py;
 	player->GetPosition(px, py);
-
-
 
 	float max_player_x = this->mapRight * TILE_SIZE - 8.0f;
 	if (mario->IsGoalRunning())
@@ -718,34 +743,37 @@ void PlayScene::Update(DWORD dt)
 		}
 	}
 
-	float camX = Camera::GetInstance()->GetCamX();
-	float limitLeft = ((camX > mapLeft) ? camX : mapLeft) + 16.0f;
-
-	if (px <= limitLeft)
+	if (!mario->IsPiping())
 	{
-		px = limitLeft;
-		player->SetPosition(px, py);
+		float camX = Camera::GetInstance()->GetCamX();
+		float limitLeft = ((camX > mapLeft) ? camX : mapLeft) + 16.0f;
 
-		float pvx, pvy;
-		player->GetSpeed(pvx, pvy);
-
-		if (isAutoScroll)
+		if (px <= limitLeft)
 		{
-			player->SetSpeed(autoScrollSpeed, pvy);
-			mario->SetNx(1);
+			px = limitLeft;
+			player->SetPosition(px, py);
+
+			float pvx, pvy;
+			player->GetSpeed(pvx, pvy);
+
+			if (isAutoScroll)
+			{
+				player->SetSpeed(autoScrollSpeed, pvy);
+				mario->SetNx(1);
+			}
+			else
+			{
+				player->SetSpeed(0.0f, pvy);
+			}
 		}
-		else
+		else if (px > max_player_x)
 		{
+			px = max_player_x;
+			player->SetPosition(px, py);
+			float pvx, pvy;
+			player->GetSpeed(pvx, pvy);
 			player->SetSpeed(0.0f, pvy);
 		}
-	}
-	else if (px > max_player_x)			/// chặn phải
-	{
-		px = max_player_x;
-		player->SetPosition(px, py);
-		float pvx, pvy;
-		player->GetSpeed(pvx, pvy);
-		player->SetSpeed(0.0f, pvy);
 	}
 
 	CameraZone currentZone = GetCurrentZone(px, py);
