@@ -164,34 +164,6 @@ void Goomba::SetState(GoombaState state)
 		break;
 	}
 }
-//
-//void Goomba::UpdateActivationBoundary()
-//{
-//	float camX, camY;
-//
-//	Camera::GetInstance()->GetCamPos(camX, camY);
-//
-//	activationBoundary = camX + GameGlobal::GetWidth();
-//}
-//
-//bool Goomba::IsInsideActivationBoundary()
-//{
-//	return x <= activationBoundary;
-//}
-//
-//void Goomba::CheckActivationStatus()
-//{
-//	if (isActivated)
-//		return;
-//
-//	UpdateActivationBoundary();
-//
-//	if (IsInsideActivationBoundary())
-//	{
-//		isActivated = true;
-//		vx = -GOOMBA_WALKING_SPEED;
-//	}
-//}
 
 void Goomba::HandleSlope(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {

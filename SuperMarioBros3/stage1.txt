@@ -100,7 +100,7 @@ piranha-fire.txt
 302	14	5	0
 302	15	5	1
 
-201    15    11
+2    15    11
 
 # SEMI-SOLID PLATFORM
 # id, x y, sprite_h w, cellsize_x y, tl tc tr ml mc mr bl bc br, st sm sb
@@ -131,7 +131,7 @@ piranha-fire.txt
 701	32 10	16 16	6 2		7010311 7010312 7010313 7010321 7010322 7010323 7010331 7010332 7010333		7010014 7010024 7010024
 
 #GOOMBA
-201 33 11
+2 33 11
 
 #KOOPA
 202 36 8	1	
@@ -179,7 +179,7 @@ piranha-fire.txt
 # GOOMBA
 2 52 10
 2 55 10
-2 59 10 # flying red goomba
+201 59 10
 
 # TREE 2
 600 51 10 6000111

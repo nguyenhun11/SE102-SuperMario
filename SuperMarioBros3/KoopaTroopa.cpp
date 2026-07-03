@@ -23,9 +23,6 @@ void KoopaTroopa::GetBoundingBox(float& left, float& top, float& right, float& b
 	}
 }
 
-
-
-
 void KoopaTroopa::OnCollisionWith(LPCOLLISIONEVENT e)
 {
 	Koopa::OnCollisionWith(e);
@@ -36,7 +33,7 @@ void KoopaTroopa::OnCollisionWith(LPCOLLISIONEVENT e)
 		{
 			if (this->color == KoopaColor::GREEN)
 			{
-				vy = -0.35f;
+				vy = -KOOPA_PARATROOPA_BASE_FLYING_SPEED;
 			}
 		}
 	}
@@ -77,7 +74,7 @@ void KoopaTroopa::OnEnable()
 	{
 		ay = KOOPA_GRAVITY;
 		vx = nx * KOOPA_WALKING_SPEED;
-		vy = -0.15f;
+		vy = -0.1f;
 	}
 	else if (this->color == KoopaColor::RED)
 	{

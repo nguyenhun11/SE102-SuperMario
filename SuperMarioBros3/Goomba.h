@@ -1,7 +1,7 @@
 #pragma once
 #include "RespawnableEnemy.h"
 
-#define GOOMBA_GRAVITY 0.001f
+#define GOOMBA_GRAVITY 0.0007f
 #define GOOMBA_WALKING_SPEED 0.03f
 
 #define GOOMBA_BBOX_WIDTH 16

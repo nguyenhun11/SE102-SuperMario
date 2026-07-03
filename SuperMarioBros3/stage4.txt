@@ -23,7 +23,7 @@ stage1_assets.txt
 stage4_assets.txt
 
 [MAP_INFO]
--0.5 126.5 0.025
+-0.5 126.5
 
 [CAMERA_ZONES]
 -1 1.5 999 14.5
@@ -34,7 +34,7 @@ stage4_assets.txt
 # See OBJECT_TYPE constants in AssetIDs.h
 
 # MARIO
-0 3 5
+0 110 5
 
 # GROUND
 601 0 8 16 16 10 9 64111 64112 64113 64121 64122 64123
@@ -213,6 +213,9 @@ stage4_assets.txt
 401 117 5
 401 118 5
 401 119 5
+
+# KOOPA TROOPA
+213 116 7 1
 
 #GROUND END
 601 119 11 16 16 8 3 65111 65112 65113 65121 65122 65123
