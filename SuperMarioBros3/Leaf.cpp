@@ -6,6 +6,7 @@ Leaf::Leaf(float x, float y) : GameObject(x, y)
 	this->startY = y;
 	SetState(LeafState::SPAWNING);
 	zIndex = 4;
+	isHiddenOnPause = true;
 }
 
 void Leaf::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)

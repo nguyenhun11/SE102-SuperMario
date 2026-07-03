@@ -5,7 +5,7 @@ Switch::Switch(float x, float y, SwitchType type) : GameObject(x, y)
 {
 	this->type = type;
 	this->startY = y;
-	this->zIndex = 4; // Để render đè lên trên viên gạch
+	this->zIndex = 5; // Để render đè lên trên viên gạch
 	SetState((int)SwitchState::Spawning);
 }
 

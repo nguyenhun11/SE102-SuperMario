@@ -17,6 +17,8 @@ RespawnableEnemy::RespawnableEnemy(float x, float y) : GameObject(x, y)
 
 	ax = 0.0f;
 	ay = 0.0f;
+
+	isHiddenOnPause = true;
 }
 
 void RespawnableEnemy::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)

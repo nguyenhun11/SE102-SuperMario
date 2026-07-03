@@ -39,6 +39,8 @@ PlayScene::PlayScene(int id, LPCWSTR filePath) :
 {
 	player = NULL;
 	key_handler = new PlaySceneKeyHandler(this);
+
+	isPaused = false;
 }
 
 
@@ -664,8 +666,8 @@ void PlayScene::Load()
 		player->GetPosition(spawnX, spawnY);
 
 		mario->SetState(MarioState::JUMP);
-		mario->SetVy(-MARIO_JUMP_SPEED_Y * 1.4f); 
-		mario->SetIsOnPlatform(false); 
+		mario->SetVy(-MARIO_JUMP_SPEED_Y * 1.4f);
+		mario->SetIsOnPlatform(false);
 
 		float cx = spawnX - GameGlobal::GetWidth() / 2;
 		float cy = spawnY - GameGlobal::GetHeight() / 2;
@@ -700,6 +702,27 @@ void PlayScene::Load()
 
 void PlayScene::Update(DWORD dt)
 {
+	if (isPaused) return;
+	Mario* mario = (Mario*)((LPPLAYSCENE)SceneManager::GetInstance()->GetCurrentScene())->GetPlayer();
+
+	if (mario != nullptr && mario->GetState() == static_cast<int>(MarioState::DIE))
+	{
+		mario->Update(dt, &objects);
+
+		float px, py;
+		mario->GetPosition(px, py);
+		CameraZone currentZone = GetCurrentZone(px, py);
+		float deathZone = currentZone.bottom * TILE_SIZE + 48.0f;
+
+		if (py > deathZone)
+		{
+			GameManager::GetInstance()->LevelFailed();
+			SoundManager::GetInstance()->StopAll();
+			this->DeactivatePSwitch();
+		}
+		return;
+	}
+
 	for (size_t i = 0; i < objects.size(); i++)
 	{
 		LPGAMEOBJECT obj = objects[i];
@@ -737,8 +760,6 @@ void PlayScene::Update(DWORD dt)
 	//--- PLAYER POSITION
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return;
-	Mario* mario = static_cast<Mario*>(player);
-
 	// set vị trí mai rùa mà mario cầm, đoạn này code dơ, thông cảm thông cảm
 	if (mario != NULL && mario->heldKoopa != NULL && mario->isHolding)
 	{
@@ -945,22 +966,28 @@ void PlayScene::Render()
 {
 	for (int i = 0; i < objects.size(); i++)
 		if (objects[i]->GetActive()
-			&& objects[i]->GetZIndex() < 5)
+			&& objects[i]->GetZIndex() < 5
+			&& !(isPaused && objects[i]->isHiddenOnPause))
 			objects[i]->Render();
 
 	for (int i = 0; i < objects.size(); i++)
 		if (objects[i]->GetActive()
 			&& objects[i]->GetZIndex() >= 5
-			&& objects[i]->GetZIndex() < 10)
+			&& objects[i]->GetZIndex() < 10
+			&& !(isPaused && objects[i]->isHiddenOnPause))
 			objects[i]->Render();
 
 	for (int i = 0; i < objects.size(); i++)
 		if (objects[i]->GetActive()
 			&& objects[i]->GetZIndex() >= 10
-			&& objects[i]->GetZIndex() < 15)
+			&& objects[i]->GetZIndex() < 15
+			&& !(isPaused && objects[i]->isHiddenOnPause))
 			objects[i]->Render();
-
-	//player->Render();
+	if (isPaused) {
+		float camX, camY;
+		Camera::GetInstance()->GetCamPos(camX, camY);
+		Sprites::GetInstance()->Get(ID_ANI_PAUSE_MENU)->DrawOnCamera(camX + 130, camY + 80);
+	}
 	HUD::GetInstance()->Render();
 }
 
@@ -1070,6 +1097,21 @@ void PlayScene::DeactivatePSwitch()
 	{
 		objects.push_back(newObj);
 	}
+}
+
+void PlayScene::SetIsPaused(bool p)
+{
+	isPaused = p;
+	if (isPaused)
+	{
+		SoundManager::GetInstance()->PauseBGM();
+		SoundManager::GetInstance()->Play("pause");
+	}
+	else
+	{
+		SoundManager::GetInstance()->ResumeBGM();
+	}
+
 }
 
 void PlayScene::PurgeDeletedObjects()

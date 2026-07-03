@@ -56,6 +56,7 @@ public:
 		int type = PIRANHA_TYPE_RED_FIRE, float height = 32.0f) : GameObject(x, y), plantType(type), ariseHeight(height) {
 		originalY = y;
 		nx = 1;
+		isHiddenOnPause = true;
 	};
 	bool GetIsWaiting() { return y == originalY; };
 };

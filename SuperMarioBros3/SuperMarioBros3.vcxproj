@@ -377,6 +377,7 @@
     <Image Include="textures\600_misc.png" />
     <Image Include="textures\700_WorldMaps.png" />
     <Image Include="textures\800_Goal.png" />
+    <Image Include="textures\900_pause.png" />
     <Image Include="textures\bbox.png" />
     <Image Include="textures\enemies.png" />
     <Image Include="textures\EnemiesBosses_Bosses.png" />

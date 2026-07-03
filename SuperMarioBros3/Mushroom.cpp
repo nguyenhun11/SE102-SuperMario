@@ -11,6 +11,7 @@ Mushroom::Mushroom(float x, float y) : GameObject(x, y)
 	SetState(MushroomState::SPAWNING);
 	SoundManager::GetInstance()->Play("mushroom_appear");
 	zIndex = 4;
+	isHiddenOnPause = true;
 }
 
 void Mushroom::GetBoundingBox(float& l, float& t, float& r, float& b)

@@ -18,7 +18,9 @@
 
 class Fire : public GameObject {
 public:
-	Fire(float x, float y) : GameObject(x, y) {};
+	Fire(float x, float y) : GameObject(x, y) {
+		isHiddenOnPause = true;
+	};
 
 	void Render();
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);

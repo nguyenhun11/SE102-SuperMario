@@ -16,6 +16,8 @@
 #define SWITCH_ACTIVATION_TIME 10000 // thời gian hiệu lực của switch
 #define CAMERA_TRANSITION_TIME 500
 
+#define ID_ANI_PAUSE_MENU 9010400
+
 struct CameraZone
 {
 	float left, top, right, bottom;
@@ -29,6 +31,8 @@ private:
 
 	bool isAutoScroll = false;
 	float autoScrollSpeed = 0.0f;
+
+	bool isPaused;
 protected: 
 	// A play scene has to have player, right? 
 	LPGAMEOBJECT player;					
@@ -83,6 +87,9 @@ public:
 
 	void ActivatePSwitch(bool isFromLoad);
 	void DeactivatePSwitch();
+
+	bool GetIsPaused() { return isPaused; }
+	void SetIsPaused(bool p);
 };
 
 typedef PlayScene* LPPLAYSCENE;

@@ -36,8 +36,10 @@ protected:
 	int zIndex;
 
 
+
 public:
 	bool isCreatedBySwitch = false; // để phân biệt với brick được tạo ra từ switch
+	bool isHiddenOnPause;
 
 	void SetPosition(float x, float y) { this->x = x; this->y = y; }
 	void SetSpeed(float vx, float vy) { this->vx = vx; this->vy = vy; }
@@ -73,6 +75,7 @@ public:
 		this->x = x;
 		this->y = y;
 		zIndex = 5;
+		isHiddenOnPause = false;
 		isActive = true;
 		wasOnCamera = false;
 	}

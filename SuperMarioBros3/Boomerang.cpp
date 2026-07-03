@@ -22,6 +22,8 @@ Boomerang::Boomerang(float startX, float startY, int nx, BoomerangBro* owner) : 
 
 	this->ay = (2.0f * BOOMERANG_MAX_HEIGHT) / (t_peak * t_peak);
 	this->vy = -(this->ay * t_peak); // Dấu âm để bay lên trên
+
+	isHiddenOnPause = true;
 }
 
 void Boomerang::GetBoundingBox(float& l, float& t, float& r, float& b)

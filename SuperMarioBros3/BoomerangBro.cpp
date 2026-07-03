@@ -9,6 +9,7 @@ BoomerangBro::BoomerangBro(float x, float y) : RespawnableEnemy(x, y)
 	this->startX = x;
 	this->ay = BOOMERANG_BRO_GRAVITY;
 	OnEnable();
+	isHiddenOnPause = true;
 }
 
 void BoomerangBro::OnEnable()

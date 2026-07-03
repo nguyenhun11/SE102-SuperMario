@@ -1,6 +1,6 @@
 [SETTINGS]
 # Start scene
-start	2
+start	0
 
 # id	type	file
 # type: 0: world, 1: play scene 
@@ -36,6 +36,7 @@ start	2
 600		textures\600_misc.png
 700		textures\700_WorldMaps.png
 800		textures\800_Goal.png
+900		textures\900_pause.png
 
 # id	file
 [AUDIO]

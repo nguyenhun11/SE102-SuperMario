@@ -33,6 +33,7 @@ public:
 		this->state = static_cast<int>(CoinState::IDLE);
 		this->vy = 0;
 
+		zIndex = 4;
 	}
 	void Render();
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);

@@ -25,6 +25,7 @@ public:
 		this->spriteIDs[0][2] = idRight;
 
 		SetState((int)LiftState::Idle);
+		zIndex = 6;
 	}
 
 	void OnEnterCamera() override;

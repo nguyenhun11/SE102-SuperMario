@@ -349,6 +349,7 @@ public:
 		nextPoofForm = MarioForm::RACOON;
 
 		zIndex = 10;
+		isHiddenOnPause = true;
 	}
 
 	void SetUp();

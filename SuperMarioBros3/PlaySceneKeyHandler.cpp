@@ -8,8 +8,17 @@
 
 void PlaySceneKeyHandler::OnKeyDown(int KeyCode)
 {
+	PlayScene* scene = (PlayScene*)SceneManager::GetInstance()->GetCurrentScene();
+	if (KeyCode == DIK_P || KeyCode == DIK_RETURN)
+	{
+		scene->SetIsPaused(!scene->GetIsPaused());
+		return; // Thoát ngay, không làm gì thêm
+	}
+	if (scene->GetIsPaused()) return;
+
 	//DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
 	Mario* mario = (Mario *)((LPPLAYSCENE)SceneManager::GetInstance()->GetCurrentScene())->GetPlayer(); 
+	if (mario == nullptr) return;
 
 	switch (KeyCode)
 	{
@@ -49,6 +58,7 @@ void PlaySceneKeyHandler::OnKeyDown(int KeyCode)
 		//Reload();
 		break;
 	}
+	
 }
 
 void PlaySceneKeyHandler::OnKeyUp(int KeyCode)

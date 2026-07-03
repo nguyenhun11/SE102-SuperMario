@@ -88,6 +88,22 @@ public:
         }
     }
 
+    void PauseBGM()
+    {
+        if (currentBGM != nullptr && !currentBGM->isFinished())
+        {
+            currentBGM->setIsPaused(true);
+        }
+    }
+
+    void ResumeBGM()
+    {
+        if (currentBGM != nullptr && !currentBGM->isFinished())
+        {
+            currentBGM->setIsPaused(false);
+        }
+    }
+
     #pragma region PLAYSFX
     void PlayPmeterFull(std::string name) 
     {

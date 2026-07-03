@@ -19,9 +19,6 @@ boomerang-bro.txt
 [CAMERA_ZONES]
 -1 1.5 32 14.5
 
-[BGM]
-bgm_stage1
-
 [GRID_OBJECTS]
 # type x y extra_settings per object type
 # type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopas

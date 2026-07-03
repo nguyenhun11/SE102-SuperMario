@@ -9,6 +9,9 @@ public:
 		this->x = x;
 		this->y = y;
 		this->spriteId = sprite_id;
+		zIndex = 0;
+
+		isHiddenOnPause = false;
 	}
 	int IsBlocking() override { return 0; }
 	void GetBoundingBox(float& l, float& t, float& r, float& b) override
