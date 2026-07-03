@@ -24,10 +24,10 @@ piranha-fire.txt
 stage3_assets.txt
 
 [MAP_INFO]
--0.5 63.5 0.025 # Tắt scroll đi để dịch chuyển mario (xóa cái 0.025 đi)
+-0.5 62.5 0.025
 
 [CAMERA_ZONES]
--1 -13 999 14.5
+-1 1.5 999 14.5
 
 
 [GRID_OBJECTS]
@@ -36,7 +36,7 @@ stage3_assets.txt
 # See OBJECT_TYPE constants in AssetIDs.h
 
 # MARIO
-0 1 10
+0 5 15
 
 #GROUND
 # Y = 12
@@ -2163,4 +2163,4 @@ stage3_assets.txt
 
 # PIPE
 # id x y, sprite size wh, tl tr ml mr
-702 54 9	16 16	13	70211 70212 70221 70222 70221 70222
+702 54 9	16 16	13	70211 70212 70221 70222 70221 70222 1 3

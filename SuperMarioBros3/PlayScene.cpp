@@ -601,14 +601,18 @@ void PlayScene::Load()
 	if (gm->isGoingThroughPipe && player != NULL)
 	{
 		VerticalPipe* exitPipe = NULL;
+		int pipeExitMode = 0;
+
 		for (size_t i = 0; i < objects.size(); i++)
 		{
 			if (dynamic_cast<VerticalPipe*>(objects[i]))
 			{
 				VerticalPipe* pipe = dynamic_cast<VerticalPipe*>(objects[i]);
-				if (pipe->GetTargetSceneId() == 999)
+
+				if (pipe->GetTargetSceneId() == 999 || pipe->GetTargetSceneId() == 998)
 				{
 					exitPipe = pipe;
+					pipeExitMode = pipe->GetTargetSceneId();
 					break;
 				}
 			}
@@ -621,31 +625,37 @@ void PlayScene::Load()
 		{
 			float pl, pt, pr, pb;
 			exitPipe->GetBoundingBox(pl, pt, pr, pb);
-
 			spawnX = pl + (pr - pl) / 2;
 
-			if (mario->GetCurrentForm() == MarioForm::SMALL)
+			if (pipeExitMode == 999)
 			{
-				spawnY = pt + 23.0f; // 24 là đẹp, nhưng stage 41 bị lọt
+				if (mario->GetCurrentForm() == MarioForm::SMALL)
+					spawnY = pt + 23.0f;
+				else
+					spawnY = pt + 16.0f;
+
+				player->SetPosition(spawnX, spawnY);
+
+				mario->SetStartPiping();
+				mario->isPipingUp = true;
+				mario->isPipingHorizontal = false;
 			}
-			else
+			else if (pipeExitMode == 998)
 			{
-				spawnY = pt + 16.0f;
+				spawnY = pt;
+				player->SetPosition(spawnX, spawnY);
+
+				mario->SetState(MarioState::IDLE);
 			}
-
-			player->SetPosition(spawnX, spawnY);
-
-			// CHỈ KÍCH HOẠT CHUI ỐNG KHI CÓ ỐNG
-			mario->SetStartPiping();
-			mario->isPipingUp = true;
-			mario->isPipingHorizontal = false;
 		}
 		else
 		{
+			// Không tìm thấy ống nào (vào map ẩn) thì xài mặc định
 			player->GetPosition(spawnX, spawnY);
-
 			mario->SetState(MarioState::IDLE);
 		}
+
+		// --- ĐOẠN LIA CAMERA GIỮ NGUYÊN ĐỂ KHÔNG BỊ LỆCH TỌA ĐỘ X ---
 		float cx = spawnX - GameGlobal::GetWidth() / 2;
 		float cy = spawnY - GameGlobal::GetHeight() / 2;
 
@@ -667,7 +677,7 @@ void PlayScene::Load()
 		player->GetPosition(spawnX, spawnY);
 
 		mario->SetState(MarioState::JUMP);
-		mario->SetVy(-MARIO_JUMP_SPEED_Y * 1.2f); 
+		mario->SetVy(-MARIO_JUMP_SPEED_Y * 1.4f); 
 		mario->SetIsOnPlatform(false); 
 
 		float cx = spawnX - GameGlobal::GetWidth() / 2;
