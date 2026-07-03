@@ -20,10 +20,7 @@ void PlaySceneKeyHandler::OnKeyDown(int KeyCode)
 		break;
 	case DIK_Z:
 	case DIK_SPACE:
-		if (mario->IsOnPlatform())
-		{
-			mario->SetState(MarioState::JUMP);
-		}
+		mario->SetState(MarioState::JUMP);
 		mario->IsHoldingJump = true; // 
 		break;
 	case DIK_UP:

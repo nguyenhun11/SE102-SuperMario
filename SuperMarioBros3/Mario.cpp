@@ -29,6 +29,7 @@
 #include "BoomerangBro.h"
 #include "Boomerang.h"
 #include "InvisibleBlock.h"
+#include "Lift.h"
 
 void Mario::SetUp()
 {
@@ -273,6 +274,8 @@ void Mario::OnCollisionWith(LPCOLLISIONEVENT e)
 	}
 	else if (dynamic_cast<NoteBlock*>(e->obj))
 		OnCollisionWithNoteBlock(e);
+	else if (dynamic_cast<Lift*>(e->obj))
+		OnCollisionWithLift(e);
 
 }
 
@@ -698,6 +701,30 @@ void Mario::OnCollisionWithHorizontalPipe(LPCOLLISIONEVENT e)
 		activeHorizontalPipe = pipe;
 		piping_start = GetTickCount64();
 		// this->y = pipe->GetY() + ...; 
+	}
+}
+
+void Mario::OnCollisionWithLift(LPCOLLISIONEVENT e)
+{
+	Lift* lift = dynamic_cast<Lift*>(e->obj);
+	if (lift == NULL) return;
+
+	if (e->ny < 0)
+	{
+		isOnPlatform = true;
+		if (lift->GetState() != (int)LiftState::Falling)
+		{
+			lift->SetState((int)LiftState::Falling);
+		}
+
+		if (this->vy >= 0)
+		{
+			this->vy = lift->GetVy() + 0.05f;
+		}
+	}
+	else if (e->ny > 0)
+	{
+		this->vy = 0;
 	}
 }
 

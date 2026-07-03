@@ -27,6 +27,7 @@
 #include "BoomerangBro.h"
 #include "WoodBlock.h"
 #include "InvisibleBlock.h"
+#include "Lift.h"
 
 #include "PlaySceneKeyHandler.h"
 
@@ -365,6 +366,18 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 
 		obj = pipe;
 
+		break;
+	}
+	case OBJECT_TYPE_LIFT:
+	{
+		float cell_width = (float)atof(tokens[3].c_str());
+		float cell_height = (float)atof(tokens[4].c_str());
+		int length = atoi(tokens[5].c_str());
+		int spriteID_l = atoi(tokens[6].c_str());
+		int spriteID_m = atoi(tokens[7].c_str());
+		int spriteID_r = atoi(tokens[8].c_str());
+		obj = new Lift(x, y, cell_width, cell_height, length,
+			spriteID_l, spriteID_m, spriteID_r);
 		break;
 	}
 	case OBJECT_TYPE_QUESTION_BLOCK:

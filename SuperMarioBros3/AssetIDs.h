@@ -48,6 +48,7 @@ Each ID for a type of object will BEGIN with:
 #define OBJECT_TYPE_SEMISOLID_PLATFORM	701
 #define OBJECT_TYPE_VERTICAL_PIPE		702
 #define OBJECT_TYPE_HORIZOLTAL_PIPE		703
+#define OBJECT_TYPE_LIFT				704
 
 //Worldmap
 #define WORLDMAP_MAP		800

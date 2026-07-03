@@ -173,6 +173,7 @@
     <ClCompile Include="InvisibleBlock.cpp" />
     <ClCompile Include="InvisibleNode.cpp" />
     <ClCompile Include="KoopaTroopa.cpp" />
+    <ClCompile Include="Lift.cpp" />
     <ClCompile Include="MapMario.cpp" />
     <ClCompile Include="MapNode.cpp" />
     <ClCompile Include="NoteBlock.cpp" />
@@ -259,6 +260,7 @@
     <ClInclude Include="InvisibleBlock.h" />
     <ClInclude Include="InvisibleNode.h" />
     <ClInclude Include="KoopaTroopa.h" />
+    <ClInclude Include="Lift.h" />
     <ClInclude Include="MapMario.h" />
     <ClInclude Include="MapNode.h" />
     <ClInclude Include="NoteBlock.h" />

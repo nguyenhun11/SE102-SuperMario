@@ -278,6 +278,9 @@
     <ClCompile Include="InvisibleBlock.cpp">
       <Filter>Entities\Blocks</Filter>
     </ClCompile>
+    <ClCompile Include="Lift.cpp">
+      <Filter>Entities\Platforms</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h">
@@ -558,6 +561,9 @@
     </ClInclude>
     <ClInclude Include="InvisibleBlock.h">
       <Filter>Entities\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="Lift.h">
+      <Filter>Entities\Platforms</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

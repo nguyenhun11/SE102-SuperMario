@@ -280,6 +280,8 @@ class Mario : public GameObject
 	void OnCollisionWithNoteBlock(LPCOLLISIONEVENT e);
 	void OnCollisionWithVerticalPipe(LPCOLLISIONEVENT e);
 	void OnCollisionWithHorizontalPipe(LPCOLLISIONEVENT e);
+	void OnCollisionWithLift(LPCOLLISIONEVENT e);
+
 
 	int GetAniIdBig();
 	int GetAniIdSmall();
