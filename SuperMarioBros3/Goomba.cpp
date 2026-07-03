@@ -62,7 +62,7 @@ void Goomba::GetBoundingBox(float& left, float& top, float& right, float& bottom
 		left = x - GOOMBA_BBOX_WIDTH / 2 + 0.5f;
 		top = y - GOOMBA_BBOX_HEIGHT / 2;
 		right = left + GOOMBA_BBOX_WIDTH - 1.0f;
-		bottom = top + GOOMBA_BBOX_HEIGHT;
+		bottom = top + GOOMBA_BBOX_HEIGHT - 1;
 	}
 }
 
@@ -134,7 +134,7 @@ void Goomba::Render()
 	if (state == static_cast<int>(GoombaState::DIE))
 	{
 		aniId = ID_ANI_GOOMBA_DIE;
-		renderY -= 2.0f;
+		renderY -= 3.0f;
 	}
 
 	Animations::GetInstance()->Get(aniId)->Render(renderX, renderY, false, isFlippedVertical);

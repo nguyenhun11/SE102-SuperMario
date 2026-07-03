@@ -105,21 +105,18 @@ void ParaGoomba::UpdateFlightPattern(DWORD dt)
 	switch (flightPhase)
 	{
 	case FlightPhase::WALK:
-		vx = nx * PARAGOOMBA_WALKING_SPEED;
-
 		if (GetTickCount64() - phaseStart >= PARAGOOMBA_WALK_DURATION)
 		{
 			StartPhase(FlightPhase::HOP);
 			isAirborne = true;
-			vy = PARAGOOMBA_HOP_VY;
+			vy = PARAGOOMBA_HOP_VY; // Kích hoạt nhảy tưng
 		}
 		break;
 
 	case FlightPhase::HOP:
-		// Đang nghỉ trên đất giữa 2 hop -> chờ hết giờ mới nhảy tiếp
 		if (isPausing)
 		{
-			vx = 0; // đứng yên khi nghỉ, cho rõ nhịp
+			// Không gán vx = 0 nữa, cứ để nó trôi tới
 			if (GetTickCount64() - groundPauseStart < PARAGOOMBA_HOP_PAUSE) return;
 			isPausing = false;
 
@@ -127,14 +124,12 @@ void ParaGoomba::UpdateFlightPattern(DWORD dt)
 			{
 				isAirborne = true;
 				vy = PARAGOOMBA_HOP_VY;
-				vx = nx * PARAGOOMBA_WALKING_SPEED;
 			}
 			else
 			{
 				flightPhase = FlightPhase::JUMP;
 				isAirborne = true;
-				vy = PARAGOOMBA_JUMP_VY;
-				vx = nx * PARAGOOMBA_WALKING_SPEED;
+				vy = PARAGOOMBA_JUMP_VY; // Nhảy vọt
 			}
 			return;
 		}
@@ -143,17 +138,13 @@ void ParaGoomba::UpdateFlightPattern(DWORD dt)
 		justLanded = false;
 
 		hopDoneCount++;
-
-		// Vừa chạm đất -> KHÔNG bay ngay, chuyển sang trạng thái nghỉ
 		isPausing = true;
 		groundPauseStart = GetTickCount64();
-		vx = 0;
 		break;
 
 	case FlightPhase::JUMP:
 		if (isPausing)
 		{
-			vx = 0;
 			if (GetTickCount64() - groundPauseStart < PARAGOOMBA_JUMP_PAUSE) return;
 			isPausing = false;
 			StartPhase(FlightPhase::WALK);
@@ -163,10 +154,8 @@ void ParaGoomba::UpdateFlightPattern(DWORD dt)
 		if (!justLanded) return;
 		justLanded = false;
 
-		// Vừa hạ cánh sau cú nhảy vọt -> nghỉ 1 chút trước khi quay lại đi bộ
 		isPausing = true;
 		groundPauseStart = GetTickCount64();
-		vx = 0;
 		break;
 	}
 }
@@ -174,7 +163,13 @@ void ParaGoomba::UpdateFlightPattern(DWORD dt)
 void ParaGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	UpdateFlightPattern(dt);
+
 	Goomba::Update(dt, coObjects);
+
+	if (hasWings && state != static_cast<int>(GoombaState::DIE))
+	{
+		vx = nx * PARAGOOMBA_WALKING_SPEED;
+	}
 }
 
 void ParaGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
@@ -188,7 +183,6 @@ void ParaGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
 	{
 		if (isAirborne)
 		{
-			// Cạnh lên: vừa từ trên không -> chạm đất -> chỉ bắn 1 lần
 			isAirborne = false;
 			justLanded = true;
 		}
@@ -197,7 +191,8 @@ void ParaGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
 
 	if (e->nx != 0)
 	{
-		vx = nx * PARAGOOMBA_WALKING_SPEED;
+		this->nx = -this->nx;
+		this->vx = this->nx * PARAGOOMBA_WALKING_SPEED;
 	}
 }
 
@@ -209,7 +204,7 @@ void ParaGoomba::Render()
 	if (state == static_cast<int>(GoombaState::DIE))
 	{
 		Animations::GetInstance()->Get(ID_ANI_PARAGOOMBA_DIE)
-			->Render(renderX, renderY - 2.0f, false, isFlippedVertical);
+			->Render(renderX, renderY - 4.0f, false, isFlippedVertical);
 		return;
 	}
 
@@ -220,18 +215,16 @@ void ParaGoomba::Render()
 		return;
 	}
 
-	if (hasWings && nx < 0)
+	if (hasWings)
 	{
-		Animations::GetInstance()->Get(ID_ANI_WING_FLAP)
-			->Render(renderX, renderY, true, false);
-	}
+		float wingY = renderY - 9.0f;
+		float wingOffsetX = 6.0f;
 
-	Animations::GetInstance()->Get(ID_ANI_PARAGOOMBA_WALKING)
-		->Render(renderX, renderY, false, isFlippedVertical);
-
-	if (hasWings && nx >= 0)
-	{
 		Animations::GetInstance()->Get(ID_ANI_WING_FLAP)
-			->Render(renderX, renderY, false, false);
+			->Render(renderX - wingOffsetX, wingY, true, false);
+
+		Animations::GetInstance()->Get(ID_ANI_WING_FLAP)
+			->Render(renderX + wingOffsetX, wingY, false, false);
 	}
+	Animations::GetInstance()->Get(ID_ANI_PARAGOOMBA_WALKING)->Render(renderX, renderY, false, isFlippedVertical);
 }

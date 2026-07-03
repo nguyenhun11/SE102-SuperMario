@@ -100,7 +100,7 @@ piranha-fire.txt
 302	14	5	0
 302	15	5	1
 
-2    15    11
+201    15    11
 
 # SEMI-SOLID PLATFORM
 # id, x y, sprite_h w, cellsize_x y, tl tc tr ml mc mr bl bc br, st sm sb
