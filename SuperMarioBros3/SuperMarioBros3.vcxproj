@@ -175,6 +175,7 @@
     <ClCompile Include="MapNode.cpp" />
     <ClCompile Include="NoteBlock.cpp" />
     <ClCompile Include="OneUpEffect.cpp" />
+    <ClCompile Include="ParaGoomba.cpp" />
     <ClCompile Include="PiranhaPlant.cpp" />
     <ClCompile Include="RespawnableEnemy.cpp" />
     <ClCompile Include="SoundManager.cpp" />
@@ -260,6 +261,7 @@
     <ClInclude Include="MapNode.h" />
     <ClInclude Include="NoteBlock.h" />
     <ClInclude Include="OneUpEffect.h" />
+    <ClInclude Include="ParaGoomba.h" />
     <ClInclude Include="PiranhaPlant.h" />
     <ClInclude Include="RespawnableEnemy.h" />
     <ClInclude Include="Sensor.h" />
@@ -330,6 +332,7 @@
     <Text Include="goomba.txt" />
     <Text Include="koopa.txt" />
     <Text Include="HUD.txt" />
+    <Text Include="paragoomba.txt" />
     <Text Include="stage2_assets.txt" />
     <Text Include="note_block.txt" />
     <Text Include="piranha-fire.txt" />

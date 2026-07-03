@@ -312,7 +312,14 @@ void Mario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 		AddScore(100);
 		if (goomba->GetState() != static_cast<int>(GoombaState::DIE))
 		{
-			goomba->SetState(GoombaState::DIE);
+			if (ParaGoomba* para = dynamic_cast<ParaGoomba*>(goomba))
+			{
+				para->OnStompedByMario();
+			}
+			else
+			{
+				goomba->SetState(GoombaState::DIE);
+			}
 			if (IsHoldingJump)
 				vy = -MARIO_HIGH_JUMP_DEFLECT_SPEED;
 			else

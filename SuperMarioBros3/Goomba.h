@@ -33,13 +33,16 @@ protected:
 
 	virtual int IsCollidable()
 	{
-		if (state == static_cast<int>(GoombaState::BOUNCE)) return 0;
+		if (state == static_cast<int>(GoombaState::BOUNCE))
+			return 0;
 		return 1;
 	}
+
 	virtual int IsBlocking()
 	{
-		{ return 0; }
+		return 0;
 	}
+
 	virtual void OnNoCollision(DWORD dt);
 
 	virtual void OnCollisionWith(LPCOLLISIONEVENT e);
@@ -47,9 +50,11 @@ protected:
 public:
 
 	Goomba(float x, float y);
+
 	virtual void SetState(GoombaState state);
 
 	virtual void OnEnable() override;
+
 	virtual void OnExitCamera() override;
 
 	void HandleSlope(DWORD dt, vector<LPGAMEOBJECT>* coObjects);

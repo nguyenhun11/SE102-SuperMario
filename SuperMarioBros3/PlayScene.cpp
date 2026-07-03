@@ -26,6 +26,7 @@
 #include "KoopaTroopa.h"
 #include "BoomerangBro.h"
 #include "WoodBlock.h"
+#include "ParaGoomba.h"
 
 #include "PlaySceneKeyHandler.h"
 
@@ -168,6 +169,9 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		break;
 	}
 	case OBJECT_TYPE_GOOMBA: obj = new Goomba(x, y); break;
+	case OBJECT_TYPE_PARAGOOMBA:
+		obj = new ParaGoomba(x, y);
+		break;
 	case OBJECT_TYPE_BOOMERANG_BRO:
 		obj = new BoomerangBro(x, y);
 		break;
@@ -848,7 +852,7 @@ void PlayScene::ActivatePSwitch(SwitchType type)
 	{
 		LPGAMEOBJECT obj = objects[i];
 
-		if (type == SwitchType::BrickToCoin && dynamic_cast<Brick*>(obj)
+			if (type == SwitchType::BrickToCoin && dynamic_cast<Brick*>(obj)
 			&& ((Brick*)obj)->GetCurrentState() == BrickState::ACTIVE)
 		{
 			// Xóa viên gạch

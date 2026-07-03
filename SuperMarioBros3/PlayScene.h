@@ -6,6 +6,7 @@
 #include "Brick.h"
 #include "Mario.h"
 #include "Goomba.h"
+#include "ParaGoomba.h"
 #include "HUD.h"
 #include "Switch.h"
 #include "GameManager.h"

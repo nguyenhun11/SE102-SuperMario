@@ -272,6 +272,9 @@
     <ClCompile Include="WoodBlock.cpp">
       <Filter>Entities\Blocks</Filter>
     </ClCompile>
+    <ClCompile Include="ParaGoomba.cpp">
+      <Filter>Entities\Enemies</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h">
@@ -550,6 +553,9 @@
     <ClInclude Include="WoodBlock.h">
       <Filter>Entities\Blocks</Filter>
     </ClInclude>
+    <ClInclude Include="ParaGoomba.h">
+      <Filter>Entities\Enemies</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="brick.txt">
@@ -642,6 +648,9 @@
       <Filter>Scenes\Playscene</Filter>
     </Text>
     <Text Include="boomerang-bro.txt">
+      <Filter>Assets</Filter>
+    </Text>
+    <Text Include="paragoomba.txt">
       <Filter>Assets</Filter>
     </Text>
   </ItemGroup>
