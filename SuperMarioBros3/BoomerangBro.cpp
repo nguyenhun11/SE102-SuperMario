@@ -40,8 +40,7 @@ void BoomerangBro::OnEnable()
 
 void BoomerangBro::OnExitCamera()
 {
-	if (isGenerated) this->Delete();
-	else RespawnableEnemy::OnExitCamera();
+	RespawnableEnemy::OnExitCamera();
 }
 
 

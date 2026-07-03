@@ -26,11 +26,11 @@ Boomerang::Boomerang(float startX, float startY, int nx, BoomerangBro* owner) : 
 
 void Boomerang::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
-	l = x - 7.5f;
-	t = y - 7.5f;
-	r = l + 15.0f;
-	b = t + 15.0f;
-}
+	l = x - 3;
+	t = y - 3;
+	r = l + 6;
+	b = t + 6;
+} // Thu nhỏ lại
 
 void Boomerang::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {

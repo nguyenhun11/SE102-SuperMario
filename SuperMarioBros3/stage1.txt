@@ -23,7 +23,7 @@ piranha-fire.txt
 
 
 [MAP_INFO]
-175
+175.5
 
 [CAMERA_ZONES]
 -1 2 60 15

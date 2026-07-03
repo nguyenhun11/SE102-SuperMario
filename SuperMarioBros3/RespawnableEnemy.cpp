@@ -74,6 +74,7 @@ void RespawnPoint::OnEnterCamera()
 	{
 		obj->SetPosition(this->x, this->y);
 		obj->SetActive(true);
+		obj->OnEnable();
 	}
 }
 
