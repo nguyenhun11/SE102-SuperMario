@@ -7,6 +7,7 @@ coin.txt
 mushroom.txt
 leaf.txt
 goomba.txt
+paragoomba.txt
 koopa.txt
 cloud.txt
 stage1_assets.txt
@@ -39,9 +40,6 @@ switch.txt
 # MARIO
 0 2 10
 
-303 5 9 0	5
-303 7 7 2
-303 12 6 1	
 
 #GROUND
 #601 0 13 16 16 39 6 60111 60112 60113 60121 60122 60123
@@ -406,6 +404,9 @@ switch.txt
 600 64 9 60311
 600 65 9 60312
 
+## PARA GOOMBA
+201 65 8
+
 ## -- đất bên dưới dốc (inside đất)
 # Cột 60, 61 bề mặt ở Y=11 (sát đáy) nên không đắp đất
 # PIPE
@@ -525,6 +526,10 @@ switch.txt
 600	87	11	6000412
 600	88	11	6000413
 
+## GOOMBA
+2	93	9
+2	95	5
+
 ## # ==== dốc lên nhỏ xíu
 600 89 11 60311
 600 90 11 60312
@@ -623,6 +628,9 @@ switch.txt
 600	105	8	6000411
 600	106	8	6000413
 
+## PARA GOOMBA
+201 110 7
+
 ### leen dooc sieeu caao
 600	111	8	60313
 600	112	7	60313
@@ -682,6 +690,10 @@ switch.txt
 600 119 11 60222
 600 120 11 60222
 
+# GOOMBA
+2 120 8
+2 121 9
+
 # PIPE
 # id x y, sprite size wh, tl tr ml mr
 702 123 9	16 16	3	70211 70212 70221 70222 70221 70222 1 -1 233 24
@@ -703,6 +715,9 @@ switch.txt
 600	138	11	6000412
 600	139	11	6000412
 600	140	11	6000413
+
+#GOOMBA
+2 139 11
 
 # PIPE
 # id x y, sprite size wh, tl tr ml mr

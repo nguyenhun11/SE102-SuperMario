@@ -136,6 +136,10 @@ void Goomba::Render()
 		aniId = ID_ANI_GOOMBA_DIE;
 		renderY -= 3.0f;
 	}
+	if (isOnSlope)
+	{
+		renderY += 4.0f;
+	}
 
 	Animations::GetInstance()->Get(aniId)->Render(renderX, renderY, false, isFlippedVertical);
 }
@@ -167,11 +171,11 @@ void Goomba::SetState(GoombaState state)
 
 void Goomba::HandleSlope(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	if (state == static_cast<int>(MushroomState::SPAWNING)) return;
+	if (state == static_cast<int>(GoombaState::DIE)) return;
 
 	float l, t, r, b;
 	GetBoundingBox(l, t, r, b);
-	float mushroomBottomY = b;
+	float goombaBottomY = b;
 	float bboxHeight = b - t;
 
 	bool foundSlope = false;
@@ -179,22 +183,38 @@ void Goomba::HandleSlope(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	for (size_t i = 0; i < coObjects->size(); i++)
 	{
 		LPGAMEOBJECT obj = coObjects->at(i);
-		if (dynamic_cast<Slope*>(obj)) // Kiểm tra nếu object là dốc
+		if (dynamic_cast<Slope*>(obj))
 		{
 			Slope* slope = dynamic_cast<Slope*>(obj);
 			float sl, st, sr, sb;
 			slope->GetBoundingBox(sl, st, sr, sb);
 
-			float mushroomCenterX = x;
+			float goombaCenterX = x;
 
-			if (mushroomCenterX >= sl && mushroomCenterX <= sr && mushroomBottomY >= st && mushroomBottomY <= sb)
+			if (goombaCenterX >= sl && goombaCenterX <= sr && goombaBottomY >= st && goombaBottomY <= sb)
 			{
-				float expectedY = slope->GetSurfaceY(mushroomCenterX);
+				float expectedY = slope->GetSurfaceY(goombaCenterX);
+
 				float epsilon = max(4.0f, vy * dt);
-				if (mushroomBottomY >= expectedY - epsilon && vy >= 0)
+
+				if (goombaBottomY >= expectedY - epsilon && vy >= 0)
 				{
 					y = expectedY - bboxHeight / 2;
-					vy = 0;
+					vy = abs(vx) + 0.05f;
+
+					float nextY = slope->GetSurfaceY(goombaCenterX + nx);
+
+					if (nextY < expectedY)
+					{
+						// ĐANG LÊN DỐC -> Đi chậm lại
+						vx = nx * (GOOMBA_WALKING_SPEED * 0.5f);
+					}
+					else
+					{
+						// ĐANG XUỐNG DỐC
+						vx = nx * GOOMBA_WALKING_SPEED;
+					}
+
 					foundSlope = true;
 				}
 			}
