@@ -7,6 +7,7 @@ coin.txt
 mushroom.txt
 leaf.txt
 goomba.txt
+paragoomba.txt
 koopa.txt
 cloud.txt
 stage1_assets.txt
@@ -28,8 +29,8 @@ boomerang-bro.txt
 158.5
 
 [CAMERA_ZONES]
--1 1.5 110 14.5
- 111 -30 999 14.5
+-1 1.5 120 14.5
+ 121 -30 999 14.5
 
 
 [GRID_OBJECTS]
@@ -38,7 +39,7 @@ boomerang-bro.txt
 # See OBJECT_TYPE constants in AssetIDs.h
 
 # MARIO
-0 1 10
+0 100 1
 
 305 5 9 0 31
 
@@ -74,12 +75,12 @@ boomerang-bro.txt
 
 # Goomba
 2 58 10
-2 66 10 #Đỏ
-2 73 10 #Đỏ
+201 66 10
+201 73 10
 
 2 100 10
 2 102 10
-2 120 10 #Bay
+2 122 10 #Bay
 
 # CLOUD 60005
 #1

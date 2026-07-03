@@ -12,6 +12,7 @@ Koopa::Koopa(float x, float y, KoopaColor color) : RespawnableEnemy(x, y)
 	die_start = -1;
 	isFlipped = false;
 	isFlippedVertical = false;
+	zIndex = 10;
 	// Khởi tạo một sensor duy nhất đi trước để dò đường
 	this->sensorfront = new Sensor(x, y);
 
@@ -105,33 +106,31 @@ void Koopa::OnNoCollision(DWORD dt)
 
 void Koopa::OnCollisionWith(LPCOLLISIONEVENT e)
 {
-	//if (!e->obj->IsBlocking()) return;
-	//if (!e->obj->IsCollidable()) return;
 	if (e->obj == this) return;
 
 	if (e->ny != 0)
 	{
-		vy = 0;
-		if (e->ny < 0 && state == static_cast<int>(KoopaState::SHELL_UPWARD))
+		if (e->obj->IsBlocking())
 		{
-			SetState(KoopaState::SHELL); 
+			vy = 0;
+			if (e->ny < 0 && state == static_cast<int>(KoopaState::SHELL_UPWARD))
+			{
+				SetState(KoopaState::SHELL);
+			}
 		}
 	}
+
 	else if (e->nx != 0)
 	{
-		nx = e->nx;
-
 		if (state == static_cast<int>(KoopaState::SHELL_MOVING))
 		{
 			if (dynamic_cast<Goomba*>(e->obj))
 			{
 				OnCollisionWithGoomba(e);
-				return;
 			}
 			else if (dynamic_cast<Koopa*>(e->obj))
 			{
 				OnCollisionWithKoopa(e);
-				return;
 			}
 			else if (dynamic_cast<Brick*>(e->obj))
 			{
@@ -141,20 +140,26 @@ void Koopa::OnCollisionWith(LPCOLLISIONEVENT e)
 			{
 				OnCollisionWithQuestionBlock(e);
 			}
+			else if (e->obj->IsBlocking())
+			{
+				nx = e->nx; // Lấy pháp tuyến dội ra
+				vx = nx * KOOPA_SHELL_SPEED;
+			}
 		}
 		else if (state == static_cast<int>(KoopaState::WALKING))
 		{
 			if (dynamic_cast<Goomba*>(e->obj) || dynamic_cast<Koopa*>(e->obj))
 			{
-				nx = -nx;
+				nx = e->nx;
+				vx = nx * KOOPA_WALKING_SPEED;
+			}
+			else if (e->obj->IsBlocking())
+			{
+				nx = e->nx;
 				vx = nx * KOOPA_WALKING_SPEED;
 			}
 		}
-		vx = nx * (state == static_cast<int>(KoopaState::SHELL_MOVING) ? KOOPA_SHELL_SPEED : KOOPA_WALKING_SPEED);
 	}
-
-	Koopa* koopa = dynamic_cast<Koopa*>(e->obj);
-	if (koopa != NULL && koopa != this) return;
 }
 
 void Koopa::OnCollisionWithBrick(LPCOLLISIONEVENT e)

@@ -179,7 +179,7 @@ void ParaGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
 	if (!hasWings) return;
 	if (!e->obj->IsBlocking()) return;
 
-	if (e->ny < 0) // chạm nền
+	if (e->ny < 0)
 	{
 		if (isAirborne)
 		{
@@ -191,7 +191,7 @@ void ParaGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
 
 	if (e->nx != 0)
 	{
-		this->nx = -this->nx;
+		this->nx = e->nx;
 		this->vx = this->nx * PARAGOOMBA_WALKING_SPEED;
 	}
 }
