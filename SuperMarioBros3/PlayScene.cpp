@@ -888,7 +888,10 @@ void PlayScene::Update(DWORD dt)
 	if (cx >= max_cx)
 	{
 		cx = max_cx;
-		isAutoScroll = false;
+		if (isAutoScroll)
+		{
+			autoScrollSpeed = 0.0f;
+		}
 	}
 	// Clamp cy theo zone
 	// 1. Mặc định luôn ép Camera bám sát mặt đất (max_cy) thay vì đi theo cy
