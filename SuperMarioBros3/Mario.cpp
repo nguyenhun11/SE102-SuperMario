@@ -1849,14 +1849,14 @@ void Mario::HandleFlyingToHeaven(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	if (!isFlyingToHeaven) return;
 
-	float triggerY = -100.0f;
+	float triggerY = -100.0f; // Bay lố qua trần nhà
 
 	if (this->y < triggerY)
 	{
 		isFlyingToHeaven = false;
 		SetSpeed(0.0f, 0.0f);
 
-		GameManager::GetInstance()->isGoingThroughPipe = true;
+		GameManager::GetInstance()->isSpawningFromHeaven = true;
 
 		if (heavenSceneID != -1)
 		{

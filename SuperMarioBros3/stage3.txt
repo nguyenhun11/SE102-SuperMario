@@ -40,6 +40,7 @@ boomerang-bro.txt
 # MARIO
 0 1 10
 
+305 5 9 0 31
 
 
 # GROUND

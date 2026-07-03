@@ -421,6 +421,8 @@ public:
 	void StartFlyingToHeaven(int sceneID);
 	void HandleFlyingToHeaven(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 
+	void SetVy(float vy) { this->vy = vy; }
+
 	bool isHolding = false;
 	Koopa* heldKoopa = NULL;
 };

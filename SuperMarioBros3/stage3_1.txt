@@ -36,7 +36,7 @@ stage3_assets.txt
 # See OBJECT_TYPE constants in AssetIDs.h
 
 # MARIO
-0 1 1
+0 4 12
 
 #GROUND
 # Y = 12

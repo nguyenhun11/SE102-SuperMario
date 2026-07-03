@@ -656,9 +656,34 @@ void PlayScene::Load()
 		if (cx > max_cx) cx = max_cx;
 
 		Camera::GetInstance()->SetCamPos(cx, cy);
+		gm->isGoingThroughPipe = false;
 	}
 
-	gm->isGoingThroughPipe = false;
+	if (gm->isSpawningFromHeaven && player != NULL)
+	{
+		Mario* mario = static_cast<Mario*>(player);
+		float spawnX, spawnY;
+
+		player->GetPosition(spawnX, spawnY);
+
+		mario->SetState(MarioState::JUMP);
+		mario->SetVy(-MARIO_JUMP_SPEED_Y * 1.2f); 
+		mario->SetIsOnPlatform(false); 
+
+		float cx = spawnX - GameGlobal::GetWidth() / 2;
+		float cy = spawnY - GameGlobal::GetHeight() / 2;
+
+		float min_cx = mapLeft * TILE_SIZE;
+		float max_cx = mapRight * TILE_SIZE - GameGlobal::GetWidth();
+
+		if (cx < min_cx) cx = min_cx;
+		if (cx > max_cx) cx = max_cx;
+
+		Camera::GetInstance()->SetCamPos(cx, cy);
+
+		// Xong việc thì tắt cờ
+		gm->isSpawningFromHeaven = false;
+	}
 
 	float screenHeight = GameGlobal::GetHeight();
 	HUD::GetInstance()->SetPosition(0.0f, screenHeight - HUD_HEIGHT);

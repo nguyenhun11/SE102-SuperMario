@@ -26,8 +26,9 @@ piranha-fire.txt
 175.5
 
 [CAMERA_ZONES]
--1 2 60 15
-60 -30 999 15
+-1 1.5 60 14.5
+60 -12 999 0.5
+60 1.5 999 14.5
 
 
 [GRID_OBJECTS]
@@ -36,7 +37,7 @@ piranha-fire.txt
 # See OBJECT_TYPE constants in AssetIDs.h
 
 # MARIO
-0 1 10
+0 90 -10
 
 #GROUND
 601 0 12 16 16 39 6 60111 60112 60113 60121 60122 60123

@@ -19,6 +19,7 @@ public:
 
 	bool isReturningFromFail = false;
 	bool isGoingThroughPipe = false;
+	bool isSpawningFromHeaven = false;
 
 	int score;
 	int coinNumber;
