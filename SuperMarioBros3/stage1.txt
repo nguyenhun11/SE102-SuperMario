@@ -31,6 +31,9 @@ piranha-fire.txt
 60 -12 999 0.5
 60 1.5 999 14.5
 
+[BGM]
+bgm_stage1
+
 
 [GRID_OBJECTS]
 # type x y extra_settings per object type

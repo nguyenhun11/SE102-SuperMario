@@ -11,6 +11,8 @@
 #define ID_ANI_BOOMERANG 20402
 #define ID_ANI_BOOMERANG_IDLE 2040201
 
+#define BOOMERANG_SOUND_INTERVAL 150.0f
+
 class BoomerangBro;
 
 class Boomerang : public GameObject
@@ -25,6 +27,7 @@ protected:
 
 	bool isDelayed;
 	float delayTimer;
+	float soundTimer;
 
 public:
 	Boomerang(float x, float y, int nx, BoomerangBro* owner);

@@ -54,6 +54,9 @@ protected:
 	void ThrowBoomerang();
 
 public:
+	int activeBoomerangs;      // Đếm xem đang có bao nhiêu cái bay trên trời
+	float boomerangSoundTimer; // Đồng hồ đếm nhịp âm thanh
+
 	BoomerangBro(float x, float y);
 	virtual void SetState(int state);
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);

@@ -95,6 +95,10 @@ void Boomerang::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 			if (bl <= oright && br >= ol && bt <= ob && bb >= ot)
 			{
+				if (owner != nullptr && owner->activeBoomerangs > 0)
+				{
+					owner->activeBoomerangs--;
+				}
 				this->Delete();
 				return;
 			}
@@ -111,6 +115,10 @@ void Boomerang::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	CheckCameraStatus();
 	if (!this->GetWasOnCamera())
 	{
+		if (owner != nullptr && owner->activeBoomerangs > 0)
+		{
+			owner->activeBoomerangs--;
+		}
 		this->Delete();
 	}
 }

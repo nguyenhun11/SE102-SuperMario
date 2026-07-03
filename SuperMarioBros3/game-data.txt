@@ -1,6 +1,6 @@
 [SETTINGS]
 # Start scene
-start	1
+start	3
 
 # id	type	file
 # type: 0: world, 1: play scene 
@@ -36,3 +36,35 @@ start	1
 600		textures\600_misc.png
 700		textures\700_WorldMaps.png
 800		textures\800_Goal.png
+
+# id	file
+[AUDIO]
+bgm_stage1          assets/sounds/bgm_stage1.wav
+bgm_stage2          assets/sounds/smb3_stage2.wav
+1up                 assets/sounds/smb3_1-up.wav
+coin                assets/sounds/smb3_coin.wav
+jump                assets/sounds/smb3_jump.wav
+skid                assets/sounds/smb3_skid.wav
+kick                assets/sounds/smb3_kick.wav
+bump                assets/sounds/smb3_bump.wav
+brick_break         assets/sounds/smb3_brick_break.wav
+level_clear         assets/sounds/smb3_level_clear.wav
+pipe                assets/sounds/smb3_pipe.wav
+player_down         assets/sounds/smb3_player_down.wav
+power_up            assets/sounds/smb3_power-up.wav
+score               assets/sounds/smb3_inventory.wav
+mushroom_appear     assets/sounds/smb3_mushroom_appear.wav
+racoon              assets/sounds/smb3_raccoon_transform.wav
+tail                assets/sounds/smb3_tail.wav
+pmeter              assets/sounds/smb3_pmeter.wav
+stomp               assets/sounds/smb3_stomp.wav
+bgm_heaven 				assets/sounds/smb3_heaven.wav
+
+boomerang       assets/sounds/smb3_boomerang.wav
+level_start     assets/sounds/smb3_level_start.wav
+map_move        assets/sounds/smb3_map_move.wav
+map_start       assets/sounds/smb3_map_start.wav
+bgm_p_switch    assets/sounds/smb3_p_switch.wav
+pause           assets/sounds/smb3_pause.wav
+bgm_world       assets/sounds/smb3_world.wav
+bgm_underground   assets/sounds/smb3_underground.wav

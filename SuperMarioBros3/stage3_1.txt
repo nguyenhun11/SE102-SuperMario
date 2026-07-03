@@ -29,6 +29,8 @@ stage3_assets.txt
 [CAMERA_ZONES]
 -1 1.5 999 14.5
 
+[BGM]
+bgm_heaven
 
 [GRID_OBJECTS]
 # type x y extra_settings per object type

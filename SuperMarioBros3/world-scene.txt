@@ -2,6 +2,9 @@
 world-scene-assets.txt
 hud.txt
 
+[BGM]
+bgm_world
+
 [OBJECTS]
 800 0 0 80000
 

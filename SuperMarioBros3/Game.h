@@ -34,6 +34,7 @@ public:
 	void _ParseSection_SETTINGS(string line);
 	void _ParseSection_SCENES(string line);
 	void _ParseSection_TEXTURES(string line);
+	void _ParseSection_AUDIO(string line);
 
 	void Draw(float x, float y, LPTEXTURE tex, RECT* rect = NULL, float alpha = 1.0f, int sprite_width = 0, int sprite_height = 0);
 

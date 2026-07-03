@@ -48,6 +48,7 @@ PlayScene::PlayScene(int id, LPCWSTR filePath) :
 #define SCENE_SECTION_GRID_OBJECTS	3
 #define SCENE_SECTION_MAP_INFO	4
 #define SCENE_SECTION_CAMERA_ZONES 5
+#define SCENE_SECTION_BGM 6
 
 #define ASSETS_SECTION_UNKNOWN -1
 #define ASSETS_SECTION_SPRITES 1
@@ -148,6 +149,13 @@ void PlayScene::_ParseSection_ANIMATIONS(string line)
 	}
 
 	Animations::GetInstance()->Add(ani_id, ani);
+}
+
+void PlayScene::_ParseSection_BGM(string line)
+{
+	vector<string> tokens = split(line);
+	if (tokens.size() < 1) return;
+	sceneBGM = tokens[0];
 }
 
 /*
@@ -532,33 +540,6 @@ void PlayScene::LoadAssets(LPCWSTR assetFile)
 		}
 	}
 
-	//// LOAD SFX & BGM
-	// Tại nơi khởi tạo game
-	SoundManager::GetInstance()->Init();
-
-	// Load các file âm thanh (đảm bảo file tồn tại trong thư mục assets)
-	SoundManager::GetInstance()->Load("bgm_stage1", "assets/sounds/bgm_stage1.wav");
-
-	SoundManager::GetInstance()->Load("1up", "assets/sounds/smb3_1-up.wav");
-	SoundManager::GetInstance()->Load("coin", "assets/sounds/smb3_coin.wav");
-	SoundManager::GetInstance()->Load("jump", "assets/sounds/smb3_jump.wav");
-	SoundManager::GetInstance()->Load("skid", "assets/sounds/smb3_skid.wav");
-	SoundManager::GetInstance()->Load("kick", "assets/sounds/smb3_kick.wav");
-	SoundManager::GetInstance()->Load("bump", "assets/sounds/smb3_bump.wav");
-	SoundManager::GetInstance()->Load("brick_break", "assets/sounds/smb3_brick_break.wav");
-	SoundManager::GetInstance()->Load("level_clear", "assets/sounds/smb3_level_clear.wav");
-	SoundManager::GetInstance()->Load("pipe", "assets/sounds/smb3_pipe.wav");
-	SoundManager::GetInstance()->Load("player_down", "assets/sounds/smb3_player_down.wav");
-	SoundManager::GetInstance()->Load("power_up", "assets/sounds/smb3_power-up.wav");
-	SoundManager::GetInstance()->Load("score", "assets/sounds/smb3_inventory.wav");
-	SoundManager::GetInstance()->Load("mushroom_appear", "assets/sounds/smb3_mushroom_appear.wav");
-	SoundManager::GetInstance()->Load("racoon", "assets/sounds/smb3_raccoon_transform.wav");
-	SoundManager::GetInstance()->Load("tail", "assets/sounds/smb3_tail.wav");
-	SoundManager::GetInstance()->Load("pmeter", "assets/sounds/smb3_pmeter.wav");
-	SoundManager::GetInstance()->Load("stomp", "assets/sounds/smb3_stomp.wav");
-	// Phát nhạc nền ngay khi vào màn chơi
-	SoundManager::GetInstance()->PlayBGM("bgm_stage1");
-
 	f.close();
 
 	DebugOut(L"[INFO] Done loading assets from %s\n", assetFile);
@@ -585,6 +566,7 @@ void PlayScene::Load()
 		if (line == "[ASSETS]") { section = SCENE_SECTION_ASSETS; continue; };
 		if (line == "[OBJECTS]") { section = SCENE_SECTION_OBJECTS; continue; };
 		if (line == "[GRID_OBJECTS]") { section = SCENE_SECTION_GRID_OBJECTS; continue; };
+		if (line == "[BGM]") { section = SCENE_SECTION_BGM; continue; };
 		if (line[0] == '[') { section = SCENE_SECTION_UNKNOWN; continue; }
 
 		//
@@ -597,6 +579,7 @@ void PlayScene::Load()
 		case SCENE_SECTION_ASSETS: _ParseSection_ASSETS(line); break;
 		case SCENE_SECTION_OBJECTS: _ParseSection_OBJECTS(line); break;
 		case SCENE_SECTION_GRID_OBJECTS: _ParseSection_OBJECTS(line, true); break;
+		case SCENE_SECTION_BGM: _ParseSection_BGM(line); break;
 		}
 	}
 	f.close();
@@ -708,6 +691,10 @@ void PlayScene::Load()
 		ActivatePSwitch(true);
 	}
 
+	if (sceneBGM != "")
+	{
+		SoundManager::GetInstance()->PlayBGM(sceneBGM);
+	}
 	DebugOut(L"[INFO] Done loading scene  %s\n", sceneFilePath);
 }
 
@@ -839,6 +826,7 @@ void PlayScene::Update(DWORD dt)
 		mario->Reset();*/
 		GameManager::GetInstance()->LevelFailed();
 		SoundManager::GetInstance()->StopAll();
+		this->DeactivatePSwitch();
 	}
 
 	//--- FOLLOW CAMERA
@@ -1010,7 +998,7 @@ bool PlayScene::IsGameObjectDeleted(const LPGAMEOBJECT& o) { return o == NULL; }
 
 void PlayScene::ActivatePSwitch(bool isFromLoad)
 {
-	SoundManager::GetInstance()->Play("bump");
+	SoundManager::GetInstance()->PlayBGM("bgm_p_switch");
 	vector<LPGAMEOBJECT> newObjects;
 
 	// Chỉ reset lại đồng hồ nếu là do Mario tự đạp vào nút (không phải do Load map)
@@ -1051,6 +1039,8 @@ void PlayScene::ActivatePSwitch(bool isFromLoad)
 void PlayScene::DeactivatePSwitch()
 {
 	GameManager::GetInstance()->isPSwitchActive = false;
+	SoundManager::GetInstance()->PlayBGM(sceneBGM);
+
 	vector<LPGAMEOBJECT> newObjects;
 
 	for (size_t i = 0; i < objects.size(); i++)

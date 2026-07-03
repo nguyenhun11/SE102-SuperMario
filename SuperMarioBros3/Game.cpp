@@ -10,6 +10,7 @@
 #include "WorldScene.h"
 #include "GameGlobal.h"
 #include "SceneManager.h"
+#include "SoundManager.h"
 
 /*
 	Initialize DirectX, create a Direct3D device for rendering within the window, initial Sprite library for
@@ -327,12 +328,14 @@ LPTEXTURE Game::LoadTexture(LPCWSTR texturePath)
 #define GAME_FILE_SECTION_SETTINGS 1
 #define GAME_FILE_SECTION_SCENES 2
 #define GAME_FILE_SECTION_TEXTURES 3
+#define GAME_FILE_SECTION_AUDIO 4
 /*
 	Load game campaign file and load/initiate first scene
 */
 void Game::Load(LPCWSTR gameFile)
 {
 	DebugOut(L"[INFO] Start loading game file : %s\n", gameFile);
+	SoundManager::GetInstance()->Init();
 
 	ifstream f;
 	f.open(gameFile);
@@ -350,6 +353,7 @@ void Game::Load(LPCWSTR gameFile)
 		if (line == "[SETTINGS]") { section = GAME_FILE_SECTION_SETTINGS; continue; }
 		if (line == "[TEXTURES]") { section = GAME_FILE_SECTION_TEXTURES; continue; }
 		if (line == "[SCENES]") { section = GAME_FILE_SECTION_SCENES; continue; }
+		if (line == "[AUDIO]") { section = GAME_FILE_SECTION_AUDIO; continue; }
 		if (line[0] == '[')
 		{
 			section = GAME_FILE_SECTION_UNKNOWN;
@@ -365,6 +369,7 @@ void Game::Load(LPCWSTR gameFile)
 		case GAME_FILE_SECTION_SETTINGS: _ParseSection_SETTINGS(line); break;
 		case GAME_FILE_SECTION_SCENES: _ParseSection_SCENES(line); break;
 		case GAME_FILE_SECTION_TEXTURES: _ParseSection_TEXTURES(line); break;
+		case GAME_FILE_SECTION_AUDIO: _ParseSection_AUDIO(line); break;
 		}
 	}
 	f.close();
@@ -430,6 +435,19 @@ void Game::_ParseSection_TEXTURES(string line)
 	wstring path = ToWSTR(tokens[1]);
 
 	Textures::GetInstance()->Add(texID, path.c_str());
+}
+
+void Game::_ParseSection_AUDIO(string line)
+{
+	vector<string> tokens = split(line);
+
+	if (tokens.size() < 2) return;
+
+	string soundId = tokens[0];
+	string soundPath = tokens[1];
+
+	DebugOut(L"[AUDIO LOAD] ID: %s | Path: %s\n", ToWSTR(soundId).c_str(), ToWSTR(soundPath).c_str());
+	SoundManager::GetInstance()->Load(soundId, soundPath);
 }
 
 

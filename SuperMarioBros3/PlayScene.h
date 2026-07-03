@@ -40,6 +40,7 @@ protected:
 	void _ParseSection_CAMERA_ZONES(string line);
 	void _ParseSection_SPRITES(string line);
 	void _ParseSection_ANIMATIONS(string line);
+	void _ParseSection_BGM(string line);
 
 	void _ParseSection_ASSETS(string line);
 	void _ParseSection_OBJECTS(string line, bool isGridCoordinat = false);

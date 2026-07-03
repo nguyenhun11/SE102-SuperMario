@@ -2,6 +2,7 @@
 #include "GameManager.h"
 #include "Animations.h"
 #include "debug.h"
+#include "SoundManager.h"
 
 MapMario::MapMario(float x, float y) : GameObject(x, y)
 {
@@ -52,7 +53,6 @@ void MapMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 	}
 
-	// 3. Bị đẩy lùi nếu thua game
 	// 3. Bị đẩy lùi nếu thua game
 	if (GameManager::GetInstance()->isReturningFromFail)
 	{
@@ -221,6 +221,7 @@ void MapMario::MoveLeft()
 
 	if (!isMoving && (currentNode == NULL || currentNode->canLeft)) {
 		SetState(MARIO_MAP_STATE_WALKING_LEFT);
+		SoundManager::GetInstance()->Play("map_move");
 	}
 }
 
@@ -230,6 +231,8 @@ void MapMario::MoveRight()
 
 	if (!isMoving && (currentNode == NULL || currentNode->canRight)) {
 		SetState(MARIO_MAP_STATE_WALKING_RIGHT);
+		SoundManager::GetInstance()->Play("map_move");
+
 	}
 }
 
@@ -239,6 +242,8 @@ void MapMario::MoveUp()
 
 	if (!isMoving && (currentNode == NULL || currentNode->canUp)) {
 		SetState(MARIO_MAP_STATE_WALKING_UP);
+		SoundManager::GetInstance()->Play("map_move");
+
 	}
 }
 
@@ -248,6 +253,7 @@ void MapMario::MoveDown()
 
 	if (!isMoving && (currentNode == NULL || currentNode->canDown)) {
 		SetState(MARIO_MAP_STATE_WALKING_DOWN);
+		SoundManager::GetInstance()->Play("map_move");
 	}
 }
 

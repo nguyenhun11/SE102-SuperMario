@@ -2,6 +2,7 @@
 #include "Boomerang.h"
 #include "Mario.h"
 #include "PlayScene.h"
+#include "SoundManager.h"
 
 BoomerangBro::BoomerangBro(float x, float y) : RespawnableEnemy(x, y)
 {
@@ -36,6 +37,9 @@ void BoomerangBro::OnEnable()
 
 	this->vx = BOOMERANG_BRO_WALKING_SPEED;
 	SetState(static_cast<int>(BroState::ALIVE));
+
+	this->activeBoomerangs = 0;
+	this->boomerangSoundTimer = 0;
 }
 
 void BoomerangBro::OnExitCamera()
@@ -57,6 +61,8 @@ void BoomerangBro::ThrowBoomerang()
 	float throwY = y - 4.0f;
 	Boomerang* wpn = new Boomerang(x, throwY, nx, this);
 	((PlayScene*)SceneManager::GetInstance()->GetCurrentScene())->AddObject(wpn);
+
+	this->activeBoomerangs++;
 }
 
 void BoomerangBro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
@@ -158,6 +164,22 @@ void BoomerangBro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			isIdleAtEdge = true; // Bắt đầu dừng
 			idleStart = now;
 		}
+	}
+
+	if (activeBoomerangs > 0)
+	{
+		// Nếu có ít nhất 1 cái đang bay, đếm ngược và phát tiếng
+		boomerangSoundTimer -= (float)dt;
+		if (boomerangSoundTimer <= 0)
+		{
+			SoundManager::GetInstance()->Play("boomerang");
+			boomerangSoundTimer = 150.0f;
+		}
+	}
+	else
+	{
+		// Nếu tất cả đã thu hồi, tắt đồng hồ
+		boomerangSoundTimer = 0;
 	}
 
 	RespawnableEnemy::Update(dt, coObjects);

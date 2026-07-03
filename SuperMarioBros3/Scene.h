@@ -1,6 +1,7 @@
 #pragma once
 
 #include "KeyEventHandler.h"
+#include <string>
 
 /*
 *  Abstract class for a game scene
@@ -12,6 +13,7 @@ protected:
 	int id;
 	LPCWSTR sceneFilePath;
 	float backColor[4];
+	std::string sceneBGM;
 
 public: 
 	Scene(int id, LPCWSTR filePath)

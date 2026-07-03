@@ -32,6 +32,9 @@ boomerang-bro.txt
 -1 1.5 120 14.5
  121 -30 999 14.5
 
+[BGM]
+bgm_stage1
+
 
 [GRID_OBJECTS]
 # type x y extra_settings per object type
@@ -39,7 +42,7 @@ boomerang-bro.txt
 # See OBJECT_TYPE constants in AssetIDs.h
 
 # MARIO
-0 100 1
+0 2 1
 
 305 5 9 0 31
 

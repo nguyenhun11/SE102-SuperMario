@@ -31,6 +31,9 @@ switch.txt
 -1 1 165 14.5
 165 0 999 14.5
 
+[BGM]
+bgm_stage2
+
 
 [GRID_OBJECTS]
 # type x y extra_settings per object type

@@ -17,6 +17,7 @@
 #include "WorldMapObject.h"
 #include "InvisibleNode.h"
 #include "StageNode.h"
+#include "SoundManager.h"
 
 // Tụi mình sẽ tạo 2 class này ở các bước sau:
 // #include "MarioMap.h" 
@@ -28,6 +29,7 @@ using namespace std;
 #define SCENE_SECTION_ASSETS	1
 #define SCENE_SECTION_OBJECTS	2
 #define SCENE_SECTION_GRID_OBJECTS 3
+#define SCENE_SECTION_BGM 4
 
 #define ASSETS_SECTION_UNKNOWN -1
 #define ASSETS_SECTION_SPRITES 1
@@ -63,6 +65,7 @@ void WorldScene::Load()
 		if (line == "[ASSETS]") { section = SCENE_SECTION_ASSETS; continue; };
 		if (line == "[OBJECTS]") { section = SCENE_SECTION_OBJECTS; continue; };
 		if (line == "[GRID_OBJECTS]") { section = SCENE_SECTION_GRID_OBJECTS; continue; };
+		if (line == "[BGM]") { section = SCENE_SECTION_BGM; continue; };
 		if (line[0] == '[') { section = SCENE_SECTION_UNKNOWN; continue; }
 
 		//
@@ -73,6 +76,7 @@ void WorldScene::Load()
 		case SCENE_SECTION_ASSETS: _ParseSection_ASSETS(line); break;
 		case SCENE_SECTION_OBJECTS: _ParseSection_OBJECTS(line); break;
 		case SCENE_SECTION_GRID_OBJECTS: _ParseSection_OBJECTS(line, true); break;
+		case SCENE_SECTION_BGM: _ParseSection_BGM(line); break;
 		}
 	}
 	f.close();
@@ -95,7 +99,11 @@ void WorldScene::Load()
 			worldMario->SetPosition(cx, cy);
 		}
 	}
-
+	if (sceneBGM != "")
+	{
+		SoundManager::GetInstance()->PlayBGM(sceneBGM);
+	}
+	
 	DebugOut(L"[INFO] Done loading World Map  %s\n", sceneFilePath);
 }
 
@@ -276,6 +284,13 @@ void WorldScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		obj->SetPosition(x, y);
 		objects.push_back(obj);
 	}
+}
+
+void WorldScene::_ParseSection_BGM(string line)
+{
+	vector<string> tokens = split(line);
+	if (tokens.size() < 1) return;
+	sceneBGM = tokens[0];
 }
 
 void WorldScene::LoadAssets(LPCWSTR assetFile)
