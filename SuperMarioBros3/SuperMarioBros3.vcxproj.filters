@@ -824,5 +824,38 @@
     <Media Include="assets\sounds\smb3_tail.wav">
       <Filter>Resources\Sounds</Filter>
     </Media>
+    <Media Include="assets\sounds\smb3_world.wav">
+      <Filter>Resources\Sounds</Filter>
+    </Media>
+    <Media Include="assets\sounds\smb3_boomerang.wav">
+      <Filter>Resources\Sounds</Filter>
+    </Media>
+    <Media Include="assets\sounds\smb3_heaven.wav">
+      <Filter>Resources\Sounds</Filter>
+    </Media>
+    <Media Include="assets\sounds\smb3_level_start.wav">
+      <Filter>Resources\Sounds</Filter>
+    </Media>
+    <Media Include="assets\sounds\smb3_map_move.wav">
+      <Filter>Resources\Sounds</Filter>
+    </Media>
+    <Media Include="assets\sounds\smb3_map_start.wav">
+      <Filter>Resources\Sounds</Filter>
+    </Media>
+    <Media Include="assets\sounds\smb3_p_switch.wav">
+      <Filter>Resources\Sounds</Filter>
+    </Media>
+    <Media Include="assets\sounds\smb3_pause.wav">
+      <Filter>Resources\Sounds</Filter>
+    </Media>
+    <Media Include="assets\sounds\smb3_stage2.wav">
+      <Filter>Resources\Sounds</Filter>
+    </Media>
+    <Media Include="assets\sounds\smb3_stomp.wav">
+      <Filter>Resources\Sounds</Filter>
+    </Media>
+    <Media Include="assets\sounds\smb3_underground.wav">
+      <Filter>Resources\Sounds</Filter>
+    </Media>
   </ItemGroup>
 </Project>

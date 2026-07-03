@@ -403,7 +403,6 @@
     <Media Include="assets\sounds\smb3_brick_break.wav" />
     <Media Include="assets\sounds\smb3_bump.wav" />
     <Media Include="assets\sounds\smb3_coin.wav" />
-    <Media Include="assets\sounds\smb3_heaven.mp3" />
     <Media Include="assets\sounds\smb3_heaven.wav" />
     <Media Include="assets\sounds\smb3_inventory.wav" />
     <Media Include="assets\sounds\smb3_jump.wav" />
@@ -418,16 +417,13 @@
     <Media Include="assets\sounds\smb3_player_down.wav" />
     <Media Include="assets\sounds\smb3_pmeter.wav" />
     <Media Include="assets\sounds\smb3_power-up.wav" />
-    <Media Include="assets\sounds\smb3_p_switch.mp3" />
     <Media Include="assets\sounds\smb3_p_switch.wav" />
     <Media Include="assets\sounds\smb3_raccoon_transform.wav" />
     <Media Include="assets\sounds\smb3_skid.wav" />
-    <Media Include="assets\sounds\smb3_stage2.mp3" />
     <Media Include="assets\sounds\smb3_stage2.wav" />
     <Media Include="assets\sounds\smb3_stomp.wav" />
     <Media Include="assets\sounds\smb3_tail.wav" />
     <Media Include="assets\sounds\smb3_underground.wav" />
-    <Media Include="assets\sounds\smb3_world.mp3" />
     <Media Include="assets\sounds\smb3_world.wav" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
