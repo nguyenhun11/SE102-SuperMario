@@ -623,6 +623,7 @@ void Mario::OnCollisionWithBrick(LPCOLLISIONEVENT e)
 
 	if (e->ny > 0)
 	{
+		SoundManager::GetInstance()->Stop("jump");
 		if (brick->GetCurrentState() == BrickState::ACTIVE)
 		{
 			if (brick->GetContainedItem() != BrickItem::NONE)

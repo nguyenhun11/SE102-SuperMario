@@ -7,8 +7,8 @@
 
 #define PARAGOOMBA_WALK_DURATION   1500      // ms đi bộ trước khi bắt đầu nhảy
 #define PARAGOOMBA_HOP_COUNT       3         // số lần nhảy tưng thấp
-#define PARAGOOMBA_HOP_VY          -0.1f    // vận tốc nhảy thấp
-#define PARAGOOMBA_JUMP_VY         -0.2f    // vận tốc nhảy vọt cao
+#define PARAGOOMBA_HOP_VY          -0.15f    // vận tốc nhảy thấp
+#define PARAGOOMBA_JUMP_VY         -0.25f    // vận tốc nhảy vọt cao
 
 // ==== ID Animation ====
 #define ID_ANI_PARAGOOMBA_WALKING  20110

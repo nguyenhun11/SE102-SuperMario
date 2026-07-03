@@ -12,6 +12,7 @@ private:
     static SoundManager* instance;
     ISoundEngine* engine;
     std::map<std::string, std::string> soundMap;
+    std::map<std::string, ISound*> playingSounds;
 
     /// ISOUND
     // Phát nhạc nền
@@ -40,10 +41,35 @@ public:
     }
 
     // Phát âm thanh
-    void Play(std::string name, bool loop = false) 
+    void Play(std::string name, bool loop = false)
     {
-        if (soundMap.count(name)) {
-            engine->play2D(soundMap[name].c_str(), loop);
+        if (soundMap.count(name))
+        {
+            Stop(name);
+
+            ISound* snd = engine->play2D(soundMap[name].c_str(), loop, false, true);
+
+            if (snd)
+            {
+                playingSounds[name] = snd;
+            }
+        }
+    }
+
+    void Stop(std::string name)
+    {
+        if (playingSounds.count(name))
+        {
+            ISound* snd = playingSounds[name];
+            if (snd)
+            {
+                if (!snd->isFinished())
+                {
+                    snd->stop();
+                }
+                snd->drop(); 
+            }
+            playingSounds.erase(name);
         }
     }
 
