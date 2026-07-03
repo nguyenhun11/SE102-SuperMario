@@ -160,6 +160,7 @@
     <None Include="GameObjectDocument.md" />
     <None Include="irrKlang.dll" />
     <None Include="packages.config" />
+    <None Include="stage4_assets.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Boomerang.cpp" />
@@ -169,8 +170,10 @@
     <ClCompile Include="GoalBlock.cpp" />
     <ClCompile Include="HitEffect.cpp" />
     <ClCompile Include="HorizontalPipe.cpp" />
+    <ClCompile Include="InvisibleBlock.cpp" />
     <ClCompile Include="InvisibleNode.cpp" />
     <ClCompile Include="KoopaTroopa.cpp" />
+    <ClCompile Include="Lift.cpp" />
     <ClCompile Include="MapMario.cpp" />
     <ClCompile Include="MapNode.cpp" />
     <ClCompile Include="NoteBlock.cpp" />
@@ -255,8 +258,10 @@
     <ClInclude Include="GoalBlock.h" />
     <ClInclude Include="HitEffect.h" />
     <ClInclude Include="HorizontalPipe.h" />
+    <ClInclude Include="InvisibleBlock.h" />
     <ClInclude Include="InvisibleNode.h" />
     <ClInclude Include="KoopaTroopa.h" />
+    <ClInclude Include="Lift.h" />
     <ClInclude Include="MapMario.h" />
     <ClInclude Include="MapNode.h" />
     <ClInclude Include="NoteBlock.h" />
@@ -332,6 +337,7 @@
     <Text Include="goomba.txt" />
     <Text Include="koopa.txt" />
     <Text Include="HUD.txt" />
+    <Text Include="stage2_1.txt" />
     <Text Include="paragoomba.txt" />
     <Text Include="stage2_assets.txt" />
     <Text Include="note_block.txt" />
@@ -349,7 +355,10 @@
     <Text Include="scene_mario_dev.txt" />
     <Text Include="pipe.txt" />
     <Text Include="stage3.txt" />
+    <Text Include="stage3_1.txt" />
     <Text Include="stage3_assets.txt" />
+    <Text Include="stage4.txt" />
+    <Text Include="stage4_1.txt" />
     <Text Include="switch.txt" />
     <Text Include="world-scene-assets.txt" />
     <Text Include="world-scene.txt" />

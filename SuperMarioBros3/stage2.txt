@@ -21,13 +21,14 @@ goal.txt
 goalblock.txt
 stage2_assets.txt
 piranha-fire.txt
+switch.txt
 
 [MAP_INFO]
-187
+186.5
 
 [CAMERA_ZONES]
 -1 1 165 14.5
-165 5 999 14.5
+165 0 999 14.5
 
 
 [GRID_OBJECTS]
@@ -36,7 +37,7 @@ piranha-fire.txt
 # See OBJECT_TYPE constants in AssetIDs.h
 
 # MARIO
-0 1 10
+0 2 10
 
 303 5 9 0	5
 303 7 7 2
@@ -409,7 +410,7 @@ piranha-fire.txt
 # Cột 60, 61 bề mặt ở Y=11 (sát đáy) nên không đắp đất
 # PIPE
 # id x y, sprite size wh, tl tr ml mr
-702 68 7	16 16	4	70211 70212 70221 70222 70221 70222
+702 68 7	16 16	4	70211 70212 70221 70222 70221 70222 1	999
 
 # Cột 62, 63
 600 62 11 60222
@@ -495,16 +496,16 @@ piranha-fire.txt
 600 84 10 6000312
 
 ### 2 bricks below 2 woods
-301	85 10 0
+301	85 10 1 1
 301	86 10 0
 
 ### 2 woods above 2 bricks
 300 85 6 30001
 300 86 6 30001
+
 # PIPE
 # id x y, sprite size wh, tl tr ml mr
-702 85 4	16 16	2	70211 70212 70221 70222 70221 70222 1 -1 233 24
-
+702 85 4	16 16	2	70211 70212 70221 70222 70221 70222 1 21 233 32
 
 ### COIN
 401	79	8

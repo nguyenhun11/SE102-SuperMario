@@ -26,6 +26,8 @@
 #include "KoopaTroopa.h"
 #include "BoomerangBro.h"
 #include "WoodBlock.h"
+#include "InvisibleBlock.h"
+#include "Lift.h"
 #include "ParaGoomba.h"
 
 #include "PlaySceneKeyHandler.h"
@@ -58,7 +60,27 @@ void PlayScene::_ParseSection_MAP_INFO(string line)
 {
 	vector<string> tokens = split(line);
 	if (tokens.size() < 1) return;
-	mapRight = (float)atof(tokens[0].c_str());
+
+	if (tokens.size() == 1)
+	{
+		mapRight = (float)atof(tokens[0].c_str());
+		isAutoScroll = false;
+		autoScrollSpeed = 0.0f;
+	}
+	else if (tokens.size() == 2)
+	{
+		mapLeft = (float)atof(tokens[0].c_str());
+		mapRight = (float)atof(tokens[1].c_str());
+		isAutoScroll = false;
+		autoScrollSpeed = 0.0f;
+	}
+	else if (tokens.size() >= 3)
+	{
+		mapLeft = (float)atof(tokens[0].c_str());
+		mapRight = (float)atof(tokens[1].c_str());
+		autoScrollSpeed = (float)atof(tokens[2].c_str());
+		isAutoScroll = (autoScrollSpeed > 0.0f);
+	}
 }
 
 void PlayScene::_ParseSection_CAMERA_ZONES(string line)
@@ -193,7 +215,7 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		break;
 	}
 	case OBJECT_TYPE_COIN: obj = new Coin(x, y); break;
-	case OBJECT_TYPE_KOOPA: 
+	case OBJECT_TYPE_KOOPA:
 	{
 		int color = 0; // 0 là GREEN, 1 là RED
 		if (tokens.size() > 3)
@@ -272,11 +294,11 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 		}
 		else
 		{
-		obj = new SemisolidPlatform(x, y, cell_width, cell_height, columns, rows,
-			spriteID_tl, spriteID_tm, spriteID_tr,
-			spriteID_ml, spriteID_mm, spriteID_mr,
-			spriteID_bl, spriteID_bm, spriteID_br,
-			shadow_top, shadow_mid, shadow_bot);
+			obj = new SemisolidPlatform(x, y, cell_width, cell_height, columns, rows,
+				spriteID_tl, spriteID_tm, spriteID_tr,
+				spriteID_ml, spriteID_mm, spriteID_mr,
+				spriteID_bl, spriteID_bm, spriteID_br,
+				shadow_top, shadow_mid, shadow_bot);
 		}
 
 		break;
@@ -309,7 +331,7 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 
 		VerticalPipe* pipe = new VerticalPipe(x, y, cell_width, cell_height, rows,
 			idTopLeft, idTopRight, idBodyLeft, idBodyRight, idBottomLeft, idBottomRight, isBlock, targetScene, contentType, contentHeight);
-		
+
 		pipe->SpawnContent();
 		obj = pipe;
 
@@ -350,6 +372,18 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 
 		break;
 	}
+	case OBJECT_TYPE_LIFT:
+	{
+		float cell_width = (float)atof(tokens[3].c_str());
+		float cell_height = (float)atof(tokens[4].c_str());
+		int length = atoi(tokens[5].c_str());
+		int spriteID_l = atoi(tokens[6].c_str());
+		int spriteID_m = atoi(tokens[7].c_str());
+		int spriteID_r = atoi(tokens[8].c_str());
+		obj = new Lift(x, y, cell_width, cell_height, length,
+			spriteID_l, spriteID_m, spriteID_r);
+		break;
+	}
 	case OBJECT_TYPE_QUESTION_BLOCK:
 	{
 		int contained_item_id = atoi(tokens[3].c_str());
@@ -375,6 +409,16 @@ void PlayScene::_ParseSection_OBJECTS(string line, bool isGridCoordinate)
 	case OBJECT_TYPE_WOOD_BLOCK: {
 		int contained_item_id = atoi(tokens[3].c_str());
 		obj = new WoodBlock(x, y, contained_item_id);
+		break;
+	}
+
+	case OBJECT_TYPE_INVISIBLE_BLOCK: {
+		InvisibleType type = static_cast<InvisibleType>(atoi(tokens[3].c_str()));
+		int sceneID = -1;
+		if (tokens.size() > 4) {
+			sceneID = atoi(tokens[4].c_str());
+		}
+		obj = new InvisibleBlock(x, y, type, sceneID);
 		break;
 	}
 
@@ -557,44 +601,112 @@ void PlayScene::Load()
 	}
 	f.close();
 
-
-	//  ĐÚNG: Gọi thông qua Instance duy nhất
 	GameManager* gm = GameManager::GetInstance();
 	if (gm->isGoingThroughPipe && player != NULL)
 	{
-		// 1. Tìm cái cống đầu tiên trong map được thiết kế làm "Cửa Ra"
 		VerticalPipe* exitPipe = NULL;
+		int pipeExitMode = 0;
+
 		for (size_t i = 0; i < objects.size(); i++)
 		{
 			if (dynamic_cast<VerticalPipe*>(objects[i]))
 			{
 				VerticalPipe* pipe = dynamic_cast<VerticalPipe*>(objects[i]);
-				if (pipe->GetTargetSceneId() == 999)
+
+				if (pipe->GetTargetSceneId() == 999 || pipe->GetTargetSceneId() == 998)
 				{
 					exitPipe = pipe;
+					pipeExitMode = pipe->GetTargetSceneId();
 					break;
 				}
 			}
 		}
+
+		Mario* mario = static_cast<Mario*>(player);
+		float spawnX, spawnY;
+
 		if (exitPipe != NULL)
 		{
 			float pl, pt, pr, pb;
 			exitPipe->GetBoundingBox(pl, pt, pr, pb);
+			spawnX = pl + (pr - pl) / 2;
 
-			float spawnX = pl + (pr - pl) / 2;
-			float spawnY = pt + 16.0f;
+			if (pipeExitMode == 999)
+			{
+				if (mario->GetCurrentForm() == MarioForm::SMALL)
+					spawnY = pt + 23.0f;
+				else
+					spawnY = pt + 16.0f;
 
-			player->SetPosition(spawnX, spawnY);
+				player->SetPosition(spawnX, spawnY);
 
-			Mario* mario = static_cast<Mario*>(player);
-			mario->SetStartPiping();
+				mario->SetStartPiping();
+				mario->isPipingUp = true;
+				mario->isPipingHorizontal = false;
+			}
+			else if (pipeExitMode == 998)
+			{
+				spawnY = pt;
+				player->SetPosition(spawnX, spawnY);
+
+				mario->SetState(MarioState::IDLE);
+			}
 		}
+		else
+		{
+			// Không tìm thấy ống nào (vào map ẩn) thì xài mặc định
+			player->GetPosition(spawnX, spawnY);
+			mario->SetState(MarioState::IDLE);
+		}
+
+		// --- ĐOẠN LIA CAMERA GIỮ NGUYÊN ĐỂ KHÔNG BỊ LỆCH TỌA ĐỘ X ---
+		float cx = spawnX - GameGlobal::GetWidth() / 2;
+		float cy = spawnY - GameGlobal::GetHeight() / 2;
+
+		float min_cx = mapLeft * TILE_SIZE;
+		float max_cx = mapRight * TILE_SIZE - GameGlobal::GetWidth();
+
+		if (cx < min_cx) cx = min_cx;
+		if (cx > max_cx) cx = max_cx;
+
+		Camera::GetInstance()->SetCamPos(cx, cy);
+		gm->isGoingThroughPipe = false;
 	}
-	gm->isGoingThroughPipe = false;
+
+	if (gm->isSpawningFromHeaven && player != NULL)
+	{
+		Mario* mario = static_cast<Mario*>(player);
+		float spawnX, spawnY;
+
+		player->GetPosition(spawnX, spawnY);
+
+		mario->SetState(MarioState::JUMP);
+		mario->SetVy(-MARIO_JUMP_SPEED_Y * 1.4f); 
+		mario->SetIsOnPlatform(false); 
+
+		float cx = spawnX - GameGlobal::GetWidth() / 2;
+		float cy = spawnY - GameGlobal::GetHeight() / 2;
+
+		float min_cx = mapLeft * TILE_SIZE;
+		float max_cx = mapRight * TILE_SIZE - GameGlobal::GetWidth();
+
+		if (cx < min_cx) cx = min_cx;
+		if (cx > max_cx) cx = max_cx;
+
+		Camera::GetInstance()->SetCamPos(cx, cy);
+
+		// Xong việc thì tắt cờ
+		gm->isSpawningFromHeaven = false;
+	}
 
 	float screenHeight = GameGlobal::GetHeight();
 	HUD::GetInstance()->SetPosition(0.0f, screenHeight - HUD_HEIGHT);
 	GameManager::GetInstance()->ResetTimer(300000);
+	if (GameManager::GetInstance()->isPSwitchActive)
+	{
+		// Nếu P-Switch đang bật từ map trước, lập tức Swap toàn bộ map mới!
+		ActivatePSwitch(true);
+	}
 
 	DebugOut(L"[INFO] Done loading scene  %s\n", sceneFilePath);
 }
@@ -650,11 +762,8 @@ void PlayScene::Update(DWORD dt)
 		koopa->SetPosition(hx, hy);
 	}
 
-
 	float px, py;
 	player->GetPosition(px, py);
-
-
 
 	float max_player_x = this->mapRight * TILE_SIZE - 8.0f;
 	if (mario->IsGoalRunning())
@@ -662,27 +771,55 @@ void PlayScene::Update(DWORD dt)
 		max_player_x = 999 * TILE_SIZE;
 	}
 
-
-	if (px < mapLeft)
+	if (isAutoScroll)
 	{
-		px = mapLeft;
-		player->SetPosition(px, py); // Khóa Y, ép X quay lại mép trái
+		float currentCamX = Camera::GetInstance()->GetCamX();
+		float screenRightEdge = currentCamX + GameGlobal::GetWidth() - 16.0f;
 
-		float pvx, pvy;
-		player->GetSpeed(pvx, pvy);
-		player->SetSpeed(0.0f, pvy);
+		if (max_player_x > screenRightEdge)
+		{
+			max_player_x = screenRightEdge;
+		}
 	}
-	else if (px > max_player_x)			/// chặn phải
+
+	if (!mario->IsPiping())
 	{
-		px = max_player_x;
-		player->SetPosition(px, py);
-		float pvx, pvy;
-		player->GetSpeed(pvx, pvy);
-		player->SetSpeed(0.0f, pvy);
-	}
-	float playerCeiling = mapTop - 64.0f;
+		float camX = Camera::GetInstance()->GetCamX();
+		float limitLeft = ((camX > mapLeft) ? camX : mapLeft) + 16.0f;
 
-	if (py < playerCeiling)
+		if (px <= limitLeft)
+		{
+			px = limitLeft;
+			player->SetPosition(px, py);
+
+			float pvx, pvy;
+			player->GetSpeed(pvx, pvy);
+
+			if (isAutoScroll)
+			{
+				player->SetSpeed(autoScrollSpeed, pvy);
+				mario->SetNx(1);
+			}
+			else
+			{
+				player->SetSpeed(0.0f, pvy);
+			}
+		}
+		else if (px > max_player_x)
+		{
+			px = max_player_x;
+			player->SetPosition(px, py);
+			float pvx, pvy;
+			player->GetSpeed(pvx, pvy);
+			player->SetSpeed(0.0f, pvy);
+		}
+	}
+
+	CameraZone currentZone = GetCurrentZone(px, py);
+
+	float playerCeiling = currentZone.top * TILE_SIZE - 64.0f;
+
+	if (!mario->isFlyingToHeaven && py < playerCeiling)
 	{
 		py = playerCeiling;
 		player->SetPosition(px, py);
@@ -694,7 +831,7 @@ void PlayScene::Update(DWORD dt)
 			player->SetSpeed(pvx, 0.0f);
 		}
 	}
-	float deathZone = mapBottom * TILE_SIZE + 48.0f; // Rot xuong 48px la die
+	float deathZone = currentZone.bottom * TILE_SIZE + 48.0f; // Rot xuong 48px la die
 	if (!mario->IsGoalRunning() && py > deathZone)
 	{
 		/*GameManager::GetInstance()->AddLife(-1);
@@ -706,7 +843,6 @@ void PlayScene::Update(DWORD dt)
 
 	//--- FOLLOW CAMERA
 	float cx = px, cy = py;
-	CameraZone currentZone = GetZoneX(px);
 	if (prevCameraZone.left == defaultCameraZone.left && prevCameraZone.top == defaultCameraZone.top &&
 		prevCameraZone.right == defaultCameraZone.right && prevCameraZone.bottom == defaultCameraZone.bottom)
 	{
@@ -724,25 +860,59 @@ void PlayScene::Update(DWORD dt)
 	float hudHeight = HUD_HEIGHT;
 	float playableHeight = GameGlobal::GetHeight() - hudHeight;
 
-	cx -= GameGlobal::GetWidth() / 2;
+	if (isAutoScroll)
+	{
+		cx = Camera::GetInstance()->GetCamX() + autoScrollSpeed * dt;
+	}
+	else
+	{
+		cx = px - GameGlobal::GetWidth() / 2;
+	}
 	cy -= playableHeight / 2;
 
 
 	float max_cx = mapRight * TILE_SIZE - GameGlobal::GetWidth();
 	float min_cx = mapLeft * TILE_SIZE;
-	float min_cy = currentZone.top * TILE_SIZE;
-	float max_cy = currentZone.bottom * TILE_SIZE - GameGlobal::GetHeight();
-	if (cx < min_cx) cx = min_cx;
-	if (cx > max_cx) cx = max_cx;
 
-	// Clamp cy theo zone
-	float targetCamY = cy;
-	if (currentCamY < 0.0f)
+	float zoneHeight = (currentZone.bottom - currentZone.top) * TILE_SIZE;
+	float screenHeight = GameGlobal::GetHeight();
+	float min_cy, max_cy;
+	if (zoneHeight <= screenHeight)
 	{
-		currentCamY = targetCamY;
+		min_cy = currentZone.top * TILE_SIZE;
+		max_cy = currentZone.top * TILE_SIZE;
 	}
+	else
+	{
+		min_cy = currentZone.top * TILE_SIZE;
+		max_cy = currentZone.bottom * TILE_SIZE - screenHeight;
+	}
+
+	if (cx < min_cx) cx = min_cx;
+	if (cx >= max_cx)
+	{
+		cx = max_cx;
+		if (isAutoScroll)
+		{
+			autoScrollSpeed = 0.0f;
+		}
+	}
+	// Clamp cy theo zone
+	// 1. Mặc định luôn ép Camera bám sát mặt đất (max_cy) thay vì đi theo cy
+	float targetCamY = max_cy;
+
+	// 2. Tính xem nếu giữ Mario ở giữa màn hình thì Camera nằm ở đâu (idealCamY)
+	float idealCamY = py - (playableHeight / 2);
+
+	// 3. Nếu Mario nhảy đủ cao để vượt qua giữa màn hình (idealCamY < max_cy)
+	// thì Camera mới bắt đầu trượt lên theo. Nếu nhảy lùn thì Camera đứng im!
+	if (idealCamY < max_cy)
+	{
+		targetCamY = idealCamY;
+	}
+
+	// 4. Không cho Camera trượt lố khỏi trần nhà
 	if (targetCamY < min_cy) targetCamY = min_cy;
-	if (targetCamY > max_cy) targetCamY = max_cy;
 
 	// Lerp camera position
 	if (isTransitioningCamera)
@@ -771,15 +941,13 @@ void PlayScene::Update(DWORD dt)
 		Camera::GetInstance()->SetCamPos(cx, currentCamY);
 	}
 
-	if (isPSwitchActive)
+	if (GameManager::GetInstance()->isPSwitchActive)
 	{
-		if (GetTickCount64() - pSwitchTimer > SWITCH_ACTIVATION_TIME)
+		if (GetTickCount64() - GameManager::GetInstance()->pSwitchTimer > SWITCH_ACTIVATION_TIME)
 		{
-			//DebugOut(L"[PSWITCH] ---> ĐÃ HẾT GIỜ! Gọi DeactivatePSwitch()\n");
-			DeactivatePSwitch(currentSwitchType);
+			DeactivatePSwitch();
+			GameManager::GetInstance()->isPSwitchActive = false;
 		}
-
-		//DebugOut(L"[INFO] P-Switch active for %lld ms\n", GetTickCount64() - pSwitchTimer);
 	}
 
 	PurgeDeletedObjects();
@@ -840,91 +1008,78 @@ void PlayScene::Unload()
 
 bool PlayScene::IsGameObjectDeleted(const LPGAMEOBJECT& o) { return o == NULL; }
 
-void PlayScene::ActivatePSwitch(SwitchType type)
+void PlayScene::ActivatePSwitch(bool isFromLoad)
 {
-	isPSwitchActive = true;
-	currentSwitchType = type;
-	pSwitchTimer = GetTickCount64();
 	SoundManager::GetInstance()->Play("bump");
 	vector<LPGAMEOBJECT> newObjects;
+
+	// Chỉ reset lại đồng hồ nếu là do Mario tự đạp vào nút (không phải do Load map)
+	if (!isFromLoad)
+	{
+		GameManager::GetInstance()->isPSwitchActive = true;
+		GameManager::GetInstance()->pSwitchTimer = GetTickCount64();
+	}
 
 	for (size_t i = 0; i < objects.size(); i++)
 	{
 		LPGAMEOBJECT obj = objects[i];
 
-			if (type == SwitchType::BrickToCoin && dynamic_cast<Brick*>(obj)
-			&& ((Brick*)obj)->GetCurrentState() == BrickState::ACTIVE)
+		// 1. Chuyển TẤT CẢ GẠCH (đang Active) THÀNH TIỀN
+		if (dynamic_cast<Brick*>(obj) && ((Brick*)obj)->GetCurrentState() == BrickState::ACTIVE)
 		{
-			// Xóa viên gạch
 			obj->Delete();
-
-			// Sinh ra đồng tiền tại vị trí đó
 			Coin* c = new Coin(obj->GetX(), obj->GetY());
-			c->isCreatedBySwitch = true; // Đánh dấu đây là đồ giả
+			c->isCreatedBySwitch = true; // Tiền giả sinh ra từ P-Switch
 			newObjects.push_back(c);
 		}
-		else if (type == SwitchType::CoinToBrick && dynamic_cast<Coin*>(obj))
+		// 2. Chuyển TẤT CẢ TIỀN THÀNH GẠCH
+		// Điều kiện !isCreatedBySwitch để đảm bảo không biến cái đồng tiền vừa tạo ra ở trên thành gạch lại
+		else if (dynamic_cast<Coin*>(obj) && !((Coin*)obj)->isCreatedBySwitch)
 		{
-			// Xóa đồng tiền
 			obj->Delete();
-
-			// Sinh ra viên gạch
 			Brick* b = new Brick(obj->GetX(), obj->GetY());
-			b->isCreatedBySwitch = true;
+			b->isCreatedBySwitch = true; // Gạch giả sinh ra từ P-Switch
 			newObjects.push_back(b);
 		}
 	}
 
-	// Đổ các object mới tạo vào danh sách chính
 	for (auto newObj : newObjects) {
 		objects.push_back(newObj);
 	}
 }
 
-void PlayScene::DeactivatePSwitch(SwitchType type)
+void PlayScene::DeactivatePSwitch()
 {
-	isPSwitchActive = false;
+	GameManager::GetInstance()->isPSwitchActive = false;
 	vector<LPGAMEOBJECT> newObjects;
-
-	int fakeCount = 0;     // Đếm số lượng "hàng giả" tìm thấy
-	int deletedCount = 0;  // Đếm số lượng đã xóa và biến đổi thành công
-
-	DebugOut(L"[DeactivatePSwitch] Bat dau quet %d objects...\n", objects.size());
 
 	for (size_t i = 0; i < objects.size(); i++)
 	{
 		LPGAMEOBJECT obj = objects[i];
 
-		// Chỉ thao tác những Object có cờ "Hàng giả"
-		if (obj->isCreatedBySwitch)
-		{
-			fakeCount++; // Đã tìm thấy 1 món!
+		// Chỉ thao tác với "Hàng giả" (được sinh ra từ P-Switch)
+		if (!obj->isCreatedBySwitch) continue;
 
-			// Thay currentSwitchType bằng biến 'type' được truyền vào cho an toàn tuyệt đối
-			if (type == SwitchType::BrickToCoin && dynamic_cast<Coin*>(obj))
-			{
-				obj->Delete();
-				Brick* b = new Brick(obj->GetX(), obj->GetY());
-				b->SetState(BrickState::ACTIVE); // MỘT SỐ ENGINE CẦN DÒNG NÀY (VD: BRICK_STATE_ACTIVE) ĐỂ GẠCH HIỆN LÊN
-				newObjects.push_back(b);
-				deletedCount++;
-			}
-			else if (type == SwitchType::CoinToBrick && dynamic_cast<Brick*>(obj))
-			{
-				obj->Delete();
-				Coin* c = new Coin(obj->GetX(), obj->GetY());
-				newObjects.push_back(c);
-				deletedCount++;
-			}
+		if (dynamic_cast<Coin*>(obj))
+		{
+			obj->Delete();
+			Brick* b = new Brick(obj->GetX(), obj->GetY());
+			b->SetState(BrickState::ACTIVE);
+			newObjects.push_back(b);
+		}
+		else if (dynamic_cast<Brick*>(obj))
+		{
+			obj->Delete();
+			Coin* c = new Coin(obj->GetX(), obj->GetY());
+			newObjects.push_back(c);
 		}
 	}
 
-	for (auto newObj : newObjects) {
+	// Đổ các object vừa được phục hồi vào danh sách chính
+	for (auto newObj : newObjects)
+	{
 		objects.push_back(newObj);
 	}
-
-	// DÒNG KẾT LUẬN QUAN TRỌNG NHẤT
-	DebugOut(L"[DeactivatePSwitch] Tim thay %d hang gia | Da bien doi %d mon\n", fakeCount, deletedCount);
 }
 
 void PlayScene::PurgeDeletedObjects()
@@ -947,14 +1102,24 @@ void PlayScene::PurgeDeletedObjects()
 		objects.end());
 }
 
-CameraZone PlayScene::GetZoneX(float x)
+CameraZone PlayScene::GetCurrentZone(float x, float y)
 {
+	CameraZone* matchedZone = nullptr;
+
 	for (auto& zone : cameraZones)
 	{
 		if (x >= zone.left * TILE_SIZE && x <= zone.right * TILE_SIZE)
 		{
-			return zone;
+			if (y >= zone.top * TILE_SIZE && y <= zone.bottom * TILE_SIZE)
+			{
+				return zone;
+			}
+			matchedZone = &zone;
 		}
+	}
+	if (matchedZone != nullptr)
+	{
+		return *matchedZone;
 	}
 	return { mapLeft, mapTop, mapRight, mapBottom };
 }

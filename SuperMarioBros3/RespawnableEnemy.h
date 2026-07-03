@@ -20,6 +20,7 @@ public:
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) override;
 	void OnExitCamera() override;
 	void Delete() override;
+	virtual void OnEnable() {}
 	virtual void OnAttackedByTail(float direction);
 	virtual void SetState(int state) override;
 	bool RenderOnPaused() override { return false; }

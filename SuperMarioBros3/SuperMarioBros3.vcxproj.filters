@@ -86,6 +86,9 @@
     <None Include="irrKlang.dll">
       <Filter>Resources\Sounds\irrKlang</Filter>
     </None>
+    <None Include="stage4_assets.txt">
+      <Filter>Assets</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp">
@@ -271,6 +274,12 @@
     </ClCompile>
     <ClCompile Include="WoodBlock.cpp">
       <Filter>Entities\Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="InvisibleBlock.cpp">
+      <Filter>Entities\Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="Lift.cpp">
+      <Filter>Entities\Platforms</Filter>
     </ClCompile>
     <ClCompile Include="ParaGoomba.cpp">
       <Filter>Entities\Enemies</Filter>
@@ -553,6 +562,12 @@
     <ClInclude Include="WoodBlock.h">
       <Filter>Entities\Blocks</Filter>
     </ClInclude>
+    <ClInclude Include="InvisibleBlock.h">
+      <Filter>Entities\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="Lift.h">
+      <Filter>Entities\Platforms</Filter>
+    </ClInclude>
     <ClInclude Include="ParaGoomba.h">
       <Filter>Entities\Enemies</Filter>
     </ClInclude>
@@ -640,15 +655,29 @@
     <Text Include="stage1_1.txt">
       <Filter>Scenes\Playscene</Filter>
     </Text>
-    <Text Include="scene_mario_dev2.txt" />
     <Text Include="stage3_assets.txt">
       <Filter>Assets</Filter>
     </Text>
     <Text Include="stage3.txt">
       <Filter>Scenes\Playscene</Filter>
     </Text>
+    <Text Include="stage3_1.txt">
+      <Filter>Scenes\Playscene</Filter>
+    </Text>
     <Text Include="boomerang-bro.txt">
       <Filter>Assets</Filter>
+    </Text>
+    <Text Include="scene_mario_dev2.txt">
+      <Filter>Scenes\Playscene</Filter>
+    </Text>
+    <Text Include="stage2_1.txt">
+      <Filter>Scenes\Playscene</Filter>
+    </Text>
+    <Text Include="stage4.txt">
+      <Filter>Scenes\Playscene</Filter>
+    </Text>
+    <Text Include="stage4_1.txt">
+      <Filter>Scenes\Playscene</Filter>
     </Text>
     <Text Include="paragoomba.txt">
       <Filter>Assets</Filter>

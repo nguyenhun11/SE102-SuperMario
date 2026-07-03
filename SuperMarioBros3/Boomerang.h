@@ -3,7 +3,7 @@
 
 #define BOOMERANG_SPEED_X 0.1f
 #define BOOMERANG_GRAVITY 0.00001f    
-#define BOOMERANG_MAX_DISTANCE 128.0f // Quãg đường bay = 8 ô
+#define BOOMERANG_MAX_DISTANCE 120.0f // Quãg đường bay = 8 ô
 #define BOOMERANG_MAX_HEIGHT   24.0f  // Độ cao Parabol muốn đạt tới
 #define BOOMERANG_RETURN_TIME 1200.0f // Thời gian bay về
 #define BOOMERANG_DELAY_TIME 200.0f   // Thời gian trễ trước khi bay

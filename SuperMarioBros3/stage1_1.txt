@@ -31,7 +31,7 @@ goalblock.txt
 # See OBJECT_TYPE constants in AssetIDs.h
 
 # MARIO
-0 8.5 0
+0 8.5 5
 
 #GROUND
 601 0 0	16	16	8	11	60200 60200 60200 60200 60200 60200
@@ -49,7 +49,7 @@ goalblock.txt
 601 24 -1 16 16 20 6 60200 60200 60200 60200 60200 60200
 
 
-# PIPE - HOA
+# PIPE
 # id x y, sprite size wh, tl tr ml mr bl br, block, target_scene
 702 8 0	16 16	3	70251 70252 70251 70252 70261 70262	0
 702 22 0	16 16	3	70251 70252 70251 70252 70261 70262	1	1
