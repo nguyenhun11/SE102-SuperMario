@@ -714,7 +714,7 @@ void PlayScene::Update(DWORD dt)
 		CameraZone currentZone = GetCurrentZone(px, py);
 		float deathZone = currentZone.bottom * TILE_SIZE + 48.0f;
 
-		if (py > deathZone)
+		if (py > deathZone + 400.0f)
 		{
 			GameManager::GetInstance()->LevelFailed();
 			SoundManager::GetInstance()->StopAll();
@@ -845,9 +845,11 @@ void PlayScene::Update(DWORD dt)
 		/*GameManager::GetInstance()->AddLife(-1);
 		Mario* mario = dynamic_cast<Mario*>(player);
 		mario->Reset();*/
-		GameManager::GetInstance()->LevelFailed();
+		//GameManager::GetInstance()->LevelFailed();
 		SoundManager::GetInstance()->StopAll();
-		this->DeactivatePSwitch();
+		SoundManager::GetInstance()->Play("player_down");
+		mario->SetState(MarioState::DIE);
+		//this->DeactivatePSwitch();
 	}
 
 	//--- FOLLOW CAMERA
