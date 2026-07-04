@@ -181,6 +181,75 @@ void MapMario::GetBoundingBox(float& l, float& t, float& r, float& b)
 	b = y + 16;
 }
 
+bool MapMario::CanMoveToDirection(int nx, int ny)
+{
+	// 1. KIỂM TRA ĐƯỜNG CƠ BẢN (Theo file txt: l, r, u, d)
+	if (currentNode == NULL) return true;
+
+	bool hasPath = false;
+	if (nx == -1 && currentNode->canLeft) hasPath = true;
+	if (nx == 1 && currentNode->canRight) hasPath = true;
+	if (ny == -1 && currentNode->canUp) hasPath = true;
+	if (ny == 1 && currentNode->canDown) hasPath = true;
+
+	if (!hasPath) return false;
+
+	// 2. DEV MODE: Mở khóa vạn năng, đi đâu cũng được không cần phá đảo
+	if (GameManager::GetInstance()->isDevMode_BypassMapLock)
+	{
+		return true;
+	}
+
+	// 3. LOGIC CHẶN CỬA KHI CHƯA QUA MÀN
+	StageNode* stageNode = dynamic_cast<StageNode*>(currentNode);
+	if (stageNode != NULL && !stageNode->IsUnlocked())
+	{
+		// Lấy số thứ tự của trạm (1, 2, 3, 4...) từ enum StageNodeState
+		int stageId = (int)stageNode->GetState();
+
+		// Cờ xác nhận người chơi đang đi lùi về trạm cũ
+		bool isMovingBackward = false;
+
+		// KHAI BÁO HƯỚNG ĐI LÙI CHO TỪNG TRẠM
+		switch (stageId)
+		{
+		case 1:
+			// Ví dụ trạm 1, lùi về vị trí Start là đi xuống hoặc đi trái (Tùy map ông)
+			if (nx == -1 || ny == 1) isMovingBackward = true;
+			break;
+		case 2:
+			// TRẠM SỐ 2 ĐÂY: Hướng đi lùi duy nhất là qua Trái (nx == -1) về trạm 1.
+			// Bấm Phải (nx = 1) hay Xuống (ny = 1) đều bị coi là đi tới -> isMovingBackward = false!
+			if (nx == -1) isMovingBackward = true;
+			break;
+		case 3:
+			if (nx == -1) isMovingBackward = true; // Lùi qua trái về trạm 2
+			break;
+		case 4:
+			if (nx == -1) isMovingBackward = true; // Trạm 4 (10, 3) lùi về trái
+			break;
+		case 5:
+			if (nx == 1) isMovingBackward = true;  // Ví dụ trạm 5 lùi qua phải
+			break;
+		case 6:
+			if (nx == -1) isMovingBackward = true; // Ví dụ trạm 6 lùi qua trái
+			break;
+		default:
+			// Mặc định an toàn là cho lùi qua trái
+			if (nx == -1) isMovingBackward = true;
+			break;
+		}
+
+		// NẾU HƯỚNG BẤM KHÔNG PHẢI HƯỚNG LÙI -> CHẶN ĐỨNG NGAY LẬP TỨC!
+		if (!isMovingBackward)
+		{
+			return false;
+		}
+	}
+
+	return true; // Cho qua
+}
+
 void MapMario::SetState(int state)
 {
 	switch (state)
@@ -219,7 +288,7 @@ void MapMario::MoveLeft()
 	// Nếu vừa tới trạm chưa đủ 150ms -> Bỏ qua lệnh
 	if (GetTickCount64() - stopTimer < 150) return;
 
-	if (!isMoving && (currentNode == NULL || currentNode->canLeft)) {
+	if (!isMoving && CanMoveToDirection(-1, 0)) {
 		SetState(MARIO_MAP_STATE_WALKING_LEFT);
 		SoundManager::GetInstance()->Play("map_move");
 	}
@@ -229,7 +298,7 @@ void MapMario::MoveRight()
 {
 	if (GetTickCount64() - stopTimer < 150) return;
 
-	if (!isMoving && (currentNode == NULL || currentNode->canRight)) {
+	if (!isMoving && CanMoveToDirection(1, 0)) {
 		SetState(MARIO_MAP_STATE_WALKING_RIGHT);
 		SoundManager::GetInstance()->Play("map_move");
 
@@ -240,7 +309,7 @@ void MapMario::MoveUp()
 {
 	if (GetTickCount64() - stopTimer < 150) return;
 
-	if (!isMoving && (currentNode == NULL || currentNode->canUp)) {
+	if (!isMoving && CanMoveToDirection(0, -1)) {
 		SetState(MARIO_MAP_STATE_WALKING_UP);
 		SoundManager::GetInstance()->Play("map_move");
 
@@ -251,7 +320,7 @@ void MapMario::MoveDown()
 {
 	if (GetTickCount64() - stopTimer < 150) return;
 
-	if (!isMoving && (currentNode == NULL || currentNode->canDown)) {
+	if (!isMoving && CanMoveToDirection(0, 1)) {
 		SetState(MARIO_MAP_STATE_WALKING_DOWN);
 		SoundManager::GetInstance()->Play("map_move");
 	}
@@ -265,6 +334,10 @@ void MapMario::EnterNode()
 
 	if (stageNode != NULL)
 	{
+		if (stageNode->IsUnlocked())
+		{
+			return;
+		}
 		int sceneId = (int)stageNode->GetSceneId();
 
 		if (sceneId > 0)

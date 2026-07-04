@@ -1,6 +1,7 @@
 #pragma once
 #include "Sprites.h"
 #include "MapNode.h"
+#include "GameManager.h"
 
 enum class StageNodeState {
 	unlocked = 0,
@@ -24,8 +25,15 @@ public:
 	StageNode(float x, float y, int l, int r, int u, int d, int stage, int sceneId)
 		: MapNode(x, y, l, r, u, d)
 	{
-		SetState((StageNodeState)stage);
 		this->sceneId = sceneId;
+		if (GameManager::GetInstance()->IsStageCleared(sceneId))
+		{
+			SetState(StageNodeState::unlocked);
+		}
+		else
+		{
+			SetState((StageNodeState)stage); 
+		}
 	}
 
 	void Render();

@@ -38,6 +38,7 @@ public:
 	void SetBackgroundColor(float r, float g, float b, float a = 0.0f) {
 		backColor[0] = r; backColor[1] = g; backColor[2] = b; backColor[3] = a;
 	}
+	int GetId() { return id; }
 
 	const float* GetBackgroundColor() { return backColor; }
 };

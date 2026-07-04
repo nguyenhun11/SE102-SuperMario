@@ -393,6 +393,10 @@ void Game::_ParseSection_SETTINGS(string line)
 		int scene_id = atoi(tokens[1].c_str());
 		SceneManager::GetInstance()->InitiateSwitchScene(scene_id);
 	}
+	if (tokens[0] == "DevModeBypassMap")
+	{
+		GameManager::GetInstance()->isDevMode_BypassMapLock = atoi(tokens[1].c_str());
+	}
 	else
 	{
 		DebugOut(L"[ERROR] Unknown game setting: %s\n", ToWSTR(tokens[0]).c_str());

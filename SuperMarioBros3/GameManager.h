@@ -1,5 +1,6 @@
 #pragma once
 #include <Windows.h>
+#include <vector>
 #include "Singleton.h"
 #include "HUD.h"
 
@@ -37,6 +38,9 @@ public:
 	bool isPSwitchActive = false;
 	ULONGLONG pSwitchTimer = 0;
 
+	std::vector<int> clearedStages;
+	bool isDevMode_BypassMapLock;
+
 	void Update(DWORD dt);
 
 	void AddCoin(int coins = 1);
@@ -49,4 +53,13 @@ public:
 	void LevelFailed();
 	void LevelSuccess();
 	void GameOver();
+
+	bool IsStageCleared(int sceneId)
+	{
+		for (int id : clearedStages)
+		{
+			if (id == sceneId) return true;
+		}
+		return false;
+	}
 };

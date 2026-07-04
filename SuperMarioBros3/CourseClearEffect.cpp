@@ -42,6 +42,6 @@ void CourseClearEffect::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
     // Chuyển Scene
     if (isDoneTally && elapsed > 6000)
     {
-        SceneManager::GetInstance()->InitiateSwitchScene(0);
+        GameManager::GetInstance()->LevelSuccess();
     }
 }

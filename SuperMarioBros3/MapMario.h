@@ -44,6 +44,7 @@ public:
 	virtual void GetBoundingBox(float& l, float& t, float& r, float& b);
 
 	void SetMarioForm(MarioMapForm f) { this->form = f; }
+	bool CanMoveToDirection(int nx, int ny);
 
 	bool IsMoving() { return isMoving; }
 	void MoveLeft();

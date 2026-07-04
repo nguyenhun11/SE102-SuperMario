@@ -16,6 +16,8 @@ GameManager::GameManager()
 	isWinning = false;
 	displayWinningText = false;
 
+	isDevMode_BypassMapLock = false;
+
 	this->marioForm = static_cast<int>(MarioForm::SMALL);
 }
 
@@ -94,6 +96,12 @@ void GameManager::LevelSuccess()
 {
 	mapMarioPrevX = mapMarioCurrentX;
 	mapMarioPrevY = mapMarioCurrentY;
+
+	int wonSceneId = SceneManager::GetInstance()->GetCurrentScene()->GetId();
+	if (!IsStageCleared(wonSceneId))
+	{
+		clearedStages.push_back(wonSceneId);
+	}
 
 	SceneManager::GetInstance()->InitiateSwitchScene(0);
 }
