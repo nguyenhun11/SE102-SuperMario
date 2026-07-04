@@ -4,6 +4,7 @@
 #include "SoundManager.h"
 #include "HitEffect.h"
 #include "ScoreEffect.h"
+#include "BoomerangBro.h"
 
 Koopa::Koopa(float x, float y, KoopaColor color) : RespawnableEnemy(x, y)
 {
@@ -123,6 +124,10 @@ void Koopa::OnCollisionWith(LPCOLLISIONEVENT e)
 			{
 				OnCollisionWithKoopa(e);
 			}
+			else if (dynamic_cast<BoomerangBro*>(e->obj))
+			{
+				OnCollisionWithBoomerangBro(e);
+			}
 			else if (dynamic_cast<Brick*>(e->obj))
 			{
 				OnCollisionWithBrick(e);
@@ -227,6 +232,23 @@ void Koopa::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 		HitEffect* effect = new HitEffect(koopa->GetX(), koopa->GetY());
 		scene->AddObject(effect);
 		ScoreEffect* scoreEff = new ScoreEffect(koopa->GetX(), koopa->GetY(), Score::ONE_HUNDRED);
+		scene->AddObject(scoreEff);
+		GameManager::GetInstance()->AddScore(100);
+	}
+}
+
+void Koopa::OnCollisionWithBoomerangBro(LPCOLLISIONEVENT e)
+{
+	BoomerangBro* bro = dynamic_cast<BoomerangBro*>(e->obj);
+	if (bro == nullptr) return;
+
+	PlayScene* scene = dynamic_cast<PlayScene*>(SceneManager::GetInstance()->GetCurrentScene());
+	if (bro->GetState() == static_cast<int>(BroState::ALIVE))
+	{
+		bro->SetState(static_cast<int>(BroState::DIE));
+		HitEffect* effect = new HitEffect(bro->GetX(), bro->GetY());
+		scene->AddObject(effect);
+		ScoreEffect* scoreEff = new ScoreEffect(bro->GetX(), bro->GetY(), Score::ONE_HUNDRED);
 		scene->AddObject(scoreEff);
 		GameManager::GetInstance()->AddScore(100);
 	}

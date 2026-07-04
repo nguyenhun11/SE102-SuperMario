@@ -313,6 +313,20 @@ void Mario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 	if (isPoofTransforming || isSuperTransforming) return;
 	Goomba* goomba = dynamic_cast<Goomba*>(e->obj);
 
+	if (isSliding)
+	{
+		PlayScene* scene = dynamic_cast<PlayScene*>(SceneManager::GetInstance()->GetCurrentScene());
+		if (goomba->GetState() == static_cast<int>(GoombaState::WALKING))
+		{
+			goomba->SetState(GoombaState::BOUNCE);
+			HitEffect* effect = new HitEffect(goomba->GetX(), goomba->GetY());
+			scene->AddObject(effect);
+			ScoreEffect* scoreEff = new ScoreEffect(goomba->GetX(), goomba->GetY(), Score::ONE_HUNDRED);
+			scene->AddObject(scoreEff);
+			GameManager::GetInstance()->AddScore(100);
+		}
+	}
+
 	if (e->ny < 0)
 	{
 		// hiệu ứng điểm

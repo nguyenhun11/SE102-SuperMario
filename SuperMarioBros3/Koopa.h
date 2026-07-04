@@ -92,6 +92,7 @@ protected:
 	virtual void OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e);
 	virtual void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	virtual void OnCollisionWithKoopa(LPCOLLISIONEVENT e);
+	virtual void OnCollisionWithBoomerangBro(LPCOLLISIONEVENT e);
 
 public:
 	bool isHeld = false;
