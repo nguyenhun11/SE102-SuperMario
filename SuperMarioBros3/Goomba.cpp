@@ -171,7 +171,7 @@ void Goomba::SetState(GoombaState state)
 
 void Goomba::HandleSlope(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	if (state == static_cast<int>(GoombaState::DIE)) return;
+	if (state == static_cast<int>(GoombaState::DIE) || state == static_cast<int>(GoombaState::BOUNCE)) return;
 
 	float l, t, r, b;
 	GetBoundingBox(l, t, r, b);

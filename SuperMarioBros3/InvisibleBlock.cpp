@@ -31,7 +31,7 @@ void InvisibleBlock::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void InvisibleBlock::Render()
 {
-	RenderBoundingBox(); 
+	//RenderBoundingBox(); 
 }
 
 void InvisibleBlock::Trigger()
