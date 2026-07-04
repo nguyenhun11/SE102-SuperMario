@@ -63,11 +63,7 @@ void MapMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		float dy = py - this->y;
 		float distance = sqrt(dx * dx + dy * dy);
 
-		// Tính quãng đường tối đa Mario sẽ di chuyển trong frame này
 		float step = MARIO_MAP_SPEED * dt;
-
-		DebugOut(L"[MAP DEBUG] Fail Flag: %d | Current(%.1f, %.1f) | SafePoint(%.1f, %.1f) | Distance: %.1f \n",
-			GameManager::GetInstance()->isReturningFromFail, this->x, this->y, px, py, distance);
 
 		// NẾU KHOẢNG CÁCH CÒN LỚN HƠN BƯỚC NHẢY -> TIẾP TỤC TRƯỢT
 		if (distance > step)
@@ -79,9 +75,15 @@ void MapMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			this->x += vx * dt;
 			this->y += vy * dt;
 
-			return; // QUAN TRỌNG: Return ngay tại đây! 
+			static ULONGLONG skidTimer = 0;
+			if (GetTickCount64() - skidTimer > 100)
+			{
+				SoundManager::GetInstance()->Play("twirl"); // Tên file âm thanh trượt của ông
+				skidTimer = GetTickCount64();
+			}
+
+			return;
 		}
-		// ĐÃ TỚI ĐÍCH (Safe Point) - Bắt dính Mario vào tọa độ px, py
 		else
 		{
 			this->x = px;
@@ -96,8 +98,9 @@ void MapMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 			this->stopTimer = GetTickCount64();
 			SetState(MARIO_MAP_STATE_IDLE);
-
 			this->currentNode = NULL;
+
+			SoundManager::GetInstance()->PlayBGM("bgm_world");
 			return;
 		}
 	}

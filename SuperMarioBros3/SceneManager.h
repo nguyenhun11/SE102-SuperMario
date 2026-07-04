@@ -8,7 +8,11 @@
 #include "Animations.h"
 
 using namespace std;
-class SceneManager : public Singleton<SceneManager> 
+
+#define ID_SPRITE_BLACK_SCREEN 9999999
+#define FADE_SPEED 1.5f
+
+class SceneManager : public Singleton<SceneManager>
 {
 	friend class Singleton<SceneManager>;
 private:

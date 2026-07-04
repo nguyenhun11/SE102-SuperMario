@@ -762,13 +762,16 @@
     <Image Include="textures\WorldMaps_MapPopups.png">
       <Filter>Resources\Textures</Filter>
     </Image>
-    <Image Include="textures\800_Goal.png">
-      <Filter>Resources</Filter>
-    </Image>
     <Image Include="textures\201_Enemies_Origin.png">
       <Filter>Resources\Textures</Filter>
     </Image>
     <Image Include="textures\900_pause.png">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="textures\black.png">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="textures\800_Goal.png">
       <Filter>Resources\Textures</Filter>
     </Image>
   </ItemGroup>
@@ -860,5 +863,6 @@
     <Media Include="assets\sounds\smb3_underground.wav">
       <Filter>Resources\Sounds</Filter>
     </Media>
+    <Media Include="assets\sounds\smb3_twirl.wav" />
   </ItemGroup>
 </Project>

@@ -29,6 +29,7 @@ DevModeBypassMap 1
 0		textures\mario.png
 10		textures\enemies.png
 20		textures\misc.png
+30		textures\black.png
 
 100		textures\100_Mario.png
 101		textures\101_Mario_Origin.png
@@ -72,3 +73,4 @@ bgm_p_switch    assets/sounds/smb3_p_switch.wav
 pause           assets/sounds/smb3_pause.wav
 bgm_world       assets/sounds/smb3_world.wav
 bgm_underground   assets/sounds/smb3_underground.wav
+twirl		assets/sounds/smb3_twirl.wav

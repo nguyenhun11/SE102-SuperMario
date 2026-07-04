@@ -1,7 +1,7 @@
 ﻿#include "Sprite.h"
 #include "Game.h"
 
-void Sprite::Draw(float x, float y, float cx, float cy, bool isFlip, bool isFlipVertical)
+void Sprite::Draw(float x, float y, float cx, float cy, bool isFlip, bool isFlipVertical, float alpha)
 {
 	x = (FLOAT)floor(x);
 	y = (FLOAT)floor(y);
@@ -39,6 +39,7 @@ void Sprite::Draw(float x, float y, float cx, float cy, bool isFlip, bool isFlip
 		this->sprite.TexCoord.y = this->top / texHeight;
 		this->sprite.TexSize.y = (float)spriteHeight / texHeight;
 	}
+	this->sprite.ColorModulate.a = alpha;
 	GameGlobal::spriteObject->DrawSpritesImmediate(&sprite, 1, 0, 0);
 }
 
@@ -72,15 +73,15 @@ Sprite::Sprite(int id, int left, int top, int right, int bottom, LPTEXTURE tex)
 	D3DXMatrixScaling(&this->matScaling, (FLOAT)spriteWidth, (FLOAT)spriteHeight, 1.0f);
 }
 
-void Sprite::DrawOnCamera(float x, float y, bool isFlip, bool isFlipVertical)
+void Sprite::DrawOnCamera(float x, float y, bool isFlip, bool isFlipVertical, float alpha)
 {
 	float cx, cy;
 	Camera::GetInstance()->GetCamPos(cx, cy);
-	Draw(x, y, cx, cy, isFlip, isFlipVertical);
+	Draw(x, y, cx, cy, isFlip, isFlipVertical, alpha);
 }
 
-void Sprite::DrawOnScreen(float x, float y)
+void Sprite::DrawOnScreen(float x, float y, float alpha)
 {
-	Draw(x, y, 0.0f, 0.0f, false, false);
+	Draw(x, y, 0.0f, 0.0f, false, false, alpha);
 }
 

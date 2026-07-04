@@ -718,7 +718,7 @@ void PlayScene::Update(DWORD dt)
 		{
 			GameManager::GetInstance()->LevelFailed();
 			SoundManager::GetInstance()->StopAll();
-			this->DeactivatePSwitch();
+			//this->DeactivatePSwitch();
 		}
 		return;
 	}

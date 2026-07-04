@@ -99,7 +99,7 @@ void WorldScene::Load()
 			worldMario->SetPosition(cx, cy);
 		}
 	}
-	if (sceneBGM != "")
+	if (sceneBGM != "" && !GameManager::GetInstance()->isReturningFromFail)
 	{
 		SoundManager::GetInstance()->PlayBGM(sceneBGM);
 	}
