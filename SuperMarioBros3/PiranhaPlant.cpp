@@ -15,14 +15,25 @@ void PiranhaPlant::ShootFire(float marioX, float marioY)
 {
 	float mouthY = y - 5.0f;
 
+	// ==========================================
+	// 1. ĐỘ LỆCH TỌA ĐỘ ĐÍCH (Target Offset)
+	// Trừ 8.0f là nhắm vào bụng Mario lúc nhỏ. 
+	// Nếu ông muốn nó nhắm xuống chân (để Mario dễ nhảy qua), đổi thành + 0.0f
+	// ==========================================
+	float targetY = marioY - 8.0f;
+
 	float dx = marioX - x;
-	float dy = (marioY - 8.0f) - mouthY;
+	float dy = targetY - mouthY;
 
 	float absDx = abs(dx);
-
 	if (absDx < 0.0001f) absDx = 0.0001f;
 
 	float angle = atan2(dy, absDx);
+
+	float randomAngleDeg = (rand() % 11) - 15.0f; // Radom từ -5 đến 5
+	float angleOffset = randomAngleDeg * (3.14159f / 180.0f);
+	angle += angleOffset;
+
 	float maxAngle = 30.0f * 3.14159f / 180.0f;
 
 	if (angle > maxAngle)
@@ -31,11 +42,12 @@ void PiranhaPlant::ShootFire(float marioX, float marioY)
 	}
 	else if (angle < -maxAngle)
 	{
-		angle = -maxAngle; 
+		angle = -maxAngle;
 	}
 
 	int dirX = (dx > 0) ? 1 : -1;
 
+	// Tính vector vận tốc
 	float fireVx = FIRE_SPEED * cos(angle) * dirX;
 	float fireVy = FIRE_SPEED * sin(angle);
 
@@ -44,7 +56,6 @@ void PiranhaPlant::ShootFire(float marioX, float marioY)
 
 	((PlayScene*)SceneManager::GetInstance()->GetCurrentScene())->AddObject(fire);
 }
-
 void PiranhaPlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	Mario* mario = (Mario*)((PlayScene*)SceneManager::GetInstance()->GetCurrentScene())->GetPlayer();
@@ -70,13 +81,16 @@ void PiranhaPlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				return;
 			}
 
-			if (inRange && GetTickCount64() - wait_start > PIRANHA_WAIT_TIME)
+			DWORD currentWaitTime = isFirstWait ? 0 : PIRANHA_WAIT_TIME;
+
+			if (inRange && GetTickCount64() - wait_start > currentWaitTime)
 			{
 				isWaiting = false;
 				isGoingUp = true;
+				isFirstWait = false;
 			}
 		}
-		else // ĐANG TRÊN ĐỈNH ỐNG
+		else
 		{
 			ULONGLONG timeAtTop = GetTickCount64() - wait_start;
 			if (plantType == PIRANHA_TYPE_RED_FIRE || plantType == PIRANHA_TYPE_GREEN_FIRE)

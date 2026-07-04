@@ -10,12 +10,14 @@ void Lift::OnEnterCamera()
 void Lift::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	if (state == (int)LiftState::Idle) return;
+
 	GameObject::Update(dt);
 
 	if (state == (int)LiftState::Moving) {
 		x += vx * dt;
 	}
 	else if (state == (int)LiftState::Falling) {
+		vy += LIFT_GRAVITY * dt;
 		y += vy * dt;
 	}
 }
@@ -35,7 +37,7 @@ void Lift::SetState(int state)
 		break;
 	case LiftState::Falling:
 		vx = 0;
-		vy = LIFT_SPEED_FALL;
+		vy = 0.0f;
 		break;
 	}
 }

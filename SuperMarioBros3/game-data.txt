@@ -2,8 +2,8 @@
 # Start scene
 start	0
 
-# 0: Tự do qua trạm 1: Phải qua màn mới được đi
-DevModeBypassMap 0
+# 1: Tự do qua trạm 0: Phải qua màn mới được đi
+DevModeBypassMap 1
 
 # id	type	file
 # type: 0: world, 1: play scene 

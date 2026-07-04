@@ -29,7 +29,7 @@ stage4_assets.txt
 -1 1.5 999 14.5
 
 [BGM]
-bgm_stage1
+bgm_stage2
 
 [GRID_OBJECTS]
 # type x y extra_settings per object type
@@ -171,7 +171,7 @@ bgm_stage1
 301 88 5
 
 #L4
-704 86 8 16 16 3 70401 70402 70403
+704 85 8 16 16 3 70401 70402 70403
 704 87 7 16 16 3 70401 70402 70403
 
 #C4 

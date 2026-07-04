@@ -768,6 +768,9 @@
     <Image Include="textures\201_Enemies_Origin.png">
       <Filter>Resources\Textures</Filter>
     </Image>
+    <Image Include="textures\900_pause.png">
+      <Filter>Resources\Textures</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Media Include="assets\sounds\bgm_stage1.mp3">

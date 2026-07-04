@@ -37,6 +37,7 @@ protected:
 	ULONGLONG fire_timer = 0;		// timer để bắn lửa
 
 	bool isWaiting = false;
+	bool isFirstWait;
 	float originalY;
 	bool isGoingUp = true;
 	bool isAtTop = false;
@@ -57,6 +58,7 @@ public:
 		originalY = y;
 		nx = 1;
 		isHiddenOnPause = true;
+		isFirstWait = true;
 	};
 	bool GetIsWaiting() { return y == originalY; };
 };

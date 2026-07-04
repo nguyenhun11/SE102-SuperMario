@@ -2,7 +2,7 @@
 #include "Goomba.h"
 
 // ==== Vận tốc & chu kỳ bay ====
-#define PARAGOOMBA_WALKING_SPEED   0.03f
+#define PARAGOOMBA_WALKING_SPEED   0.02f
 #define PARAGOOMBA_GRAVITY         GOOMBA_GRAVITY
 
 #define PARAGOOMBA_WALK_DURATION   1500      // ms đi bộ trước khi bắt đầu nhảy

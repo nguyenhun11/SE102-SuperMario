@@ -1,8 +1,9 @@
 #pragma once
 #include "NineSliceBox.h"
 
-#define LIFT_SPEED_X 0.015f
-#define LIFT_SPEED_FALL 0.05f  
+#define LIFT_SPEED_X 0.02f
+#define LIFT_SPEED_FALL 0.05f 
+#define LIFT_GRAVITY 0.00015f
 
 enum class LiftState
 {

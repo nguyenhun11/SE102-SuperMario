@@ -115,6 +115,13 @@ void NoteBlock::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
             {
                 y = startY;
                 vy = 0;
+
+                if (bounceCount > 0)
+                {
+                    SpawnItem();
+                }
+                bounceCount--;
+
                 SetState(NoteBlockState::ACTIVE);
 
                 if (mario != nullptr)

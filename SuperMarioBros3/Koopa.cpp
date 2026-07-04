@@ -68,15 +68,6 @@ void Koopa::OnEnable()
 
 void Koopa::OnExitCamera()
 {
-	//if (state == (int)KoopaState::SHELL_MOVING)
-	//{
-	//	SetState(KoopaState::WALKING);
-	//	RespawnableEnemy::OnExitCamera();
-	//}
-	//else
-	//{
-	//	RespawnableEnemy::OnExitCamera();
-	//}
 	RespawnableEnemy::OnExitCamera();
 }
 
@@ -165,8 +156,15 @@ void Koopa::OnCollisionWith(LPCOLLISIONEVENT e)
 void Koopa::OnCollisionWithBrick(LPCOLLISIONEVENT e)
 {
 	Brick* brick = dynamic_cast<Brick*>(e->obj);
-	if (brick == nullptr) return; 
+	if (brick == nullptr) return;
 
+	if (e->nx != 0)
+	{
+		nx = e->nx; // Lấy pháp tuyến dội ra từ cục gạch
+		vx = nx * KOOPA_SHELL_SPEED; // Đảo chiều vận tốc ngay lập tức!
+	}
+
+	// Logic xử lý cục gạch của ông giữ nguyên
 	if (brick->GetCurrentState() == BrickState::ACTIVE)
 	{
 		if (brick->GetContainedItem() != BrickItem::NONE)
@@ -185,6 +183,12 @@ void Koopa::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 {
 	QuestionBlock* qb = dynamic_cast<QuestionBlock*>(e->obj);
 	if (qb == nullptr) return; // Áo giáp chống crash
+
+	if (e->nx != 0)
+	{
+		nx = e->nx;
+		vx = nx * KOOPA_SHELL_SPEED;
+	}
 
 	if (qb->GetCurrentState() == QuestionBlockState::ACTIVE)
 	{
